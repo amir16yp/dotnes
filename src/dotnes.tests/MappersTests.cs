@@ -124,63 +124,51 @@ public class MappersTests : RoslynTests
     }
 
     [Fact]
-    public void Mmc1SetPrgBank_EmitsWriteToE000()
+    public void Mmc1SetPrgBank_EmitsCSharpWrapper()
     {
-        // mmc1_set_prg_bank(2) should emit serial writes to $E000
-        var bytes = GetProgramBytes(
+        using var transpiler = BuildProgram(
             """
             mmc1_set_prg_bank(2);
             ppu_on_all();
             while (true) ;
-            """);
-        Assert.NotNull(bytes);
-        Assert.NotEmpty(bytes);
+            """, out var program);
 
-        var hex = Convert.ToHexString(bytes);
-        // STA $E000 = 8D00E0
-        Assert.Contains("8D00E0", hex);
-        // LDA #$02 = A902
-        Assert.Contains("A902", hex);
+        Assert.Contains("mmc1_set_prg_bank", transpiler.NesLibImplementedMethods);
+        Assert.Single(program.Blocks, b => b.Label == "mmc1_set_prg_bank");
+        Assert.NotNull(program.GetBlock("mmc1_set_prg_bank"));
+        // Serial writes to $E000 live in the transpiled wrapper body
+        Assert.Contains("8D00E0", Convert.ToHexString(program.ToBytes()));
     }
 
     [Fact]
-    public void Mmc1SetMirroring_EmitsWriteTo8000()
+    public void Mmc1SetMirroring_EmitsCSharpWrapper()
     {
-        // mmc1_set_mirroring writes the full Control register — use mirror + PRG/CHR mode bits
-        // (byte)MMC1Mirror.Vertical | MMC1_PRG_FIX_LAST = 0x02 | 0x0C = 0x0E
-        var bytes = GetProgramBytes(
+        using var transpiler = BuildProgram(
             """
             mmc1_set_mirroring((byte)MMC1Mirror.Vertical | MMC1_PRG_FIX_LAST);
             ppu_on_all();
             while (true) ;
-            """);
-        Assert.NotNull(bytes);
-        Assert.NotEmpty(bytes);
+            """, out var program);
 
-        var hex = Convert.ToHexString(bytes);
-        // Reset: LDA #$80, STA $8000
-        Assert.Contains("A980" + "8D0080", hex);
-        // Value: LDA #$0E (0x02 | 0x0C), followed by serial writes to $8000
-        Assert.Contains("A90E" + "8D0080" + "4A" + "8D0080" + "4A" + "8D0080" + "4A" + "8D0080" + "4A" + "8D0080", hex);
+        Assert.Contains("mmc1_set_mirroring", transpiler.NesLibImplementedMethods);
+        Assert.NotNull(program.GetBlock("mmc1_set_mirroring"));
+        Assert.Contains("8D0080", Convert.ToHexString(program.ToBytes()));
     }
 
     [Fact]
-    public void Mmc1SetChrBank_EmitsWritesToA000AndC000()
+    public void Mmc1SetChrBank_EmitsCSharpWrapper()
     {
-        // mmc1_set_chr_bank(0, 1) should emit serial writes to $A000 and $C000
-        var bytes = GetProgramBytes(
+        using var transpiler = BuildProgram(
             """
             mmc1_set_chr_bank(0, 1);
             ppu_on_all();
             while (true) ;
-            """);
-        Assert.NotNull(bytes);
-        Assert.NotEmpty(bytes);
+            """, out var program);
 
-        var hex = Convert.ToHexString(bytes);
-        // STA $A000 = 8D00A0
+        Assert.Contains("mmc1_set_chr_bank", transpiler.NesLibImplementedMethods);
+        Assert.NotNull(program.GetBlock("mmc1_set_chr_bank"));
+        var hex = Convert.ToHexString(program.ToBytes());
         Assert.Contains("8D00A0", hex);
-        // STA $C000 = 8D00C0
         Assert.Contains("8D00C0", hex);
     }
 }

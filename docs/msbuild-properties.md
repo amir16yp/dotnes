@@ -62,6 +62,29 @@ issues.
 </PropertyGroup>
 ```
 
+### `NESOptimizeCode`
+
+Runs post-emit size and efficiency peephole passes on the 6502 object model, and
+packs scalar locals whose live ranges do not overlap.
+
+| | |
+|---|---|
+| **Type** | `bool` |
+| **Default** | `true` |
+
+```xml
+<PropertyGroup>
+  <NESOptimizeCode>false</NESOptimizeCode>
+</PropertyGroup>
+```
+
+Opt out when you need byte-stable unoptimized output (for example, golden ROM
+comparisons). Address-taken locals, arrays, and structs are never packed.
+Lifetime reuse of scalar slots is disabled in methods that contain backward
+branches (loops); those methods still get dense unique scalar assignment and
+post-emit peepholes. Peepholes never delete labeled instructions or cross
+basic-block edges.
+
 ### `NESOptimizeByteHelpers`
 
 Use private RAM parameter homes for proven non-reentrant byte helpers instead of
@@ -556,7 +579,7 @@ to avoid re-transpiling when nothing has changed. The inputs include:
 - `@(NESPrgBank)` and `@(NESChrBank)` — physical bank asset files
 - A **properties stamp file** — tracks changes to `NESMirroring`, `NESMapper`,
   `NESPrgBanks`, `NESChrBanks`, `NESBattery`, `NESMmc3BankedLayout`,
-  `NESOptimizeByteHelpers`, `NESMmc3ManagedHomeBank`,
+  `NESOptimizeByteHelpers`, `NESOptimizeCode`, `NESMmc3ManagedHomeBank`,
   `NESMmc3ManagedInterruptContract`, physical asset metadata, and every
   `NESManagedCodeBank` name, `Bank`, `CpuAddress`, `Offset`, and `Size`
   and every `NESNativeRamCode` name, `Address`, `Size`, and `Contract`

@@ -1,38 +1,36 @@
 ﻿using dotnes;
 
-var logger = new ConsoleLogger();
-
-if (args.Length < 2
-    || string.IsNullOrWhiteSpace(args[0])
-    || string.IsNullOrWhiteSpace(args[1]))
+if (args.Length == 0)
 {
-    Console.WriteLine("Usage: dotnes.exe mydll.dll chr_generic.s");
-    return;
+    Commands.PrintHelp();
+    return 0;
 }
 
-string targetPath = args[0];
-string assemblyFile = args[1];
+string command = args[0];
+string[] rest = args.Skip(1).ToArray();
 
-if (!File.Exists(targetPath))
+return command switch
 {
-    logger.WriteError($"The target path '{targetPath}' does not exist.");
-    return;
+    "new" => Commands.New(rest),
+    "build" => Commands.Build(rest),
+    "run" => Commands.Run(rest),
+    "transpile" => Commands.Transpile(rest),
+    "-h" or "--help" or "help" => Help(),
+    // Legacy: `dotnes app.dll chr.s`
+    _ when args.Length >= 2 && File.Exists(args[0]) => Commands.Transpile(args),
+    _ => Unknown(command),
+};
+
+static int Help()
+{
+    Commands.PrintHelp();
+    return 0;
 }
 
-if (!File.Exists(assemblyFile))
+static int Unknown(string command)
 {
-    logger.WriteError($"The assembly file '{assemblyFile}' does not exist.");
-    return;
+    Console.Error.WriteLine($"Unknown command '{command}'.");
+    Console.Error.WriteLine();
+    Commands.PrintHelp();
+    return 1;
 }
-
-string outputPath = Path.ChangeExtension(targetPath, "nes");
-
-logger.WriteStatus("Running compiler.");
-logger.WriteStatus($"Target Path: {targetPath}");
-logger.WriteStatus($"Assembly File: {assemblyFile}");
-logger.WriteStatus($"Output Path: {outputPath}");
-
-using var input = File.OpenRead(targetPath);
-using var output = File.Create(outputPath);
-using var transpiler = new Transpiler(input, [ new AssemblyReader (assemblyFile) ], logger);
-transpiler.Write(output);

@@ -422,6 +422,46 @@ partial class IL2NESWriter : NESWriter
     int? _pendingStructLocal;
 
     /// <summary>
+    /// Compile-time base address of the object ref currently on the eval stack / pending for
+    /// <c>ldfld</c>/<c>stfld</c>/<c>callvirt</c> (from <c>newobj</c> or a class-typed local).
+    /// </summary>
+    ushort? _pendingObjectBase;
+
+    /// <summary>
+    /// Local index → object body base address for class-typed reference locals.
+    /// </summary>
+    readonly Dictionary<int, ushort> _classLocalBases = new();
+
+    /// <summary>
+    /// Local index → layout class type name (for field offset resolution).
+    /// </summary>
+    readonly Dictionary<int, string> _classLocalTypes = new();
+
+    /// <summary>
+    /// Set when <c>ldarg.0</c> loads <c>this</c> in an instance method; next ldfld/stfld uses (ptr1),Y.
+    /// </summary>
+    bool _pendingThisAccess;
+
+    /// <summary>
+    /// True while ptr1 holds the current instance <c>this</c> pointer (survives ldfld so
+    /// <c>this.X += …</c> can stfld without a second pending flag).
+    /// </summary>
+    bool _thisInPtr1;
+
+    /// <summary>
+    /// Type name for the current instance method's <c>this</c> (parsed from MethodName <c>Type_Method</c>).
+    /// </summary>
+    string? InstanceThisType
+    {
+        get
+        {
+            if (MethodName is null) return null;
+            int us = MethodName.IndexOf('_');
+            return us > 0 ? MethodName.Substring(0, us) : null;
+        }
+    }
+
+    /// <summary>
     /// When set, the dispatch loop should skip all IL instructions whose <see cref="Index"/>
     /// is &lt; this value. Used by handlers that consume a multi-instruction IL pattern
     /// (e.g. buffer-field access via <c>ldflda</c> + <c>stind.i1</c>) in a single step.
@@ -532,6 +572,11 @@ partial class IL2NESWriter : NESWriter
     /// Set of user-defined method names (for detecting user method calls).
     /// </summary>
     public HashSet<string> UserMethodNames { get; init; } = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// NESLib methods with transpiled C# bodies. Calls use JSR instead of ILDispatch intrinsics.
+    /// </summary>
+    public HashSet<string> NesLibMethodNames { get; init; } = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Names of extern methods (declared with static extern). Used to emit JSR _name.

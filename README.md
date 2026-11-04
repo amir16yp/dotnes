@@ -57,27 +57,33 @@ Thanks!
 
 ## Getting Started
 
-Simply install the template:
+Install the `dotnes` CLI:
+
+```sh
+dotnet tool install -g dotnes.compiler
+```
+
+Create, build, and run a project:
+
+```sh
+dotnes new mygame
+cd mygame
+dotnes build    # transpile to .nes
+dotnes run      # build and launch in Mesen
+```
+
+Alternatively, install the project template and use `dotnet new` / `dotnet run`:
 
 ```sh
 dotnet new install dotnes.templates
-```
-
-Create a project:
-
-```sh
-dotnet new nes
+dotnet new nes -n mygame
+cd mygame
+dotnet run
 ```
 
 Or use the project template in Visual Studio:
 
 ![Screenshot of the NES project template in Visual Studio](assets/vs-template.png)
-
-Build and run it as you would a console app:
-
-```sh
-dotnet run
-```
 
 Of course, you can also just open the project in Visual Studio and hit F5.
 
@@ -309,8 +315,10 @@ You can see how one might envision using [System.Reflection.Metadata][srm] to
 iterate over the contents of a .NET assembly and generate [6502
 instructions][6502-instructions] -- that's how this whole idea was born!
 
-Note that the method `NESLib.pal_col()` has no actual C# implementation. In
-fact! there is *only* a reference assembly even shipped in .NES:
+Note that primitive methods like `NESLib.pal_col()` have no C# body (they are
+`throw null!` stubs). Composed wrappers may have real C# that calls other
+NESLib APIs; the transpiler emits those bodies into the ROM only when used.
+Games compile against a reference assembly shipped in .NES:
 
 ```powershell
 > 7z l dotnes.0.2.0-alpha.nupkg

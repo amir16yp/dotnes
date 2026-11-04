@@ -64,9 +64,28 @@ class LocalVariableManager
     public Dictionary<string, List<(string Name, int Size)>> StructLayouts { get; set; } = new(StringComparer.Ordinal);
 
     /// <summary>
+    /// Base address for local/static bump allocation (typically <see cref="LocalStackBase"/>).
+    /// </summary>
+    public ushort BaseAddress => _baseAddress;
+
+    /// <summary>
     /// Computes the next available address for a new local variable allocation.
     /// </summary>
     public ushort NextAddress => (ushort)(_baseAddress + LocalCount);
+
+    /// <summary>
+    /// Seeds a scalar local with a predetermined absolute address without bumping
+    /// on first store. Used by lifetime packing when <c>OptimizeCode</c> is enabled.
+    /// Advances <see cref="LocalCount"/> to cover the assigned slot when needed.
+    /// </summary>
+    public void PreassignScalarLocal(int localIndex, ushort address, bool isWord)
+    {
+        Locals[localIndex] = new Local(0, address, IsWord: isWord);
+        int size = isWord ? 2 : 1;
+        int slotsPastBase = address - _baseAddress + size;
+        if (slotsPastBase > LocalCount)
+            LocalCount = slotsPastBase;
+    }
 
     /// <summary>
     /// Gets the zero-page address and allocates storage for a struct local.
@@ -84,6 +103,18 @@ class LocalVariableManager
         LocalCount += structSize;
         Locals[localIndex] = new Local(0, addr);
         _structLocalTypes[localIndex] = structType;
+        return addr;
+    }
+
+    /// <summary>
+    /// Bump-allocates a fixed-layout class/struct body in NES RAM and returns its base address.
+    /// Used by <c>newobj</c> for sealed NES layout classes (no GC / no free).
+    /// </summary>
+    public ushort AllocateObjectBody(string typeName)
+    {
+        int size = GetStructSize(typeName);
+        ushort addr = NextAddress;
+        LocalCount += size;
         return addr;
     }
 

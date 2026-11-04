@@ -129,6 +129,7 @@ public class NesCompilerTests(ITestOutputHelper output) : RoslynTests(output)
             static class State { public static byte Result; }
             """);
         Assert.False(new CompilationOptions().OptimizeByteHelpers);
+        Assert.True(new CompilationOptions().OptimizeCode);
         var baseline = NesCompiler.Compile(assembly);
         assembly.Position = 0;
         var optimized = NesCompiler.Compile(assembly, new CompilationOptions { OptimizeByteHelpers = true });

@@ -2,4 +2,56 @@
 NES.NESCodeBankAttribute
 NES.NESCodeBankAttribute.NESCodeBankAttribute(string! name) -> void
 NES.NESCodeBankAttribute.Name.get -> string!
+const NES.NESLib.APU_DMC_FREQ = 16400 -> ushort
+const NES.NESLib.APU_DMC_LEN = 16403 -> ushort
+const NES.NESLib.APU_DMC_RAW = 16401 -> ushort
+const NES.NESLib.APU_DMC_START = 16402 -> ushort
+const NES.NESLib.APU_FRAME = 16407 -> ushort
+const NES.NESLib.JOYPAD1 = 16406 -> ushort
+const NES.NESLib.JOYPAD2 = 16407 -> ushort
+const NES.NESLib.PPU_OAM_ADDR = 8195 -> ushort
+const NES.NESLib.PPU_OAM_DATA = 8196 -> ushort
+const NES.NESLib.PPU_OAM_DMA = 16404 -> ushort
+const NES.NESLib.ZAPPER_LIGHT = 8 -> byte
+const NES.NESLib.ZAPPER_TRIGGER = 16 -> byte
+static NES.NESLib.NT_ATTR_A(byte x, byte y) -> ushort
+static NES.NESLib.NT_ATTR_B(byte x, byte y) -> ushort
+static NES.NESLib.NT_ATTR_C(byte x, byte y) -> ushort
+static NES.NESLib.NT_ATTR_D(byte x, byte y) -> ushort
+static NES.NESLib.apu_play_noise(byte period, byte volume, bool toneMode) -> void
+static NES.NESLib.apu_play_triangle(ushort period, byte linear) -> void
+static NES.NESLib.apu_stop_all() -> void
+static NES.NESLib.apu_stop_noise() -> void
+static NES.NESLib.apu_stop_triangle() -> void
+static NES.NESLib.brk() -> void
+static NES.NESLib.dex() -> void
+static NES.NESLib.dey() -> void
+static NES.NESLib.inx() -> void
+static NES.NESLib.iny() -> void
+static NES.NESLib.mmc3_set_prg_bank(byte reg, byte bank) -> void
+static NES.NESLib.mmc3_wram_enable(byte value) -> void
+static NES.NESLib.nop() -> void
+static NES.NESLib.oam_dma(byte page) -> void
+static NES.NESLib.pad1_poll() -> NES.PAD
+static NES.NESLib.pad1_state() -> NES.PAD
+static NES.NESLib.pad1_trigger() -> NES.PAD
+static NES.NESLib.pal_bg_col(byte index, byte color) -> void
+static NES.NESLib.pal_spr_col(byte index, byte color) -> void
+static NES.NESLib.pha() -> void
+static NES.NESLib.php() -> void
+static NES.NESLib.pla() -> void
+static NES.NESLib.plp() -> void
+static NES.NESLib.ppu_scroll(byte x, byte y) -> void
+static NES.NESLib.ppu_status() -> byte
 static NES.NESLib.ppu_use_native_renderer() -> void
+static NES.NESLib.sprite0_hit() -> bool
+static NES.NESLib.sprite0_wait() -> void
+static NES.NESLib.tax() -> void
+static NES.NESLib.tay() -> void
+static NES.NESLib.tsx() -> void
+static NES.NESLib.txa() -> void
+static NES.NESLib.txs() -> void
+static NES.NESLib.tya() -> void
+static NES.NESLib.uxrom_set_prg_bank(byte bank) -> void
+static NES.NESLib.zapper_light() -> bool
+static NES.NESLib.zapper_trigger() -> bool

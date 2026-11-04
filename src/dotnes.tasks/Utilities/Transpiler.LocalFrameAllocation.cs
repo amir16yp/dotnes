@@ -83,7 +83,8 @@ partial class Transpiler
         int closureStructLocalIndex = -1,
         Dictionary<string, int>? closureFieldTypes = null,
         ISet<int>? fixedArrayOffsets = null,
-        ArrayStorageAnalysis? arrayStorage = null)
+        ArrayStorageAnalysis? arrayStorage = null,
+        ScalarPacking? packing = null)
     {
         int totalBytes = 0;
 
@@ -128,7 +129,14 @@ partial class Transpiler
         }
 
         // Array identity locals bind aliases in the writer, not scalar RAM slots.
-        // Pass 2: Count scalar stloc targets (excluding newarr destinations)
+        // Pass 2: Count scalar stloc targets (excluding newarr destinations).
+        // Lifetime packing replaces per-local bytes with a dense shared layout.
+        var packedLocals = packing is { } p
+            ? new HashSet<int>(p.PackedLocals)
+            : null;
+        if (packedLocals is { Count: > 0 })
+            totalBytes += packing!.Value.PackedScalarBytes;
+
         var countedLocals = new HashSet<int>();
         for (int i = 0; i < instructions.Length; i++)
         {
@@ -136,6 +144,7 @@ partial class Transpiler
             if (stlocIdx.HasValue
                 && !countedLocals.Contains(stlocIdx.Value)
                 && !newarrStlocTargets.Contains(stlocIdx.Value)
+                && packedLocals?.Contains(stlocIdx.Value) != true
                 && arrayStorage?.GetInputStorage(instructions, i, 0)
                     is not (ArrayStorage.Ram or ArrayStorage.Rom or ArrayStorage.Parameter))
             {
@@ -209,17 +218,21 @@ partial class Transpiler
         int closureStructLocalIndex = -1,
         Dictionary<string, int>? closureFieldTypes = null,
         IReadOnlyDictionary<string, HashSet<int>>? fixedArrayOffsets = null,
-        ArrayStorageAnalysis? arrayStorage = null)
+        ArrayStorageAnalysis? arrayStorage = null,
+        IReadOnlyDictionary<string, ScalarPacking>? methodPackings = null)
     {
         // Step 1: Estimate local byte counts for each method
         var localByteCounts = new Dictionary<string, int>(StringComparer.Ordinal);
         foreach (var kvp in userMethods)
         {
             var wordLocals = DetectWordLocals(kvp.Value, reflectionCache, kvp.Key);
+            ScalarPacking? packing = methodPackings != null && methodPackings.TryGetValue(kvp.Key, out var packed)
+                ? packed
+                : null;
             localByteCounts[kvp.Key] = EstimateMethodLocalBytes(kvp.Value, wordLocals, structLayouts,
                 closureStructLocalIndex, closureFieldTypes,
                 fixedArrayOffsets != null && fixedArrayOffsets.TryGetValue(kvp.Key, out var reservedOffsets) ? reservedOffsets : null,
-                arrayStorage);
+                arrayStorage, packing);
         }
 
         // Step 2: Build call graph — which user methods does each method call?

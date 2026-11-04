@@ -53,6 +53,7 @@ public static class NesCompiler
         {
             LeaveAssemblyReadersOpen = true,
             OptimizeByteHelpers = options.OptimizeByteHelpers,
+            OptimizeCode = options.OptimizeCode,
         };
         return transpiler.CompileProgram(out _, out _);
     }
@@ -93,6 +94,7 @@ public static class NesCompiler
         {
             LeaveAssemblyReadersOpen = true,
             OptimizeByteHelpers = options.OptimizeByteHelpers,
+            OptimizeCode = options.OptimizeCode,
         };
         var result = transpiler.CompileManagedProgram(out _, out _);
         BankedCompilation.LinkPrograms(result.GetPrograms());

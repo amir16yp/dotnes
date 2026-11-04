@@ -13,12 +13,18 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>dotnes</ToolCommandName>
+    <!-- Surfaced to scaffolded projects via AssemblyInformationalVersion -->
+    <InformationalVersion>$(PackageVersion)</InformationalVersion>
   </PropertyGroup>
   <ItemGroup>
     <Using Include="NES" />
     <None Include="../../LICENSE" Pack="true" PackagePath="" />
     <Compile Include="../dotnes.tasks/ObjectModel/*.cs" Link="ObjectModel/%(FileName)%(Extension)" />
     <Compile Include="../dotnes.tasks/Utilities/*.cs" Link="Utilities/%(FileName)%(Extension)" />
+    <!-- Template sources are embedded for `dotnes new`, not compiled -->
+    <Compile Remove="Templates/**" />
+    <EmbeddedResource Include="Templates/**/*" />
+    <EmbeddedResource Include="../../samples/hello/chr_generic.s" LogicalName="dotnes.Templates.chr_generic.s" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\neslib\neslib.csproj" />

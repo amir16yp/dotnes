@@ -16,12 +16,19 @@ partial class Transpiler
     readonly HashSet<TypeDefinitionHandle> _closureTypes = new();
 
     /// <summary>
+    /// User-defined sealed layout class type names (base <c>System.Object</c>).
+    /// Shared layout table with structs; distinguished so <c>newobj</c> / instance methods are allowed.
+    /// </summary>
+    readonly HashSet<string> _classTypeNames = new(StringComparer.Ordinal);
+
+    /// <summary>
     /// Scans the assembly's TypeDefinitions for user-defined value types (structs)
-    /// and returns a dictionary of struct name → field list (name, size in bytes).
+    /// and sealed NES layout classes, returning type name → field list (name, size in bytes).
     /// </summary>
     Dictionary<string, List<(string Name, int Size)>> DetectStructLayouts()
     {
         var result = new Dictionary<string, List<(string Name, int Size)>>(StringComparer.Ordinal);
+        _classTypeNames.Clear();
 
         foreach (var t in _reader.TypeDefinitions)
         {
@@ -32,7 +39,7 @@ partial class Transpiler
             if (!string.IsNullOrEmpty(ns))
                 continue;
 
-            // Check if this is a value type (struct) by looking at the base type
+            // Check base type: ValueType → struct, Object → layout class
             var baseType = type.BaseType;
             if (baseType.IsNil)
                 continue;
@@ -43,13 +50,29 @@ partial class Transpiler
             else if (baseType.Kind == HandleKind.TypeDefinition)
                 baseTypeName = _reader.GetString(_reader.GetTypeDefinition((TypeDefinitionHandle)baseType).Name);
 
-            // Value types derive from System.ValueType
-            if (baseTypeName != "ValueType")
+            bool isStruct = baseTypeName == "ValueType";
+            bool isClass = baseTypeName == "Object";
+            if (!isStruct && !isClass)
                 continue;
 
             var typeName = _reader.GetString(type.Name);
+
+            if (isClass)
+            {
+                // Skip Program / compiler-generated types. Static/abstract classes are
+                // not NES layout types (tests and samples use static helper classes).
+                if (typeName is "Program" or "<Module>" || typeName.StartsWith("<") || typeName.Contains("__"))
+                    continue;
+                if ((type.Attributes & TypeAttributes.Abstract) != 0)
+                    continue;
+                if ((type.Attributes & TypeAttributes.Sealed) == 0)
+                    throw new TranspileException(
+                        $"Class '{typeName}' must be sealed (and non-abstract) for NES layout-class support.");
+                _classTypeNames.Add(typeName);
+            }
+
             // Detect compiler-generated closure structs (display classes)
-            if (typeName.Contains("DisplayClass"))
+            if (isStruct && typeName.Contains("DisplayClass"))
             {
                 _closureTypes.Add(t);
                 // Catalog closure fields instead of throwing — closure support is handled
@@ -87,14 +110,20 @@ partial class Transpiler
                 continue;
 
             // Detect [InlineArray(N)] on the struct itself
-            int? inlineArrayLength = GetInlineArrayLength(type);
+            int? inlineArrayLength = isStruct ? GetInlineArrayLength(type) : null;
 
             var fields = new List<(string Name, int Size)>();
             foreach (var f in type.GetFields())
             {
                 var field = _reader.GetFieldDefinition(f);
+                if ((field.Attributes & FieldAttributes.Static) != 0)
+                    continue;
                 var fieldName = _reader.GetString(field.Name);
                 int fieldSize = DecodeFieldSize(field);
+                if (isClass && (fieldSize < 1 || fieldSize > 2))
+                    throw new TranspileException(
+                        $"Class '{typeName}' field '{fieldName}' has unsupported type for NES layout classes. " +
+                        "Use only blittable fields (byte, sbyte, ushort, short, bool).");
                 // If the containing type is itself an [InlineArray(N)], its single instance
                 // field represents N copies of the element type.
                 if (inlineArrayLength is int nWrap && fieldSize >= 1)
@@ -114,12 +143,21 @@ partial class Transpiler
                 fields.Add((fieldName, fieldSize));
             }
 
-            if (fields.Count > 0)
+            // Classes may have zero fields (still allocatable); structs keep prior behavior
+            if (fields.Count > 0 || isClass)
                 result[typeName] = fields;
         }
 
         return result;
     }
+
+    internal bool IsClassType(string typeName) => _classTypeNames.Contains(typeName);
+
+    /// <summary>
+    /// Builds the UserMethods name for an instance method or constructor on a layout class.
+    /// </summary>
+    internal static string ClassMethodName(string typeName, string methodName)
+        => methodName is ".ctor" ? $"{typeName}_ctor" : $"{typeName}_{methodName}";
 
     /// <summary>
     /// Maps <c>(structType, fieldName)</c> pairs that hold a fixed-size buffer (C# <c>fixed byte buf[N]</c>)

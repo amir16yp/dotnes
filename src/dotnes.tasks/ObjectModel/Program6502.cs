@@ -867,7 +867,10 @@ public class Program6502
     /// Pre-calculates the total byte size of all final built-in subroutines.
     /// Must match the blocks added by AddFinalBuiltIns.
     /// </summary>
-    public static int CalculateFinalBuiltInsSize(ushort locals, HashSet<string>? usedMethods = null)
+    public static int CalculateFinalBuiltInsSize(
+        ushort locals,
+        HashSet<string>? usedMethods = null,
+        ISet<string>? implementedNesLib = null)
     {
         int size = 0;
         bool needsDecsp4 = usedMethods?.Contains("decsp4") == true;
@@ -888,14 +891,18 @@ public class Program6502
         }
         size += BuiltInSubroutines.Zerobss(locals).Size;
         if (usedMethods != null)
-            ForEachOptionalBuiltIn(needsDecsp4, usedMethods, block => size += block.Size);
+            ForEachOptionalBuiltIn(needsDecsp4, usedMethods, implementedNesLib, block => size += block.Size);
         return size;
     }
 
     /// <summary>
     /// Adds the final built-in subroutines that come after main().
     /// </summary>
-    public void AddFinalBuiltIns(ushort totalSize, ushort locals, HashSet<string>? usedMethods = null)
+    public void AddFinalBuiltIns(
+        ushort totalSize,
+        ushort locals,
+        HashSet<string>? usedMethods = null,
+        ISet<string>? implementedNesLib = null)
     {
         AddBlock(BuiltInSubroutines.Donelib(totalSize));
         AddBlock(BuiltInSubroutines.Copydata(totalSize));
@@ -924,15 +931,23 @@ public class Program6502
 
         // Optional methods
         if (usedMethods != null)
-            ForEachOptionalBuiltIn(needsDecsp4, usedMethods, AddBlock);
+            ForEachOptionalBuiltIn(needsDecsp4, usedMethods, implementedNesLib, AddBlock);
     }
 
     /// <summary>
     /// Enumerates optional built-in subroutine blocks based on which methods are used.
     /// Shared by CalculateFinalBuiltInsSize (for size calculation) and AddFinalBuiltIns (for emission).
+    /// Skips names in <paramref name="implementedNesLib"/> — those already have a transpiled C# body.
     /// </summary>
-    static void ForEachOptionalBuiltIn(bool needsDecsp4, HashSet<string> usedMethods, Action<Block> action)
+    static void ForEachOptionalBuiltIn(
+        bool needsDecsp4,
+        HashSet<string> usedMethods,
+        ISet<string>? implementedNesLib,
+        Action<Block> action)
     {
+        bool NeedsBuiltin(string name) =>
+            usedMethods.Contains(name) && (implementedNesLib is null || !implementedNesLib.Contains(name));
+
         // vrambuf_flush depends on vrambuf_end + vrambuf_clear
         if (usedMethods.Contains("vrambuf_flush"))
         {
@@ -962,102 +977,110 @@ public class Program6502
         bool needsMultiVramCommon =
             usedMethods.Contains("multi_vram_buffer_horz") || usedMethods.Contains("multi_vram_buffer_vert");
 
+        bool NotImplemented(string name) =>
+            implementedNesLib is null || !implementedNesLib.Contains(name);
+
         // pad_poll is needed directly or as a dependency of pad_trigger/pad_state
-        if (usedMethods.Contains("pad_poll") || usedMethods.Contains("pad_trigger") || usedMethods.Contains("pad_state"))
+        if ((usedMethods.Contains("pad_poll") || usedMethods.Contains("pad_trigger") || usedMethods.Contains("pad_state"))
+            && NotImplemented("pad_poll"))
             action(BuiltInSubroutines.PadPoll());
         // pad_trigger/pad_state: included when directly called OR via oam_spr+pad_poll pattern
-        if (usedMethods.Contains("pad_trigger") || (needsDecsp4 && usedMethods.Contains("pad_poll")))
+        if ((usedMethods.Contains("pad_trigger") || (needsDecsp4 && usedMethods.Contains("pad_poll")))
+            && NotImplemented("pad_trigger"))
             action(BuiltInSubroutines.PadTrigger());
-        if (usedMethods.Contains("pad_state") || (needsDecsp4 && usedMethods.Contains("pad_poll")))
+        if ((usedMethods.Contains("pad_state") || (needsDecsp4 && usedMethods.Contains("pad_poll")))
+            && NotImplemented("pad_state"))
             action(BuiltInSubroutines.PadState());
-        if (usedMethods.Contains("oam_spr"))
+        if (NeedsBuiltin("oam_spr"))
             action(BuiltInSubroutines.OamSpr());
-        if (usedMethods.Contains("rand8"))
+        if (NeedsBuiltin("rand8"))
             action(BuiltInSubroutines.Rand8());
-        if (usedMethods.Contains("rand8") || usedMethods.Contains("set_rand"))
+        if (NeedsBuiltin("rand8") || NeedsBuiltin("set_rand"))
             action(BuiltInSubroutines.SetRand());
-        if (usedMethods.Contains("srand"))
+        if (NeedsBuiltin("srand"))
             action(BuiltInSubroutines.SRand());
-        if (usedMethods.Contains("rand16") || usedMethods.Contains("srand"))
+        if (NeedsBuiltin("rand16") || NeedsBuiltin("srand"))
             action(BuiltInSubroutines.Rand());
-        if (usedMethods.Contains("oam_meta_spr") || usedMethods.Contains("oam_spr_2x2"))
+        if (NeedsBuiltin("oam_meta_spr") || NeedsBuiltin("oam_spr_2x2"))
             action(BuiltInSubroutines.OamMetaSpr());
-        if (usedMethods.Contains("oam_meta_spr_pal"))
+        if (NeedsBuiltin("oam_meta_spr_pal"))
             action(BuiltInSubroutines.OamMetaSprPal());
-        if (usedMethods.Contains("apu_init"))
+        if (NeedsBuiltin("oam_clear_fast"))
+            action(BuiltInSubroutines.OamClearFast());
+        if (NeedsBuiltin("memfill"))
+            action(BuiltInSubroutines.Memfill());
+        if (NeedsBuiltin("sprite0_wait"))
+            action(BuiltInSubroutines.Sprite0Wait());
+        if (NeedsBuiltin("apu_init"))
             action(BuiltInSubroutines.ApuInit());
-        if (usedMethods.Contains("vram_unrle"))
+        if (NeedsBuiltin("vram_unrle"))
             action(BuiltInSubroutines.VramUnrle());
-        if (usedMethods.Contains("vram_read"))
+        if (NeedsBuiltin("vram_read"))
             action(BuiltInSubroutines.VramRead());
-        if (usedMethods.Contains("split"))
+        if (NeedsBuiltin("split"))
             action(BuiltInSubroutines.Split());
-        if (usedMethods.Contains("vrambuf_clear"))
+        if (NeedsBuiltin("vrambuf_clear"))
             action(BuiltInSubroutines.VrambufClear());
-        if (usedMethods.Contains("vrambuf_put"))
+        if (NeedsBuiltin("vrambuf_put"))
             action(BuiltInSubroutines.VrambufPut());
-        if (usedMethods.Contains("vrambuf_end"))
+        if (NeedsBuiltin("vrambuf_end"))
             action(BuiltInSubroutines.VrambufEnd());
-        if (usedMethods.Contains("vrambuf_flush"))
+        if (NeedsBuiltin("vrambuf_flush"))
             action(BuiltInSubroutines.VrambufFlush());
-        if (usedMethods.Contains("nametable_a"))
+        if (NeedsBuiltin("nametable_a"))
             action(BuiltInSubroutines.NametableA());
-        if (usedMethods.Contains("nametable_b"))
+        if (NeedsBuiltin("nametable_b"))
             action(BuiltInSubroutines.NametableB());
-        if (usedMethods.Contains("nametable_c"))
+        if (NeedsBuiltin("nametable_c"))
             action(BuiltInSubroutines.NametableC());
-        if (usedMethods.Contains("nametable_d"))
+        if (NeedsBuiltin("nametable_d"))
             action(BuiltInSubroutines.NametableD());
-        if (usedMethods.Contains("incsp1"))
+        if (NeedsBuiltin("incsp1"))
             action(BuiltInSubroutines.Incsp1());
-        if (usedMethods.Contains("addysp"))
+        if (NeedsBuiltin("addysp"))
             action(BuiltInSubroutines.Addysp());
-        if (usedMethods.Contains("bcd_add"))
+        if (NeedsBuiltin("bcd_add"))
             action(BuiltInSubroutines.BcdAdd());
-        if (usedMethods.Contains("rect_overlap"))
+        if (NeedsBuiltin("rect_overlap"))
             action(BuiltInSubroutines.RectOverlap());
-        if (usedMethods.Contains("sprite_overlap"))
+        if (NeedsBuiltin("sprite_overlap"))
             action(BuiltInSubroutines.SpriteOverlap());
-        if (usedMethods.Contains("waitvsync"))
+        if (NeedsBuiltin("waitvsync"))
             action(BuiltInSubroutines.Waitvsync());
-        if (usedMethods.Contains("fade_in"))
+        if (NeedsBuiltin("fade_in"))
             action(BuiltInSubroutines.FadeIn());
-        if (usedMethods.Contains("fade_out"))
+        if (NeedsBuiltin("fade_out"))
             action(BuiltInSubroutines.FadeOut());
-        // nesdoug aliases: pull in their underlying subroutines too.
-        // get_pad_new wraps pad_trigger (which itself depends on pad_poll).
-        // clear_vram_buffer tail-calls vrambuf_clear.
-        // multi_vram_buffer_horz/vert share multi_vram_buffer_common and use popa/popax.
-        // (Dependency expansion happens at the top of this method so size calc and emission agree.)
 
-        if (usedMethods.Contains("irq_set_callback"))
+        if (NeedsBuiltin("irq_set_callback"))
         {
             action(BuiltInSubroutines.IrqSetCallback());
             action(BuiltInSubroutines.IrqWithCallback());
         }
 
-        // nesdoug helpers
-        if (usedMethods.Contains("one_vram_buffer"))
+        // nesdoug helpers — C# wrappers (clear_vram_buffer, get_pad_new, get_frame_count)
+        // are skipped via NeedsBuiltin when NesLibImplementedMethods owns them.
+        if (NeedsBuiltin("one_vram_buffer"))
             action(BuiltInSubroutines.OneVramBuffer());
-        if (usedMethods.Contains("multi_vram_buffer_horz"))
+        if (NeedsBuiltin("multi_vram_buffer_horz"))
             action(BuiltInSubroutines.MultiVramBufferHorz());
-        if (usedMethods.Contains("multi_vram_buffer_vert"))
+        if (NeedsBuiltin("multi_vram_buffer_vert"))
             action(BuiltInSubroutines.MultiVramBufferVert());
         if (needsMultiVramCommon)
             action(BuiltInSubroutines.MultiVramBufferCommon());
-        if (usedMethods.Contains("clear_vram_buffer"))
+        if (NeedsBuiltin("clear_vram_buffer"))
             action(BuiltInSubroutines.ClearVramBuffer());
-        if (usedMethods.Contains("get_pad_new"))
+        if (NeedsBuiltin("get_pad_new"))
             action(BuiltInSubroutines.GetPadNew());
-        if (usedMethods.Contains("get_frame_count"))
+        if (NeedsBuiltin("get_frame_count"))
             action(BuiltInSubroutines.GetFrameCount());
-        if (usedMethods.Contains("set_music_speed"))
+        if (NeedsBuiltin("set_music_speed"))
             action(BuiltInSubroutines.SetMusicSpeed());
-        if (usedMethods.Contains("set_scroll_x"))
+        if (NeedsBuiltin("set_scroll_x"))
             action(BuiltInSubroutines.SetScrollX());
-        if (usedMethods.Contains("set_scroll_y"))
+        if (NeedsBuiltin("set_scroll_y"))
             action(BuiltInSubroutines.SetScrollY());
-        if (usedMethods.Contains("get_ppu_addr"))
+        if (NeedsBuiltin("get_ppu_addr"))
             action(BuiltInSubroutines.GetPpuAddr());
     }
 

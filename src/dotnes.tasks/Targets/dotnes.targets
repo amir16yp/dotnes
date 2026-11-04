@@ -9,6 +9,8 @@
     <_NESTasksAssembly>$(MSBuildThisFileDirectory)dotnes.tasks.dll</_NESTasksAssembly>
     <TranspileDependsOn>$(TranspileDependsOn);_WriteNESPropertiesStamp</TranspileDependsOn>
     <IncrementalCleanDependsOn>$(IncrementalCleanDependsOn);Transpile</IncrementalCleanDependsOn>
+    <!-- Opt-out: empty becomes false on the bool task property, so default true here. -->
+    <NESOptimizeCode Condition="'$(NESOptimizeCode)' == ''">true</NESOptimizeCode>
   </PropertyGroup>
   <!-- Local dev: run task out-of-process so the build server doesn't lock dotnes.tasks.dll -->
   <UsingTask TaskName="dotnes.TranspileToNES" AssemblyFile="$(_NESTasksAssembly)"
@@ -19,7 +21,7 @@
   <Target Name="_WriteNESPropertiesStamp" Condition="'$(IsTestProject)' != 'true'">
     <WriteLinesToFile
         File="$(_NESPropertiesStampFile)"
-        Lines="NESMirroring=$(NESMirroring);NESMapper=$(NESMapper);NESPrgBanks=$(NESPrgBanks);NESChrBanks=$(NESChrBanks);NESBattery=$(NESBattery);NESMmc3BankedLayout=$(NESMmc3BankedLayout);NESOptimizeByteHelpers=$(NESOptimizeByteHelpers);NESMmc3ManagedHomeBank=$(NESMmc3ManagedHomeBank);NESMmc3ManagedInterruptContract=$(NESMmc3ManagedInterruptContract);@(NESPrgBank->'%(FullPath)|%(Bank)|%(CpuAddress)|%(Offset)');@(NESChrBank->'%(FullPath)|%(Bank)|%(Offset)');@(NESManagedCodeBank->'%(Identity)|%(Bank)|%(CpuAddress)|%(Offset)|%(Size)');@(NESNativeRamCode->'%(Identity)|%(Address)|%(Size)|%(Contract)')"
+        Lines="NESMirroring=$(NESMirroring);NESMapper=$(NESMapper);NESPrgBanks=$(NESPrgBanks);NESChrBanks=$(NESChrBanks);NESBattery=$(NESBattery);NESMmc3BankedLayout=$(NESMmc3BankedLayout);NESOptimizeByteHelpers=$(NESOptimizeByteHelpers);NESOptimizeCode=$(NESOptimizeCode);NESMmc3ManagedHomeBank=$(NESMmc3ManagedHomeBank);NESMmc3ManagedInterruptContract=$(NESMmc3ManagedInterruptContract);@(NESPrgBank->'%(FullPath)|%(Bank)|%(CpuAddress)|%(Offset)');@(NESChrBank->'%(FullPath)|%(Bank)|%(Offset)');@(NESManagedCodeBank->'%(Identity)|%(Bank)|%(CpuAddress)|%(Offset)|%(Size)');@(NESNativeRamCode->'%(Identity)|%(Address)|%(Size)|%(Contract)')"
         Overwrite="true"
         WriteOnlyWhenDifferent="true" />
     <ItemGroup>
@@ -42,6 +44,7 @@
         OutputPath="$(NESTargetPath)"
         DiagnosticLogging="$(NESDiagnosticLogging)"
         NESOptimizeByteHelpers="$(NESOptimizeByteHelpers)"
+        NESOptimizeCode="$(NESOptimizeCode)"
         NESMirroring="$(NESMirroring)"
         NESMapper="$(NESMapper)"
         NESPrgBanks="$(NESPrgBanks)"

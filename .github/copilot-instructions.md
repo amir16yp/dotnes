@@ -18,12 +18,12 @@ Program.cs → dotnet build → .dll (MSIL) → Transpiler → .nes ROM
 - [src/dotnes.tasks/Utilities/NESWriter.cs](src/dotnes.tasks/Utilities/NESWriter.cs) - ROM binary format
 - [src/dotnes.tasks/ObjectModel/BuiltInSubroutines.cs](src/dotnes.tasks/ObjectModel/BuiltInSubroutines.cs) - 6502 assembly for all built-in subroutines
 - [src/dotnes.tasks/ObjectModel/Program6502.cs](src/dotnes.tasks/ObjectModel/Program6502.cs) - ROM code block ordering and address resolution
-- [src/neslib/NESLib.cs](src/neslib/NESLib.cs) - Reference-only API (all methods `throw null!`)
+- [src/neslib/NESLib.cs](src/neslib/NESLib.cs) - NES API: primitives are `throw null!` stubs; composed wrappers may have real C# bodies
 
 ### Reference Assembly Pattern
-`neslib` has **no implementations**—methods provide compile-time API only. The transpiler looks up method names to emit corresponding 6502 subroutine calls. Adding new NES APIs requires:
-1. Add method stub in `NESLib.cs` with `throw null!`
-2. Implement 6502 equivalent in `BuiltInSubroutines.cs`
+Primitives provide compile-time API only (`throw null!`); the transpiler maps names to 6502 builtins. Composed wrappers can be written in C# (calling other NESLib APIs) — their bodies are transpiled from the implementation DLL **only when used**, once (no duplicate builtin). Adding APIs:
+1. Primitive: stub in `NESLib.cs` + 6502 in `BuiltInSubroutines.cs` / ILDispatch
+2. Wrapper: real C# body in `NESLib.cs` only — do not also add a builtin for the same name
 
 ## Build & Test
 

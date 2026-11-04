@@ -9,7 +9,10 @@ public abstract class ExecutionTests(ITestOutputHelper output) : RoslynTests(out
     private protected Cpu6502 ExecuteProgram(string source, Action<Cpu6502>? initialize = null,
         int instructionLimit = 100000)
     {
-        using var transpiler = BuildProgram(source, out var program);
+        // Opt out: some fixtures plant values at LocalStackBase ($0325) assuming
+        // bump layout. Optimized packing moves arrays; cover OptimizeCode=true in
+        // OptimizeCodeTests / ArrayExecution instead.
+        using var transpiler = BuildProgram(source, out var program, optimizeCode: false);
         const ushort stop = 0x7FF0;
         program.DefineExternalLabel("_test_stop", stop);
         byte[] bytes = program.ToBytes();

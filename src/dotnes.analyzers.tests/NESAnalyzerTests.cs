@@ -135,7 +135,7 @@ public class NESAnalyzerTests
     [Fact]
     public async Task NES001_NoGlobalStatements_NonStaticClass_NoDiagnostic()
     {
-        // NES001 should not fire for library code, even with a non-static class
+        // NES001 should not fire for library code, even with a non-static unsealed class
         var test = """
             namespace MyLib
             {
@@ -146,22 +146,76 @@ public class NESAnalyzerTests
             }
             """;
 
-        // NES002 fires for the non-static class, but NES001 should not
+        // NES002 fires for the non-static unsealed class, but NES001 should not
         var expected = Diagnostic(NESAnalyzer.NES002).WithLocation(0).WithArguments("Helper");
         await VerifyLibraryAsync(test, expected);
     }
 
-    // ==================== NES002: Class declarations not supported ====================
+    // ==================== NES002: Class declarations ====================
 
     [Fact]
-    public async Task NES002_ClassDeclaration_Diagnostic()
+    public async Task NES002_UnsealedClassDeclaration_Diagnostic()
     {
-        // Class declared inside namespace (library context)
+        // Unsealed class declared inside namespace (library context)
         var test = """
             namespace MyGame
             {
                 class {|#0:Player|}
                 {
+                }
+            }
+            """;
+
+        var expected = Diagnostic(NESAnalyzer.NES002).WithLocation(0).WithArguments("Player");
+        await VerifyLibraryAsync(test, expected);
+    }
+
+    [Fact]
+    public async Task NES002_SealedLayoutClass_NoDiagnostic()
+    {
+        var test = """
+            var p = new Player();
+            p.X = 1;
+            while (true) ;
+
+            sealed class Player
+            {
+                public byte X;
+            }
+            """;
+
+        await VerifyAsync(test);
+    }
+
+    [Fact]
+    public async Task NES002_ClassWithBaseType_Diagnostic()
+    {
+        var test = """
+            namespace MyGame
+            {
+                class Entity { public byte Id; }
+                sealed class {|#0:Player|} : Entity
+                {
+                    public byte X;
+                }
+            }
+            """;
+
+        // Both Entity (unsealed) and Player (inheritance) are rejected
+        await VerifyLibraryAsync(test,
+            Diagnostic(NESAnalyzer.NES002).WithSpan(3, 11, 3, 17).WithArguments("Entity"),
+            Diagnostic(NESAnalyzer.NES002).WithLocation(0).WithArguments("Player"));
+    }
+
+    [Fact]
+    public async Task NES002_SealedClassWithReferenceField_Diagnostic()
+    {
+        var test = """
+            namespace MyGame
+            {
+                sealed class {|#0:Player|}
+                {
+                    public string Name = "";
                 }
             }
             """;

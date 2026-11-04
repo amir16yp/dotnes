@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 
 namespace dotnes;
 
@@ -102,15 +103,18 @@ partial class Transpiler
     }
 
     void ReadNumericTypes(MethodDefinition method, string name)
+        => ReadNumericTypes(_pe, _reader, method, name);
+
+    void ReadNumericTypes(PEReader pe, MetadataReader reader, MethodDefinition method, string name)
     {
         var decoder = new NumericTypeDecoder();
         var signature = method.DecodeSignature(decoder, null);
         ImmutableArray<PrimitiveTypeCode?> locals = [];
         if (method.RelativeVirtualAddress != 0)
         {
-            var localSignature = _pe.GetMethodBody(method.RelativeVirtualAddress).LocalSignature;
+            var localSignature = pe.GetMethodBody(method.RelativeVirtualAddress).LocalSignature;
             if (!localSignature.IsNil)
-                locals = _reader.GetStandaloneSignature(localSignature).DecodeLocalSignature(decoder, null);
+                locals = reader.GetStandaloneSignature(localSignature).DecodeLocalSignature(decoder, null);
         }
         NumericTypes[name] = new(locals, signature.ParameterTypes, signature.ReturnType);
     }

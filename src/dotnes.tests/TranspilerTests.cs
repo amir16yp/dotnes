@@ -162,7 +162,10 @@ public class TranspilerTests
         }
 
         using var dll = Utilities.GetResource($"{name}.{configuration}.dll");
-        using var il = new Transpiler(dll, assemblyReaders, _logger, mirroring, mapper, prgBanks, chrBanks, battery);
+        using var il = new Transpiler(dll, assemblyReaders, _logger, mirroring, mapper, prgBanks, chrBanks, battery)
+        {
+            OptimizeCode = false, // golden .verified.bin tracks unoptimized output
+        };
         using var ms = new MemoryStream();
         il.Write(ms);
 
@@ -183,7 +186,10 @@ public class TranspilerTests
         using var dll = Utilities.GetResource("hello.release.dll");
         using var chr = new AssemblyReader(new StreamReader(Utilities.GetResource("chr_generic.s")));
         using var transpiler = new Transpiler(dll, [chr], _logger,
-            mapper: 4, prgBanks: prgBanks, chrBanks: chrBanks);
+            mapper: 4, prgBanks: prgBanks, chrBanks: chrBanks)
+        {
+            OptimizeCode = false,
+        };
         int expectedLength = prefixLength + 16 + prgBanks * NESWriter.PRG_ROM_BLOCK_SIZE +
             chrBanks * NESWriter.CHR_ROM_BLOCK_SIZE;
         using var stream = fixedCapacity
@@ -209,7 +215,10 @@ public class TranspilerTests
         using var dll = Utilities.GetResource("hello.release.dll");
         var chr_generic = new StreamReader(Utilities.GetResource("chr_generic.s"));
         var assemblyReaders = new List<AssemblyReader> { new AssemblyReader(chr_generic) };
-        using var il = new Transpiler(dll, assemblyReaders, _logger, battery: battery);
+        using var il = new Transpiler(dll, assemblyReaders, _logger, battery: battery)
+        {
+            OptimizeCode = false,
+        };
         using var ms = new MemoryStream();
         il.Write(ms);
 
@@ -229,7 +238,10 @@ public class TranspilerTests
         var configuration = debug ? "debug" : "release";
 
         using var dll = Utilities.GetResource($"{name}.{configuration}.dll");
-        using var transpiler = new Transpiler(dll, [], _logger);
+        using var transpiler = new Transpiler(dll, [], _logger)
+        {
+            OptimizeCode = false,
+        };
         
         // Build using single-pass transpilation
         var program = transpiler.BuildProgram6502(out ushort sizeOfMain, out ushort locals);
@@ -274,7 +286,10 @@ public class TranspilerTests
         var configuration = debug ? "debug" : "release";
 
         using var dll = Utilities.GetResource($"{name}.{configuration}.dll");
-        using var transpiler = new Transpiler(dll, [], _logger);
+        using var transpiler = new Transpiler(dll, [], _logger)
+        {
+            OptimizeCode = false, // expected local counts are for bump allocation
+        };
 
         _ = transpiler.BuildProgram6502(out ushort sizeOfMain, out ushort locals);
 
@@ -305,7 +320,10 @@ public class TranspilerTests
         }
 
         using var dll = Utilities.GetResource($"{name}.{configuration}.dll");
-        using var transpiler = new Transpiler(dll, assemblyReaders, _logger);
+        using var transpiler = new Transpiler(dll, assemblyReaders, _logger)
+        {
+            OptimizeCode = false,
+        };
         var program = transpiler.BuildProgram6502(out _, out _);
 
         var mainBlock = program.GetBlock("main");

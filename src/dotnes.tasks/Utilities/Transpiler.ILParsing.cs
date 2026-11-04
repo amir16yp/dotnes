@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
+using System.Reflection.PortableExecutable;
 using dotnes.ObjectModel;
 
 namespace dotnes;
@@ -20,15 +21,14 @@ partial class Transpiler
         _ambiguousByteHelperNames = false;
         DiscoverManagedBanks();
         GetUsedMethods(_reader);
+        LoadNesLibImplementedMethods();
         var arrayValues = GetArrayValues(_reader);
         int entryPointToken = _pe.PEHeaders.CorHeader?.EntryPointTokenOrRelativeVirtualAddress ?? 0;
 
         foreach (var h in _reader.MethodDefinitions)
         {
             var methodDef = _reader.GetMethodDefinition(h);
-            if ((methodDef.Attributes & MethodAttributes.Static) == 0)
-                continue;
-
+            bool isStatic = (methodDef.Attributes & MethodAttributes.Static) != 0;
             var methodName = _reader.GetString(methodDef.Name);
             bool isEntryPoint = MetadataTokens.GetToken(h) == entryPointToken;
 
@@ -40,6 +40,56 @@ partial class Transpiler
             var declTypeName = _reader.GetString(declType.Name);
             if (declTypeName.StartsWith("<") && !isEntryPoint)
                 continue;
+
+            // Instance methods: only sealed NES layout classes (and their .ctors)
+            if (!isStatic)
+            {
+                if (!IsSealedLayoutClass(declType) || declTypeName is "Program")
+                    continue;
+                if (methodName.StartsWith(".") && methodName != ".ctor")
+                    continue;
+                // Virtual/abstract rejected — layout classes are non-virtual (Final=sealed method OK)
+                if (methodName != ".ctor"
+                    && (methodDef.Attributes & MethodAttributes.Virtual) != 0
+                    && (methodDef.Attributes & MethodAttributes.Final) == 0)
+                    throw new TranspileException(
+                        $"Virtual method '{declTypeName}.{methodName}' is not supported on NES layout classes.",
+                        ClassMethodName(declTypeName, methodName));
+
+                string instanceName = ClassMethodName(declTypeName, methodName);
+                if (methodDef.RelativeVirtualAddress == 0)
+                    continue;
+
+                ReadNumericTypes(methodDef, instanceName);
+                var instanceIL = ReadMethodBody(methodDef, arrayValues).ToArray();
+                UserMethods[instanceName] = instanceIL;
+                _userMethodDefinitions[instanceName] = methodDef;
+
+                var instanceSig = methodDef.DecodeSignature(new ArrayTypeDecoder(), null);
+                // Instance: hidden `this` is a 16-bit object reference (treat like byte[] pointer)
+                int declaredParams = instanceSig.ParameterTypes.Length;
+                int totalParams = declaredParams + 1;
+                bool[] isArrayParam = new bool[totalParams];
+                isArrayParam[0] = true; // this
+                for (int i = 0; i < declaredParams; i++)
+                {
+                    if (instanceSig.ParameterTypes[i] == ArraySignatureType.ByteArray)
+                        isArrayParam[i + 1] = true;
+                    else if (instanceSig.ParameterTypes[i] == ArraySignatureType.UnsupportedArray)
+                        throw new TranspileException(
+                            "Only existing fixed byte[] arrays can be passed to helpers; other array element types, ranks, and ref array parameters are not supported.",
+                            instanceName);
+                }
+                bool hasReturnValue = instanceSig.ReturnType != ArraySignatureType.Void;
+                if (instanceSig.ReturnType is ArraySignatureType.ByteArray or ArraySignatureType.UnsupportedArray)
+                    throw new TranspileException("Returning array references from helpers is not supported.", instanceName);
+                UserMethodMetadata[instanceName] = (totalParams, hasReturnValue, isArrayParam);
+
+                var instanceRegions = ParseExceptionRegions(methodDef);
+                if (instanceRegions.Length > 0)
+                    UserMethodExceptionRegions[instanceName] = instanceRegions;
+                continue;
+            }
 
             if (isEntryPoint || methodName == "Main" || methodName == "<Main>$")
             {
@@ -135,8 +185,11 @@ partial class Transpiler
     /// Only try/finally regions are supported; try/catch and filters produce an error.
     /// </summary>
     TryFinallyRegion[] ParseExceptionRegions(MethodDefinition methodDef)
+        => ParseExceptionRegions(_pe, methodDef);
+
+    TryFinallyRegion[] ParseExceptionRegions(PEReader pe, MethodDefinition methodDef)
     {
-        var body = _pe.GetMethodBody(methodDef.RelativeVirtualAddress);
+        var body = pe.GetMethodBody(methodDef.RelativeVirtualAddress);
         if (body.ExceptionRegions.Length == 0)
             return [];
 
@@ -163,8 +216,12 @@ partial class Transpiler
     }
 
     IEnumerable<ILInstruction> ReadMethodBody(MethodDefinition methodDef, Dictionary<string, ArrayValue> arrayValues)
+        => ReadMethodBody(_pe, _reader, methodDef, arrayValues);
+
+    IEnumerable<ILInstruction> ReadMethodBody(
+        PEReader pe, MetadataReader reader, MethodDefinition methodDef, Dictionary<string, ArrayValue> arrayValues)
     {
-        var body = _pe.GetMethodBody(methodDef.RelativeVirtualAddress);
+        var body = pe.GetMethodBody(methodDef.RelativeVirtualAddress);
         var blob = body.GetILReader();
 
         while (blob.RemainingBytes > 0)
@@ -191,16 +248,16 @@ partial class Transpiler
                     switch (entity.Kind)
                     {
                         case HandleKind.TypeDefinition:
-                            stringValue = _reader.GetString(_reader.GetTypeDefinition((TypeDefinitionHandle)entity).Name);
+                            stringValue = reader.GetString(reader.GetTypeDefinition((TypeDefinitionHandle)entity).Name);
                             break;
                         case HandleKind.TypeReference:
-                            stringValue = _reader.GetString(_reader.GetTypeReference((TypeReferenceHandle)entity).Name);
+                            stringValue = reader.GetString(reader.GetTypeReference((TypeReferenceHandle)entity).Name);
                             break;
                         case HandleKind.MethodDefinition:
-                            var method = _reader.GetMethodDefinition((MethodDefinitionHandle)entity);
-                            if (opCode == ILOpCode.Call)
+                            var method = reader.GetMethodDefinition((MethodDefinitionHandle)entity);
+                            if (opCode is ILOpCode.Call or ILOpCode.Callvirt or ILOpCode.Newobj)
                                 callSignature = method.DecodeSignature(new NumericTypeDecoder(), null);
-                            stringValue = _reader.GetString(method.Name);
+                            stringValue = reader.GetString(method.Name);
                             // Clean up compiler-generated local function names
                             // Pattern: <<Main>$>g__fade_in|0_0 → fade_in
                             if (stringValue.StartsWith("<"))
@@ -213,41 +270,58 @@ partial class Transpiler
                                     stringValue = pipeIdx > nameStart ? stringValue.Substring(nameStart, pipeIdx - nameStart) : stringValue.Substring(nameStart);
                                 }
                             }
-                            if (_managedMethodNames.TryGetValue((MethodDefinitionHandle)entity, out var bankedMethod))
+                            if (ReferenceEquals(reader, _reader)
+                                && _managedMethodNames.TryGetValue((MethodDefinitionHandle)entity, out var bankedMethod))
                                 stringValue = bankedMethod;
+                            // Qualify instance methods / ctors on layout classes: Player_Move, Player_ctor
+                            if ((method.Attributes & MethodAttributes.Static) == 0)
+                            {
+                                var mdType = reader.GetTypeDefinition(method.GetDeclaringType());
+                                var mdTypeName = reader.GetString(mdType.Name);
+                                if (IsSealedLayoutClass(mdType) || stringValue == ".ctor")
+                                    stringValue = ClassMethodName(mdTypeName, stringValue);
+                            }
                             break;
                         case HandleKind.MemberReference:
-                            var member = _reader.GetMemberReference((MemberReferenceHandle)entity);
-                            stringValue = GetQualifiedMemberName(member);
-                            if (opCode == ILOpCode.Call)
+                            var member = reader.GetMemberReference((MemberReferenceHandle)entity);
+                            stringValue = GetQualifiedMemberName(reader, member);
+                            if (opCode is ILOpCode.Call or ILOpCode.Callvirt or ILOpCode.Newobj)
                                 callSignature = member.DecodeMethodSignature(new NumericTypeDecoder(), null);
                             if (stringValue is "InitializeArray" or "RuntimeHelpers.InitializeArray")
                             {
                                 // HACK: skip for now
                                 continue;
                             }
+                            // Normalize Object..ctor / Type.Name → ClassMethodName form for known patterns
+                            if (stringValue.EndsWith("..ctor", StringComparison.Ordinal))
+                                stringValue = stringValue.Replace("..ctor", "_ctor");
+                            else if (stringValue.EndsWith(".ctor", StringComparison.Ordinal) && stringValue.Contains('.'))
+                            {
+                                int dot = stringValue.LastIndexOf('.');
+                                stringValue = ClassMethodName(stringValue.Substring(0, dot), ".ctor");
+                            }
                             break;
                         case HandleKind.MethodSpecification:
                             // Generic method instantiation (e.g., Array.Fill<byte>)
-                            var methodSpec = _reader.GetMethodSpecification((MethodSpecificationHandle)entity);
+                            var methodSpec = reader.GetMethodSpecification((MethodSpecificationHandle)entity);
                             if (methodSpec.Method.Kind == HandleKind.MemberReference)
                             {
-                                stringValue = GetQualifiedMemberName(_reader.GetMemberReference((MemberReferenceHandle)methodSpec.Method));
+                                stringValue = GetQualifiedMemberName(reader, reader.GetMemberReference((MemberReferenceHandle)methodSpec.Method));
                                 if (opCode == ILOpCode.Call)
-                                    callSignature = _reader.GetMemberReference((MemberReferenceHandle)methodSpec.Method)
+                                    callSignature = reader.GetMemberReference((MemberReferenceHandle)methodSpec.Method)
                                         .DecodeMethodSignature(new NumericTypeDecoder(), null);
                             }
                             else if (methodSpec.Method.Kind == HandleKind.MethodDefinition)
                             {
-                                stringValue = _reader.GetString(_reader.GetMethodDefinition((MethodDefinitionHandle)methodSpec.Method).Name);
+                                stringValue = reader.GetString(reader.GetMethodDefinition((MethodDefinitionHandle)methodSpec.Method).Name);
                                 if (opCode == ILOpCode.Call)
-                                    callSignature = _reader.GetMethodDefinition((MethodDefinitionHandle)methodSpec.Method)
+                                    callSignature = reader.GetMethodDefinition((MethodDefinitionHandle)methodSpec.Method)
                                         .DecodeSignature(new NumericTypeDecoder(), null);
                             }
                             break;
                         case HandleKind.FieldDefinition:
-                            var field = _reader.GetFieldDefinition((FieldDefinitionHandle)entity);
-                            var fieldName = _reader.GetString(field.Name);
+                            var field = reader.GetFieldDefinition((FieldDefinitionHandle)entity);
+                            var fieldName = reader.GetString(field.Name);
                             if ((field.Attributes & FieldAttributes.HasFieldRVA) != 0)
                             {
                                 if (arrayValues.TryGetValue (fieldName, out var value))
@@ -280,14 +354,14 @@ partial class Transpiler
                         {
                             var handle = MetadataTokens.EntityHandle(token);
                             if (handle.Kind == HandleKind.TypeReference)
-                                stringValue = _reader.GetString(_reader.GetTypeReference((TypeReferenceHandle)handle).Name);
+                                stringValue = reader.GetString(reader.GetTypeReference((TypeReferenceHandle)handle).Name);
                             else if (handle.Kind == HandleKind.TypeDefinition)
-                                stringValue = _reader.GetString(_reader.GetTypeDefinition((TypeDefinitionHandle)handle).Name);
+                                stringValue = reader.GetString(reader.GetTypeDefinition((TypeDefinitionHandle)handle).Name);
                         }
                     }
                     break;
                 case OperandType.String:
-                    stringValue = _reader.GetUserString(MetadataTokens.UserStringHandle(blob.ReadInt32()));
+                    stringValue = reader.GetUserString(MetadataTokens.UserStringHandle(blob.ReadInt32()));
                     break;
                 // (n + 1) * 32-bit
                 case OperandType.Switch:
@@ -351,20 +425,46 @@ partial class Transpiler
     /// (e.g. <c>byte[,]::Get</c>) are mapped to synthetic names that
     /// <see cref="IL2NESWriter"/> recognises (<c>Array2D.Byte.Ctor/Get/Set</c>).
     /// </summary>
-    string GetQualifiedMemberName(MemberReference member)
+    /// <summary>
+    /// True when <paramref name="type"/> is a sealed non-abstract class deriving from Object
+    /// (NES layout class candidate). Full field validation happens in DetectStructLayouts.
+    /// </summary>
+    bool IsSealedLayoutClass(TypeDefinition type)
     {
-        string name = _reader.GetString(member.Name);
+        if ((type.Attributes & TypeAttributes.Sealed) == 0)
+            return false;
+        if ((type.Attributes & TypeAttributes.Abstract) != 0)
+            return false;
+        if ((type.Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface)
+            return false;
+        var baseType = type.BaseType;
+        if (baseType.IsNil)
+            return false;
+        string? baseName = null;
+        if (baseType.Kind == HandleKind.TypeReference)
+            baseName = _reader.GetString(_reader.GetTypeReference((TypeReferenceHandle)baseType).Name);
+        else if (baseType.Kind == HandleKind.TypeDefinition)
+            baseName = _reader.GetString(_reader.GetTypeDefinition((TypeDefinitionHandle)baseType).Name);
+        return baseName == "Object";
+    }
+
+    string GetQualifiedMemberName(MemberReference member)
+        => GetQualifiedMemberName(_reader, member);
+
+    string GetQualifiedMemberName(MetadataReader reader, MemberReference member)
+    {
+        string name = reader.GetString(member.Name);
         var parent = member.Parent;
         string? typeName = null;
         if (parent.Kind == HandleKind.TypeReference)
-            typeName = _reader.GetString(_reader.GetTypeReference((TypeReferenceHandle)parent).Name);
+            typeName = reader.GetString(reader.GetTypeReference((TypeReferenceHandle)parent).Name);
         else if (parent.Kind == HandleKind.TypeDefinition)
-            typeName = _reader.GetString(_reader.GetTypeDefinition((TypeDefinitionHandle)parent).Name);
+            typeName = reader.GetString(reader.GetTypeDefinition((TypeDefinitionHandle)parent).Name);
         else if (parent.Kind == HandleKind.TypeSpecification)
         {
             // Multi-dimensional array method references (rectangular arrays use a
             // TypeSpecification parent because the type isn't a SZARRAY vector).
-            if (TryGetMultiDimByteArrayRank((TypeSpecificationHandle)parent, out int rank))
+            if (TryGetMultiDimByteArrayRank(reader, (TypeSpecificationHandle)parent, out int rank))
             {
                 if (rank != 2)
                     throw new TranspileException(
@@ -390,10 +490,13 @@ partial class Transpiler
     /// rectangular array of <c>byte</c> (ELEMENT_TYPE_ARRAY of ELEMENT_TYPE_U1).
     /// </summary>
     bool TryGetMultiDimByteArrayRank(TypeSpecificationHandle handle, out int rank)
+        => TryGetMultiDimByteArrayRank(_reader, handle, out rank);
+
+    bool TryGetMultiDimByteArrayRank(MetadataReader reader, TypeSpecificationHandle handle, out int rank)
     {
         rank = 0;
-        var typeSpec = _reader.GetTypeSpecification(handle);
-        var sig = _reader.GetBlobReader(typeSpec.Signature);
+        var typeSpec = reader.GetTypeSpecification(handle);
+        var sig = reader.GetBlobReader(typeSpec.Signature);
         if (sig.RemainingBytes < 3)
             return false;
         // ELEMENT_TYPE_ARRAY = 0x14

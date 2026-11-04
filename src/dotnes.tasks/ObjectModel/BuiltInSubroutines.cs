@@ -2827,5 +2827,60 @@ internal static class BuiltInSubroutines
         return block;
     }
 
+    /// <summary>
+    /// memfill(addr, value, len) — A:X = length, stack: value then addr (cc65).
+    /// </summary>
+    public static Block Memfill()
+    {
+        var block = new Block(nameof(NESLib.memfill));
+        block.Emit(STA_zpg(tmp1))
+             .Emit(STX_zpg(tmp1 + 1))
+             .Emit(JSR(popa))
+             .Emit(STA_zpg(TEMP))
+             .Emit(JSR(popax))
+             .Emit(STA_zpg(ptr1))
+             .Emit(STX_zpg(ptr1 + 1))
+             .Emit(LDA_zpg(tmp1), "@check")
+             .Emit(ORA_zpg(tmp1 + 1))
+             .Emit(BEQ("@done"))
+             .Emit(LDA_zpg(TEMP))
+             .Emit(LDY(0x00))
+             .Emit(STA_ind_Y(ptr1))
+             .Emit(INC_zpg(ptr1))
+             .Emit(BNE("@dec"))
+             .Emit(INC_zpg(ptr1 + 1))
+             .Emit(LDA_zpg(tmp1), "@dec")
+             .Emit(BNE("@dec2"))
+             .Emit(DEC_zpg(tmp1 + 1))
+             .Emit(DEC_zpg(tmp1), "@dec2")
+             .Emit(JMP("@check"))
+             .Emit(RTS(), "@done");
+        return block;
+    }
+
+    /// <summary>
+    /// sprite0_wait — wait for sprite-0 hit clear then set (same waits as split).
+    /// </summary>
+    public static Block Sprite0Wait()
+    {
+        var block = new Block(nameof(NESLib.sprite0_wait));
+        block.Emit(BIT_abs(PPU_STATUS), "@clear")
+             .Emit(BVS(0xFB))
+             .Emit(BIT_abs(PPU_STATUS), "@hit")
+             .Emit(BVC(0xFB))
+             .Emit(RTS());
+        return block;
+    }
+
+    /// <summary>
+    /// oam_clear_fast — alias of oam_clear.
+    /// </summary>
+    public static Block OamClearFast()
+    {
+        var block = new Block(nameof(NESLib.oam_clear_fast));
+        block.Emit(JMP(nameof(NESLib.oam_clear)));
+        return block;
+    }
+
     #endregion
 }

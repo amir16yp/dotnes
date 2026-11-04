@@ -58,4 +58,10 @@ public sealed class CompilationOptions
     /// Defaults to false. Unproven helpers and native entry points retain standard storage.
     /// </summary>
     public bool OptimizeByteHelpers { get; set; }
+
+    /// <summary>
+    /// Runs post-emit size/efficiency peephole passes and lifetime-based scalar local
+    /// packing. Defaults to true; set false to keep bump allocation and unoptimized code.
+    /// </summary>
+    public bool OptimizeCode { get; set; } = true;
 }

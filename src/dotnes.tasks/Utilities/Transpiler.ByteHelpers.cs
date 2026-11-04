@@ -15,6 +15,12 @@ partial class Transpiler
     /// </summary>
     public bool OptimizeByteHelpers { get; init; }
 
+    /// <summary>
+    /// Runs post-emit size/efficiency peephole passes and lifetime-based scalar local
+    /// packing. Defaults to true; set false to opt out.
+    /// </summary>
+    public bool OptimizeCode { get; init; } = true;
+
     void RecordByteHelperDefinition(string name, MethodDefinition definition)
     {
         if (_byteHelperDefinitions.ContainsKey(name))

@@ -190,7 +190,10 @@ partial class IL2NESWriter
                 {
                     bool isNew = !(Locals.TryGetValue(0, out var existing) && existing.Address is not null);
                     var addr = isNew ? (ushort)(local + LocalCount) : (ushort)existing!.Address!.Value;
-                    WriteStloc(Locals[0] = new Local(Stack.Pop(), addr, IsWord: WordLocals.Contains(0) || (_runtimeValueInA && _ushortInAX) || _ntadrRuntimeResult), isNewAllocation: isNew);
+                    int stVal0 = Stack.Pop();
+                    NoteClassLocalStore(0, stVal0);
+                    bool isWord0 = WordLocals.Contains(0) || (_runtimeValueInA && _ushortInAX) || _ntadrRuntimeResult || _classLocalBases.ContainsKey(0);
+                    WriteStloc(Locals[0] = new Local(stVal0, addr, IsWord: isWord0), isNewAllocation: isNew);
                 }
                 break;
             case ILOpCode.Stloc_1:
@@ -215,7 +218,10 @@ partial class IL2NESWriter
                 {
                     bool isNew = !(Locals.TryGetValue(1, out var existing) && existing.Address is not null);
                     var addr = isNew ? (ushort)(local + LocalCount) : (ushort)existing!.Address!.Value;
-                    WriteStloc(Locals[1] = new Local(Stack.Pop(), addr, IsWord: WordLocals.Contains(1) || (_runtimeValueInA && _ushortInAX) || _ntadrRuntimeResult), isNewAllocation: isNew);
+                    int stVal1 = Stack.Pop();
+                    NoteClassLocalStore(1, stVal1);
+                    bool isWord1 = WordLocals.Contains(1) || (_runtimeValueInA && _ushortInAX) || _ntadrRuntimeResult || _classLocalBases.ContainsKey(1);
+                    WriteStloc(Locals[1] = new Local(stVal1, addr, IsWord: isWord1), isNewAllocation: isNew);
                 }
                 break;
             case ILOpCode.Stloc_2:
@@ -240,7 +246,10 @@ partial class IL2NESWriter
                 {
                     bool isNew = !(Locals.TryGetValue(2, out var existing) && existing.Address is not null);
                     var addr = isNew ? (ushort)(local + LocalCount) : (ushort)existing!.Address!.Value;
-                    WriteStloc(Locals[2] = new Local(Stack.Pop(), addr, IsWord: WordLocals.Contains(2) || (_runtimeValueInA && _ushortInAX) || _ntadrRuntimeResult), isNewAllocation: isNew);
+                    int stVal2 = Stack.Pop();
+                    NoteClassLocalStore(2, stVal2);
+                    bool isWord2 = WordLocals.Contains(2) || (_runtimeValueInA && _ushortInAX) || _ntadrRuntimeResult || _classLocalBases.ContainsKey(2);
+                    WriteStloc(Locals[2] = new Local(stVal2, addr, IsWord: isWord2), isNewAllocation: isNew);
                 }
                 break;
             case ILOpCode.Stloc_3:
@@ -265,26 +274,33 @@ partial class IL2NESWriter
                 {
                     bool isNew = !(Locals.TryGetValue(3, out var existing) && existing.Address is not null);
                     var addr = isNew ? (ushort)(local + LocalCount) : (ushort)existing!.Address!.Value;
-                    WriteStloc(Locals[3] = new Local(Stack.Pop(), addr, IsWord: WordLocals.Contains(3) || (_runtimeValueInA && _ushortInAX) || _ntadrRuntimeResult), isNewAllocation: isNew);
+                    int stVal3 = Stack.Pop();
+                    NoteClassLocalStore(3, stVal3);
+                    bool isWord3 = WordLocals.Contains(3) || (_runtimeValueInA && _ushortInAX) || _ntadrRuntimeResult || _classLocalBases.ContainsKey(3);
+                    WriteStloc(Locals[3] = new Local(stVal3, addr, IsWord: isWord3), isNewAllocation: isNew);
                 }
                 break;
             case ILOpCode.Ldloc_0:
                 if (TryHandleLdlocForLdlen(0)) break;
+                if (TryLoadClassLocal(0)) break;
                 WriteLdloc(Locals[0]);
                 _lastLoadedLocalIndex = 0;
                 break;
             case ILOpCode.Ldloc_1:
                 if (TryHandleLdlocForLdlen(1)) break;
+                if (TryLoadClassLocal(1)) break;
                 WriteLdloc(Locals[1]);
                 _lastLoadedLocalIndex = 1;
                 break;
             case ILOpCode.Ldloc_2:
                 if (TryHandleLdlocForLdlen(2)) break;
+                if (TryLoadClassLocal(2)) break;
                 WriteLdloc(Locals[2]);
                 _lastLoadedLocalIndex = 2;
                 break;
             case ILOpCode.Ldloc_3:
                 if (TryHandleLdlocForLdlen(3)) break;
+                if (TryLoadClassLocal(3)) break;
                 WriteLdloc(Locals[3]);
                 _lastLoadedLocalIndex = 3;
                 break;
@@ -304,6 +320,14 @@ partial class IL2NESWriter
                             break;
                         }
                         // Real params keep their original indices — no shifting needed
+                    }
+                    // Instance method `this` (arg 0 is a 16-bit object ref)
+                    if (argIndex == 0 && InstanceThisType is not null
+                        && MethodParamCount > 0
+                        && ParamIsArray.Length > 0 && ParamIsArray[0])
+                    {
+                        HandleLdargThis();
+                        break;
                     }
                     WriteLdarg(argIndex);
                 }
@@ -1475,12 +1499,16 @@ partial class IL2NESWriter
                         // Regular local — allocate address and store
                         bool isNew = !(Locals.TryGetValue(localIdx, out var existing) && existing.Address is not null);
                         var addr = isNew ? (ushort)(local + LocalCount) : (ushort)existing!.Address!.Value;
-                        WriteStloc(Locals[localIdx] = new Local(Stack.Pop(), addr, IsWord: WordLocals.Contains(localIdx) || (_runtimeValueInA && _ushortInAX) || _ntadrRuntimeResult), isNewAllocation: isNew);
+                        int stVal = Stack.Pop();
+                        NoteClassLocalStore(localIdx, stVal);
+                        bool isWord = WordLocals.Contains(localIdx) || (_runtimeValueInA && _ushortInAX) || _ntadrRuntimeResult || _classLocalBases.ContainsKey(localIdx);
+                        WriteStloc(Locals[localIdx] = new Local(stVal, addr, IsWord: isWord), isNewAllocation: isNew);
                     }
                 }
                 break;
             case ILOpCode.Ldloc_s:
                 if (TryHandleLdlocForLdlen(operand)) break;
+                if (TryLoadClassLocal(operand)) break;
                 WriteLdloc(Locals[operand]);
                 _lastLoadedLocalIndex = operand;
                 break;
@@ -1979,7 +2007,20 @@ partial class IL2NESWriter
                 }
                 break;
             case ILOpCode.Call:
+            case ILOpCode.Callvirt:
                 bool argsAlreadyPopped = false;
+                // Layout-class instance methods / base Object_ctor
+                if (TryEmitClassInstanceCall(operand))
+                {
+                    argsAlreadyPopped = true;
+                    break;
+                }
+                if (instruction.OpCode == ILOpCode.Callvirt)
+                    throw new TranspileException(GetUnsupportedOpcodeMessage(instruction.OpCode), MethodName);
+                // C# NESLib bodies win over ILDispatch intrinsics — emit a normal JSR.
+                bool emitRegularCall = NesLibMethodNames.Contains(operand);
+                if (emitRegularCall)
+                    goto EmitRegularCall;
                 switch (operand)
                 {
                     case "Array2D.Byte.Get":
@@ -1989,6 +2030,32 @@ partial class IL2NESWriter
                     case "Array2D.Byte.Set":
                         HandleArray2DByteSet();
                         argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.NT_ATTR_A):
+                    case nameof(NESLib.NT_ATTR_B):
+                    case nameof(NESLib.NT_ATTR_C):
+                    case nameof(NESLib.NT_ATTR_D):
+                        {
+                            // Compile-time attribute-table address from tile coords.
+                            byte cy = checked((byte)Stack.Pop());
+                            byte cx = checked((byte)Stack.Pop());
+                            if (_runtimeValueInA || _lastLoadedLocalIndex.HasValue || _lastStaticFieldAddress.HasValue)
+                                throw new TranspileException($"{operand} requires compile-time constant coordinates.", MethodName);
+                            ushort address = operand switch
+                            {
+                                nameof(NESLib.NT_ATTR_A) => NESLib.NT_ATTR_A(cx, cy),
+                                nameof(NESLib.NT_ATTR_B) => NESLib.NT_ATTR_B(cx, cy),
+                                nameof(NESLib.NT_ATTR_C) => NESLib.NT_ATTR_C(cx, cy),
+                                nameof(NESLib.NT_ATTR_D) => NESLib.NT_ATTR_D(cx, cy),
+                                _ => throw new InvalidOperationException(),
+                            };
+                            RemoveLastInstructions(3);
+                            Emit(Opcode.LDX, AddressMode.Immediate, checked((byte)(address >> 8)));
+                            Emit(Opcode.LDA, AddressMode.Immediate, checked((byte)(address & 0xFF)));
+                            Stack.Push(address);
+                            _runtimeValueInA = false;
+                            argsAlreadyPopped = true;
+                        }
                         break;
                     case nameof(NTADR_A):
                     case nameof(NTADR_B):
@@ -2567,6 +2634,10 @@ partial class IL2NESWriter
                     case nameof(NESLib.oam_meta_spr):
                         EmitOamMetaSpr();
                         break;
+                    case nameof(NESLib.oam_meta_spr_clip):
+                        throw new TranspileException(
+                            "oam_meta_spr_clip is not implemented yet (signed X clipping). Use oam_meta_spr for on-screen sprites.",
+                            MethodName);
                     case nameof(NESLib.oam_meta_spr_pal):
                         EmitOamMetaSprPal();
                         break;
@@ -2622,6 +2693,16 @@ partial class IL2NESWriter
                             argsAlreadyPopped = true;
                         }
                         break;
+                    case nameof(NESLib.music_play):
+                    case nameof(NESLib.music_stop):
+                    case nameof(NESLib.music_pause):
+                    case nameof(NESLib.sfx_play):
+                    case nameof(NESLib.sample_play):
+                    case nameof(NESLib.vram_unlz4):
+                        // FamiTone / linked-asm APIs: JSR _name (cc65 extern convention).
+                        EmitWithLabel(Opcode.JSR, AddressMode.Absolute, $"_{operand}");
+                        _immediateInA = null;
+                        break;
                     case nameof(NESLib.famitone_init):
                     case nameof(NESLib.sfx_init):
                         {
@@ -2657,14 +2738,103 @@ partial class IL2NESWriter
                         }
                         break;
                     case nameof(NESLib.cli):
-                        // Emit 6502 CLI instruction (enable CPU interrupts)
                         Emit(Opcode.CLI, AddressMode.Implied);
                         argsAlreadyPopped = true;
                         break;
                     case nameof(NESLib.sei):
-                        // Emit 6502 SEI instruction (disable CPU interrupts)
                         Emit(Opcode.SEI, AddressMode.Implied);
                         argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.nop):
+                        Emit(Opcode.NOP, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.pha):
+                        Emit(Opcode.PHA, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.pla):
+                        Emit(Opcode.PLA, AddressMode.Implied);
+                        _runtimeValueInA = true;
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.php):
+                        Emit(Opcode.PHP, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.plp):
+                        Emit(Opcode.PLP, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.tax):
+                        Emit(Opcode.TAX, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.txa):
+                        Emit(Opcode.TXA, AddressMode.Implied);
+                        _runtimeValueInA = true;
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.tay):
+                        Emit(Opcode.TAY, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.tya):
+                        Emit(Opcode.TYA, AddressMode.Implied);
+                        _runtimeValueInA = true;
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.txs):
+                        Emit(Opcode.TXS, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.tsx):
+                        Emit(Opcode.TSX, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.inx):
+                        Emit(Opcode.INX, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.dex):
+                        Emit(Opcode.DEX, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.iny):
+                        Emit(Opcode.INY, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.dey):
+                        Emit(Opcode.DEY, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.brk):
+                        Emit(Opcode.BRK, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.oam_dma):
+                        {
+                            // oam_dma(byte page) — page already in A
+                            Emit(Opcode.STA, AddressMode.Absolute, NESLib.PPU_OAM_DMA);
+                            _immediateInA = null;
+                            _runtimeValueInA = false;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.sprite0_hit):
+                        {
+                            Emit(Opcode.LDA, AddressMode.Absolute, NESLib.PPU_STATUS);
+                            Emit(Opcode.AND, AddressMode.Immediate, (byte)0x40);
+                            _runtimeValueInA = true;
+                            _immediateInA = null;
+                            Stack.Push(0);
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.uxrom_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x8000);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
                         break;
                     case nameof(NESLib.cnrom_set_chr_bank):
                         // CNROM (mapper 3) bank switch: write bank number to $8000
@@ -2673,10 +2843,10 @@ partial class IL2NESWriter
                         _immediateInA = null;
                         _pokeLastValue = null;
                         break;
+                    case nameof(NESLib.mmc3_set_prg_bank):
                     case nameof(NESLib.mmc3_set_chr_bank):
                         {
-                            // mmc3_set_chr_bank(byte reg, byte bank) -> STA $8000 (reg), STA $8001 (bank)
-                            // MMC3 CHR bank switching: write register number to $8000, then bank number to $8001.
+                            // mmc3_set_*_bank(byte reg, byte bank) -> STA $8000 (reg), STA $8001 (bank)
                             // reg must be a compile-time constant (register selector 0-7).
                             if (Stack.Count >= 2)
                             {
@@ -2691,7 +2861,13 @@ partial class IL2NESWriter
                                     || block[block.Count - 3].Mode != AddressMode.Immediate)
                                 {
                                     throw new TranspileException(
-                                        "mmc3_set_chr_bank: first argument (reg) must be a compile-time constant.",
+                                        $"{operand}: first argument (reg) must be a compile-time constant.",
+                                        MethodName);
+                                }
+                                if (operand == nameof(NESLib.mmc3_set_prg_bank) && (reg & 7) is not (6 or 7))
+                                {
+                                    throw new TranspileException(
+                                        "mmc3_set_prg_bank: reg bits 0-2 must be 6 (R6) or 7 (R7).",
                                         MethodName);
                                 }
 
@@ -2815,6 +2991,78 @@ partial class IL2NESWriter
                             argsAlreadyPopped = true;
                         }
                         break;
+                    case nameof(NESLib.apu_play_triangle):
+                        {
+                            if (Stack.Count < 2)
+                                break;
+                            int linear = Stack.Pop();
+                            int period = Stack.Pop();
+                            if (_runtimeValueInA || _lastLoadedLocalIndex.HasValue || _lastStaticFieldAddress.HasValue)
+                                throw new TranspileException("apu_play_triangle requires compile-time constant arguments.", MethodName);
+                            // ushort period: LDX#hi, LDA#lo, JSR pushax, LDA#linear = 4
+                            // byte period:   JSR pusha, LDA#period, LDA#linear path varies — strip safely
+                            RemoveLastInstructions(Math.Min(period > byte.MaxValue ? 4 : 3, CurrentBlock!.Count));
+                            Emit(Opcode.LDA, AddressMode.Immediate, (byte)(0x80 | (linear & 0x7F)));
+                            Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_TRIANGLE_CTRL);
+                            Emit(Opcode.LDA, AddressMode.Immediate, (byte)(period & 0xFF));
+                            Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_TRIANGLE_TIMER_LO);
+                            Emit(Opcode.LDA, AddressMode.Immediate, (byte)((period >> 8) & 0x07));
+                            Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_TRIANGLE_TIMER_HI);
+                            _immediateInA = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.apu_stop_triangle):
+                        Emit(Opcode.LDA, AddressMode.Immediate, (byte)0x00);
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_TRIANGLE_CTRL);
+                        _immediateInA = null;
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.apu_play_noise):
+                        {
+                            if (Stack.Count < 3)
+                                break;
+                            int toneMode = Stack.Pop();
+                            int volume = Stack.Pop();
+                            int period = Stack.Pop();
+                            if (_lastLoadedLocalIndex.HasValue || _lastStaticFieldAddress.HasValue)
+                                throw new TranspileException("apu_play_noise requires compile-time constant arguments.", MethodName);
+                            // Strip arg loads (typically LDA/pusha ×2 + final LDA; bool may omit a push).
+                            int strip = Math.Min(5, CurrentBlock!.Count);
+                            RemoveLastInstructions(strip);
+                            Emit(Opcode.LDA, AddressMode.Immediate, (byte)(0x30 | (volume & 0x0F)));
+                            Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_NOISE_CTRL);
+                            byte periodByte = (byte)((period & 0x0F) | (toneMode != 0 ? 0x80 : 0));
+                            Emit(Opcode.LDA, AddressMode.Immediate, periodByte);
+                            Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_NOISE_PERIOD);
+                            Emit(Opcode.LDA, AddressMode.Immediate, (byte)0x08);
+                            Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_NOISE_LENGTH);
+                            _immediateInA = null;
+                            _runtimeValueInA = false;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.apu_stop_noise):
+                        Emit(Opcode.LDA, AddressMode.Immediate, (byte)0x30);
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_NOISE_CTRL);
+                        _immediateInA = null;
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.memfill):
+                        EmitWithLabel(Opcode.JSR, AddressMode.Absolute, nameof(NESLib.memfill));
+                        UsedMethods?.Add(nameof(NESLib.memfill));
+                        _immediateInA = null;
+                        break;
+                    case nameof(NESLib.sprite0_wait):
+                        EmitWithLabel(Opcode.JSR, AddressMode.Absolute, nameof(NESLib.sprite0_wait));
+                        UsedMethods?.Add(nameof(NESLib.sprite0_wait));
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.oam_clear_fast):
+                        EmitWithLabel(Opcode.JSR, AddressMode.Absolute, nameof(NESLib.oam_clear_fast));
+                        UsedMethods?.Add(nameof(NESLib.oam_clear_fast));
+                        argsAlreadyPopped = true;
+                        break;
                     case nameof(NESLib.peek):
                         {
                             if (_runtimeMemoryCalls.Contains(Index))
@@ -2840,234 +3088,63 @@ partial class IL2NESWriter
                             // mmc1_write(ushort addr, byte value) -> serial shift register write
                             // MMC1 requires writing 5 bits one at a time via STA to the register address.
                             // Protocol: reset with bit 7 set, then write 5 bits using LSR A between each STA.
+                            // Value may be a constant, local/static field, or already in A (ldarg from a C# wrapper).
                             if (Stack.Count >= 2)
                             {
                                 int value = Stack.Pop();
                                 int addr = Stack.Pop();
 
-                                // Check if the value is from a runtime local variable
                                 Local? writeLocal = null;
                                 bool valueIsLocal = _lastLoadedLocalIndex.HasValue &&
                                     Locals.TryGetValue(_lastLoadedLocalIndex.Value, out writeLocal) &&
                                     writeLocal.Address.HasValue;
-
-                                // Check if the value is from a static field
                                 bool valueIsStaticField = _lastStaticFieldAddress.HasValue;
+                                bool valueAlreadyInA = _runtimeValueInA && !valueIsLocal && !valueIsStaticField
+                                    && !_immediateInA.HasValue;
 
-                                // Remove previously emitted arg setup instructions:
-                                // LDX #hi, LDA #lo, JSR pusha/pushax, LDA #value = 4 instructions
-                                RemoveLastInstructions(4);
+                                if (valueAlreadyInA)
+                                {
+                                    // Addr was pushed; value is in A from ldarg. Save A, strip addr setup.
+                                    // Typical: LDX #hi, LDA #lo, JSR pushax/pusha, then ldarg (LDY+LDA).
+                                    // Strip the three addr instructions; leave ldarg's LDA in place via TEMP.
+                                    Emit(Opcode.STA, AddressMode.ZeroPage, (byte)NESConstants.TEMP);
+                                    // Remove: ldarg LDY+LDA (2) + TEMP STA we just emitted + addr LDX+LDA+JSR (3) = redo
+                                    // Simpler: remove only addr push (3) before ldarg, then rebuild from TEMP.
+                                    // Current block ends with: ... LDX#, LDA#, JSR push*, LDY#, LDA (sp),y, STA TEMP
+                                    RemoveLastInstructions(6); // LDX, LDA, JSR, LDY, LDA, STA TEMP
+                                    Emit(Opcode.LDA, AddressMode.Immediate, 0x80);
+                                    Emit(Opcode.STA, AddressMode.Absolute, (ushort)addr);
+                                    Emit(Opcode.LDA, AddressMode.ZeroPage, (byte)NESConstants.TEMP);
+                                }
+                                else
+                                {
+                                    // Constant/local/static: LDX #hi, LDA #lo, JSR push*, LDA #value|abs = 4
+                                    RemoveLastInstructions(4);
+                                    Emit(Opcode.LDA, AddressMode.Immediate, 0x80);
+                                    Emit(Opcode.STA, AddressMode.Absolute, (ushort)addr);
+                                    if (valueIsLocal)
+                                        Emit(Opcode.LDA, AddressMode.Absolute, (ushort)writeLocal!.Address!.Value);
+                                    else if (valueIsStaticField)
+                                        Emit(Opcode.LDA, AddressMode.Absolute, _lastStaticFieldAddress!.Value);
+                                    else
+                                        Emit(Opcode.LDA, AddressMode.Immediate, (byte)value);
+                                }
 
-                                // Reset the shift register by writing with bit 7 set
-                                Emit(Opcode.LDA, AddressMode.Immediate, 0x80);
                                 Emit(Opcode.STA, AddressMode.Absolute, (ushort)addr);
-
-                                // Load the 5-bit value
-                                if (valueIsLocal)
-                                {
-                                    Emit(Opcode.LDA, AddressMode.Absolute, (ushort)writeLocal!.Address!.Value);
-                                }
-                                else if (valueIsStaticField)
-                                {
-                                    Emit(Opcode.LDA, AddressMode.Absolute, _lastStaticFieldAddress!.Value);
-                                }
-                                else
-                                {
-                                    Emit(Opcode.LDA, AddressMode.Immediate, (byte)value);
-                                }
-
-                                // Write 5 bits via STA + LSR sequence
-                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)addr); // write 1 (bit 0)
                                 Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)addr); // write 2 (bit 1)
+                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)addr);
                                 Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)addr); // write 3 (bit 2)
+                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)addr);
                                 Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)addr); // write 4 (bit 3)
+                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)addr);
                                 Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)addr); // write 5 (bit 4, latches)
+                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)addr);
                             }
                             _lastLoadedLocalIndex = null;
                             _lastStaticFieldAddress = null;
                             _pokeLastValue = null;
                             _immediateInA = null;
-                            argsAlreadyPopped = true;
-                        }
-                        break;
-                    case nameof(NESLib.mmc1_set_prg_bank):
-                        {
-                            // mmc1_set_prg_bank(byte bank) -> mmc1_write(0xE000, bank)
-                            if (Stack.Count >= 1)
-                            {
-                                int bank = Stack.Pop();
-
-                                // Check if the value is from a runtime local variable
-                                Local? bankLocal = null;
-                                bool valueIsLocal = _lastLoadedLocalIndex.HasValue &&
-                                    Locals.TryGetValue(_lastLoadedLocalIndex.Value, out bankLocal) &&
-                                    bankLocal.Address.HasValue;
-
-                                // Check if the value is from a static field
-                                bool valueIsStaticField = _lastStaticFieldAddress.HasValue;
-
-                                // Remove previously emitted LDA #value instruction
-                                RemoveLastInstructions(1);
-
-                                // Reset the shift register
-                                Emit(Opcode.LDA, AddressMode.Immediate, 0x80);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_PRG_BANK);
-
-                                // Load the bank value
-                                if (valueIsLocal)
-                                {
-                                    Emit(Opcode.LDA, AddressMode.Absolute, (ushort)bankLocal!.Address!.Value);
-                                }
-                                else if (valueIsStaticField)
-                                {
-                                    Emit(Opcode.LDA, AddressMode.Absolute, _lastStaticFieldAddress!.Value);
-                                }
-                                else
-                                {
-                                    Emit(Opcode.LDA, AddressMode.Immediate, (byte)bank);
-                                }
-
-                                // Write 5 bits to PRG bank register
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_PRG_BANK);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_PRG_BANK);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_PRG_BANK);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_PRG_BANK);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_PRG_BANK);
-                            }
-                            _lastLoadedLocalIndex = null;
-                            _lastStaticFieldAddress = null;
-                            _pokeLastValue = null;
-                            _immediateInA = null;
-                            argsAlreadyPopped = true;
-                        }
-                        break;
-                    case nameof(NESLib.mmc1_set_chr_bank):
-                        {
-                            // mmc1_set_chr_bank(byte bank0, byte bank1) -> write to CHR bank 0 and CHR bank 1
-                            if (Stack.Count >= 2)
-                            {
-                                int bank1 = Stack.Pop();
-                                int bank0 = Stack.Pop();
-
-                                // Check if bank1 (last loaded arg) is from a local or static field
-                                Local? bank1Local = null;
-                                bool bank1IsLocal = _lastLoadedLocalIndex.HasValue &&
-                                    Locals.TryGetValue(_lastLoadedLocalIndex.Value, out bank1Local) &&
-                                    bank1Local.Address.HasValue;
-                                bool bank1IsStaticField = _lastStaticFieldAddress.HasValue;
-                                ushort? bank1StaticAddr = _lastStaticFieldAddress;
-
-                                // Remove previously emitted instructions:
-                                // LDA #bank0, JSR pusha, LDA #bank1 = 3 instructions
-                                RemoveLastInstructions(3);
-
-                                // Write bank0 to CHR bank 0 register ($A000)
-                                // Note: bank0 local/static tracking is lost after pusha — only constants supported
-                                Emit(Opcode.LDA, AddressMode.Immediate, 0x80);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CHR_BANK0);
-                                Emit(Opcode.LDA, AddressMode.Immediate, (byte)bank0);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CHR_BANK0);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CHR_BANK0);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CHR_BANK0);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CHR_BANK0);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CHR_BANK0);
-
-                                // Write bank1 to CHR bank 1 register ($C000)
-                                Emit(Opcode.LDA, AddressMode.Immediate, 0x80);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CHR_BANK1);
-                                if (bank1IsLocal)
-                                {
-                                    Emit(Opcode.LDA, AddressMode.Absolute, (ushort)bank1Local!.Address!.Value);
-                                }
-                                else if (bank1IsStaticField)
-                                {
-                                    Emit(Opcode.LDA, AddressMode.Absolute, bank1StaticAddr!.Value);
-                                }
-                                else
-                                {
-                                    Emit(Opcode.LDA, AddressMode.Immediate, (byte)bank1);
-                                }
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CHR_BANK1);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CHR_BANK1);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CHR_BANK1);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CHR_BANK1);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CHR_BANK1);
-                            }
-                            _lastLoadedLocalIndex = null;
-                            _lastStaticFieldAddress = null;
-                            _pokeLastValue = null;
-                            _immediateInA = null;
-                            argsAlreadyPopped = true;
-                        }
-                        break;
-                    case nameof(NESLib.mmc1_set_mirroring):
-                        {
-                            // mmc1_set_mirroring(byte mode) -> mmc1_write(0x8000, mode)
-                            if (Stack.Count >= 1)
-                            {
-                                int mode = Stack.Pop();
-
-                                // Check if the value is from a runtime local variable
-                                Local? modeLocal = null;
-                                bool valueIsLocal = _lastLoadedLocalIndex.HasValue &&
-                                    Locals.TryGetValue(_lastLoadedLocalIndex.Value, out modeLocal) &&
-                                    modeLocal.Address.HasValue;
-
-                                // Check if the value is from a static field
-                                bool valueIsStaticField = _lastStaticFieldAddress.HasValue;
-
-                                // Remove previously emitted LDA #value instruction
-                                RemoveLastInstructions(1);
-
-                                // Reset the shift register
-                                Emit(Opcode.LDA, AddressMode.Immediate, 0x80);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CONTROL);
-
-                                // Load the mirroring mode value
-                                if (valueIsLocal)
-                                {
-                                    Emit(Opcode.LDA, AddressMode.Absolute, (ushort)modeLocal!.Address!.Value);
-                                }
-                                else if (valueIsStaticField)
-                                {
-                                    Emit(Opcode.LDA, AddressMode.Absolute, _lastStaticFieldAddress!.Value);
-                                }
-                                else
-                                {
-                                    Emit(Opcode.LDA, AddressMode.Immediate, (byte)mode);
-                                }
-
-                                // Write 5 bits to Control register
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CONTROL);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CONTROL);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CONTROL);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CONTROL);
-                                Emit(Opcode.LSR, AddressMode.Accumulator);
-                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC1_CONTROL);
-                            }
-                            _lastLoadedLocalIndex = null;
-                            _lastStaticFieldAddress = null;
-                            _pokeLastValue = null;
-                            _immediateInA = null;
+                            _runtimeValueInA = false;
                             argsAlreadyPopped = true;
                         }
                         break;
@@ -3351,8 +3428,18 @@ partial class IL2NESWriter
                         argsAlreadyPopped = true;
                         break;
                     default:
+                        emitRegularCall = true;
+                        break;
+                }
+            EmitRegularCall:
+                if (emitRegularCall)
+                {
                         if (TryEmitArrayParameterCall(operand))
-                            break;
+                        {
+                            // handled
+                        }
+                        else
+                        {
                         // Handle byte array locals loaded via ldloc (pushax pattern).
                         // Fastcall functions (pal_bg, pal_spr, pal_all, vram_unrle) expect
                         // pointer in A:X, not on cc65 stack. Replace pushax+size with just LDA/LDX.
@@ -3414,7 +3501,7 @@ partial class IL2NESWriter
                             EmitWithLabel(Opcode.JSR, AddressMode.Absolute, operand);
                         _immediateInA = null;
                         _pokeLastValue = null;
-                        break;
+                        }
                 }
                 // Pop N times (unless handler already popped)
                 if (!argsAlreadyPopped)
@@ -3536,10 +3623,12 @@ partial class IL2NESWriter
                 }
                 break;
             case ILOpCode.Stfld:
-                HandleStfld(operand);
+                if (!TryHandleClassStfld(operand))
+                    HandleStfld(operand);
                 break;
             case ILOpCode.Ldfld:
-                HandleLdfld(operand);
+                if (!TryHandleClassLdfld(operand))
+                    HandleLdfld(operand);
                 break;
             case ILOpCode.Ldflda:
                 HandleLdflda(operand);
@@ -3555,6 +3644,11 @@ partial class IL2NESWriter
                 if (operand == "Array2D.Byte.Ctor")
                 {
                     HandleNewobjArray2DByte(instruction);
+                    break;
+                }
+                if (operand.EndsWith("_ctor", StringComparison.Ordinal))
+                {
+                    HandleNewobjClass(operand, instruction);
                     break;
                 }
                 throw new TranspileException(GetUnsupportedOpcodeMessage(instruction.OpCode), MethodName);

@@ -77,14 +77,18 @@ public class NesdougTests : RoslynTests
             while (true) ;
             """, out var program);
 
+        Assert.Contains("clear_vram_buffer", transpiler.NesLibImplementedMethods);
         var sub = program.GetBlock("clear_vram_buffer");
         Assert.NotNull(sub);
-        // It's a tail-call (JMP vrambuf_clear) = 1 instruction
-        Assert.Equal(1, sub.Count);
+        // C# wrapper: JSR vrambuf_clear + RTS
+        Assert.True(sub.Count >= 2);
+        Assert.Contains(sub.InstructionsWithLabels, t =>
+            t.Instruction.Opcode == Opcode.JSR && t.Instruction.Operand is LabelOperand { Label: "vrambuf_clear" });
 
-        // vrambuf_clear must also be present
+        // vrambuf_clear must also be present exactly once (builtin, not duplicated)
         var vrambufClear = program.GetBlock("vrambuf_clear");
         Assert.NotNull(vrambufClear);
+        Assert.Single(program.Blocks, b => b.Label == "vrambuf_clear");
     }
 
     [Fact]
@@ -98,14 +102,16 @@ public class NesdougTests : RoslynTests
             while (true) ;
             """, out var program);
 
+        Assert.Contains("get_pad_new", transpiler.NesLibImplementedMethods);
         var sub = program.GetBlock("get_pad_new");
         Assert.NotNull(sub);
-        // Tail-call JMP pad_trigger = 1 instruction
-        Assert.Equal(1, sub.Count);
+        Assert.Contains(sub.InstructionsWithLabels, t =>
+            t.Instruction.Opcode == Opcode.JSR && t.Instruction.Operand is LabelOperand { Label: "pad_trigger" });
 
         // pad_trigger and pad_poll must be present
         Assert.NotNull(program.GetBlock("pad_trigger"));
         Assert.NotNull(program.GetBlock("pad_poll"));
+        Assert.Single(program.Blocks, b => b.Label == "get_pad_new");
     }
 
     [Fact]
@@ -118,10 +124,13 @@ public class NesdougTests : RoslynTests
             while (true) ;
             """, out var program);
 
+        Assert.Contains("get_frame_count", transpiler.NesLibImplementedMethods);
         var sub = program.GetBlock("get_frame_count");
         Assert.NotNull(sub);
-        // Tail-call JMP nesclock = 1 instruction
-        Assert.Equal(1, sub.Count);
+        // C# wrapper: JSR nesclock + RTS
+        Assert.Contains(sub.InstructionsWithLabels, t =>
+            t.Instruction.Opcode == Opcode.JSR && t.Instruction.Operand is LabelOperand { Label: "nesclock" });
+        Assert.Single(program.Blocks, b => b.Label == "get_frame_count");
     }
 
     [Fact]

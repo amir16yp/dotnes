@@ -36,6 +36,16 @@ public static class NESLib
     public static void pal_col(byte index, byte color) => throw null!;
 
     /// <summary>
+    /// set a background palette entry, index is 0..15
+    /// </summary>
+    public static void pal_bg_col(byte index, byte color) => pal_col(index, color);
+
+    /// <summary>
+    /// set a sprite palette entry, index is 0..15 (maps to global indices 16..31)
+    /// </summary>
+    public static void pal_spr_col(byte index, byte color) => pal_col((byte)(index + 16), color);
+
+    /// <summary>
     /// reset palette to $0f
     /// </summary>
     public static void pal_clear() => throw null!;
@@ -105,6 +115,38 @@ public static class NESLib
     /// </remarks>
     /// <param name="channel">Pulse channel to silence.</param>
     public static void apu_stop(PulseChannel channel) => throw null!;
+
+    /// <summary>
+    /// Silence both pulse channels.
+    /// </summary>
+    public static void apu_stop_all()
+    {
+        apu_stop(PulseChannel.Pulse1);
+        apu_stop(PulseChannel.Pulse2);
+    }
+
+    /// <summary>
+    /// Play a tone on the triangle channel. Arguments must be compile-time constants.
+    /// </summary>
+    public static void apu_play_triangle(ushort period, byte linear) => throw null!;
+
+    /// <summary>
+    /// Silence the triangle channel.
+    /// </summary>
+    public static void apu_stop_triangle() => throw null!;
+
+    /// <summary>
+    /// Play noise. Arguments must be compile-time constants.
+    /// </summary>
+    /// <param name="period">Noise period index 0–15 (low nibble of $400E).</param>
+    /// <param name="volume">Volume 0–15 with constant volume + length halt.</param>
+    /// <param name="toneMode">If true, sets bit 7 of $400E (tone mode).</param>
+    public static void apu_play_noise(byte period, byte volume, bool toneMode) => throw null!;
+
+    /// <summary>
+    /// Silence the noise channel.
+    /// </summary>
+    public static void apu_stop_noise() => throw null!;
 
     /// <summary>
     /// initialize FamiTone2 music library with music data
@@ -200,6 +242,39 @@ public static class NESLib
     /// </summary>
     public static void sei() => throw null!;
 
+    /// <summary>6502 NOP</summary>
+    public static void nop() => throw null!;
+    /// <summary>6502 PHA</summary>
+    public static void pha() => throw null!;
+    /// <summary>6502 PLA</summary>
+    public static void pla() => throw null!;
+    /// <summary>6502 PHP</summary>
+    public static void php() => throw null!;
+    /// <summary>6502 PLP</summary>
+    public static void plp() => throw null!;
+    /// <summary>6502 TAX</summary>
+    public static void tax() => throw null!;
+    /// <summary>6502 TXA</summary>
+    public static void txa() => throw null!;
+    /// <summary>6502 TAY</summary>
+    public static void tay() => throw null!;
+    /// <summary>6502 TYA</summary>
+    public static void tya() => throw null!;
+    /// <summary>6502 TXS</summary>
+    public static void txs() => throw null!;
+    /// <summary>6502 TSX</summary>
+    public static void tsx() => throw null!;
+    /// <summary>6502 INX</summary>
+    public static void inx() => throw null!;
+    /// <summary>6502 DEX</summary>
+    public static void dex() => throw null!;
+    /// <summary>6502 INY</summary>
+    public static void iny() => throw null!;
+    /// <summary>6502 DEY</summary>
+    public static void dey() => throw null!;
+    /// <summary>6502 BRK (software interrupt / debug stop)</summary>
+    public static void brk() => throw null!;
+
     /// <summary>
     /// get pad trigger
     /// </summary>
@@ -248,9 +323,39 @@ public static class NESLib
     public static void memfill(ushort addr, byte value, uint len) => throw null!;
 
     /// <summary>
-    /// clear OAM buffer fast
+    /// clear OAM buffer fast (hides all 64 sprites)
     /// </summary>
     public static void oam_clear_fast() => throw null!;
+
+    /// <summary>
+    /// Trigger OAM DMA from a 256-byte-aligned page in CPU RAM (writes page to $4014).
+    /// Stock NMI already DMAs page $02; use this for custom OAM buffers / native renderer.
+    /// </summary>
+    public static void oam_dma(byte page) => throw null!;
+
+    /// <summary>
+    /// Read PPUSTATUS ($2002). Clears the vblank flag and resets the $2005/$2006 write toggle.
+    /// </summary>
+    public static byte ppu_status() => peek(PPU_STATUS);
+
+    /// <summary>
+    /// Wait until sprite 0 hit flag is clear, then until it is set (same wait as <see cref="split"/>).
+    /// </summary>
+    public static void sprite0_wait() => throw null!;
+
+    /// <summary>
+    /// True if sprite 0 hit flag is set (does not wait). Reads $2002 (clears vblank / latch).
+    /// </summary>
+    public static bool sprite0_hit() => throw null!;
+
+    /// <summary>
+    /// Write fine/coarse scroll registers ($2005 twice). Call during vblank.
+    /// </summary>
+    public static void ppu_scroll(byte x, byte y)
+    {
+        poke(PPU_SCROLL, x);
+        poke(PPU_SCROLL, y);
+    }
 
     /// <summary>
     /// set metasprite in OAM buffer with palette override
@@ -371,6 +476,21 @@ public static class NESLib
     public static PAD pad_poll(byte pad) => throw null!;
 
     /// <summary>
+    /// poll controller 1
+    /// </summary>
+    public static PAD pad1_poll() => pad_poll(0);
+
+    /// <summary>
+    /// buttons newly pressed this frame on controller 1
+    /// </summary>
+    public static PAD pad1_trigger() => pad_trigger(0);
+
+    /// <summary>
+    /// current held buttons on controller 1
+    /// </summary>
+    public static PAD pad1_state() => pad_state(0);
+
+    /// <summary>
     /// set metasprite in OAM buffer
     /// meta sprite is a const unsigned char array, it contains four bytes per sprite
     /// in order x offset, y offset, tile, attribute
@@ -475,17 +595,17 @@ public static class NESLib
     /// <summary>
     /// nesdoug: Reset the VRAM update buffer to empty and write the EOF marker.
     /// </summary>
-    public static void clear_vram_buffer() => throw null!;
+    public static void clear_vram_buffer() => vrambuf_clear();
 
     /// <summary>
     /// nesdoug: Returns buttons newly pressed this frame (same as <see cref="pad_trigger"/>).
     /// </summary>
-    public static PAD get_pad_new(byte pad) => throw null!;
+    public static PAD get_pad_new(byte pad) => pad_trigger(pad);
 
     /// <summary>
     /// nesdoug: Returns the 8-bit frame counter (same as <see cref="nesclock"/>).
     /// </summary>
-    public static byte get_frame_count() => throw null!;
+    public static byte get_frame_count() => nesclock();
 
     /// <summary>
     /// nesdoug: Set music playback speed/tempo.
@@ -540,7 +660,7 @@ public static class NESLib
     /// <summary>
     /// get random number 0..255, same as rand8()
     /// </summary>
-    public static byte rand() => throw null!;
+    public static byte rand() => rand8();
 
     /// <summary>
     /// get random number 0..255
@@ -749,6 +869,13 @@ public static class NESLib
     /// are mirrored every $8 bytes through $3FFF.</remarks>
     public const ushort PPU_STATUS = 0x2002;
 
+    /// <summary>PPU OAM address register ($2003).</summary>
+    public const ushort PPU_OAM_ADDR = 0x2003;
+    /// <summary>PPU OAM data register ($2004).</summary>
+    public const ushort PPU_OAM_DATA = 0x2004;
+    /// <summary>OAM DMA register ($4014). Write the high byte of a 256-byte page in CPU RAM.</summary>
+    public const ushort PPU_OAM_DMA = 0x4014;
+
     /// <summary>
     /// NES PPU scroll register address ($2005). Writing to this register sets the background scroll position; the first
     /// write updates horizontal scroll (coarse X and fine X) and the second write updates vertical scroll (coarse Y and
@@ -891,6 +1018,32 @@ public static class NESLib
     /// APU channels and update status flags.</remarks>
     public const ushort APU_STATUS = 0x4015;
 
+    /// <summary>APU DMC frequency / IRQ control ($4010).</summary>
+    public const ushort APU_DMC_FREQ = 0x4010;
+    /// <summary>APU DMC raw DAC ($4011).</summary>
+    public const ushort APU_DMC_RAW = 0x4011;
+    /// <summary>APU DMC sample start address ($4012).</summary>
+    public const ushort APU_DMC_START = 0x4012;
+    /// <summary>APU DMC sample length ($4013).</summary>
+    public const ushort APU_DMC_LEN = 0x4013;
+    /// <summary>APU frame counter ($4017).</summary>
+    public const ushort APU_FRAME = 0x4017;
+
+    /// <summary>Controller port 1 / expansion ($4016).</summary>
+    public const ushort JOYPAD1 = 0x4016;
+    /// <summary>Controller port 2 / expansion / zapper ($4017).</summary>
+    public const ushort JOYPAD2 = 0x4017;
+
+    /// <summary>Zapper light-sense bit on <see cref="JOYPAD2"/> (bit 3).</summary>
+    public const byte ZAPPER_LIGHT = 0x08;
+    /// <summary>Zapper trigger bit on <see cref="JOYPAD2"/> (bit 4).</summary>
+    public const byte ZAPPER_TRIGGER = 0x10;
+
+    /// <summary>True if the zapper senses light (reads <see cref="JOYPAD2"/>).</summary>
+    public static bool zapper_light() => (peek(JOYPAD2) & ZAPPER_LIGHT) != 0;
+    /// <summary>True if the zapper trigger is pulled (reads <see cref="JOYPAD2"/>).</summary>
+    public static bool zapper_trigger() => (peek(JOYPAD2) & ZAPPER_TRIGGER) != 0;
+
     // Battery-backed SRAM address range ($6000-$7FFF) for use with peek()/poke()
 
     /// <summary>
@@ -981,6 +1134,22 @@ public static class NESLib
     /// <param name="bank">Bank number to select. Can be a constant or local variable.</param>
     public static void mmc3_set_chr_bank(byte reg, byte bank) => throw null!;
 
+    /// <summary>
+    /// Set an MMC3 PRG bank register (R6 or R7). <paramref name="reg"/> must be a compile-time constant
+    /// with bits 0–2 equal to 6 or 7 (optionally OR'd with mode bits 6–7).
+    /// </summary>
+    public static void mmc3_set_prg_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>
+    /// Enable or protect MMC3 PRG-RAM via $A001. Common values: 0x80 enable, 0xC0 enable+write-protect.
+    /// </summary>
+    public static void mmc3_wram_enable(byte value) => poke(MMC3_WRAM_ENABLE, value);
+
+    /// <summary>
+    /// UxROM / UNROM (mapper 2): switch the 16KB PRG bank at $8000 by writing to $8000.
+    /// </summary>
+    public static void uxrom_set_prg_bank(byte bank) => throw null!;
+
     // MMC1 mapper register addresses for serial shift register writes via mmc1_write()
 
     /// <summary>
@@ -1033,12 +1202,16 @@ public static class NESLib
     /// <summary>
     /// Switch the MMC1 PRG bank by writing to the PRG bank register ($E000).
     /// </summary>
-    public static void mmc1_set_prg_bank(byte bank) => throw null!;
+    public static void mmc1_set_prg_bank(byte bank) => mmc1_write(MMC1_PRG_BANK, bank);
 
     /// <summary>
     /// Switch both MMC1 CHR banks by writing to CHR bank 0 ($A000) and CHR bank 1 ($C000).
     /// </summary>
-    public static void mmc1_set_chr_bank(byte bank0, byte bank1) => throw null!;
+    public static void mmc1_set_chr_bank(byte bank0, byte bank1)
+    {
+        mmc1_write(MMC1_CHR_BANK0, bank0);
+        mmc1_write(MMC1_CHR_BANK1, bank1);
+    }
 
     /// <summary>
     /// Write the full MMC1 Control register ($8000) via the serial shift register.
@@ -1047,7 +1220,7 @@ public static class NESLib
     /// mode bits. Writing only a mirror constant (e.g., <see cref="MMC1Mirror.Vertical"/>)
     /// resets PRG/CHR modes to zero — combine with your desired mode bits.
     /// </summary>
-    public static void mmc1_set_mirroring(byte mode) => throw null!;
+    public static void mmc1_set_mirroring(byte mode) => mmc1_write(MMC1_CONTROL, mode);
 
     // TODO: Macros below should be computed at compile-time and methods removed
 
@@ -1074,6 +1247,15 @@ public static class NESLib
     /// <code>#define NTADR_D(x,y) 		(NAMETABLE_D|(((y)&lt;&lt;5)|(x)))</code>
     /// </summary>
     public static ushort NTADR_D(byte x, byte y) => (ushort)(NAMETABLE_D | ((y << 5) | x));
+
+    /// <summary>Attribute table address for nametable A (tile coords 0..31).</summary>
+    public static ushort NT_ATTR_A(byte x, byte y) => (ushort)(0x23C0 | ((y >> 2) << 3) | (x >> 2));
+    /// <summary>Attribute table address for nametable B.</summary>
+    public static ushort NT_ATTR_B(byte x, byte y) => (ushort)(0x27C0 | ((y >> 2) << 3) | (x >> 2));
+    /// <summary>Attribute table address for nametable C.</summary>
+    public static ushort NT_ATTR_C(byte x, byte y) => (ushort)(0x2BC0 | ((y >> 2) << 3) | (x >> 2));
+    /// <summary>Attribute table address for nametable D.</summary>
+    public static ushort NT_ATTR_D(byte x, byte y) => (ushort)(0x2FC0 | ((y >> 2) << 3) | (x >> 2));
 
     /// <summary>
     /// macro to get most significant byte in compile time

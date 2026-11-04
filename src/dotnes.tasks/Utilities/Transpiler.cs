@@ -475,6 +475,16 @@ partial class Transpiler : IDisposable
             UserMethods.ToDictionary(pair => pair.Value, pair => arrayParameters[pair.Key]));
         ValidateStaticArrayInitialization(instructions, UserMethods, reflectionCache, staticArrayAliases.Keys, provenStaticArrayStores);
 
+        HashSet<int> FixedOffsetsFor(ILInstruction[] body) =>
+            fixedArrayAllocations.TryGetValue(body, out var allocations)
+                ? new HashSet<int>(allocations.Keys)
+                : new HashSet<int>();
+        var mainPacking = ComputeScalarPacking(instructions, reflectionCache, "main", OptimizeCode,
+            arrayStorage, FixedOffsetsFor(instructions));
+        var methodPackings = UserMethods.ToDictionary(pair => pair.Key,
+            pair => ComputeScalarPacking(pair.Value, reflectionCache, pair.Key, OptimizeCode,
+                arrayStorage, FixedOffsetsFor(pair.Value)), StringComparer.Ordinal);
+
         var byteParameterCalls = NumericTypes.Where(kvp =>
         {
             bool banked = _methodRegions.ContainsKey(kvp.Key);
@@ -494,11 +504,13 @@ partial class Transpiler : IDisposable
             .Where(pair => !_methodRegions.ContainsKey(pair.Key) || SameManagedRegion(caller, pair.Key))
             .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
 
+        var nesLibMethodNames = new HashSet<string>(NesLibImplementedMethods, StringComparer.Ordinal);
         using var writer = new IL2NESWriter(new MemoryStream(), logger: _logger, reflectionCache: reflectionCache)
         {
             Instructions = instructions,
             UsedMethods = UsedMethods,
             UserMethodNames = new HashSet<string>(UserMethods.Keys, StringComparer.Ordinal),
+            NesLibMethodNames = nesLibMethodNames,
             UserMethodArrayParameters = arrayParameters,
             UnsupportedArrayHelperSignatures = _unsupportedArrayHelperSignatures,
             ByteParameterCalls = byteParameterCalls,
@@ -520,6 +532,10 @@ partial class Transpiler : IDisposable
             ClosureStructLocalIndex = _closureStructLocalIndex,
             TryFinallyRegions = MainExceptionRegions.Length > 0 ? MainExceptionRegions : null,
         };
+
+        if (OptimizeCode)
+            ApplyScalarPacking(writer.Variables, mainPacking,
+                (ushort)(NESConstants.LocalStackBase + staticFieldBytes), writer.WordLocals);
 
         writer.ConfigureNumericTypes(NumericTypes, numericFieldTypes, _closureNumericFieldTypes);
         writer.StartBlockBuffering();
@@ -588,7 +604,8 @@ partial class Transpiler : IDisposable
         var methodFrameOffsets = ComputeMethodFrameOffsets(UserMethods, reflectionCache, mainLocalCount, structLayouts,
             _closureStructLocalIndex, _closureFieldTypes.Count > 0 ? _closureFieldTypes : null,
             UserMethods.ToDictionary(pair => pair.Key, pair => fixedArrayAllocations.TryGetValue(pair.Value, out var allocations)
-                ? new HashSet<int>(allocations.Keys) : new HashSet<int>(), StringComparer.Ordinal), arrayStorage);
+                ? new HashSet<int>(allocations.Keys) : new HashSet<int>(), StringComparer.Ordinal), arrayStorage,
+            methodPackings);
         int userMethodsTotalSize = 0;
         int localHighWater = mainLocalCount;
         foreach (var kvp in UserMethods.OrderBy(x => x.Key, StringComparer.Ordinal))
@@ -602,6 +619,7 @@ partial class Transpiler : IDisposable
                 Instructions = methodIL,
                 UsedMethods = UsedMethods,
                 UserMethodNames = new HashSet<string>(UserMethods.Keys, StringComparer.Ordinal),
+                NesLibMethodNames = nesLibMethodNames,
                 UserMethodArrayParameters = arrayParameters,
                 UnsupportedArrayHelperSignatures = _unsupportedArrayHelperSignatures,
                 ByteParameterCalls = byteParameterCalls,
@@ -628,6 +646,9 @@ partial class Transpiler : IDisposable
                 ClosureArgIndex = _closureMethodArgIndex.TryGetValue(methodName, out var cai) ? cai : -1,
                 TryFinallyRegions = UserMethodExceptionRegions.TryGetValue(methodName, out var umer) ? umer : null,
             };
+            if (OptimizeCode && methodPackings.TryGetValue(methodName, out var methodPacking))
+                ApplyScalarPacking(methodWriter.Variables, methodPacking,
+                    (ushort)(NESConstants.LocalStackBase + methodFrameOffsets[methodName]), methodWriter.WordLocals);
             methodWriter.ConfigureNumericTypes(NumericTypes, numericFieldTypes, _closureNumericFieldTypes,
                 allowBooleanArguments: _methodRegions.ContainsKey(methodName));
             methodWriter.StartBlockBuffering();
@@ -780,6 +801,14 @@ partial class Transpiler : IDisposable
             userMethodsTotalSize = UserMethods.Keys.Sum(name => program.GetBlock(name)!.Size);
         }
 
+        if (OptimizeCode)
+        {
+            OptimizationPipeline.Run(program, new SizeOptimizationPass(), new EfficiencyOptimizationPass());
+            if (mainBlock != null)
+                sizeOfMain = (ushort)mainBlock.Size;
+            userMethodsTotalSize = UserMethods.Keys.Sum(name => program.GetBlock(name)?.Size ?? 0);
+        }
+
         // Store named ushort[] arrays (note tables) as interleaved 16-bit data (cc65 compatible)
         var noteTableData = new List<(string label, byte[] data)>();
         foreach (var kvp in writer.UShortArrays.OrderBy(x => x.Key, StringComparer.Ordinal))
@@ -832,10 +861,10 @@ partial class Transpiler : IDisposable
         // totalSize is used for donelib/copydata - points past the data tables.
         // All sizes are computed from actual block sizes so the layout adjusts automatically
         // if subroutines change.
-        int finalBuiltInsSize = Program6502.CalculateFinalBuiltInsSize(locals, UsedMethods);
+        int finalBuiltInsSize = Program6502.CalculateFinalBuiltInsSize(locals, UsedMethods, NesLibImplementedMethods);
         ushort totalSize = (ushort)(program.BaseAddress + preMainSize + sizeOfMain + finalBuiltInsSize + musicSubroutinesSize + userMethodsTotalSize + externBlocksTotalSize + byteArrayTableSize + stringTableSize);
         
-        program.AddFinalBuiltIns(totalSize, locals, UsedMethods);
+        program.AddFinalBuiltIns(totalSize, locals, UsedMethods, NesLibImplementedMethods);
 
         // Add note table data blocks BEFORE byte arrays (matches cc65 layout)
         foreach (var (label, data) in noteTableData)

@@ -15,6 +15,12 @@ public class TranspileToNES : Task
     public bool NESOptimizeByteHelpers { get; set; }
 
     /// <summary>
+    /// Runs post-emit peephole passes and lifetime-based scalar local packing.
+    /// Targets default <c>NESOptimizeCode</c> to true when unset.
+    /// </summary>
+    public bool NESOptimizeCode { get; set; }
+
+    /// <summary>
     /// Nametable mirroring mode: "Horizontal" (default) or "Vertical".
     /// </summary>
     public string NESMirroring { get; set; } = "Horizontal";
@@ -109,6 +115,7 @@ public class TranspileToNES : Task
             nativeRamCode: nativeRamCode)
         {
             OptimizeByteHelpers = NESOptimizeByteHelpers,
+            OptimizeCode = NESOptimizeCode,
         };
         transpiler.Write(output);
 

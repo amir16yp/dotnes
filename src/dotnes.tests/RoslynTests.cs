@@ -51,7 +51,10 @@ public abstract class RoslynTests
 
         _stream.Seek(0, SeekOrigin.Begin);
 
-        using var transpiler = new Transpiler(_stream, [new AssemblyReader(new StreamReader(Utilities.GetResource("chr_generic.s")))], _logger);
+        using var transpiler = new Transpiler(_stream, [new AssemblyReader(new StreamReader(Utilities.GetResource("chr_generic.s")))], _logger)
+        {
+            OptimizeCode = false, // keep AssertProgram assembly baselines byte-stable
+        };
         var program = transpiler.BuildProgram6502(out _, out _);
         var mainBlock = program.GetMainBlock();
         AssertEx.Equal(Utilities.ToByteArray(expectedAssembly), mainBlock);
@@ -60,13 +63,16 @@ public abstract class RoslynTests
     protected byte[] GetProgramBytes(string csharpSource)
         => GetProgramBytes(csharpSource, additionalAssemblyFiles: null);
 
-    protected byte[] GetProgramBytes(string csharpSource, IList<AssemblyReader>? additionalAssemblyFiles, bool allowUnsafe = false)
+    protected byte[] GetProgramBytes(string csharpSource, IList<AssemblyReader>? additionalAssemblyFiles = null, bool allowUnsafe = false,
+        OptimizationLevel optimizationLevel = OptimizationLevel.Release)
     {
-        using var transpiler = BuildProgram(csharpSource, out var program, additionalAssemblyFiles, allowUnsafe);
+        using var transpiler = BuildProgram(csharpSource, out var program, additionalAssemblyFiles, allowUnsafe,
+            optimizeByteHelpers: false, optimizeCode: false, optimizationLevel: optimizationLevel);
         return program.GetMainBlock();
     }
 
-    protected Stream CompileAssembly(string csharpSource, bool allowUnsafe = false)
+    protected Stream CompileAssembly(string csharpSource, bool allowUnsafe = false,
+        OptimizationLevel optimizationLevel = OptimizationLevel.Release)
     {
         _stream.SetLength(0);
         csharpSource = $"using NES;using static NES.NESLib;{Environment.NewLine}{csharpSource}";
@@ -83,7 +89,7 @@ public abstract class RoslynTests
         var compilation = CSharpCompilation
             .Create("test.dll", [syntaxTree], references: references,
                 options: new CSharpCompilationOptions(OutputKind.ConsoleApplication,
-                    optimizationLevel: OptimizationLevel.Release, deterministic: true,
+                    optimizationLevel: optimizationLevel, deterministic: true,
                     allowUnsafe: allowUnsafe));
         var emitResults = compilation.Emit(_stream);
         if (!emitResults.Success)
@@ -92,21 +98,24 @@ public abstract class RoslynTests
         return _stream;
     }
 
-    private protected Transpiler ReadProgram(string csharpSource, IList<AssemblyReader>? additionalAssemblyFiles = null, bool allowUnsafe = false, bool optimizeByteHelpers = false)
+    private protected Transpiler ReadProgram(string csharpSource, IList<AssemblyReader>? additionalAssemblyFiles = null, bool allowUnsafe = false, bool optimizeByteHelpers = false, bool optimizeCode = false,
+        OptimizationLevel optimizationLevel = OptimizationLevel.Release)
     {
-        CompileAssembly(csharpSource, allowUnsafe);
+        CompileAssembly(csharpSource, allowUnsafe, optimizationLevel);
         var assemblyFiles = new List<AssemblyReader> { new AssemblyReader(new StreamReader(Utilities.GetResource("chr_generic.s"))) };
         if (additionalAssemblyFiles != null)
             assemblyFiles.AddRange(additionalAssemblyFiles);
         return new Transpiler(_stream, assemblyFiles, _logger)
         {
             OptimizeByteHelpers = optimizeByteHelpers,
+            OptimizeCode = optimizeCode,
         };
     }
 
-    private protected Transpiler BuildProgram(string csharpSource, out Program6502 program, IList<AssemblyReader>? additionalAssemblyFiles = null, bool allowUnsafe = false, bool optimizeByteHelpers = false)
+    private protected Transpiler BuildProgram(string csharpSource, out Program6502 program, IList<AssemblyReader>? additionalAssemblyFiles = null, bool allowUnsafe = false, bool optimizeByteHelpers = false, bool optimizeCode = false,
+        OptimizationLevel optimizationLevel = OptimizationLevel.Release)
     {
-        var transpiler = ReadProgram(csharpSource, additionalAssemblyFiles, allowUnsafe, optimizeByteHelpers);
+        var transpiler = ReadProgram(csharpSource, additionalAssemblyFiles, allowUnsafe, optimizeByteHelpers, optimizeCode, optimizationLevel);
         try
         {
             program = transpiler.BuildProgram6502(out _, out _);
@@ -147,7 +156,10 @@ public abstract class RoslynTests
         var assemblyFiles = new List<AssemblyReader> { new AssemblyReader(new StreamReader(Utilities.GetResource("chr_generic.s"))) };
         if (additionalAssemblyFiles != null)
             assemblyFiles.AddRange(additionalAssemblyFiles);
-        var transpiler = new Transpiler(_stream, assemblyFiles, _logger);
+        var transpiler = new Transpiler(_stream, assemblyFiles, _logger)
+        {
+            OptimizeCode = false,
+        };
         try
         {
             program = transpiler.BuildProgram6502(out _, out _);

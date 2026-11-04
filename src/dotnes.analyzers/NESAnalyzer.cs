@@ -37,12 +37,12 @@ public class NESAnalyzer : DiagnosticAnalyzer
 
     static readonly DiagnosticDescriptor NES002Rule = new(
         NES002,
-        "Class declarations are not supported",
-        "Class '{0}' is not supported; the NES does not support class declarations",
+        "Unsupported class declaration",
+        "Class '{0}' is not a valid NES layout class; use a sealed class with only blittable fields (byte, sbyte, ushort, short, bool, fixed buffers), no inheritance, and no virtual/abstract members",
         Category,
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "The NES has no heap or garbage collector, so class declarations cannot be used. Use top-level statements, static methods, and structs instead.");
+        description: "NES layout classes are sealed fixed-layout objects with no GC. Unsealed classes, inheritance, virtuals, interfaces, and reference-typed fields are not supported.");
 
     static readonly DiagnosticDescriptor NES003Rule = new(
         NES003,
@@ -56,20 +56,20 @@ public class NESAnalyzer : DiagnosticAnalyzer
     static readonly DiagnosticDescriptor NES004Rule = new(
         NES004,
         "Unsupported allocation type",
-        "'new' allocations are limited to byte[], ushort[] arrays and structs",
+        "'new' allocations are limited to byte[], ushort[] arrays, structs, and sealed NES layout classes",
         Category,
         DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "The NES has very limited memory. Only byte[], ushort[] array allocations and struct allocations are supported.");
+        description: "The NES has very limited memory. Only byte[], ushort[] arrays, structs, and sealed layout-class allocations are supported.");
 
     static readonly DiagnosticDescriptor NES005Rule = new(
         NES005,
         "Unsupported type",
-        "Type '{0}' is not supported; only byte, sbyte, ushort, int, bool, string, enums, arrays, and user-defined structs are supported",
+        "Type '{0}' is not supported; only byte, sbyte, ushort, int, bool, string, enums, arrays, user-defined structs, and sealed NES layout classes are supported",
         Category,
         DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "The NES 6502 CPU only supports 8-bit and limited 16-bit operations. Only byte, sbyte, ushort, int, bool, string, enums, arrays, and user-defined structs are supported.");
+        description: "The NES 6502 CPU only supports 8-bit and limited 16-bit operations. Only byte, sbyte, ushort, int, bool, string, enums, arrays, structs, and sealed layout classes are supported.");
 
     static readonly DiagnosticDescriptor NES006Rule = new(
         NES006,
@@ -187,6 +187,10 @@ public class NESAnalyzer : DiagnosticAnalyzer
             classDeclaration.Identifier.Text == "Program")
             return;
 
+        if (context.SemanticModel.GetDeclaredSymbol(classDeclaration, context.CancellationToken) is INamedTypeSymbol type
+            && IsNesLayoutClass(type))
+            return;
+
         context.ReportDiagnostic(Diagnostic.Create(NES002Rule, classDeclaration.Identifier.GetLocation(), classDeclaration.Identifier.Text));
     }
 
@@ -259,6 +263,10 @@ public class NESAnalyzer : DiagnosticAnalyzer
 
         // Allow struct allocations
         if (type.IsValueType)
+            return;
+
+        // Allow sealed NES layout classes (fixed-layout, no GC)
+        if (type is INamedTypeSymbol named && IsNesLayoutClass(named))
             return;
 
         // Allow byte[] and ushort[]
@@ -583,6 +591,10 @@ public class NESAnalyzer : DiagnosticAnalyzer
             return true;
         }
 
+        // Sealed NES layout classes (fixed-layout objects, no GC)
+        if (type is INamedTypeSymbol named && IsNesLayoutClass(named))
+            return true;
+
         // Enum types (they're value types backed by int/byte)
         if (type.TypeKind == TypeKind.Enum)
         {
@@ -594,6 +606,68 @@ public class NESAnalyzer : DiagnosticAnalyzer
         {
             return true;
         }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Sealed class deriving only from <see cref="object"/>, with blittable instance fields
+    /// and no virtual/abstract/interface surface — the NES no-GC layout-class dialect.
+    /// </summary>
+    static bool IsNesLayoutClass(INamedTypeSymbol type)
+    {
+        if (type.TypeKind != TypeKind.Class || type.IsStatic || type.SpecialType != SpecialType.None)
+            return false;
+        if (!type.IsSealed || type.IsAbstract)
+            return false;
+        if (type.BaseType is null || type.BaseType.SpecialType != SpecialType.System_Object)
+            return false;
+        if (!type.Interfaces.IsDefaultOrEmpty && type.Interfaces.Length > 0)
+            return false;
+
+        foreach (var member in type.GetMembers())
+        {
+            if (member is IMethodSymbol method)
+            {
+                if (method.IsAbstract || method.IsVirtual || method.IsOverride)
+                    return false;
+                if (method.MethodKind is MethodKind.Destructor)
+                    return false;
+            }
+            else if (member is IFieldSymbol field && !field.IsStatic)
+            {
+                if (!IsBlittableLayoutFieldType(field.Type))
+                    return false;
+            }
+            else if (member is IPropertySymbol)
+            {
+                // Properties lower to instance methods; reject until property support lands.
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    static bool IsBlittableLayoutFieldType(ITypeSymbol type)
+    {
+        switch (type.SpecialType)
+        {
+            case SpecialType.System_Boolean:
+            case SpecialType.System_Byte:
+            case SpecialType.System_SByte:
+            case SpecialType.System_UInt16:
+            case SpecialType.System_Int16:
+            case SpecialType.System_Int32:
+                return true;
+        }
+
+        if (type.TypeKind == TypeKind.Enum)
+            return true;
+
+        // fixed buffers / InlineArray element structs are value types
+        if (type.IsValueType && type.TypeKind == TypeKind.Struct && type.SpecialType == SpecialType.None)
+            return true;
 
         return false;
     }

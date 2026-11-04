@@ -38,7 +38,8 @@ partial class IL2NESWriter
             bool isCompound, int compoundLocalIdx, ILOpCode compoundBinOp,
             int compoundBinOpConst, int compoundAddConst,
             bool isStaticField, string? staticFieldName,
-            string? compoundStaticFieldName)>();
+            string? compoundStaticFieldName,
+            bool isClassField, int classObjectLocalIdx, string? classFieldName)>();
 
         int ilIdx = Index - 1;
         int needed = isOamScope ? 4 : 5;
@@ -77,7 +78,7 @@ partial class IL2NESWriter
                         if (ilIdx >= 0) { idxLoc = Instructions[ilIdx].GetLdlocIndex() ?? -1; ilIdx--; }
                         if (ilIdx >= 0) { arrLoc = Instructions[ilIdx].GetLdlocIndex() ?? -1; }
                         argInfos.Add((false, 0, 0, false, 0, true, arrLoc, idxLoc,
-                            false, 0, ILOpCode.Nop, 0, 0, false, null, null));
+                            false, 0, ILOpCode.Nop, 0, 0, false, null, null, false, -1, null));
                         needed--;
                         firstArgIlIdx = ilIdx;
                     }
@@ -96,7 +97,8 @@ partial class IL2NESWriter
                         {
                             // Compound expression complete
                             argInfos.Add((false, 0, 0, false, 0, false, 0, 0,
-                                true, compLocalIdx, compBinOp, compBinOpConst, compAddConst, false, null, compStaticFieldName));
+                                true, compLocalIdx, compBinOp, compBinOpConst, compAddConst, false, null, compStaticFieldName,
+                                false, -1, null));
                             needed--;
                             firstArgIlIdx = ilIdx;
                             compBinOp = ILOpCode.Nop; compBinOpConst = 0; compLocalIdx = -1;
@@ -107,7 +109,7 @@ partial class IL2NESWriter
                     else
                     {
                         argInfos.Add((true, locIdx, 0, false, 0, false, 0, 0,
-                            false, 0, ILOpCode.Nop, 0, 0, false, null, null));
+                            false, 0, ILOpCode.Nop, 0, 0, false, null, null, false, -1, null));
                         needed--;
                         firstArgIlIdx = ilIdx;
                     }
@@ -123,7 +125,8 @@ partial class IL2NESWriter
                         if (depth == 0)
                         {
                             argInfos.Add((false, 0, 0, false, 0, false, 0, 0,
-                                true, compLocalIdx, compBinOp, compBinOpConst, compAddConst, false, null, compStaticFieldName));
+                                true, compLocalIdx, compBinOp, compBinOpConst, compAddConst, false, null, compStaticFieldName,
+                                false, -1, null));
                             needed--;
                             firstArgIlIdx = ilIdx;
                             compBinOp = ILOpCode.Nop; compBinOpConst = 0; compLocalIdx = -1;
@@ -134,7 +137,7 @@ partial class IL2NESWriter
                     else
                     {
                         argInfos.Add((true, locIdx, 0, false, 0, false, 0, 0,
-                            false, 0, ILOpCode.Nop, 0, 0, false, null, null));
+                            false, 0, ILOpCode.Nop, 0, 0, false, null, null, false, -1, null));
                         needed--;
                         firstArgIlIdx = ilIdx;
                     }
@@ -162,7 +165,8 @@ partial class IL2NESWriter
                         if (depth == 0)
                         {
                             argInfos.Add((false, 0, 0, false, 0, false, 0, 0,
-                                true, compLocalIdx, compBinOp, compBinOpConst, compAddConst, false, null, compStaticFieldName));
+                                true, compLocalIdx, compBinOp, compBinOpConst, compAddConst, false, null, compStaticFieldName,
+                                false, -1, null));
                             needed--;
                             firstArgIlIdx = ilIdx;
                             compBinOp = ILOpCode.Nop; compBinOpConst = 0; compLocalIdx = -1;
@@ -173,7 +177,7 @@ partial class IL2NESWriter
                     else
                     {
                         argInfos.Add((false, 0, val, false, 0, false, 0, 0,
-                            false, 0, ILOpCode.Nop, 0, 0, false, null, null));
+                            false, 0, ILOpCode.Nop, 0, 0, false, null, null, false, -1, null));
                         needed--;
                         firstArgIlIdx = ilIdx;
                     }
@@ -199,7 +203,8 @@ partial class IL2NESWriter
                         if (depth == 0)
                         {
                             argInfos.Add((false, 0, 0, false, 0, false, 0, 0,
-                                true, compLocalIdx, compBinOp, compBinOpConst, compAddConst, false, null, compStaticFieldName));
+                                true, compLocalIdx, compBinOp, compBinOpConst, compAddConst, false, null, compStaticFieldName,
+                                false, -1, null));
                             needed--;
                             firstArgIlIdx = ilIdx;
                             compBinOp = ILOpCode.Nop; compBinOpConst = 0; compLocalIdx = -1;
@@ -210,7 +215,7 @@ partial class IL2NESWriter
                     else
                     {
                         argInfos.Add((false, 0, val, false, 0, false, 0, 0,
-                            false, 0, ILOpCode.Nop, 0, 0, false, null, null));
+                            false, 0, ILOpCode.Nop, 0, 0, false, null, null, false, -1, null));
                         needed--;
                         firstArgIlIdx = ilIdx;
                     }
@@ -249,7 +254,8 @@ partial class IL2NESWriter
                         if (depth == 0)
                         {
                             argInfos.Add((false, 0, 0, false, 0, false, 0, 0,
-                                true, compLocalIdx, compBinOp, compBinOpConst, compAddConst, false, null, compStaticFieldName));
+                                true, compLocalIdx, compBinOp, compBinOpConst, compAddConst, false, null, compStaticFieldName,
+                                false, -1, null));
                             needed--;
                             firstArgIlIdx = ilIdx;
                             compBinOp = ILOpCode.Nop; compBinOpConst = 0; compLocalIdx = -1;
@@ -261,9 +267,30 @@ partial class IL2NESWriter
                     {
                         // Standalone static field argument (e.g., oam_off)
                         argInfos.Add((false, 0, 0, false, 0, false, 0, 0,
-                            false, 0, ILOpCode.Nop, 0, 0, true, il.String, null));
+                            false, 0, ILOpCode.Nop, 0, 0, true, il.String, null, false, -1, null));
                         needed--;
                         firstArgIlIdx = ilIdx;
+                    }
+                    break;
+                }
+                case ILOpCode.Ldfld:
+                {
+                    // ldloc obj; ldfld Field — layout-class field as oam_spr argument.
+                    // Without this, the scanner skips ldfld and treats ldloc obj as a byte local
+                    // (the object-ref slot), so sprites ignore the actual field values.
+                    if (depth > 0)
+                        break; // compound (field ± const) not handled yet
+                    string? fieldName = il.String;
+                    int prev = ilIdx - 1;
+                    if (fieldName != null && prev >= 0
+                        && Instructions[prev].GetLdlocIndex() is int objectLocal)
+                    {
+                        argInfos.Add((false, 0, 0, false, 0, false, 0, 0,
+                            false, 0, ILOpCode.Nop, 0, 0, false, null, null,
+                            true, objectLocal, fieldName));
+                        needed--;
+                        firstArgIlIdx = prev;
+                        ilIdx = prev; // loop ilIdx-- skips the ldloc
                     }
                     break;
                 }
@@ -440,6 +467,18 @@ partial class IL2NESWriter
                     Emit(Opcode.LDX, AddressMode.Absolute, (ushort)idxLocal.Address);
                 if (arrLocal.Address != null)
                     Emit(Opcode.LDA, AddressMode.AbsoluteX, (ushort)arrLocal.Address);
+            }
+            else if (arg.isClassField)
+            {
+                if (!_classLocalBases.TryGetValue(arg.classObjectLocalIdx, out ushort body))
+                    throw new TranspileException(
+                        $"oam_spr argument '{arg.classFieldName}' references unknown layout-class local {arg.classObjectLocalIdx}.",
+                        MethodName);
+                string typeName = _classLocalTypes.TryGetValue(arg.classObjectLocalIdx, out string? known)
+                    ? known
+                    : ResolveLayoutTypeForField(arg.classFieldName!);
+                int fieldOffset = GetFieldOffset(typeName, arg.classFieldName!);
+                Emit(Opcode.LDA, AddressMode.Absolute, (ushort)(body + fieldOffset));
             }
             else if (arg.isLocal)
             {
