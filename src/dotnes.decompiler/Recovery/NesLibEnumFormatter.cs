@@ -66,6 +66,18 @@ static class NesLibEnumFormatter
         return $"(byte){mirrorName} | 0x{rest:X2}";
     }
 
+    static readonly (byte Bit, string Name)[] PadFlags =
+    [
+        (0x01, "PAD.A"),
+        (0x02, "PAD.B"),
+        (0x04, "PAD.SELECT"),
+        (0x08, "PAD.START"),
+        (0x10, "PAD.UP"),
+        (0x20, "PAD.DOWN"),
+        (0x40, "PAD.LEFT"),
+        (0x80, "PAD.RIGHT"),
+    ];
+
     public static string FormatPad(byte value)
     {
         if (value == 0)
@@ -87,17 +99,67 @@ static class NesLibEnumFormatter
         if (single != null)
             return single;
 
-        return FormatFlags(value, new (byte, string)[]
+        return FormatFlags(value, PadFlags, castPrefix: null);
+    }
+
+    /// <summary>
+    /// True when every set bit is a <see cref="PAD"/> flag (no leftover bits).
+    /// </summary>
+    public static bool IsExactPadFlags(byte value)
+    {
+        if (value == 0)
+            return false;
+        byte remaining = value;
+        foreach (var (bit, _) in PadFlags)
         {
-            (0x01, "PAD.A"),
-            (0x02, "PAD.B"),
-            (0x04, "PAD.SELECT"),
-            (0x08, "PAD.START"),
-            (0x10, "PAD.UP"),
-            (0x20, "PAD.DOWN"),
-            (0x40, "PAD.LEFT"),
-            (0x80, "PAD.RIGHT"),
-        }, castPrefix: null);
+            if ((value & bit) != 0)
+                remaining = (byte)(remaining & ~bit);
+        }
+        return remaining == 0;
+    }
+
+    /// <summary>
+    /// Formats a pad mask/compare/AND operand as a byte expression:
+    /// <c>(byte)PAD.UP</c>, <c>(byte)(PAD.A | PAD.B)</c>, or <c>(byte)~PAD.DOWN</c> for clear-masks.
+    /// </summary>
+    public static bool TryFormatPadByteOperand(byte value, out string expression)
+    {
+        expression = null!;
+        if (value == 0)
+            return false;
+
+        // Clear-mask: AND #$DF clears DOWN → (byte)~PAD.DOWN
+        byte cleared = (byte)~value;
+        if (cleared != 0 && IsExactPadFlags(cleared) && BitCount(cleared) <= 2)
+        {
+            string pad = FormatPad(cleared);
+            expression = pad.Contains('|', StringComparison.Ordinal)
+                ? $"(byte)~({pad})"
+                : $"(byte)~{pad}";
+            return true;
+        }
+
+        if (!IsExactPadFlags(value))
+            return false;
+
+        // Avoid turning common non-input masks into buttons without caller context:
+        // caller must gate on pad-typed / pad-ZP. Multi-bit face/nibble masks are fine there.
+        string flags = FormatPad(value);
+        expression = flags.Contains('|', StringComparison.Ordinal)
+            ? $"(byte)({flags})"
+            : $"(byte){flags}";
+        return true;
+    }
+
+    static int BitCount(byte value)
+    {
+        int n = 0;
+        while (value != 0)
+        {
+            n += value & 1;
+            value >>= 1;
+        }
+        return n;
     }
 
     public static string FormatMask(byte value)
@@ -115,6 +177,51 @@ static class NesLibEnumFormatter
             (0x20, "MASK.TINT_RED"),
             (0x40, "MASK.TINT_GREEN"),
             (0x80, "MASK.TINT_BLUE"),
+        }, castPrefix: null);
+    }
+
+    public static string FormatPpuCtrl(byte value)
+    {
+        if (value == 0)
+            return "0";
+
+        return FormatFlags(value, new (byte, string)[]
+        {
+            (0x01, "PPUCTRL.NAMETABLE_X"),
+            (0x02, "PPUCTRL.NAMETABLE_Y"),
+            (0x04, "PPUCTRL.VRAM_INC_32"),
+            (0x08, "PPUCTRL.SPR_TABLE_1000"),
+            (0x10, "PPUCTRL.BG_TABLE_1000"),
+            (0x20, "PPUCTRL.SPR_SIZE_8X16"),
+            (0x40, "PPUCTRL.MASTER_SLAVE"),
+            (0x80, "PPUCTRL.NMI"),
+        }, castPrefix: null);
+    }
+
+    public static string FormatApuStatus(byte value)
+    {
+        if (value == 0)
+            return "0";
+
+        return FormatFlags(value, new (byte, string)[]
+        {
+            (0x01, "APUSTATUS.PULSE1"),
+            (0x02, "APUSTATUS.PULSE2"),
+            (0x04, "APUSTATUS.TRIANGLE"),
+            (0x08, "APUSTATUS.NOISE"),
+            (0x10, "APUSTATUS.DMC"),
+        }, castPrefix: null);
+    }
+
+    public static string FormatApuFrame(byte value)
+    {
+        if (value == 0)
+            return "0";
+
+        return FormatFlags(value, new (byte, string)[]
+        {
+            (0x40, "APUFRAME.IRQ_INHIBIT"),
+            (0x80, "APUFRAME.MODE_5STEP"),
         }, castPrefix: null);
     }
 
@@ -156,6 +263,9 @@ static class NesLibEnumFormatter
         "PulseChannel" => FormatPulseChannel(value),
         "APUDuty" => FormatApuDuty(value),
         "MASK" => FormatMask(value),
+        "PPUCTRL" => FormatPpuCtrl(value),
+        "APUSTATUS" => FormatApuStatus(value),
+        "APUFRAME" => FormatApuFrame(value),
         "PAD" => FormatPad(value),
         "VideoSystem" => FormatVideoSystem(value),
         "MMC1Mirror" => FormatMmc1Mirror(value),

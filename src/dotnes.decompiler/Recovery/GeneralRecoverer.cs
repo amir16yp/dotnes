@@ -81,6 +81,15 @@ sealed class GeneralRecoverer
             emitted.Add((site.Bank, site.Address, RoutineName(site.Bank, site.Address), []));
         }
 
+        if (Optimize)
+        {
+            var bodies = emitted.Select(e => e.Body).ToList();
+            var padZps = CollectPadZeroPages(bodies);
+            var (maskZps, ctrlZps) = CollectPpuShadowZeroPages(bodies);
+            foreach (var body in bodies)
+                FormatTypedZpLiterals(body, padZps, maskZps, ctrlZps);
+        }
+
         var access = TallyMemoryAccess(emitted.SelectMany(e => e.Body));
 
         var sb = new StringBuilder();
@@ -183,6 +192,8 @@ sealed class GeneralRecoverer
             "APU_STATUS" => NESLib.APU_STATUS,
             "APU_PULSE1_CTRL" => NESLib.APU_PULSE1_CTRL,
             "APU_PULSE2_CTRL" => NESLib.APU_PULSE2_CTRL,
+            "APU_NOISE_CTRL" => NESLib.APU_NOISE_CTRL,
+            "APU_FRAME" => NESLib.APU_FRAME,
             "JOYPAD1" => NESLib.JOYPAD1,
             "JOYPAD2" => NESLib.JOYPAD2,
             _ => null,
@@ -226,6 +237,57 @@ sealed class GeneralRecoverer
         {
             AddAccess(map, "PPU_OAM_ADDR", peek: false);
             AddAccess(map, "PPU_OAM_DMA", peek: false);
+            return;
+        }
+        if (line.Contains("ppu_status()", StringComparison.Ordinal))
+        {
+            AddAccess(map, "PPU_STATUS", peek: true);
+            return;
+        }
+        if (line.StartsWith("vram_adr(", StringComparison.Ordinal))
+        {
+            AddAccess(map, "PPU_ADDR", peek: false);
+            AddAccess(map, "PPU_ADDR", peek: false);
+            return;
+        }
+        if (line.StartsWith("vram_put(", StringComparison.Ordinal))
+        {
+            AddAccess(map, "PPU_DATA", peek: false);
+            return;
+        }
+        if (line.StartsWith("ppu_ctrl(", StringComparison.Ordinal))
+        {
+            AddAccess(map, "PPU_CTRL", peek: false);
+            return;
+        }
+        if (line.StartsWith("ppu_mask_write(", StringComparison.Ordinal))
+        {
+            AddAccess(map, "PPU_MASK", peek: false);
+            return;
+        }
+        if (line.Contains("joypad1_read()", StringComparison.Ordinal))
+        {
+            AddAccess(map, "JOYPAD1", peek: true);
+            return;
+        }
+        if (line.Contains("joypad2_read()", StringComparison.Ordinal))
+        {
+            AddAccess(map, "JOYPAD2", peek: true);
+            return;
+        }
+        if (line.StartsWith("joypad1_write(", StringComparison.Ordinal))
+        {
+            AddAccess(map, "JOYPAD1", peek: false);
+            return;
+        }
+        if (line.StartsWith("apu_frame(", StringComparison.Ordinal))
+        {
+            AddAccess(map, "APU_FRAME", peek: false);
+            return;
+        }
+        if (line.StartsWith("apu_status_write(", StringComparison.Ordinal))
+        {
+            AddAccess(map, "APU_STATUS", peek: false);
             return;
         }
 
@@ -503,48 +565,654 @@ sealed class GeneralRecoverer
     {
         for (int i = 0; i < statements.Count; i++)
         {
+            string indent = LeadingIndent(statements[i]);
+            string line = statements[i].TrimStart();
+
             // do { a = peek(PPU_STATUS); } while (!negative);  →  waitvsync();
-            if (IsOneLineWaitVsync(statements[i]))
+            if (IsOneLineWaitVsync(line))
             {
-                statements[i] = "waitvsync();";
+                statements[i] = indent + "waitvsync();";
                 continue;
             }
 
             // Multi-line structured form of the same spin.
             if (i + 4 < statements.Count
-                && statements[i] == "do"
-                && statements[i + 1] == "{"
+                && line == "do"
+                && statements[i + 1].TrimStart() == "{"
                 && IsPeekPpuStatus(statements[i + 2].Trim())
-                && statements[i + 3] == "}"
-                && statements[i + 4] == "while (!negative);")
+                && statements[i + 3].TrimStart() == "}"
+                && statements[i + 4].TrimStart() == "while (!negative);")
             {
                 statements.RemoveRange(i, 5);
-                statements.Insert(i, "waitvsync();");
+                statements.Insert(i, indent + "waitvsync();");
                 continue;
             }
 
-            // poke(PPU_SCROLL, x); poke(PPU_SCROLL, y);  →  ppu_scroll(x, y);
-            if (i + 1 < statements.Count
-                && TryParsePoke(statements[i], out string scrollAddr1, out string sx)
-                && TryParsePoke(statements[i + 1], out string scrollAddr2, out string sy)
-                && scrollAddr1 == "PPU_SCROLL" && scrollAddr2 == "PPU_SCROLL")
+            // poke(PPU_SCROLL, x); … poke(PPU_SCROLL, y);  →  ppu_scroll(x, y)
+            // Allow non-PPU statements between (e.g. shadow ZP writes); PPU still sees both $2005 writes.
+            if (TryParsePoke(line, out string scrollAddr1, out string sx)
+                && scrollAddr1 == "PPU_SCROLL"
+                && TryFindNextPpuScroll(statements, i + 1, out int scrollJ, out string sy))
             {
-                statements.RemoveRange(i, 2);
-                statements.Insert(i, $"ppu_scroll({sx}, {sy});");
+                statements.RemoveAt(scrollJ);
+                statements[i] = indent + $"ppu_scroll({sx}, {sy});";
                 continue;
             }
 
             // poke(PPU_OAM_ADDR, 0); poke(PPU_OAM_DMA, page);  →  oam_dma(page);
             if (i + 1 < statements.Count
-                && TryParsePoke(statements[i], out string oamAddr, out string oamZero)
-                && TryParsePoke(statements[i + 1], out string oamDma, out string page)
+                && TryParsePoke(line, out string oamAddr, out string oamZero)
+                && TryParsePoke(statements[i + 1].TrimStart(), out string oamDma, out string page)
                 && oamAddr == "PPU_OAM_ADDR" && oamZero is "0" or "0x00"
                 && oamDma == "PPU_OAM_DMA")
             {
                 statements.RemoveRange(i, 2);
-                statements.Insert(i, $"oam_dma({page});");
+                statements.Insert(i, indent + $"oam_dma({page});");
+                continue;
+            }
+
+            // poke(PPU_ADDR, hi); poke(PPU_ADDR, lo);  →  vram_adr(...)
+            if (i + 1 < statements.Count
+                && TryParsePoke(line, out string adrHiReg, out string hi)
+                && TryParsePoke(statements[i + 1].TrimStart(), out string adrLoReg, out string lo)
+                && adrHiReg == "PPU_ADDR" && adrLoReg == "PPU_ADDR")
+            {
+                statements.RemoveRange(i, 2);
+                statements.Insert(i, indent + FormatLiftedVramAdr(hi, lo));
+                continue;
+            }
+
+            // poke(PPU_DATA, v);  →  vram_put(v);  (palette colors refined later)
+            if (TryParsePoke(line, out string dataReg, out string dataVal)
+                && dataReg == "PPU_DATA")
+            {
+                statements[i] = indent + $"vram_put({dataVal});";
+                continue;
+            }
+
+            // poke(PPU_CTRL, v);  →  ppu_ctrl(PPUCTRL…);
+            if (TryParsePoke(line, out string ctrlReg, out string ctrlVal)
+                && ctrlReg == "PPU_CTRL")
+            {
+                statements[i] = indent + FormatLiftedEnumCall("ppu_ctrl", ctrlVal, NesLibEnumFormatter.FormatPpuCtrl, "PPUCTRL");
+                continue;
+            }
+
+            // poke(PPU_MASK, v);  →  ppu_mask_write(MASK…);  (not ppu_mask — that is the NMI shadow)
+            if (TryParsePoke(line, out string maskReg, out string maskVal)
+                && maskReg == "PPU_MASK")
+            {
+                statements[i] = indent + FormatLiftedEnumCall("ppu_mask_write", maskVal, NesLibEnumFormatter.FormatMask, "MASK");
+                continue;
+            }
+
+            // poke(APU_STATUS, v);  →  apu_status_write(APUSTATUS…);
+            if (TryParsePoke(line, out string apuStatReg, out string apuStatVal)
+                && apuStatReg == "APU_STATUS")
+            {
+                statements[i] = indent + FormatLiftedEnumCall("apu_status_write", apuStatVal, NesLibEnumFormatter.FormatApuStatus, "APUSTATUS");
+                continue;
+            }
+
+            // a = peek(PPU_STATUS);  →  a = ppu_status();
+            if (IsPeekPpuStatus(line))
+            {
+                statements[i] = indent + "a = ppu_status();";
+                continue;
+            }
+
+            // peek(JOYPAD1/2) → joypad*_read();  poke(JOYPAD1) → joypad1_write;
+            // poke($4017) is APU frame counter (same addr as JOYPAD2 on read).
+            if (TryLiftJoypadOrApuLine(line, out string liftedJoy))
+                statements[i] = indent + liftedJoy;
+        }
+    }
+
+    static bool TryLiftJoypadOrApuLine(string line, out string lifted)
+    {
+        lifted = null!;
+        if (TryParseAssignPeek(line, out string dest, out string peekAddr))
+        {
+            if (peekAddr == "JOYPAD1")
+            {
+                lifted = $"{dest} = joypad1_read();";
+                return true;
+            }
+            if (peekAddr == "JOYPAD2")
+            {
+                lifted = $"{dest} = joypad2_read();";
+                return true;
             }
         }
+        if (TryParsePoke(line, out string pokeAddr, out string pokeVal))
+        {
+            if (pokeAddr == "JOYPAD1")
+            {
+                lifted = $"joypad1_write({pokeVal});";
+                return true;
+            }
+            if (pokeAddr is "JOYPAD2" or "APU_FRAME")
+            {
+                lifted = FormatLiftedEnumCall("apu_frame", pokeVal, NesLibEnumFormatter.FormatApuFrame, "APUFRAME");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static bool TryParseAssignPeek(string line, out string dest, out string addr)
+    {
+        dest = addr = null!;
+        // a = peek(JOYPAD1);
+        const string mid = " = peek(";
+        if (!line.EndsWith(");", StringComparison.Ordinal))
+            return false;
+        int at = line.IndexOf(mid, StringComparison.Ordinal);
+        if (at < 0)
+            return false;
+        dest = line[..at].Trim();
+        if (dest is not ("a" or "x" or "y"))
+            return false;
+        addr = line[(at + mid.Length)..^2].Trim();
+        return addr.Length > 0;
+    }
+
+    /// <summary>
+    /// Zero pages used as packed controller state: shifted in after joypad*_read, then copied/masked.
+    /// </summary>
+    static HashSet<byte> CollectPadZeroPages(IEnumerable<List<string>> bodies)
+    {
+        var pads = new HashSet<byte>();
+        var bodyList = bodies.ToList();
+
+        foreach (var body in bodyList)
+        {
+            int joyWindow = 0;
+            foreach (string raw in body)
+            {
+                string t = raw.TrimStart();
+                if (t.Contains("joypad1_read()", StringComparison.Ordinal)
+                    || t.Contains("joypad2_read()", StringComparison.Ordinal))
+                    joyWindow = 32;
+
+                if (joyWindow > 0)
+                {
+                    joyWindow--;
+                    // Skip $00–$0F: commercial games often shift into ZP temps that are
+                    // also general pointers (Tetris ROL $00/$01), which must not be typed as PAD.
+                    foreach (byte zp in ExtractZpAddresses(t))
+                    {
+                        if (zp >= 0x10)
+                            pads.Add(zp);
+                    }
+                    if (t.StartsWith("return", StringComparison.Ordinal))
+                        joyWindow = 0;
+                }
+            }
+        }
+
+        // Propagate: poke(zp, a/y) while A/Y still holds pad bits.
+        bool changed;
+        do
+        {
+            changed = false;
+            foreach (var body in bodyList)
+            {
+                bool aPad = false, yPad = false;
+                foreach (string raw in body)
+                {
+                    string t = raw.TrimStart();
+                    if (TryParseAssignPeekZp(t, out string dest, out byte srcZp))
+                    {
+                        bool fromPad = pads.Contains(srcZp);
+                        if (dest == "a") aPad = fromPad;
+                        else if (dest == "y") yPad = fromPad;
+                        continue;
+                    }
+
+                    if (t.StartsWith("a = (byte)(a & peek(", StringComparison.Ordinal)
+                        || t.StartsWith("a = (byte)(a | peek(", StringComparison.Ordinal)
+                        || t.StartsWith("a = (byte)(a ^ peek(", StringComparison.Ordinal))
+                    {
+                        foreach (byte zp in ExtractZpAddresses(t))
+                        {
+                            if (pads.Contains(zp))
+                                aPad = true;
+                        }
+                        continue;
+                    }
+
+                    if (t.StartsWith("a = (byte)(a & ", StringComparison.Ordinal)
+                        || t.StartsWith("a = (byte)(a | ", StringComparison.Ordinal)
+                        || t.StartsWith("a = (byte)(a ^ ", StringComparison.Ordinal))
+                    {
+                        // Keep pad-ness through immediate mask/or.
+                        continue;
+                    }
+
+                    if (t == "y = a;")
+                    {
+                        yPad = aPad;
+                        continue;
+                    }
+                    if (t == "a = y;")
+                    {
+                        aPad = yPad;
+                        continue;
+                    }
+
+                    if (TryParsePokeZp(t, out byte dstZp, out string val))
+                    {
+                        bool fromPad = val switch
+                        {
+                            "a" => aPad,
+                            "y" => yPad,
+                            _ => false,
+                        };
+                        if (fromPad && pads.Add(dstZp))
+                            changed = true;
+                        continue;
+                    }
+
+                    if (t.StartsWith("a = ", StringComparison.Ordinal))
+                        aPad = false;
+                    else if (t.StartsWith("y = ", StringComparison.Ordinal))
+                        yPad = false;
+                }
+            }
+        } while (changed);
+
+        // Nearby high-ZP shadows (e.g. Tetris $F7 previous-buttons next to $F5/$F6).
+        // Require adjacency so PPU CTRL/MASK shadows at $FE/$FF are not typed as PAD.
+        if (pads.Count > 0)
+        {
+            foreach (var body in bodyList)
+            {
+                byte? lastPeekZp = null;
+                foreach (string raw in body)
+                {
+                    string t = raw.TrimStart();
+                    if (TryParseAssignPeekZp(t, out string dest, out byte srcZp) && dest == "a")
+                    {
+                        lastPeekZp = srcZp;
+                        continue;
+                    }
+
+                    if (lastPeekZp is byte zp && zp >= 0xF0 && !pads.Contains(zp)
+                        && pads.Any(p => Math.Abs(p - zp) <= 2)
+                        && LooksLikePadImmediateUse(t))
+                        pads.Add(zp);
+
+                    if (t.StartsWith("a = ", StringComparison.Ordinal))
+                        lastPeekZp = null;
+                }
+            }
+        }
+
+        return pads;
+    }
+
+    static bool LooksLikePadImmediateUse(string line)
+    {
+        foreach (string op in new[] { "&", "|", "^" })
+        {
+            string prefix = $"a = (byte)(a {op} ";
+            if (line.StartsWith(prefix, StringComparison.Ordinal) && line.EndsWith(");", StringComparison.Ordinal))
+            {
+                string imm = line[prefix.Length..^2].Trim();
+                return TryParseByteLiteral(imm, out byte b)
+                    && NesLibEnumFormatter.TryFormatPadByteOperand(b, out _);
+            }
+        }
+
+        const string zeroPrefix = "zero = a == ";
+        if (!line.StartsWith(zeroPrefix, StringComparison.Ordinal))
+            return false;
+        int semi = line.IndexOf(';');
+        if (semi < 0)
+            return false;
+        string cmp = line[zeroPrefix.Length..semi].Trim();
+        return TryParseByteLiteral(cmp, out byte c) && NesLibEnumFormatter.IsExactPadFlags(c);
+    }
+
+    static (HashSet<byte> Mask, HashSet<byte> Ctrl) CollectPpuShadowZeroPages(IEnumerable<List<string>> bodies)
+    {
+        var mask = new HashSet<byte>();
+        var ctrl = new HashSet<byte>();
+        foreach (var body in bodies)
+        {
+            byte? lastPeekZp = null;
+            foreach (string raw in body)
+            {
+                string t = raw.TrimStart();
+                if (TryParseAssignPeekZp(t, out string dest, out byte zp) && dest == "a")
+                {
+                    lastPeekZp = zp;
+                    continue;
+                }
+
+                if (lastPeekZp is byte shadow)
+                {
+                    if (t.StartsWith("ppu_mask_write(", StringComparison.Ordinal))
+                        mask.Add(shadow);
+                    else if (t.StartsWith("ppu_ctrl(", StringComparison.Ordinal))
+                        ctrl.Add(shadow);
+                }
+
+                // Keep shadow through AND/OR of immediates before the write.
+                if (t.StartsWith("a = (byte)(a & ", StringComparison.Ordinal)
+                    || t.StartsWith("a = (byte)(a | ", StringComparison.Ordinal)
+                    || t.StartsWith("a = (byte)(a ^ ", StringComparison.Ordinal))
+                    continue;
+
+                if (t.StartsWith("a = ", StringComparison.Ordinal)
+                    || t.StartsWith("ppu_", StringComparison.Ordinal)
+                    || t.StartsWith("poke(", StringComparison.Ordinal))
+                    lastPeekZp = null;
+            }
+        }
+        return (mask, ctrl);
+    }
+
+    const byte AKindNone = 0, AKindPad = 1, AKindMask = 2, AKindCtrl = 3;
+
+    static void FormatTypedZpLiterals(
+        List<string> statements,
+        HashSet<byte> padZps,
+        HashSet<byte> maskZps,
+        HashSet<byte> ctrlZps)
+    {
+        bool writingPalette = false;
+        byte aKind = AKindNone;
+
+        for (int i = 0; i < statements.Count; i++)
+        {
+            string indent = LeadingIndent(statements[i]);
+            string line = statements[i].TrimStart();
+
+            if (TryParseVramAdrConstant(line, out ushort vaddr))
+            {
+                writingPalette = (vaddr & 0xFF00) == 0x3F00;
+            }
+            else if (line.StartsWith("vram_adr(", StringComparison.Ordinal))
+            {
+                writingPalette = false;
+            }
+
+            if (line.StartsWith("vram_put(", StringComparison.Ordinal) && writingPalette
+                && TryParseVramPutLiteral(line, out byte color))
+            {
+                statements[i] = indent + $"vram_put({NesLibEnumFormatter.FormatNesColor(color)});";
+                continue;
+            }
+
+            if (TryParseAssignPeekZp(line, out string dest, out byte srcZp))
+            {
+                if (dest == "a")
+                {
+                    aKind = padZps.Contains(srcZp) ? AKindPad
+                        : maskZps.Contains(srcZp) ? AKindMask
+                        : ctrlZps.Contains(srcZp) ? AKindCtrl
+                        : AKindNone;
+                }
+                continue;
+            }
+
+            if (aKind != AKindNone && TryRewriteTypedImmediateLine(line, aKind, out string rewritten))
+            {
+                statements[i] = indent + rewritten;
+                continue;
+            }
+
+            if (line.StartsWith("a = (byte)(a & peek(", StringComparison.Ordinal)
+                || line.StartsWith("a = (byte)(a | peek(", StringComparison.Ordinal))
+            {
+                foreach (byte zp in ExtractZpAddresses(line))
+                {
+                    if (padZps.Contains(zp)) aKind = AKindPad;
+                    else if (maskZps.Contains(zp)) aKind = AKindMask;
+                    else if (ctrlZps.Contains(zp)) aKind = AKindCtrl;
+                }
+                continue;
+            }
+
+            if (line.StartsWith("a = ", StringComparison.Ordinal)
+                && !line.StartsWith("a = (byte)(a & ", StringComparison.Ordinal)
+                && !line.StartsWith("a = (byte)(a | ", StringComparison.Ordinal)
+                && !line.StartsWith("a = (byte)(a ^ ", StringComparison.Ordinal))
+            {
+                aKind = AKindNone;
+            }
+        }
+    }
+
+    static bool TryRewriteTypedImmediateLine(string line, byte kind, out string rewritten)
+    {
+        rewritten = null!;
+
+        Func<byte, string?> formatOp = kind switch
+        {
+            AKindPad => b => NesLibEnumFormatter.TryFormatPadByteOperand(b, out string e) ? e : null,
+            AKindMask => b => FormatFlagsByteOperand(b, NesLibEnumFormatter.FormatMask, tryClear: true),
+            AKindCtrl => b => FormatFlagsByteOperand(b, NesLibEnumFormatter.FormatPpuCtrl, tryClear: true),
+            _ => _ => null,
+        };
+
+        foreach (string op in new[] { "&", "|", "^" })
+        {
+            string prefix = $"a = (byte)(a {op} ";
+            if (line.StartsWith(prefix, StringComparison.Ordinal) && line.EndsWith(");", StringComparison.Ordinal))
+            {
+                string imm = line[prefix.Length..^2].Trim();
+                if (!TryParseByteLiteral(imm, out byte b))
+                    return false;
+                string? expr = formatOp(b);
+                if (expr == null)
+                    return false;
+                rewritten = $"{prefix}{expr});";
+                return true;
+            }
+        }
+
+        if (kind != AKindPad)
+            return false;
+
+        const string zeroPrefix = "zero = a == ";
+        if (!line.StartsWith(zeroPrefix, StringComparison.Ordinal))
+            return false;
+        int semi = line.IndexOf(';');
+        if (semi < 0)
+            return false;
+        string immCmp = line[zeroPrefix.Length..semi].Trim();
+        if (!TryParseByteLiteral(immCmp, out byte cb) || !NesLibEnumFormatter.IsExactPadFlags(cb))
+            return false;
+        if (!NesLibEnumFormatter.TryFormatPadByteOperand(cb, out string padExpr))
+            return false;
+
+        rewritten = line.Replace($"a == {immCmp}", $"a == {padExpr}")
+            .Replace($"a >= {immCmp}", $"a >= {padExpr}")
+            .Replace($"(a - {immCmp})", $"(a - {padExpr})");
+        return true;
+    }
+
+    static string? FormatFlagsByteOperand(byte value, Func<byte, string> formatFlags, bool tryClear)
+    {
+        if (tryClear)
+        {
+            byte cleared = (byte)~value;
+            if (cleared != 0 && BitCount(cleared) <= 2)
+            {
+                string clearedFmt = formatFlags(cleared);
+                if (!clearedFmt.Contains("0x", StringComparison.Ordinal) && clearedFmt != "0")
+                {
+                    return clearedFmt.Contains('|', StringComparison.Ordinal)
+                        ? $"(byte)~({clearedFmt})"
+                        : $"(byte)~{clearedFmt}";
+                }
+            }
+        }
+
+        if (value == 0)
+            return "0";
+        string formatted = formatFlags(value);
+        if (formatted.Contains("0x", StringComparison.Ordinal))
+            return null; // leftover unknown bits — keep raw hex
+        return formatted.Contains('|', StringComparison.Ordinal) || formatted == "0"
+            ? $"(byte)({formatted})"
+            : $"(byte){formatted}";
+    }
+
+    static int BitCount(byte value)
+    {
+        int n = 0;
+        while (value != 0)
+        {
+            n += value & 1;
+            value >>= 1;
+        }
+        return n;
+    }
+
+    static bool TryParseAssignPeekZp(string line, out string dest, out byte zp)
+    {
+        dest = null!;
+        zp = 0;
+        // a = peek((ushort)0xF5);
+        const string mid = " = peek((ushort)0x";
+        if (!line.EndsWith(");", StringComparison.Ordinal))
+            return false;
+        int at = line.IndexOf(mid, StringComparison.Ordinal);
+        if (at < 0)
+            return false;
+        dest = line[..at].Trim();
+        if (dest is not ("a" or "x" or "y"))
+            return false;
+        string hex = line[(at + mid.Length)..^2];
+        return byte.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out zp);
+    }
+
+    static bool TryParsePokeZp(string line, out byte zp, out string value)
+    {
+        zp = 0;
+        value = null!;
+        // poke((ushort)0xF5, a);
+        const string prefix = "poke((ushort)0x";
+        if (!line.StartsWith(prefix, StringComparison.Ordinal) || !line.EndsWith(");", StringComparison.Ordinal))
+            return false;
+        int comma = line.IndexOf(',', prefix.Length);
+        if (comma < 0)
+            return false;
+        string hex = line[prefix.Length..comma];
+        if (!byte.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out zp))
+            return false;
+        value = line[(comma + 1)..^2].Trim();
+        return value.Length > 0;
+    }
+
+    static IEnumerable<byte> ExtractZpAddresses(string line)
+    {
+        // (ushort)0xF5 or (ushort)0xf5
+        int i = 0;
+        while (i < line.Length)
+        {
+            int at = line.IndexOf("(ushort)0x", i, StringComparison.OrdinalIgnoreCase);
+            if (at < 0)
+                yield break;
+            int hexStart = at + "(ushort)0x".Length;
+            int hexEnd = hexStart;
+            while (hexEnd < line.Length && Uri.IsHexDigit(line[hexEnd]))
+                hexEnd++;
+            string hex = line[hexStart..hexEnd];
+            if ((hex.Length is 1 or 2)
+                && byte.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte zp))
+                yield return zp;
+            i = hexEnd;
+        }
+    }
+
+    static bool TryParseVramAdrConstant(string line, out ushort addr)
+    {
+        addr = 0;
+        // vram_adr(0x3F00);  or vram_adr(NTADR_…) — only raw hex / ushort cast of constant
+        if (!line.StartsWith("vram_adr(", StringComparison.Ordinal) || !line.EndsWith(");", StringComparison.Ordinal))
+            return false;
+        string inner = line["vram_adr(".Length..^2].Trim();
+        if (inner.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            return ushort.TryParse(inner.AsSpan(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out addr);
+        if (inner.StartsWith("(ushort)0x", StringComparison.OrdinalIgnoreCase))
+            return ushort.TryParse(inner.AsSpan("(ushort)0x".Length), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out addr);
+        return false;
+    }
+
+    static bool TryParseVramPutLiteral(string line, out byte value)
+    {
+        value = 0;
+        if (!line.StartsWith("vram_put(", StringComparison.Ordinal) || !line.EndsWith(");", StringComparison.Ordinal))
+            return false;
+        return TryParseByteLiteral(line["vram_put(".Length..^2].Trim(), out value);
+    }
+
+    /// <summary>
+    /// Emit <c>fn(EnumFlags)</c> for byte literals, or <c>fn((Enum)reg)</c> for dynamic values.
+    /// </summary>
+    static string FormatLiftedEnumCall(string fn, string value, Func<byte, string> formatFlags, string enumName)
+    {
+        if (TryParseByteLiteral(value, out byte b))
+        {
+            string formatted = formatFlags(b);
+            return $"{fn}({formatted});";
+        }
+        return $"{fn}(({enumName}){value});";
+    }
+
+    static string LeadingIndent(string line)
+    {
+        int i = 0;
+        while (i < line.Length && line[i] is ' ' or '\t')
+            i++;
+        return line[..i];
+    }
+
+    static bool TryFindNextPpuScroll(List<string> statements, int start, out int index, out string value)
+    {
+        value = null!;
+        index = -1;
+        for (int j = start; j < statements.Count && j < start + 8; j++)
+        {
+            string t = statements[j].TrimStart();
+            if (TryParsePoke(t, out string addr, out value) && addr == "PPU_SCROLL")
+            {
+                index = j;
+                return true;
+            }
+            // Latch-resetting or other PPU traffic between scroll halves — don't fuse.
+            if (t.Contains("PPU_", StringComparison.Ordinal)
+                || t.Contains("ppu_status", StringComparison.Ordinal)
+                || t.Contains("ppu_ctrl", StringComparison.Ordinal)
+                || t.Contains("ppu_mask", StringComparison.Ordinal)
+                || t.Contains("waitvsync", StringComparison.Ordinal)
+                || t.Contains("vram_", StringComparison.Ordinal))
+                return false;
+        }
+        return false;
+    }
+
+    static string FormatLiftedVramAdr(string hi, string lo)
+    {
+        if (TryParseByteLiteral(hi, out byte hiB) && TryParseByteLiteral(lo, out byte loB))
+            return NesLibCallFormatter.FormatVramAdr(loB, hiB);
+        if (lo is "0" or "0x00")
+            return $"vram_adr((ushort)({hi} << 8));";
+        return $"vram_adr((ushort)(({hi} << 8) | {lo}));";
+    }
+
+    static bool TryParseByteLiteral(string expr, out byte value)
+    {
+        value = 0;
+        string e = expr.Trim();
+        if (e.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            return byte.TryParse(e.AsSpan(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out value);
+        return byte.TryParse(e, NumberStyles.Integer, CultureInfo.InvariantCulture, out value);
     }
 
     static bool IsOneLineWaitVsync(string line) =>
@@ -560,12 +1228,26 @@ sealed class GeneralRecoverer
         if (!line.StartsWith(prefix, StringComparison.Ordinal) || !line.EndsWith(");", StringComparison.Ordinal))
             return false;
         string inner = line[prefix.Length..^2];
-        int comma = inner.IndexOf(',');
+        int comma = FindTopLevelComma(inner);
         if (comma < 0)
             return false;
         addr = inner[..comma].Trim();
         value = inner[(comma + 1)..].Trim();
         return addr.Length > 0 && value.Length > 0;
+    }
+
+    static int FindTopLevelComma(string s)
+    {
+        int depth = 0;
+        for (int i = 0; i < s.Length; i++)
+        {
+            char c = s[i];
+            if (c == '(') depth++;
+            else if (c == ')') depth--;
+            else if (c == ',' && depth == 0)
+                return i;
+        }
+        return -1;
     }
 
     static bool IsLabel(string line, string name) =>
@@ -673,7 +1355,7 @@ sealed class GeneralRecoverer
             case 0x8D when o1.HasValue && o2.HasValue: // STA abs
             {
                 ushort addr = Abs(o1, o2);
-                statements.Add(Store("a", lastImmA, FormatAddr(addr)));
+                statements.Add(Store("a", lastImmA, addr));
                 if (lastImmA.HasValue)
                     bank = ApplyBankSwitch(bank, addr, lastImmA.Value);
                 return;
@@ -681,7 +1363,7 @@ sealed class GeneralRecoverer
             case 0x8E when o1.HasValue && o2.HasValue: // STX abs
             {
                 ushort addr = Abs(o1, o2);
-                statements.Add(Store("x", lastImmX, FormatAddr(addr)));
+                statements.Add(Store("x", lastImmX, addr));
                 if (lastImmX.HasValue)
                     bank = ApplyBankSwitch(bank, addr, lastImmX.Value);
                 return;
@@ -689,7 +1371,7 @@ sealed class GeneralRecoverer
             case 0x8C when o1.HasValue && o2.HasValue: // STY abs
             {
                 ushort addr = Abs(o1, o2);
-                statements.Add(Store("y", lastImmY, FormatAddr(addr)));
+                statements.Add(Store("y", lastImmY, addr));
                 if (lastImmY.HasValue)
                     bank = ApplyBankSwitch(bank, addr, lastImmY.Value);
                 return;
@@ -783,17 +1465,29 @@ sealed class GeneralRecoverer
                 statements.Add("carry = (a & 0x80) != 0; a <<= 1;");
                 lastImmA = null;
                 return;
+            case 0x06 when o1.HasValue: // ASL zp
+                statements.Add($"{{ byte _m = peek({FormatZp(o1.Value)}); carry = (_m & 0x80) != 0; poke({FormatZp(o1.Value)}, (byte)(_m << 1)); }}");
+                return;
             case 0x4A: // LSR A
                 statements.Add("carry = (a & 1) != 0; a >>= 1;");
                 lastImmA = null;
+                return;
+            case 0x46 when o1.HasValue: // LSR zp
+                statements.Add($"{{ byte _m = peek({FormatZp(o1.Value)}); carry = (_m & 1) != 0; poke({FormatZp(o1.Value)}, (byte)(_m >> 1)); }}");
                 return;
             case 0x2A: // ROL A
                 statements.Add("{ bool _c = carry; carry = (a & 0x80) != 0; a = (byte)((a << 1) | (_c ? 1 : 0)); }");
                 lastImmA = null;
                 return;
+            case 0x26 when o1.HasValue: // ROL zp
+                statements.Add($"{{ bool _c = carry; byte _m = peek({FormatZp(o1.Value)}); carry = (_m & 0x80) != 0; poke({FormatZp(o1.Value)}, (byte)((_m << 1) | (_c ? 1 : 0))); }}");
+                return;
             case 0x6A: // ROR A
                 statements.Add("{ bool _c = carry; carry = (a & 1) != 0; a = (byte)((a >> 1) | (_c ? 0x80 : 0)); }");
                 lastImmA = null;
+                return;
+            case 0x66 when o1.HasValue: // ROR zp
+                statements.Add($"{{ bool _c = carry; byte _m = peek({FormatZp(o1.Value)}); carry = (_m & 1) != 0; poke({FormatZp(o1.Value)}, (byte)((_m >> 1) | (_c ? 0x80 : 0))); }}");
                 return;
             case 0x48: // PHA
                 statements.Add("push(a);");
@@ -892,6 +1586,9 @@ sealed class GeneralRecoverer
                 return;
         }
     }
+
+    static string Store(string reg, byte? imm, ushort absAddr) =>
+        Store(reg, imm, FormatAddr(absAddr, writing: true));
 
     static string Store(string reg, byte? imm, string addr) =>
         imm.HasValue ? $"poke({addr}, {FormatByte(imm.Value)});" : $"poke({addr}, {reg});";
@@ -1182,7 +1879,8 @@ sealed class GeneralRecoverer
 
     static string FormatByte(byte b) => b <= 9 ? b.ToString() : $"0x{b:X2}";
 
-    static string FormatAddr(ushort addr) => addr switch
+    // $4017 is JOYPAD2 on read and APU_FRAME on write.
+    static string FormatAddr(ushort addr, bool writing = false) => addr switch
     {
         NESLib.PPU_CTRL => "PPU_CTRL",
         NESLib.PPU_MASK => "PPU_MASK",
@@ -1196,7 +1894,17 @@ sealed class GeneralRecoverer
         NESLib.APU_STATUS => "APU_STATUS",
         NESLib.APU_PULSE1_CTRL => "APU_PULSE1_CTRL",
         NESLib.APU_PULSE2_CTRL => "APU_PULSE2_CTRL",
+        NESLib.APU_NOISE_CTRL => "APU_NOISE_CTRL",
+        NESLib.APU_NOISE_PERIOD => "APU_NOISE_PERIOD",
+        NESLib.APU_NOISE_LENGTH => "APU_NOISE_LENGTH",
+        NESLib.APU_TRIANGLE_TIMER_LO => "APU_TRIANGLE_TIMER_LO",
+        NESLib.APU_TRIANGLE_TIMER_HI => "APU_TRIANGLE_TIMER_HI",
+        NESLib.APU_DMC_FREQ => "APU_DMC_FREQ",
+        NESLib.APU_DMC_RAW => "APU_DMC_RAW",
+        NESLib.APU_DMC_START => "APU_DMC_START",
+        NESLib.APU_DMC_LEN => "APU_DMC_LEN",
         NESLib.JOYPAD1 => "JOYPAD1",
+        NESLib.APU_FRAME when writing => "APU_FRAME",
         NESLib.JOYPAD2 => "JOYPAD2",
         _ => $"(ushort)0x{addr:X4}",
     };

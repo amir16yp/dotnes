@@ -1,0 +1,95 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version without v prefix (defaults to Directory.Build.props Version)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: win-x64
+            os: windows-latest
+          - rid: linux-x64
+            os: ubuntu-latest
+          - rid: osx-x64
+            os: macos-13
+          - rid: osx-arm64
+            os: macos-14
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          if [[ -n "${{ inputs.version }}" ]]; then
+            V="${{ inputs.version }}"
+          elif [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            V="${GITHUB_REF_NAME#v}"
+          else
+            V="$(grep -oP '(?<=<Version>)[^<]+' Directory.Build.props | head -1 || true)"
+            if [[ -z "$V" ]]; then
+              V="$(sed -n 's/.*<Version>\([^<]*\)<\/Version>.*/\1/p' Directory.Build.props | head -1)"
+            fi
+          fi
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: $V"
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.x
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: extensions/dotnes-vscode/package-lock.json
+
+      - name: Pack release zip
+        shell: bash
+        run: bash scripts/pack-release.sh "${{ steps.version.outputs.version }}" "${{ matrix.rid }}"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dotnes-${{ steps.version.outputs.version }}-${{ matrix.rid }}
+          path: |
+            artifacts/release/dotnes-${{ steps.version.outputs.version }}-${{ matrix.rid }}.zip
+            artifacts/release/dotnes-vscode-${{ steps.version.outputs.version }}.vsix
+          if-no-files-found: error
+
+  release:
+    needs: package
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          path: dist
+
+      - name: Collect assets
+        shell: bash
+        run: |
+          mkdir -p assets
+          find dist -type f \( -name '*.zip' -o -name '*.vsix' \) -exec cp -n {} assets/ \;
+          ls -la assets/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: assets/*
+          generate_release_notes: true
+          fail_on_unmatched_files: true

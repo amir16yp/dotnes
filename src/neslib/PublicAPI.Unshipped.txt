@@ -1,4 +1,25 @@
 #nullable enable
+NES.APUFRAME
+NES.APUFRAME.IRQ_INHIBIT = 64 -> NES.APUFRAME
+NES.APUFRAME.MODE_5STEP = 128 -> NES.APUFRAME
+NES.APUSTATUS
+NES.APUSTATUS.DMC = 16 -> NES.APUSTATUS
+NES.APUSTATUS.NOISE = 8 -> NES.APUSTATUS
+NES.APUSTATUS.PULSE1 = 1 -> NES.APUSTATUS
+NES.APUSTATUS.PULSE2 = 2 -> NES.APUSTATUS
+NES.APUSTATUS.TRIANGLE = 4 -> NES.APUSTATUS
+NES.NESCodeBankAttribute
+NES.NESCodeBankAttribute.NESCodeBankAttribute(string! name) -> void
+NES.NESCodeBankAttribute.Name.get -> string!
+NES.PPUCTRL
+NES.PPUCTRL.BG_TABLE_1000 = 16 -> NES.PPUCTRL
+NES.PPUCTRL.MASTER_SLAVE = 64 -> NES.PPUCTRL
+NES.PPUCTRL.NAMETABLE_X = 1 -> NES.PPUCTRL
+NES.PPUCTRL.NAMETABLE_Y = 2 -> NES.PPUCTRL
+NES.PPUCTRL.NMI = 128 -> NES.PPUCTRL
+NES.PPUCTRL.SPR_SIZE_8X16 = 32 -> NES.PPUCTRL
+NES.PPUCTRL.SPR_TABLE_1000 = 8 -> NES.PPUCTRL
+NES.PPUCTRL.VRAM_INC_32 = 4 -> NES.PPUCTRL
 const NES.NESLib.APU_DMC_FREQ = 16400 -> ushort
 const NES.NESLib.APU_DMC_LEN = 16403 -> ushort
 const NES.NESLib.APU_DMC_RAW = 16401 -> ushort
@@ -60,13 +81,16 @@ const NES.NESLib.VRC7_PRG_BANK0 = 32768 -> ushort
 const NES.NESLib.VRC7_PRG_BANK1 = 40960 -> ushort
 const NES.NESLib.ZAPPER_LIGHT = 8 -> byte
 const NES.NESLib.ZAPPER_TRIGGER = 16 -> byte
-NES.NESCodeBankAttribute
-NES.NESCodeBankAttribute.Name.get -> string!
-NES.NESCodeBankAttribute.NESCodeBankAttribute(string! name) -> void
+static NES.NESLib.NT_ATTR_A(byte x, byte y) -> ushort
+static NES.NESLib.NT_ATTR_B(byte x, byte y) -> ushort
+static NES.NESLib.NT_ATTR_C(byte x, byte y) -> ushort
+static NES.NESLib.NT_ATTR_D(byte x, byte y) -> ushort
 static NES.NESLib.action52_write(ushort register, byte value) -> void
 static NES.NESLib.action53_set(byte value) -> void
+static NES.NESLib.apu_frame(NES.APUFRAME value) -> void
 static NES.NESLib.apu_play_noise(byte period, byte volume, bool toneMode) -> void
 static NES.NESLib.apu_play_triangle(ushort period, byte linear) -> void
+static NES.NESLib.apu_status_write(NES.APUSTATUS value) -> void
 static NES.NESLib.apu_stop_all() -> void
 static NES.NESLib.apu_stop_noise() -> void
 static NES.NESLib.apu_stop_triangle() -> void
@@ -114,6 +138,9 @@ static NES.NESLib.jaleco72_set(byte value) -> void
 static NES.NESLib.jaleco86_set(byte value) -> void
 static NES.NESLib.jaleco92_set(byte value) -> void
 static NES.NESLib.jaleco_set_chr_bank(byte bank) -> void
+static NES.NESLib.joypad1_read() -> byte
+static NES.NESLib.joypad1_write(byte value) -> void
+static NES.NESLib.joypad2_read() -> byte
 static NES.NESLib.jy209_set_prg_bank(byte reg, byte bank) -> void
 static NES.NESLib.jy211_set_prg_bank(byte reg, byte bank) -> void
 static NES.NESLib.jy90_set_prg_bank(byte reg, byte bank) -> void
@@ -245,93 +272,373 @@ static NES.NESLib.mapper252_set_prg_bank(byte which, byte bank) -> void
 static NES.NESLib.mapper253_set_prg_bank(byte which, byte bank) -> void
 static NES.NESLib.mapper254_set_outer(byte bank) -> void
 static NES.NESLib.mapper255_write(ushort register, byte value) -> void
+static NES.NESLib.mapper256_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper256_set_chr(byte value) -> void
+static NES.NESLib.mapper256_set_prg(byte value) -> void
+static NES.NESLib.mapper256_set_scramble(byte value) -> void
+static NES.NESLib.mapper256_set_scramble2(byte value) -> void
 static NES.NESLib.mapper25_set_prg_bank(byte which, byte bank) -> void
 static NES.NESLib.mapper260_set_bank(byte reg, byte bank) -> void
 static NES.NESLib.mapper260_set_chr_base(byte value) -> void
 static NES.NESLib.mapper260_set_mode(byte value) -> void
 static NES.NESLib.mapper260_set_prg_base(byte value) -> void
+static NES.NESLib.mapper261_write(ushort register, byte value) -> void
+static NES.NESLib.mapper262_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper262_set_mode(byte value) -> void
+static NES.NESLib.mapper263_write(ushort register, byte value) -> void
 static NES.NESLib.mapper264_set_mode(byte value) -> void
 static NES.NESLib.mapper264_set_outer(byte value) -> void
+static NES.NESLib.mapper265_write(ushort register, byte value) -> void
 static NES.NESLib.mapper266_set_prg(byte value) -> void
+static NES.NESLib.mapper267_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper267_set_outer(byte value) -> void
+static NES.NESLib.mapper268_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper268_write(ushort register, byte value) -> void
 static NES.NESLib.mapper269_set_bank(byte reg, byte bank) -> void
 static NES.NESLib.mapper269_set_outer(byte value) -> void
 static NES.NESLib.mapper26_set_prg16(byte bank) -> void
 static NES.NESLib.mapper270_set_outer(byte value) -> void
+static NES.NESLib.mapper271_set(byte value) -> void
 static NES.NESLib.mapper274_set_inner(byte value) -> void
 static NES.NESLib.mapper274_write(ushort register, byte value) -> void
 static NES.NESLib.mapper27_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper281_set_outer(byte value) -> void
+static NES.NESLib.mapper282_set_outer(byte value) -> void
+static NES.NESLib.mapper283_set(byte value) -> void
 static NES.NESLib.mapper285_set(byte value) -> void
 static NES.NESLib.mapper286_write(ushort register, byte value) -> void
+static NES.NESLib.mapper287_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper287_set_outer(byte value) -> void
+static NES.NESLib.mapper288_write(ushort register, byte value) -> void
+static NES.NESLib.mapper289_set(byte value) -> void
+static NES.NESLib.mapper289_set_mode(byte value) -> void
+static NES.NESLib.mapper289_set_outer(byte value) -> void
+static NES.NESLib.mapper290_write(ushort register, byte value) -> void
+static NES.NESLib.mapper291_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper291_set_outer(byte value) -> void
 static NES.NESLib.mapper292_set_bank(byte reg, byte bank) -> void
 static NES.NESLib.mapper292_set_prg(byte bank) -> void
+static NES.NESLib.mapper293_write(ushort register, byte value) -> void
+static NES.NESLib.mapper294_set_outer(byte value) -> void
+static NES.NESLib.mapper295_set_outer(byte value) -> void
 static NES.NESLib.mapper296_set_config(byte value) -> void
 static NES.NESLib.mapper296_set_outer(byte value) -> void
+static NES.NESLib.mapper297_set(byte value) -> void
+static NES.NESLib.mapper297_set_mode(byte value) -> void
+static NES.NESLib.mapper298_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper299_set(byte value) -> void
+static NES.NESLib.mapper300_write(ushort register, byte value) -> void
+static NES.NESLib.mapper301_write(ushort register, byte value) -> void
 static NES.NESLib.mapper302_write(ushort register, byte value) -> void
+static NES.NESLib.mapper303_apply(byte value) -> void
+static NES.NESLib.mapper303_write(ushort register, byte value) -> void
 static NES.NESLib.mapper304_set_prg(byte value) -> void
 static NES.NESLib.mapper305_write(ushort register, byte value) -> void
+static NES.NESLib.mapper306_write(ushort register, byte value) -> void
+static NES.NESLib.mapper307_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper308_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper309_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper310_write(ushort register, byte value) -> void
+static NES.NESLib.mapper312_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper313_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper314_set(byte value) -> void
+static NES.NESLib.mapper314_set_mode(byte value) -> void
+static NES.NESLib.mapper314_set_prg(byte value) -> void
 static NES.NESLib.mapper315_set_bank(byte reg, byte bank) -> void
 static NES.NESLib.mapper315_set_outer(byte value) -> void
+static NES.NESLib.mapper319_set_chr(byte value) -> void
+static NES.NESLib.mapper319_set_prg(byte value) -> void
 static NES.NESLib.mapper31_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper320_set(byte value) -> void
+static NES.NESLib.mapper320_write(ushort register, byte value) -> void
+static NES.NESLib.mapper321_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper321_set_outer(byte value) -> void
+static NES.NESLib.mapper322_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper322_set_outer(byte value) -> void
+static NES.NESLib.mapper323_set_outer(byte value) -> void
+static NES.NESLib.mapper324_set(byte value) -> void
+static NES.NESLib.mapper325_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper327_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper327_set_outer(byte value) -> void
+static NES.NESLib.mapper329_set(byte value) -> void
 static NES.NESLib.mapper331_write(ushort register, byte value) -> void
+static NES.NESLib.mapper332_set(byte value) -> void
+static NES.NESLib.mapper332_set_chr(byte value) -> void
+static NES.NESLib.mapper332_set_prg(byte value) -> void
+static NES.NESLib.mapper333_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper333_write(ushort register, byte value) -> void
+static NES.NESLib.mapper334_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper334_set_prg(byte value) -> void
+static NES.NESLib.mapper335_set_chr(byte value) -> void
+static NES.NESLib.mapper335_set_prg(byte value) -> void
+static NES.NESLib.mapper336_set(byte value) -> void
+static NES.NESLib.mapper337_write(ushort register, byte value) -> void
+static NES.NESLib.mapper338_write(ushort register, byte value) -> void
+static NES.NESLib.mapper339_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper339_set_outer(byte value) -> void
+static NES.NESLib.mapper340_write(ushort register, byte value) -> void
+static NES.NESLib.mapper341_write(ushort register, byte value) -> void
+static NES.NESLib.mapper342_write(ushort register, byte value) -> void
+static NES.NESLib.mapper344_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper344_set_outer(byte value) -> void
+static NES.NESLib.mapper345_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper345_set_outer(byte value) -> void
+static NES.NESLib.mapper346_write(ushort register, byte value) -> void
 static NES.NESLib.mapper347_write(ushort register, byte value) -> void
+static NES.NESLib.mapper348_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper348_set_outer(byte value) -> void
+static NES.NESLib.mapper349_write(ushort register, byte value) -> void
+static NES.NESLib.mapper350_write(ushort register, byte value) -> void
 static NES.NESLib.mapper351_set_bank(byte reg, byte bank) -> void
 static NES.NESLib.mapper351_set_chr_base(byte value) -> void
 static NES.NESLib.mapper351_set_mode(byte value) -> void
 static NES.NESLib.mapper351_set_prg_base(byte value) -> void
+static NES.NESLib.mapper353_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper353_write(ushort register, byte value) -> void
 static NES.NESLib.mapper354_write(ushort register, byte value) -> void
+static NES.NESLib.mapper356_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper356_set_outer(byte value) -> void
 static NES.NESLib.mapper357_set_aux(byte value) -> void
 static NES.NESLib.mapper357_set_prg(byte value) -> void
+static NES.NESLib.mapper358_set_outer(byte value) -> void
 static NES.NESLib.mapper359_set_prg_bank(byte which, byte bank) -> void
 static NES.NESLib.mapper359_set_prg_base(byte value) -> void
 static NES.NESLib.mapper35_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper361_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper361_set_outer(byte value) -> void
+static NES.NESLib.mapper362_write(ushort register, byte value) -> void
+static NES.NESLib.mapper363_set_outer(byte value) -> void
+static NES.NESLib.mapper364_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper364_set_outer(byte value) -> void
 static NES.NESLib.mapper365_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper366_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper366_set_outer(byte value) -> void
+static NES.NESLib.mapper367_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper367_write(ushort register, byte value) -> void
 static NES.NESLib.mapper368_set_prg(byte value) -> void
+static NES.NESLib.mapper369_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper369_set_outer(byte value) -> void
+static NES.NESLib.mapper370_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper370_set_outer(byte value) -> void
 static NES.NESLib.mapper371_set(byte value) -> void
 static NES.NESLib.mapper371_set_aux(byte value) -> void
+static NES.NESLib.mapper372_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper372_set_outer(byte value) -> void
+static NES.NESLib.mapper373_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper373_set_outer(byte value) -> void
 static NES.NESLib.mapper375_write(ushort register, byte value) -> void
+static NES.NESLib.mapper376_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper376_set_outer(byte value) -> void
+static NES.NESLib.mapper376_set_outer_hi(byte value) -> void
+static NES.NESLib.mapper377_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper377_set_outer(byte value) -> void
+static NES.NESLib.mapper378_write(ushort register, byte value) -> void
+static NES.NESLib.mapper379_set(byte value) -> void
 static NES.NESLib.mapper37_set_outer(byte bank) -> void
 static NES.NESLib.mapper380_write(ushort register, byte value) -> void
+static NES.NESLib.mapper381_set(byte value) -> void
+static NES.NESLib.mapper382_set(byte value) -> void
+static NES.NESLib.mapper382_write(ushort register, byte value) -> void
 static NES.NESLib.mapper383_set_bank(byte reg, byte bank) -> void
 static NES.NESLib.mapper383_write(ushort register, byte value) -> void
+static NES.NESLib.mapper384_set_outer(byte value) -> void
+static NES.NESLib.mapper385_write(ushort register, byte value) -> void
+static NES.NESLib.mapper386_set_outer(byte value) -> void
+static NES.NESLib.mapper387_set_outer(byte value) -> void
+static NES.NESLib.mapper388_set_outer(byte value) -> void
+static NES.NESLib.mapper389_write(ushort register, byte value) -> void
 static NES.NESLib.mapper38_set(byte value) -> void
+static NES.NESLib.mapper390_set(byte value) -> void
 static NES.NESLib.mapper391_set_bank(byte reg, byte bank) -> void
 static NES.NESLib.mapper391_set_outer(byte value) -> void
+static NES.NESLib.mapper392_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper392_set_outer(byte value) -> void
+static NES.NESLib.mapper393_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper393_set_outer(byte value) -> void
+static NES.NESLib.mapper394_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper394_set_mode(byte value) -> void
+static NES.NESLib.mapper394_set_outer(byte value) -> void
+static NES.NESLib.mapper395_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper395_set_outer(byte value) -> void
+static NES.NESLib.mapper395_set_outer2(byte value) -> void
+static NES.NESLib.mapper396_set(byte value) -> void
+static NES.NESLib.mapper396_set_outer(byte value) -> void
+static NES.NESLib.mapper397_set_outer(byte value) -> void
 static NES.NESLib.mapper398_write(ushort register, byte value) -> void
 static NES.NESLib.mapper39_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper401_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper401_set_outer(byte value) -> void
+static NES.NESLib.mapper402_write(ushort register, byte value) -> void
+static NES.NESLib.mapper403_set_chr(byte value) -> void
+static NES.NESLib.mapper403_set_mode(byte value) -> void
+static NES.NESLib.mapper403_set_prg(byte value) -> void
+static NES.NESLib.mapper404_set_outer(byte value) -> void
+static NES.NESLib.mapper405_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper405_set_chr(byte value) -> void
+static NES.NESLib.mapper405_set_prg(byte value) -> void
+static NES.NESLib.mapper406_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper407_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper407_set_chr(byte value) -> void
+static NES.NESLib.mapper407_set_prg(byte value) -> void
+static NES.NESLib.mapper407_set_scramble2(byte value) -> void
+static NES.NESLib.mapper408_set_chr(byte value) -> void
+static NES.NESLib.mapper408_set_prg(byte value) -> void
+static NES.NESLib.mapper408_set_scramble(byte value) -> void
+static NES.NESLib.mapper409_write(ushort register, byte value) -> void
 static NES.NESLib.mapper40_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper410_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper410_set_outer(byte value) -> void
+static NES.NESLib.mapper411_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper411_set_outer(byte value) -> void
+static NES.NESLib.mapper411_set_outer2(byte value) -> void
+static NES.NESLib.mapper412_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper412_set_chr(byte value) -> void
+static NES.NESLib.mapper412_set_mode(byte value) -> void
+static NES.NESLib.mapper412_set_prg(byte value) -> void
+static NES.NESLib.mapper414_write(ushort register, byte value) -> void
+static NES.NESLib.mapper415_set_prg(byte value) -> void
+static NES.NESLib.mapper416_set(byte value) -> void
 static NES.NESLib.mapper417_write(ushort register, byte value) -> void
+static NES.NESLib.mapper419_set_chr(byte value) -> void
+static NES.NESLib.mapper419_set_io(byte value) -> void
+static NES.NESLib.mapper419_set_prg(byte value) -> void
+static NES.NESLib.mapper419_set_scramble(byte value) -> void
 static NES.NESLib.mapper41_set(byte value) -> void
+static NES.NESLib.mapper422_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper422_set_outer(byte value) -> void
+static NES.NESLib.mapper423_set_outer(byte value) -> void
+static NES.NESLib.mapper424_set_outer(byte value) -> void
+static NES.NESLib.mapper425_set_outer(byte value) -> void
+static NES.NESLib.mapper426_set_gpio(byte value) -> void
+static NES.NESLib.mapper427_set_gpio(byte value) -> void
+static NES.NESLib.mapper427_write(ushort register, byte value) -> void
 static NES.NESLib.mapper429_set(byte value) -> void
 static NES.NESLib.mapper42_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper430_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper430_set_outer(byte value) -> void
+static NES.NESLib.mapper431_set(byte value) -> void
+static NES.NESLib.mapper431_set_outer(byte value) -> void
+static NES.NESLib.mapper432_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper432_set_outer(byte value) -> void
+static NES.NESLib.mapper432_set_solder(byte value) -> void
+static NES.NESLib.mapper433_set(byte value) -> void
+static NES.NESLib.mapper434_set(byte value) -> void
+static NES.NESLib.mapper434_set_outer(byte value) -> void
+static NES.NESLib.mapper435_write(ushort register, byte value) -> void
+static NES.NESLib.mapper436_set_io(byte value) -> void
+static NES.NESLib.mapper436_set_outer(byte value) -> void
+static NES.NESLib.mapper437_write(ushort register, byte value) -> void
+static NES.NESLib.mapper438_write(ushort register, byte value) -> void
+static NES.NESLib.mapper439_set(byte value) -> void
+static NES.NESLib.mapper439_set_mask(byte value) -> void
+static NES.NESLib.mapper439_set_outer(byte value) -> void
 static NES.NESLib.mapper43_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper441_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper441_set_outer(byte value) -> void
+static NES.NESLib.mapper443_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper443_set_outer(byte value) -> void
 static NES.NESLib.mapper444_set_bank(byte reg, byte bank) -> void
 static NES.NESLib.mapper444_set_outer(byte value) -> void
+static NES.NESLib.mapper445_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper445_set_chr(byte value) -> void
+static NES.NESLib.mapper445_set_mode(byte value) -> void
+static NES.NESLib.mapper445_set_prg(byte value) -> void
 static NES.NESLib.mapper446_set_mode(byte value) -> void
 static NES.NESLib.mapper446_write(ushort register, byte value) -> void
+static NES.NESLib.mapper447_set_outer(byte value) -> void
+static NES.NESLib.mapper448_set_outer(byte value) -> void
+static NES.NESLib.mapper449_write(ushort register, byte value) -> void
 static NES.NESLib.mapper44_set_outer(byte bank) -> void
+static NES.NESLib.mapper450_set_outer(byte value) -> void
 static NES.NESLib.mapper451_write(ushort register, byte value) -> void
 static NES.NESLib.mapper452_write(ushort register, byte value) -> void
+static NES.NESLib.mapper453_set(byte value) -> void
 static NES.NESLib.mapper454_write(ushort register, byte value) -> void
+static NES.NESLib.mapper455_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper455_set_outer(byte value) -> void
+static NES.NESLib.mapper456_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper456_set_outer(byte value) -> void
+static NES.NESLib.mapper457_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper457_set_outer(byte value) -> void
+static NES.NESLib.mapper458_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper458_set_outer(byte value) -> void
 static NES.NESLib.mapper45_set_outer(byte bank) -> void
+static NES.NESLib.mapper460_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper460_set_outer(byte value) -> void
+static NES.NESLib.mapper461_set_outer(byte value) -> void
+static NES.NESLib.mapper467_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper467_set_outer(byte value) -> void
+static NES.NESLib.mapper468_set_mode(byte value) -> void
+static NES.NESLib.mapper469_set_mode(byte value) -> void
 static NES.NESLib.mapper46_set(byte value) -> void
+static NES.NESLib.mapper470_set(byte value) -> void
+static NES.NESLib.mapper470_set_outer(byte value) -> void
+static NES.NESLib.mapper471_write(ushort register, byte value) -> void
+static NES.NESLib.mapper472_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper472_set_outer(byte value) -> void
 static NES.NESLib.mapper47_set_outer(byte bank) -> void
 static NES.NESLib.mapper49_set(byte value) -> void
 static NES.NESLib.mapper50_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper512_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper512_set_mode(byte value) -> void
+static NES.NESLib.mapper513_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper514_set(byte value) -> void
+static NES.NESLib.mapper515_set(byte value) -> void
+static NES.NESLib.mapper516_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper516_write(ushort register, byte value) -> void
+static NES.NESLib.mapper517_set(byte value) -> void
 static NES.NESLib.mapper518_set_mode(byte value) -> void
 static NES.NESLib.mapper518_set_prg(byte value) -> void
+static NES.NESLib.mapper519_write(ushort register, byte value) -> void
 static NES.NESLib.mapper51_set(byte value) -> void
+static NES.NESLib.mapper520_write(ushort register, byte value) -> void
+static NES.NESLib.mapper521_set_prg(byte value) -> void
+static NES.NESLib.mapper522_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper523_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper525_set_prg(byte value) -> void
+static NES.NESLib.mapper526_write(ushort register, byte value) -> void
+static NES.NESLib.mapper527_set_prg_bank(byte which, byte bank) -> void
 static NES.NESLib.mapper528_write(ushort register, byte value) -> void
+static NES.NESLib.mapper529_set_prg(byte value) -> void
 static NES.NESLib.mapper52_set_outer(byte bank) -> void
+static NES.NESLib.mapper530_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper533_set_chr(byte value) -> void
 static NES.NESLib.mapper534_set_bank(byte reg, byte bank) -> void
 static NES.NESLib.mapper534_set_outer(byte value) -> void
+static NES.NESLib.mapper535_set_prg(byte value) -> void
+static NES.NESLib.mapper536_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper537_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper538_set_prg(byte value) -> void
+static NES.NESLib.mapper539_set_prg(byte value) -> void
 static NES.NESLib.mapper53_set(byte value) -> void
+static NES.NESLib.mapper540_write(ushort register, byte value) -> void
+static NES.NESLib.mapper541_write(ushort register, byte value) -> void
 static NES.NESLib.mapper542_set_prg_bank(byte which, byte bank) -> void
 static NES.NESLib.mapper543_set_outer(byte value) -> void
 static NES.NESLib.mapper544_set_prg2(byte bank) -> void
+static NES.NESLib.mapper547_set_prg0(byte bank) -> void
+static NES.NESLib.mapper547_write(ushort register, byte value) -> void
+static NES.NESLib.mapper548_apply(byte value) -> void
+static NES.NESLib.mapper548_set_latch(byte value) -> void
 static NES.NESLib.mapper54_set(byte value) -> void
+static NES.NESLib.mapper550_set(byte value) -> void
+static NES.NESLib.mapper550_set_outer(byte value) -> void
+static NES.NESLib.mapper551_set_mode(byte value) -> void
+static NES.NESLib.mapper551_set_prg_high(byte value) -> void
+static NES.NESLib.mapper551_set_prg_low(byte value) -> void
+static NES.NESLib.mapper552_set_prg_bank(byte bank) -> void
 static NES.NESLib.mapper558_set_mode(byte value) -> void
 static NES.NESLib.mapper558_set_prg_high(byte value) -> void
 static NES.NESLib.mapper558_set_prg_low(byte value) -> void
+static NES.NESLib.mapper561_set(byte value) -> void
+static NES.NESLib.mapper561_set_irq_hi(byte value) -> void
+static NES.NESLib.mapper561_set_irq_lo(byte value) -> void
+static NES.NESLib.mapper561_write(ushort register, byte value) -> void
+static NES.NESLib.mapper562_set(byte value) -> void
+static NES.NESLib.mapper562_set_irq_hi(byte value) -> void
+static NES.NESLib.mapper562_set_irq_lo(byte value) -> void
+static NES.NESLib.mapper562_set_tgd(byte value) -> void
+static NES.NESLib.mapper562_write(ushort register, byte value) -> void
 static NES.NESLib.mapper56_set_prg_bank(byte bank) -> void
 static NES.NESLib.mapper57_set(byte value) -> void
 static NES.NESLib.mapper58_set(byte value) -> void
@@ -371,10 +678,6 @@ static NES.NESLib.nina113_set_banks(byte prgBank, byte chrBank) -> void
 static NES.NESLib.nina_set(byte value) -> void
 static NES.NESLib.nina_set_banks(byte prgBank, byte chrBank) -> void
 static NES.NESLib.nop() -> void
-static NES.NESLib.NT_ATTR_A(byte x, byte y) -> ushort
-static NES.NESLib.NT_ATTR_B(byte x, byte y) -> ushort
-static NES.NESLib.NT_ATTR_C(byte x, byte y) -> ushort
-static NES.NESLib.NT_ATTR_D(byte x, byte y) -> ushort
 static NES.NESLib.oam_dma(byte page) -> void
 static NES.NESLib.oeka96_set(byte value) -> void
 static NES.NESLib.pad1_poll() -> NES.PAD
@@ -386,6 +689,8 @@ static NES.NESLib.pha() -> void
 static NES.NESLib.php() -> void
 static NES.NESLib.pla() -> void
 static NES.NESLib.plp() -> void
+static NES.NESLib.ppu_ctrl(NES.PPUCTRL value) -> void
+static NES.NESLib.ppu_mask_write(NES.MASK mask) -> void
 static NES.NESLib.ppu_scroll(byte x, byte y) -> void
 static NES.NESLib.ppu_status() -> byte
 static NES.NESLib.ppu_use_native_renderer() -> void
@@ -444,4 +749,3 @@ static NES.NESLib.vrc7_set_prg_bank(byte which, byte bank) -> void
 static NES.NESLib.vs99_set_chr_bank(byte bank) -> void
 static NES.NESLib.zapper_light() -> bool
 static NES.NESLib.zapper_trigger() -> bool
-

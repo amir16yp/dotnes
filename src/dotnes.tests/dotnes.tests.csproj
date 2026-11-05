@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\dotnes.chr\dotnes.chr.csproj" />
     <ProjectReference Include="..\dotnes.tasks\dotnes.tasks.csproj" />
     <ProjectReference Include="..\neslib\neslib.csproj" />
   </ItemGroup>

@@ -1,0 +1,144 @@
+{
+  "name": "dotnes",
+  "displayName": "dotNES",
+  "description": "Visual editing and tooling for .NES (dotnes) projects — CHR tile editor, NES import, and language server.",
+  "version": "0.3.3",
+  "publisher": "dotnes",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:csharp",
+    "workspaceContains:**/*.csproj",
+    "onCustomEditor:dotnes.chrEditor",
+    "onCommand:dotnes.importNes",
+    "onCommand:dotnes.newProject",
+    "onCommand:dotnes.build",
+    "onCommand:dotnes.run"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dotnes.importNes",
+        "title": "Import NES ROM…",
+        "category": "dotNES"
+      },
+      {
+        "command": "dotnes.newProject",
+        "title": "New Project…",
+        "category": "dotNES"
+      },
+      {
+        "command": "dotnes.build",
+        "title": "Build",
+        "category": "dotNES"
+      },
+      {
+        "command": "dotnes.run",
+        "title": "Run in Mesen",
+        "category": "dotNES"
+      },
+      {
+        "command": "dotnes.openChrAsText",
+        "title": "Open CHR as Text",
+        "category": "dotNES"
+      }
+    ],
+    "configuration": {
+      "title": "dotNES",
+      "properties": {
+        "dotnes.lsp.path": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the dotnes-lsp executable. Empty = look up on PATH."
+        },
+        "dotnes.cli.path": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the dotnes CLI. Empty = look up on PATH."
+        },
+        "dotnes.decompiler.path": {
+          "type": "string",
+          "default": "",
+          "description": "Path to dotnes-decompiler. Empty = look up on PATH."
+        }
+      }
+    },
+    "customEditors": [
+      {
+        "viewType": "dotnes.chrEditor",
+        "displayName": "dotNES CHR Tile Editor",
+        "selector": [
+          {
+            "filenamePattern": "**/chr*.s"
+          },
+          {
+            "filenamePattern": "**/*chr*.s"
+          }
+        ],
+        "priority": "default"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "dotnes.importNes",
+          "when": "resourceExtname == .nes",
+          "group": "dotnes@1"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "dotnes.openChrAsText",
+          "when": "activeCustomEditorId == 'dotnes.chrEditor'",
+          "group": "navigation"
+        }
+      ]
+    },
+    "languages": [
+      {
+        "id": "ca65",
+        "aliases": [
+          "ca65",
+          "6502 Assembly"
+        ],
+        "extensions": [
+          ".s"
+        ]
+      }
+    ]
+  },
+  "extensionDependencies": [
+    "ms-dotnettools.csharp"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonathanpeppers/dotnes.git"
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package:js",
+    "compile": "tsc -p ./",
+    "package:js": "npm run compile && node esbuild.mjs",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package --no-dependencies --allow-missing-repository"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.1",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

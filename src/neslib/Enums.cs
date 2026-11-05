@@ -123,6 +123,30 @@ public enum MASK : byte
 }
 
 /// <summary>
+/// PPUCTRL ($2000) bits for <see cref="NESLib.ppu_ctrl(PPUCTRL)"/>.
+/// </summary>
+[Flags]
+public enum PPUCTRL : byte
+{
+    /// <summary>Base nametable address bit 0 (X).</summary>
+    NAMETABLE_X = 0x01,
+    /// <summary>Base nametable address bit 1 (Y).</summary>
+    NAMETABLE_Y = 0x02,
+    /// <summary>VRAM address increment: 0 = +1, set = +32.</summary>
+    VRAM_INC_32 = 0x04,
+    /// <summary>Sprite pattern table at $1000 (8x8 sprites).</summary>
+    SPR_TABLE_1000 = 0x08,
+    /// <summary>Background pattern table at $1000.</summary>
+    BG_TABLE_1000 = 0x10,
+    /// <summary>8x16 sprites (clear = 8x8).</summary>
+    SPR_SIZE_8X16 = 0x20,
+    /// <summary>PPU master/slave select (EXT pins; normally clear on consumer NES).</summary>
+    MASTER_SLAVE = 0x40,
+    /// <summary>Generate NMI at start of vblank.</summary>
+    NMI = 0x80,
+}
+
+/// <summary>
 /// Sprite size for <see cref="NESLib.oam_size(SpriteSize)"/>
 /// </summary>
 public enum SpriteSize : byte
@@ -188,6 +212,36 @@ public enum APUDuty : byte
     Duty50 = 2,
     /// <summary>75% duty cycle (same as 25% inverted)</summary>
     Duty75 = 3,
+}
+
+/// <summary>
+/// Channel-enable bits for APUSTATUS writes ($4015) via <see cref="NESLib.apu_status_write"/>.
+/// </summary>
+[Flags]
+public enum APUSTATUS : byte
+{
+    /// <summary>Enable pulse channel 1.</summary>
+    PULSE1 = 0x01,
+    /// <summary>Enable pulse channel 2.</summary>
+    PULSE2 = 0x02,
+    /// <summary>Enable triangle channel.</summary>
+    TRIANGLE = 0x04,
+    /// <summary>Enable noise channel.</summary>
+    NOISE = 0x08,
+    /// <summary>Enable DMC channel.</summary>
+    DMC = 0x10,
+}
+
+/// <summary>
+/// APU frame-counter control bits ($4017) for <see cref="NESLib.apu_frame"/>.
+/// </summary>
+[Flags]
+public enum APUFRAME : byte
+{
+    /// <summary>Inhibit the frame IRQ (bit 6).</summary>
+    IRQ_INHIBIT = 0x40,
+    /// <summary>5-step sequence mode (bit 7); clear = 4-step.</summary>
+    MODE_5STEP = 0x80,
 }
 
 /// <summary>

@@ -1,0 +1,118 @@
+:root {
+  --bg: #1b1d21;
+  --panel: #252830;
+  --fg: #e8eaed;
+  --muted: #9aa0a6;
+  --accent: #5b9fd4;
+  --c0: #0d0d0d;
+  --c1: #555555;
+  --c2: #aaaaaa;
+  --c3: #f0f0f0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font: 13px/1.4 ui-sans-serif, system-ui, sans-serif;
+}
+
+header {
+  padding: 10px 14px;
+  background: var(--panel);
+  border-bottom: 1px solid #333842;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+}
+
+label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+
+#status {
+  color: var(--muted);
+}
+
+button {
+  background: var(--accent);
+  color: #0b1220;
+  border: 0;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.palette {
+  display: flex;
+  gap: 6px;
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.swatch.active {
+  border-color: var(--accent);
+}
+
+.swatch[data-c="0"] {
+  background: var(--c0);
+}
+.swatch[data-c="1"] {
+  background: var(--c1);
+}
+.swatch[data-c="2"] {
+  background: var(--c2);
+}
+.swatch[data-c="3"] {
+  background: var(--c3);
+}
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 12px;
+  padding: 12px;
+  height: calc(100% - 88px);
+}
+
+#sheet {
+  width: 100%;
+  height: 100%;
+  background: #111318;
+  image-rendering: pixelated;
+  cursor: crosshair;
+}
+
+#detail {
+  width: 256px;
+  height: 256px;
+  background: #111318;
+  image-rendering: pixelated;
+  border: 1px solid #333842;
+  justify-self: center;
+  cursor: crosshair;
+}

@@ -74,6 +74,10 @@ static class NesLibCallFormatter
             "oam_size" => $"oam_size({(aValue.HasValue ? NesLibEnumFormatter.FormatSpriteSize(aValue.Value) : "SpriteSize.Size8x8")});",
             "vram_inc" => $"vram_inc({(aValue.HasValue ? NesLibEnumFormatter.FormatVramIncrement(aValue.Value) : "VramIncrement.By1")});",
             "ppu_mask" => $"ppu_mask({(aValue.HasValue ? NesLibEnumFormatter.FormatMask(aValue.Value) : "0")});",
+            "ppu_mask_write" => $"ppu_mask_write({(aValue.HasValue ? NesLibEnumFormatter.FormatMask(aValue.Value) : "0")});",
+            "ppu_ctrl" => $"ppu_ctrl({(aValue.HasValue ? NesLibEnumFormatter.FormatPpuCtrl(aValue.Value) : "0")});",
+            "apu_frame" => $"apu_frame({(aValue.HasValue ? NesLibEnumFormatter.FormatApuFrame(aValue.Value) : "0")});",
+            "apu_status_write" => $"apu_status_write({(aValue.HasValue ? NesLibEnumFormatter.FormatApuStatus(aValue.Value) : "0")});",
             "music_pause" => $"music_pause({((aValue ?? 0) != 0).ToString().ToLowerInvariant()});",
             "apu_stop" => $"apu_stop({(aValue.HasValue ? NesLibEnumFormatter.FormatPulseChannel(aValue.Value) : "PulseChannel.Pulse1")});",
             "mmc1_set_mirroring" => $"mmc1_set_mirroring({(aValue.HasValue ? NesLibEnumFormatter.FormatMmc1Mirror(aValue.Value) : "0")});",
@@ -163,6 +167,18 @@ static class NesLibCallFormatter
             "ppu_mask" when args.Length >= 1 =>
                 $"ppu_mask({FormatMaskArg(args[0])});",
 
+            "ppu_mask_write" when args.Length >= 1 =>
+                $"ppu_mask_write({FormatMaskArg(args[0])});",
+
+            "ppu_ctrl" when args.Length >= 1 =>
+                $"ppu_ctrl({FormatPpuCtrlArg(args[0])});",
+
+            "apu_frame" when args.Length >= 1 =>
+                $"apu_frame({FormatApuFrameArg(args[0])});",
+
+            "apu_status_write" when args.Length >= 1 =>
+                $"apu_status_write({FormatApuStatusArg(args[0])});",
+
             "mmc1_set_mirroring" when args.Length >= 1 =>
                 $"mmc1_set_mirroring({FormatMmc1MirrorArg(args[0])});",
 
@@ -228,6 +244,15 @@ static class NesLibCallFormatter
 
     static string FormatMaskArg(string arg) =>
         TryParseByte(arg, out byte b) ? NesLibEnumFormatter.FormatMask(b) : arg;
+
+    static string FormatPpuCtrlArg(string arg) =>
+        TryParseByte(arg, out byte b) ? NesLibEnumFormatter.FormatPpuCtrl(b) : arg;
+
+    static string FormatApuStatusArg(string arg) =>
+        TryParseByte(arg, out byte b) ? NesLibEnumFormatter.FormatApuStatus(b) : arg;
+
+    static string FormatApuFrameArg(string arg) =>
+        TryParseByte(arg, out byte b) ? NesLibEnumFormatter.FormatApuFrame(b) : arg;
 
     static string FormatPadArg(string arg) =>
         TryParseByte(arg, out byte b) ? NesLibEnumFormatter.FormatPad(b) : arg;

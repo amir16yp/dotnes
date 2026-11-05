@@ -959,12 +959,18 @@ sealed class SemanticRecoverer
                     else if (lastCmpValue.HasValue)
                     {
                         // After CMP #N: flags reflect A - N
+                        bool isPadVar = lastLoadedVarAddr.HasValue && _padVariables.Contains(lastLoadedVarAddr.Value);
+                        string cmpStr = isPadVar && NesLibEnumFormatter.IsExactPadFlags(lastCmpValue.Value)
+                            ? NesLibEnumFormatter.FormatPad(lastCmpValue.Value)
+                            : lastCmpValue.Value <= 9
+                                ? lastCmpValue.Value.ToString()
+                                : $"0x{lastCmpValue.Value:X2}";
                         condition = opcode switch
                         {
-                            0xF0 => $"{lastLoadedVarName} != {lastCmpValue.Value}",  // BEQ skip → body runs when not equal
-                            0xD0 => $"{lastLoadedVarName} == {lastCmpValue.Value}",  // BNE skip → body runs when equal
-                            0xB0 => $"{lastLoadedVarName} < {lastCmpValue.Value}",   // BCS skip → body runs when < N
-                            0x90 => $"{lastLoadedVarName} >= {lastCmpValue.Value}",  // BCC skip → body runs when >= N
+                            0xF0 => $"{lastLoadedVarName} != {cmpStr}",  // BEQ skip → body runs when not equal
+                            0xD0 => $"{lastLoadedVarName} == {cmpStr}",  // BNE skip → body runs when equal
+                            0xB0 => $"{lastLoadedVarName} < {cmpStr}",   // BCS skip → body runs when < N
+                            0x90 => $"{lastLoadedVarName} >= {cmpStr}",  // BCC skip → body runs when >= N
                             _ => "/* unknown */"
                         };
                     }
@@ -1735,9 +1741,22 @@ sealed class SemanticRecoverer
     /// </summary>
     static string FormatPoke(ushort addr, byte value)
     {
-        string formattedValue = addr == NESLib.PPU_MASK
-            ? $"(byte)({NesLibEnumFormatter.FormatMask(value)})"
-            : $"0x{value:X2}";
+        string formattedValue = addr switch
+        {
+            _ when addr == NESLib.PPU_MASK => NesLibEnumFormatter.FormatMask(value),
+            _ when addr == NESLib.PPU_CTRL => NesLibEnumFormatter.FormatPpuCtrl(value),
+            _ when addr == NESLib.APU_STATUS => NesLibEnumFormatter.FormatApuStatus(value),
+            _ when addr == NESLib.APU_FRAME => NesLibEnumFormatter.FormatApuFrame(value),
+            _ when (addr & 0xFF00) == 0x3F00 => NesLibEnumFormatter.FormatNesColor(value),
+            _ => value <= 9 ? value.ToString() : $"0x{value:X2}",
+        };
+        // Typed enums need a byte cast at the poke() call site.
+        if (addr is NESLib.PPU_MASK or NESLib.PPU_CTRL or NESLib.APU_STATUS or NESLib.APU_FRAME
+            || (addr & 0xFF00) == 0x3F00)
+        {
+            if (formattedValue is not "0" && !formattedValue.StartsWith("NESColor.", StringComparison.Ordinal))
+                formattedValue = $"(byte)({formattedValue})";
+        }
         return $"poke({FormatAddress(addr)}, {formattedValue});";
     }
 

@@ -373,6 +373,257 @@ public class PrgBankModelTests
         Assert.True(new PrgBankModel(CreateRom(558, 8)).HasSwitchable32KWindow);
     }
 
+    [Fact]
+    public void Batch17_Nes2More()
+    {
+        Assert.True(new PrgBankModel(CreateRom(268, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(281, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(282, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(288, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(289, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(307, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(319, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(342, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(344, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(348, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(353, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(449, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(513, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(526, 16)).HasSwitchable16KWindow);
+    }
+
+    [Fact]
+    public void Batch18_Nes2More()
+    {
+        Assert.True(new PrgBankModel(CreateRom(295, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(309, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(310, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(312, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(314, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(322, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(337, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(350, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(460, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(512, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(514, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(538, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(548, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(550, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(551, 8)).HasSwitchable32KWindow);
+    }
+
+    [Fact]
+    public void Batch19_Nes2Mmc3AndLatch()
+    {
+        Assert.True(new PrgBankModel(CreateRom(267, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(287, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(291, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(290, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(294, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(294, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(299, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(300, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(321, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(333, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(335, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(338, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(345, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(364, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(379, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(434, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(434, 16)).BusConflictBankSwitch);
+        Assert.True(new PrgBankModel(CreateRom(437, 16)).HasSwitchable16KWindow);
+    }
+
+    [Fact]
+    public void Batch20_Nes2LatchAndMmc3()
+    {
+        Assert.True(new PrgBankModel(CreateRom(261, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(265, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(301, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(324, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(324, 16)).BusConflictBankSwitch);
+        Assert.True(new PrgBankModel(CreateRom(329, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(332, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(336, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(340, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(341, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(349, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(430, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(441, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(443, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(450, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(453, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(455, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(455, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(456, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(457, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(458, 8)).HasSwitchable32KWindow);
+    }
+
+    [Fact]
+    public void Batch21_Nes2More()
+    {
+        Assert.True(new PrgBankModel(CreateRom(283, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(320, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(323, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(346, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(361, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(370, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(376, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(381, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(381, 16)).BusConflictBankSwitch);
+        Assert.True(new PrgBankModel(CreateRom(382, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(385, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(393, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(395, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(396, 16)).HasSwitchable16KWindow);
+        Assert.False(new PrgBankModel(CreateRom(396, 16)).BusConflictBankSwitch);
+        Assert.True(new PrgBankModel(CreateRom(403, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(403, 8)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(414, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(448, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(515, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(516, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(541, 16)).HasSwitchable16KWindow);
+    }
+
+    [Fact]
+    public void Batch22_Nes2More()
+    {
+        Assert.True(new PrgBankModel(CreateRom(262, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(262, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(271, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(293, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(297, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(327, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(334, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(339, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(367, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(369, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(378, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(386, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(388, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(402, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(409, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(435, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(439, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(445, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(447, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(519, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(525, 16)).HasSwitchable16KWindow);
+    }
+
+    [Fact]
+    public void Batch23_Nes2More()
+    {
+        Assert.False(new PrgBankModel(CreateRom(306, 16)).HasSwitchable16KWindow);
+        Assert.False(new PrgBankModel(CreateRom(306, 16)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(356, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(358, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(366, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(387, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(389, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(392, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(394, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(397, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(404, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(410, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(412, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(416, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(432, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(461, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(467, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(470, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(471, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(517, 16)).HasSwitchable16KWindow);
+        Assert.False(new PrgBankModel(CreateRom(517, 16)).BusConflictBankSwitch);
+        Assert.True(new PrgBankModel(CreateRom(521, 16)).HasSwitchable16KWindow);
+    }
+
+    [Fact]
+    public void Batch24_Nes2MopUp()
+    {
+        Assert.True(new PrgBankModel(CreateRom(263, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(372, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(373, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(377, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(384, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(401, 16)).HasSwitchable16KWindow);
+        Assert.False(new PrgBankModel(CreateRom(415, 16)).HasSwitchable16KWindow);
+        Assert.False(new PrgBankModel(CreateRom(415, 16)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(438, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(522, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(523, 16)).HasSwitchable16KWindow);
+        Assert.False(new PrgBankModel(CreateRom(533, 8)).HasSwitchable16KWindow);
+        Assert.False(new PrgBankModel(CreateRom(535, 16)).HasSwitchable16KWindow);
+        Assert.False(new PrgBankModel(CreateRom(539, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(540, 16)).HasSwitchable16KWindow);
+    }
+
+    [Fact]
+    public void Batch25_Nes2VrcAndOuter()
+    {
+        Assert.True(new PrgBankModel(CreateRom(298, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(298, 16)).HasVrcStylePrg0Register);
+        Assert.True(new PrgBankModel(CreateRom(303, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(308, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(313, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(325, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(362, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(406, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(411, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(423, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(424, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(425, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(436, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(468, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(527, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(529, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(530, 16)).HasVrcStylePrg0Register);
+    }
+
+    [Fact]
+    public void Batch26_AliasesAndOneBusLean()
+    {
+        Assert.True(new PrgBankModel(CreateRom(256, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(256, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(408, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(408, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(419, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(419, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(422, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(426, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(427, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(433, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(433, 8)).BusConflictBankSwitch);
+        Assert.True(new PrgBankModel(CreateRom(469, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(472, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(536, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(537, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(547, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(552, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(561, 8)).HasSwitchable32KWindow);
+        Assert.False(new PrgBankModel(CreateRom(561, 8)).BusConflictBankSwitch);
+        Assert.True(new PrgBankModel(CreateRom(561, 8)).HasNinaBankRegister);
+    }
+
+    [Fact]
+    public void Batch27_AliasesAndTurboDoctor()
+    {
+        Assert.True(new PrgBankModel(CreateRom(363, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(390, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(390, 8)).BusConflictBankSwitch);
+        Assert.True(new PrgBankModel(CreateRom(405, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(405, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(407, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(407, 16)).HasNinaBankRegister);
+        Assert.True(new PrgBankModel(CreateRom(431, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(562, 8)).HasSwitchable32KWindow);
+        Assert.False(new PrgBankModel(CreateRom(562, 8)).BusConflictBankSwitch);
+        Assert.True(new PrgBankModel(CreateRom(562, 8)).HasNinaBankRegister);
+    }
+
     /// <summary>Minimal iNES/NES 2.0 ROM with distinctive PRG bytes (offset = low byte of address).</summary>
     static NESRomReader CreateRom(int mapper, int prgBanks16k)
     {

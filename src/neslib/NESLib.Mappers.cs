@@ -1445,4 +1445,866 @@ public static partial class NESLib
 
     /// <summary>Mapper 558: mode at $5300.</summary>
     public static void mapper558_set_mode(byte value) => throw null!;
+
+    // ---- Batch 17 ----
+
+    /// <summary>AA6023 / COOLBOY (mapper 268): outer register via absolute <paramref name="register"/> ($5000/$6000 family).</summary>
+    public static void mapper268_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Mapper 268: MMC3-compatible bank select/data.</summary>
+    public static void mapper268_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>JY YY841144C family (mapper 281): outer bank at $D003; inner via <see cref="jy90_set_prg_bank"/>.</summary>
+    public static void mapper281_set_outer(byte value) => throw null!;
+
+    /// <summary>JY multicart (mapper 282): outer bank at $D003.</summary>
+    public static void mapper282_set_outer(byte value) => throw null!;
+
+    /// <summary>GKCX1 21-in-1 (mapper 288): address-latch bank select via absolute <paramref name="register"/>.</summary>
+    public static void mapper288_write(ushort register, byte value) => throw null!;
+
+    /// <summary>BMC-60311C (mapper 289): mode at $6000.</summary>
+    public static void mapper289_set_mode(byte value) => throw null!;
+
+    /// <summary>Mapper 289: outer bank at $6001.</summary>
+    public static void mapper289_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 289: data latch to $8000.</summary>
+    public static void mapper289_set(byte value) => throw null!;
+
+    /// <summary>Kaiser KS7037 Metroid FDS (mapper 307): MMC3-like select/data at $8000/$8001.</summary>
+    public static void mapper307_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>HP-898F multicart (mapper 319): CHR bank at $6000.</summary>
+    public static void mapper319_set_chr(byte value) => throw null!;
+
+    /// <summary>Mapper 319: PRG/mirroring at $6004.</summary>
+    public static void mapper319_set_prg(byte value) => throw null!;
+
+    /// <summary>COOLGIRL (mapper 342): supervisor register via absolute <paramref name="register"/> ($5000–$5007).</summary>
+    public static void mapper342_write(ushort register, byte value) => throw null!;
+
+    /// <summary>GN-26 multicart (mapper 344): outer/mode at $6000.</summary>
+    public static void mapper344_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 344: MMC3-compatible bank select/data.</summary>
+    public static void mapper344_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>BMC-830118C (mapper 348): outer at $6800 — same lean surface as <see cref="mapper315_set_outer"/>.</summary>
+    public static void mapper348_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 348: MMC3-compatible bank select/data.</summary>
+    public static void mapper348_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>92 Super Mario Family (mapper 353): outer via absolute <paramref name="register"/> ($8080–$E080).</summary>
+    public static void mapper353_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Mapper 353: MMC3-compatible bank select/data.</summary>
+    public static void mapper353_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Super Games King (mapper 449): address/data latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper449_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Sachen SA-9602B Princess Maker (mapper 513): MMC3-like bank select/data (CHR bits carry outer PRG).</summary>
+    public static void mapper513_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>UNL-BJ-56 Sangokushi bootleg (mapper 526): PRG via absolute <paramref name="register"/> ($8008–$800B).</summary>
+    public static void mapper526_write(ushort register, byte value) => throw null!;
+
+    // ---- Batch 18 ----
+
+    /// <summary>JY Soccer/HIK multicart (mapper 295): outer bank at $D003 (128 KiB; like 281).</summary>
+    public static void mapper295_set_outer(byte value) => throw null!;
+
+    /// <summary>LH51 Ai Senshi Nicol FDS conversion (mapper 309): 8KB PRG at $8000.</summary>
+    public static void mapper309_set_prg_bank(byte bank) => throw null!;
+
+    /// <summary>K-1053 New World Multi (mapper 310): address/data latch via absolute <paramref name="register"/> (mapper 15+).</summary>
+    public static void mapper310_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Kaiser KS7013B Highway Star (mapper 312): 16KB PRG at $6000.</summary>
+    public static void mapper312_set_prg_bank(byte bank) => throw null!;
+
+    /// <summary>BMC-64in1NoRepeat (mapper 314): misc/mode at $5000.</summary>
+    public static void mapper314_set_mode(byte value) => throw null!;
+
+    /// <summary>Mapper 314: PRG at $5001.</summary>
+    public static void mapper314_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 314: UNROM data latch to $8000.</summary>
+    public static void mapper314_set(byte value) => throw null!;
+
+    /// <summary>BMC-K-3033 (mapper 322): outer/mode at $6000.</summary>
+    public static void mapper322_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 322: MMC3-compatible bank select/data.</summary>
+    public static void mapper322_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>BMC-CTC-12IN1 (mapper 337): outer/inner via absolute <paramref name="register"/> ($8000/$C000).</summary>
+    public static void mapper337_write(ushort register, byte value) => throw null!;
+
+    /// <summary>BMC-891227 Super 15-in-1 (mapper 350): outer/inner via absolute <paramref name="register"/>.</summary>
+    public static void mapper350_write(ushort register, byte value) => throw null!;
+
+    /// <summary>FC-29-40 / K-3101 (mapper 460): outer at $6000.</summary>
+    public static void mapper460_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 460: MMC3-compatible bank select/data.</summary>
+    public static void mapper460_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Sachen Zhongguo Daheng (mapper 512): CHR/VRAM mode at $4100.</summary>
+    public static void mapper512_set_mode(byte value) => throw null!;
+
+    /// <summary>Mapper 512: MMC3-compatible bank select/data.</summary>
+    public static void mapper512_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Subor Karaoke (mapper 514): packed mode/PRG latch to $8000.</summary>
+    public static void mapper514_set(byte value) => throw null!;
+
+    /// <summary>60-1064-16L Super Soccer Champion (mapper 538): PRG banks via write to $C000.</summary>
+    public static void mapper538_set_prg(byte value) => throw null!;
+
+    /// <summary>CTC-15 Almana no Kiseki (mapper 548): latch/IRQ at $4800.</summary>
+    public static void mapper548_set_latch(byte value) => throw null!;
+
+    /// <summary>Mapper 548: apply latch (and PRG bank) at $5000.</summary>
+    public static void mapper548_apply(byte value) => throw null!;
+
+    /// <summary>JY820845C Chess Series (mapper 550): outer at $7000.</summary>
+    public static void mapper550_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 550: MHROM latch to $8000.</summary>
+    public static void mapper550_set(byte value) => throw null!;
+
+    /// <summary>Jncota mapper 178 variant (mapper 551): mode at $4800.</summary>
+    public static void mapper551_set_mode(byte value) => throw null!;
+
+    /// <summary>Mapper 551: low PRG at $4801.</summary>
+    public static void mapper551_set_prg_low(byte value) => throw null!;
+
+    /// <summary>Mapper 551: high PRG at $4802.</summary>
+    public static void mapper551_set_prg_high(byte value) => throw null!;
+
+    // ---- Batch 19 ----
+
+    /// <summary>JY-119 8-in-1 (mapper 267): outer bank at $6000.</summary>
+    public static void mapper267_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 267: MMC3-compatible bank select/data.</summary>
+    public static void mapper267_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>BMC-411120-C / K-3088 (mapper 287): outer/mode at $6000.</summary>
+    public static void mapper287_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 287: MMC3-compatible bank select/data.</summary>
+    public static void mapper287_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Kasheng Mortal Kombat 6 2-in-1 (mapper 291): outer/mode at $6000.</summary>
+    public static void mapper291_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 291: MMC3-compatible bank select/data.</summary>
+    public static void mapper291_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>BMC-NTD-03 Asder 20-in-1 (mapper 290): address/data latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper290_write(ushort register, byte value) => throw null!;
+
+    /// <summary>63-1601 UNROM multicart (mapper 294): outer at $4100.</summary>
+    public static void mapper294_set_outer(byte value) => throw null!;
+
+    /// <summary>BMC-11160 TXC 6-in-1 (mapper 299): packed PRG/CHR latch to $8000.</summary>
+    public static void mapper299_set(byte value) => throw null!;
+
+    /// <summary>BMC-190in1 (mapper 300): address latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper300_write(ushort register, byte value) => throw null!;
+
+    /// <summary>BMC-820310-C (mapper 321): outer/mode at $6000.</summary>
+    public static void mapper321_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 321: MMC3-compatible bank select/data.</summary>
+    public static void mapper321_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>BMC-NEWSTAR-GRM070-8IN1 (mapper 333): outer/mode via absolute <paramref name="register"/> ($9000/$B000/$D000/$F000).</summary>
+    public static void mapper333_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Mapper 333: MMC3-compatible bank select/data.</summary>
+    public static void mapper333_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>BMC-CTC-09 10-in-1 (mapper 335): PRG/mirroring at $C000.</summary>
+    public static void mapper335_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 335: CHR at $8000.</summary>
+    public static void mapper335_set_chr(byte value) => throw null!;
+
+    /// <summary>BMC-SA005-A (mapper 338): address latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper338_write(ushort register, byte value) => throw null!;
+
+    /// <summary>BMC-L6IN1 New Star 6-in-1 (mapper 345): outer/mode at $6000.</summary>
+    public static void mapper345_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 345: MMC3-compatible bank select/data.</summary>
+    public static void mapper345_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>JY830832C / 9053 (mapper 364): outer at $6000.</summary>
+    public static void mapper364_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 364: MMC3-compatible bank select/data.</summary>
+    public static void mapper364_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>NROM 35-in-1 (mapper 379): packed PRG/CHR latch to $8000.</summary>
+    public static void mapper379_set(byte value) => throw null!;
+
+    /// <summary>S-009 UNROM multicart (mapper 434): outer at $6000.</summary>
+    public static void mapper434_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 434: UNROM inner latch to $8000 (bus conflicts).</summary>
+    public static void mapper434_set(byte value) => throw null!;
+
+    /// <summary>NTDEC TH2348 (mapper 437): outer via absolute <paramref name="register"/> ($5000–$5FFF).</summary>
+    public static void mapper437_write(ushort register, byte value) => throw null!;
+
+    // ---- Batch 20 ----
+
+    /// <summary>BMC-810544-C-A1 / NTDEC 2746 (mapper 261): address latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper261_write(ushort register, byte value) => throw null!;
+
+    /// <summary>BMC-T-262 (mapper 265): address/data latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper265_write(ushort register, byte value) => throw null!;
+
+    /// <summary>BMC-8157 GG1 (mapper 301): address latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper301_write(ushort register, byte value) => throw null!;
+
+    /// <summary>FARID_UNROM_8-IN-1 (mapper 324): packed outer/inner latch to $8000 (bus conflicts).</summary>
+    public static void mapper324_set(byte value) => throw null!;
+
+    /// <summary>UNL-EDU2000 (mapper 329): BNROM-like latch to $8000.</summary>
+    public static void mapper329_set(byte value) => throw null!;
+
+    /// <summary>BMC-WS Super 40/500-in-1 (mapper 332): PRG/mirroring at $6000.</summary>
+    public static void mapper332_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 332: CHR/solder at $6001.</summary>
+    public static void mapper332_set_chr(byte value) => throw null!;
+
+    /// <summary>Mapper 332: CNROM latch to $8000.</summary>
+    public static void mapper332_set(byte value) => throw null!;
+
+    /// <summary>BMC-K-3046 (mapper 336): outer/inner latch to $C000.</summary>
+    public static void mapper336_set(byte value) => throw null!;
+
+    /// <summary>BMC-K-3036 (mapper 340): address/data latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper340_write(ushort register, byte value) => throw null!;
+
+    /// <summary>BMC-TJ-03 (mapper 341): address latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper341_write(ushort register, byte value) => throw null!;
+
+    /// <summary>BMC-G-146 Super HIK 14-in-1 (mapper 349): address latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper349_write(ushort register, byte value) => throw null!;
+
+    /// <summary>831031C/T-308 (mapper 430): outer at $6000.</summary>
+    public static void mapper430_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 430: MMC3-compatible bank select/data.</summary>
+    public static void mapper430_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>841026C/850335C (mapper 441): outer/mode at $6000.</summary>
+    public static void mapper441_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 441: MMC3-compatible bank select/data.</summary>
+    public static void mapper441_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>NC3000M (mapper 443): outer/mode at $6000.</summary>
+    public static void mapper443_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 443: MMC3-compatible bank select/data.</summary>
+    public static void mapper443_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Jingtai YY841157C (mapper 450): outer at $6000.</summary>
+    public static void mapper450_set_outer(byte value) => throw null!;
+
+    /// <summary>Realtec 8042 (mapper 453): AOROM/UNROM latch to $8000.</summary>
+    public static void mapper453_set(byte value) => throw null!;
+
+    /// <summary>NTDEC N625836 (mapper 455): outer/mode at $4100.</summary>
+    public static void mapper455_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 455: MMC3-compatible bank select/data.</summary>
+    public static void mapper455_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Realtec K6C3001A (mapper 456): outer at $4100.</summary>
+    public static void mapper456_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 456: MMC3-compatible bank select/data.</summary>
+    public static void mapper456_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>810431C (mapper 457): outer at $6000.</summary>
+    public static void mapper457_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 457: MMC3-compatible bank select/data.</summary>
+    public static void mapper457_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>K-3102 / GN-23 (mapper 458): outer/PRG at $6000.</summary>
+    public static void mapper458_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 458: MMC3-compatible bank select/data (CHR/mirroring).</summary>
+    public static void mapper458_set_bank(byte reg, byte bank) => throw null!;
+
+    // ---- Batch 21 ----
+
+    /// <summary>BMC-GS-2004/2013 (mapper 283): 32KB PRG latch to $8000.</summary>
+    public static void mapper283_set(byte value) => throw null!;
+
+    /// <summary>BMC-830425C-4391T (mapper 320): outer via absolute <paramref name="register"/> ($F0E0–$F0FF).</summary>
+    public static void mapper320_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Mapper 320: UNROM inner latch to $8000.</summary>
+    public static void mapper320_set(byte value) => throw null!;
+
+    /// <summary>FARID_SLROM_8-IN-1 (mapper 323): outer at $6000 (MMC1 via mmc1 helpers).</summary>
+    public static void mapper323_set_outer(byte value) => throw null!;
+
+    /// <summary>UNL-KS7012 Zanac FDS (mapper 346): bank via absolute <paramref name="register"/> ($E0A0/$EE36).</summary>
+    public static void mapper346_write(ushort register, byte value) => throw null!;
+
+    /// <summary>YY841101C (mapper 361): outer at $7000.</summary>
+    public static void mapper361_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 361: MMC3-compatible bank select/data.</summary>
+    public static void mapper361_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>F600 Golden Mario Party (mapper 370): outer at $5000.</summary>
+    public static void mapper370_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 370: MMC3-compatible bank select/data.</summary>
+    public static void mapper370_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>YY841155C (mapper 376): outer #0 at $7000.</summary>
+    public static void mapper376_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 376: outer #1 (A18) at $7001.</summary>
+    public static void mapper376_set_outer_hi(byte value) => throw null!;
+
+    /// <summary>Mapper 376: MMC3-compatible bank select/data.</summary>
+    public static void mapper376_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>KN-42 (mapper 381): UOROM latch to $8000 (bus conflicts).</summary>
+    public static void mapper381_set(byte value) => throw null!;
+
+    /// <summary>830928C (mapper 382): outer/mode via absolute <paramref name="register"/>.</summary>
+    public static void mapper382_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Mapper 382: inner latch to $8000 (bus conflicts).</summary>
+    public static void mapper382_set(byte value) => throw null!;
+
+    /// <summary>NTDEC 2779 (mapper 385): address latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper385_write(ushort register, byte value) => throw null!;
+
+    /// <summary>820720C (mapper 393): outer/mode at $6000.</summary>
+    public static void mapper393_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 393: MMC3-compatible bank select/data.</summary>
+    public static void mapper393_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Realtec 8210 (mapper 395): outer #1 at $6000.</summary>
+    public static void mapper395_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 395: outer #2 at $6010.</summary>
+    public static void mapper395_set_outer2(byte value) => throw null!;
+
+    /// <summary>Mapper 395: MMC3-compatible bank select/data.</summary>
+    public static void mapper395_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>YY850437C / GN-51 (mapper 396): outer at $A000.</summary>
+    public static void mapper396_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 396: UNROM inner latch to $8000 (no bus conflicts).</summary>
+    public static void mapper396_set(byte value) => throw null!;
+
+    /// <summary>89433 (mapper 403): PRG at $4100.</summary>
+    public static void mapper403_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 403: CHR at $4101.</summary>
+    public static void mapper403_set_chr(byte value) => throw null!;
+
+    /// <summary>Mapper 403: mode at $4102.</summary>
+    public static void mapper403_set_mode(byte value) => throw null!;
+
+    /// <summary>9999999-in-1 (mapper 414): address/data latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper414_write(ushort register, byte value) => throw null!;
+
+    /// <summary>830768C (mapper 448): outer/mode at $6000.</summary>
+    public static void mapper448_set_outer(byte value) => throw null!;
+
+    /// <summary>Family Noraebang (mapper 515): UNROM-style latch to $8000 (no bus conflicts).</summary>
+    public static void mapper515_set(byte value) => throw null!;
+
+    /// <summary>Cocoma Pack (mapper 516): outer via absolute <paramref name="register"/> ($8010).</summary>
+    public static void mapper516_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Mapper 516: MMC3-compatible bank select/data.</summary>
+    public static void mapper516_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>LittleCom 160-in-1 (mapper 541): address latch via absolute <paramref name="register"/> ($C000).</summary>
+    public static void mapper541_write(ushort register, byte value) => throw null!;
+
+    // ---- Batch 22 ----
+
+    /// <summary>UNL-SHERO Street Heroes (mapper 262): CHR mode at $4100.</summary>
+    public static void mapper262_set_mode(byte value) => throw null!;
+
+    /// <summary>Mapper 262: MMC3-compatible bank select/data.</summary>
+    public static void mapper262_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>BMC-22026 TXC 4-in-1 (mapper 271): GNROM latch to $8000.</summary>
+    public static void mapper271_set(byte value) => throw null!;
+
+    /// <summary>NewStar 12/76-in-1 (mapper 293): banking via absolute <paramref name="register"/>.</summary>
+    public static void mapper293_write(ushort register, byte value) => throw null!;
+
+    /// <summary>TXC 01-22110-000 (mapper 297): mode at $4120.</summary>
+    public static void mapper297_set_mode(byte value) => throw null!;
+
+    /// <summary>Mapper 297: mapper-70 latch to $8000.</summary>
+    public static void mapper297_set(byte value) => throw null!;
+
+    /// <summary>BMC-10-24-C-A1 (mapper 327): outer at $6000.</summary>
+    public static void mapper327_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 327: MMC3-compatible bank select/data.</summary>
+    public static void mapper327_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>5/20-in-1 1993 (mapper 334): 32KB PRG at $6000.</summary>
+    public static void mapper334_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 334: MMC3-compatible bank select/data.</summary>
+    public static void mapper334_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>BMC-K-3006 (mapper 339): outer/mode at $6000.</summary>
+    public static void mapper339_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 339: MMC3-compatible bank select/data.</summary>
+    public static void mapper339_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Mapper 205 address-latch variant (mapper 367): outer via absolute <paramref name="register"/> ($6000).</summary>
+    public static void mapper367_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Mapper 367: MMC3-compatible bank select/data.</summary>
+    public static void mapper367_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>BMC-N49C-300 SMB Party (mapper 369): outer at $4100.</summary>
+    public static void mapper369_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 369: MMC3-compatible bank select/data.</summary>
+    public static void mapper369_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>AxROM/UNROM 8-in-1 (mapper 378): outer via absolute <paramref name="register"/>.</summary>
+    public static void mapper378_write(ushort register, byte value) => throw null!;
+
+    /// <summary>YY860729C (mapper 386): outer at $D003.</summary>
+    public static void mapper386_set_outer(byte value) => throw null!;
+
+    /// <summary>YY841145C (mapper 388): outer at $D003.</summary>
+    public static void mapper388_set_outer(byte value) => throw null!;
+
+    /// <summary>J-2282 Olympic (mapper 402): address latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper402_write(ushort register, byte value) => throw null!;
+
+    /// <summary>retroUSB DPCMcart (mapper 409): address latch via absolute <paramref name="register"/> ($C000).</summary>
+    public static void mapper409_write(ushort register, byte value) => throw null!;
+
+    /// <summary>F-1002 (mapper 435): address latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper435_write(ushort register, byte value) => throw null!;
+
+    /// <summary>YS2309 / DS-07 (mapper 439): UxROM latch to $8000.</summary>
+    public static void mapper439_set(byte value) => throw null!;
+
+    /// <summary>Mapper 439: outer at $6000.</summary>
+    public static void mapper439_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 439: mask at $6001.</summary>
+    public static void mapper439_set_mask(byte value) => throw null!;
+
+    /// <summary>DG574B (mapper 445): outer PRG at $5000.</summary>
+    public static void mapper445_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 445: outer CHR at $5001.</summary>
+    public static void mapper445_set_chr(byte value) => throw null!;
+
+    /// <summary>Mapper 445: mode at $5002.</summary>
+    public static void mapper445_set_mode(byte value) => throw null!;
+
+    /// <summary>Mapper 445: MMC3-compatible bank select/data.</summary>
+    public static void mapper445_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>KL-06 (mapper 447): outer at $6000.</summary>
+    public static void mapper447_set_outer(byte value) => throw null!;
+
+    /// <summary>UNL-EH8813A (mapper 519): address/data latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper519_write(ushort register, byte value) => throw null!;
+
+    /// <summary>UNL-KS7021A (mapper 525): 16KB PRG at $8000.</summary>
+    public static void mapper525_set_prg(byte value) => throw null!;
+
+    // ---- Batch 23 ----
+
+    /// <summary>UNL-KS7016 Exciting Basket (mapper 306): PRG via absolute <paramref name="register"/> ($D903).</summary>
+    public static void mapper306_write(ushort register, byte value) => throw null!;
+
+    /// <summary>JY-208 Rockman 7-in-1 (mapper 356): outer via $6000 (mapper-45 sequential lean: one STA).</summary>
+    public static void mapper356_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 356: MMC3-compatible bank select/data.</summary>
+    public static void mapper356_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>YY860606C (mapper 358): outer at $D003.</summary>
+    public static void mapper358_set_outer(byte value) => throw null!;
+
+    /// <summary>GN-45 (mapper 366): outer at $6800.</summary>
+    public static void mapper366_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 366: MMC3-compatible bank select/data.</summary>
+    public static void mapper366_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>YY850735C (mapper 387): outer at $D003.</summary>
+    public static void mapper387_set_outer(byte value) => throw null!;
+
+    /// <summary>Caltron 9-in-1 (mapper 389): banking via absolute <paramref name="register"/>.</summary>
+    public static void mapper389_write(ushort register, byte value) => throw null!;
+
+    /// <summary>00202650 8-in-1 (mapper 392): outer at $6000.</summary>
+    public static void mapper392_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 392: MMC3-compatible bank select/data.</summary>
+    public static void mapper392_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Realtec HSK007 (mapper 394): mode at $5009.</summary>
+    public static void mapper394_set_mode(byte value) => throw null!;
+
+    /// <summary>Mapper 394: outer at $500B.</summary>
+    public static void mapper394_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 394: MMC3-compatible bank select/data.</summary>
+    public static void mapper394_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>JY Soccer 6-in-1 variant (mapper 397): outer at $D003.</summary>
+    public static void mapper397_set_outer(byte value) => throw null!;
+
+    /// <summary>JY012005 (mapper 404): outer at $6000 (MMC1 via mmc1 helpers).</summary>
+    public static void mapper404_set_outer(byte value) => throw null!;
+
+    /// <summary>JY-302 mapper-45 CHR-RAM variant (mapper 410): outer via $6000.</summary>
+    public static void mapper410_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 410: MMC3-compatible bank select/data.</summary>
+    public static void mapper410_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Henggedianzi MMC3+NROM (mapper 412): CHR at $6000.</summary>
+    public static void mapper412_set_chr(byte value) => throw null!;
+
+    /// <summary>Mapper 412: mode at $6001.</summary>
+    public static void mapper412_set_mode(byte value) => throw null!;
+
+    /// <summary>Mapper 412: PRG at $6002.</summary>
+    public static void mapper412_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 412: MMC3-compatible bank select/data.</summary>
+    public static void mapper412_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>4-in-1 with SMB2J (mapper 416): packed latch to $8000.</summary>
+    public static void mapper416_set(byte value) => throw null!;
+
+    /// <summary>Realtec 8090 (mapper 432): solder/pad at $6000.</summary>
+    public static void mapper432_set_solder(byte value) => throw null!;
+
+    /// <summary>Mapper 432: outer at $6001.</summary>
+    public static void mapper432_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 432: MMC3-compatible bank select/data.</summary>
+    public static void mapper432_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>CM-9309 Wuzi Gun (mapper 461): outer at $6000.</summary>
+    public static void mapper461_set_outer(byte value) => throw null!;
+
+    /// <summary>47-2 72-in-1 (mapper 467): outer at $9000.</summary>
+    public static void mapper467_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 467: MMC3-compatible bank select/data.</summary>
+    public static void mapper467_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>INX_007T_V01 (mapper 470): outer at $5000.</summary>
+    public static void mapper470_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 470: AOROM latch to $8000.</summary>
+    public static void mapper470_set(byte value) => throw null!;
+
+    /// <summary>Impact Soft IM1 (mapper 471): address latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper471_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Kkachi karaoke (mapper 517): UNROM latch to $8000 (no bus conflicts).</summary>
+    public static void mapper517_set(byte value) => throw null!;
+
+    /// <summary>Korean Igo / DREAMTECH01 (mapper 521): PRG at $5020.</summary>
+    public static void mapper521_set_prg(byte value) => throw null!;
+
+    // ---- Batch 24 ----
+
+    /// <summary>UNL-KOF97 (mapper 263): MMC3 bank via absolute <paramref name="register"/> ($8000/$9000…; caller unscrambles data bits).</summary>
+    public static void mapper263_write(ushort register, byte value) => throw null!;
+
+    /// <summary>SFC-12 Rockman I-VI (mapper 372): outer via $6000 (mapper-45 lean).</summary>
+    public static void mapper372_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 372: MMC3-compatible bank select/data.</summary>
+    public static void mapper372_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>SFC-13 Super 4-in-1 (mapper 373): outer via $6000 (mapper-45 lean).</summary>
+    public static void mapper373_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 373: MMC3-compatible bank select/data.</summary>
+    public static void mapper373_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>JY-111 Super Game 8-in-1 (mapper 377): outer at $6000 (like 267).</summary>
+    public static void mapper377_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 377: MMC3-compatible bank select/data.</summary>
+    public static void mapper377_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>L1A16 Crisis Force multicart (mapper 384): outer at $6800.</summary>
+    public static void mapper384_set_outer(byte value) => throw null!;
+
+    /// <summary>KC885 VIP19 (mapper 401): outer via $6000 (mapper-45 lean).</summary>
+    public static void mapper401_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 401: MMC3-compatible bank select/data.</summary>
+    public static void mapper401_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Lucky Rabbit FDS (mapper 415): PRG for $6000 via latch to $8000.</summary>
+    public static void mapper415_set_prg(byte value) => throw null!;
+
+    /// <summary>K-3071 (mapper 438): address/data latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper438_write(ushort register, byte value) => throw null!;
+
+    /// <summary>UNL-LH10 Fūun Shōrinken (mapper 522): MMC3-like bank select/data ($8000/$8001).</summary>
+    public static void mapper522_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Jncota Fēngshénbǎng (mapper 523): MMC3-compatible bank select/data.</summary>
+    public static void mapper523_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Sachen 3014 (mapper 533): CHR/protection latch to $8000.</summary>
+    public static void mapper533_set_chr(byte value) => throw null!;
+
+    /// <summary>UNL-LH53 Murasamejō (mapper 535): 8KB PRG at $F000 (banks $6000).</summary>
+    public static void mapper535_set_prg(byte value) => throw null!;
+
+    /// <summary>Kid Icarus FDS bootleg (mapper 539): 8KB PRG at $A000.</summary>
+    public static void mapper539_set_prg(byte value) => throw null!;
+
+    /// <summary>UNL-82112C (mapper 540): CHR via absolute <paramref name="register"/> ($A000/$A001/$B002/$B003); PRG like 359.</summary>
+    public static void mapper540_write(ushort register, byte value) => throw null!;
+
+    // ---- Batch 25 ----
+
+    /// <summary>UNL-TF1201 Lethal Weapon (mapper 298): VRC4b lean PRG — same as <see cref="vrc24_set_prg_bank"/>.</summary>
+    public static void mapper298_set_prg_bank(byte which, byte bank) => throw null!;
+
+    /// <summary>UNL-KS7017 Almana no Kiseki (mapper 303): PRG latch via absolute <paramref name="register"/> ($4A00).</summary>
+    public static void mapper303_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Mapper 303: commit latch at $5100.</summary>
+    public static void mapper303_apply(byte value) => throw null!;
+
+    /// <summary>UNL-TH2131-1 Batman bootleg (mapper 308): VRC2b lean PRG — same as <see cref="vrc24_set_prg_bank"/>.</summary>
+    public static void mapper308_set_prg_bank(byte which, byte bank) => throw null!;
+
+    /// <summary>BMC-RESET-TXROM (mapper 313): MMC3-compatible bank select/data (outer via reset).</summary>
+    public static void mapper313_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>UNL-MALISB (mapper 325): MMC3-compatible bank select/data (address/data scramble left to caller).</summary>
+    public static void mapper325_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>830506C JY-005 (mapper 362): VRC4f CHR/outer via absolute <paramref name="register"/> ($B001…).</summary>
+    public static void mapper362_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Haradius Zero (mapper 406): MMC3 bank via $8000/$8002 (submapper 0 wiring).</summary>
+    public static void mapper406_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>A88S-1 (mapper 411): outer #1 at $5FF0.</summary>
+    public static void mapper411_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 411: outer #2 at $5FF1.</summary>
+    public static void mapper411_set_outer2(byte value) => throw null!;
+
+    /// <summary>Mapper 411: MMC3-compatible bank select/data.</summary>
+    public static void mapper411_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Lexibook Compact Cyber Arcade (mapper 423): VT369 outer at $4150.</summary>
+    public static void mapper423_set_outer(byte value) => throw null!;
+
+    /// <summary>Lexibook Retro TV (mapper 424): VT369 outer at $411E.</summary>
+    public static void mapper424_set_outer(byte value) => throw null!;
+
+    /// <summary>Cube Tech VT369 (mapper 425): outer at $41E6.</summary>
+    public static void mapper425_set_outer(byte value) => throw null!;
+
+    /// <summary>ZLX-08 OneBus (mapper 436): outer/PRG A24 at $4100.</summary>
+    public static void mapper436_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 436: I/O port at $410F (PRG A23).</summary>
+    public static void mapper436_set_io(byte value) => throw null!;
+
+    /// <summary>BlazePro MAX II (mapper 468): mapper-select/mode at $5700.</summary>
+    public static void mapper468_set_mode(byte value) => throw null!;
+
+    /// <summary>Datach 2-in-1 (mapper 520): VRC4e CHR/outer via absolute <paramref name="register"/> ($B000…).</summary>
+    public static void mapper520_write(ushort register, byte value) => throw null!;
+
+    /// <summary>UNL-AX-40G (mapper 527): VRC2b lean PRG — same as <see cref="vrc24_set_prg_bank"/>.</summary>
+    public static void mapper527_set_prg_bank(byte which, byte bank) => throw null!;
+
+    /// <summary>UNL-T-230 (mapper 529): 16KB PRG at $A000 (VRC4e $A00x).</summary>
+    public static void mapper529_set_prg(byte value) => throw null!;
+
+    /// <summary>UNL-AX5705 (mapper 530): VRC4f lean PRG — same as <see cref="vrc24_set_prg_bank"/> (scramble left to caller).</summary>
+    public static void mapper530_set_prg_bank(byte which, byte bank) => throw null!;
+
+    // ---- Batch 26 ----
+
+    /// <summary>OneBus / VT02+ (mapper 256): native PRG bank at $4107.</summary>
+    public static void mapper256_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 256: native CHR/high bank at $4108.</summary>
+    public static void mapper256_set_chr(byte value) => throw null!;
+
+    /// <summary>Mapper 256: opcode/register scramble control at $411C.</summary>
+    public static void mapper256_set_scramble(byte value) => throw null!;
+
+    /// <summary>Mapper 256: alternate scramble control at $4169.</summary>
+    public static void mapper256_set_scramble2(byte value) => throw null!;
+
+    /// <summary>Mapper 256: MMC3-compatible bank select/data.</summary>
+    public static void mapper256_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Konami Collector's Series PnP (mapper 408): same lean OneBus surface as <see cref="mapper256_set_prg"/>.</summary>
+    public static void mapper408_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 408: CHR/high at $4108.</summary>
+    public static void mapper408_set_chr(byte value) => throw null!;
+
+    /// <summary>Mapper 408: scramble at $411C.</summary>
+    public static void mapper408_set_scramble(byte value) => throw null!;
+
+    /// <summary>VT369 + SD (mapper 419): same scramble/bank surface as 256, plus I/O at $410F.</summary>
+    public static void mapper419_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 419: CHR/high at $4108.</summary>
+    public static void mapper419_set_chr(byte value) => throw null!;
+
+    /// <summary>Mapper 419: scramble at $411C.</summary>
+    public static void mapper419_set_scramble(byte value) => throw null!;
+
+    /// <summary>Mapper 419: I/O/nibble port at $410F.</summary>
+    public static void mapper419_set_io(byte value) => throw null!;
+
+    /// <summary>TEC9719 / ING003C alias of 534 (mapper 422): outer at $6000.</summary>
+    public static void mapper422_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 422: MMC3-compatible bank select/data.</summary>
+    public static void mapper422_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>VT369 serial-ROM GPIO (mapper 426): port at $4150.</summary>
+    public static void mapper426_set_gpio(byte value) => throw null!;
+
+    /// <summary>VT369 I²C GPIO (mapper 427): port at $4148 (sub0) / use write for $4150.</summary>
+    public static void mapper427_set_gpio(byte value) => throw null!;
+
+    /// <summary>Mapper 427: alternate GPIO via absolute <paramref name="register"/>.</summary>
+    public static void mapper427_write(ushort register, byte value) => throw null!;
+
+    /// <summary>NC-20MB (mapper 433): packed latch to $8000 — same lean surface as <see cref="mapper233_set"/>.</summary>
+    public static void mapper433_set(byte value) => throw null!;
+
+    /// <summary>BlazePro FDS CPLD (mapper 469): mode at $5700 — same board as <see cref="mapper468_set_mode"/>.</summary>
+    public static void mapper469_set_mode(byte value) => throw null!;
+
+    /// <summary>FK-206 JG (mapper 472): outer at $6000 (mapper-52 bits reshuffled; packing left to caller).</summary>
+    public static void mapper472_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 472: MMC3-compatible bank select/data.</summary>
+    public static void mapper472_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Waixing FS303 alias (mapper 536): MMC3 bank — same as <see cref="mapper195_set_bank"/>.</summary>
+    public static void mapper536_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Waixing FS303 alias (mapper 537): MMC3 bank — same as <see cref="mapper195_set_bank"/>.</summary>
+    public static void mapper537_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Konami QTa / VRC5 (mapper 547): PRG bank via absolute <paramref name="register"/> ($D200/$D300/$D400).</summary>
+    public static void mapper547_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Mapper 547: 8KB PRG0 at $D200.</summary>
+    public static void mapper547_set_prg0(byte bank) => throw null!;
+
+    /// <summary>Taito X1-017 alias (mapper 552): PRG at $7EF0 — same as <see cref="taito82_set_prg_bank"/>.</summary>
+    public static void mapper552_set_prg_bank(byte bank) => throw null!;
+
+    /// <summary>Super Game Doctor / Venus (mapper 561): 1M mode via absolute <paramref name="register"/> ($42FC–$42FF).</summary>
+    public static void mapper561_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Mapper 561: IRQ counter low at $4100.</summary>
+    public static void mapper561_set_irq_lo(byte value) => throw null!;
+
+    /// <summary>Mapper 561: IRQ counter high / enable at $4101.</summary>
+    public static void mapper561_set_irq_hi(byte value) => throw null!;
+
+    /// <summary>Mapper 561: PRG latch to $8000 (when write-protect/latch enabled).</summary>
+    public static void mapper561_set(byte value) => throw null!;
+
+    // ---- Batch 27 ----
+
+    /// <summary>YY860606C alias (mapper 363): outer at $D003 — same as <see cref="mapper358_set_outer"/>.</summary>
+    public static void mapper363_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 390: packed latch to $8000 — same as <see cref="mapper236_set"/>.</summary>
+    public static void mapper390_set(byte value) => throw null!;
+
+    /// <summary>UM6578 OneBus (mapper 405): native PRG bank at $4107.</summary>
+    public static void mapper405_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 405: native CHR/high bank at $4108.</summary>
+    public static void mapper405_set_chr(byte value) => throw null!;
+
+    /// <summary>Mapper 405: MMC3-compatible bank select/data.</summary>
+    public static void mapper405_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Win Lose or Draw PnP (mapper 407): OneBus PRG at $4107 (submapper 15 scramble ≡256).</summary>
+    public static void mapper407_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 407: CHR/high at $4108.</summary>
+    public static void mapper407_set_chr(byte value) => throw null!;
+
+    /// <summary>Mapper 407: scramble disable at $4169 (submapper 15).</summary>
+    public static void mapper407_set_scramble2(byte value) => throw null!;
+
+    /// <summary>Mapper 407: MMC3-compatible bank select/data.</summary>
+    public static void mapper407_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>GN-51 alias (mapper 431): outer at $A000 — same as <see cref="mapper396_set_outer"/>.</summary>
+    public static void mapper431_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 431: UNROM inner latch to $8000 — same as <see cref="mapper396_set"/>.</summary>
+    public static void mapper431_set(byte value) => throw null!;
+
+    /// <summary>Venus Turbo Game Doctor (mapper 562): 1M/2M mode via absolute <paramref name="register"/> ($42FC–$42FF / $43FE–$43FF).</summary>
+    public static void mapper562_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Mapper 562: Turbo Game Doctor mode at $4411.</summary>
+    public static void mapper562_set_tgd(byte value) => throw null!;
+
+    /// <summary>Mapper 562: IRQ counter target LSB at $440D.</summary>
+    public static void mapper562_set_irq_lo(byte value) => throw null!;
+
+    /// <summary>Mapper 562: IRQ counter target MSB / disable at $440C.</summary>
+    public static void mapper562_set_irq_hi(byte value) => throw null!;
+
+    /// <summary>Mapper 562: PRG latch to $8000 (when write-protect/latch enabled).</summary>
+    public static void mapper562_set(byte value) => throw null!;
 }

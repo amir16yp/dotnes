@@ -57,6 +57,33 @@ Thanks!
 
 ## Getting Started
 
+### PATH release (CLI + VS Code)
+
+Download a self-contained zip for your OS from [GitHub Releases](https://github.com/jonathanpeppers/dotnes/releases)
+(`dotnes-<version>-linux-x64.zip`, `win-x64`, `osx-x64`, or `osx-arm64`):
+
+```sh
+# Extract somewhere permanent and put that folder on PATH
+unzip dotnes-*-linux-x64.zip -d ~/tools/dotnes
+export PATH="$HOME/tools/dotnes:$PATH"
+
+dotnes --help
+dotnes-decompiler --help
+
+# Install the VS Code extension shipped in the zip
+code --install-extension ~/tools/dotnes/dotnes-vscode-*.vsix
+```
+
+The zip includes `dotnes`, `dotnes-decompiler`, `dotnes-lsp`, and the VSIX.
+In VS Code: **dotNES: Import NES ROM…**, **Build**, **Run in Mesen**, and open
+`chr_*.s` files with **dotNES CHR Tile Editor** (Open With…). C# editing still
+uses the C# / C# Dev Kit extension.
+
+Building games still requires the .NET 10 SDK; only the tools above are
+self-contained. Local packaging: `bash scripts/pack-release.sh [version] [rid…]`.
+
+### .NET tool install
+
 Install the `dotnes` CLI:
 
 ```sh

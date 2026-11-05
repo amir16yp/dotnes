@@ -415,9 +415,19 @@ public static partial class NESLib
     public static void ppu_on_spr() => throw null!;
 
     /// <summary>
-    /// set PPU_MASK directly
+    /// Update the NMI shadow for PPUMASK (applied to $2001 on the next vblank in stock CRT).
     /// </summary>
     public static void ppu_mask(MASK mask) => throw null!;
+
+    /// <summary>
+    /// Write PPUCTRL ($2000) immediately.
+    /// </summary>
+    public static void ppu_ctrl(PPUCTRL value) => poke(PPU_CTRL, (byte)value);
+
+    /// <summary>
+    /// Write PPUMASK ($2001) immediately (does not update the NMI shadow used by <see cref="ppu_mask(MASK)"/>).
+    /// </summary>
+    public static void ppu_mask_write(MASK mask) => poke(PPU_MASK, (byte)mask);
 
     /// <summary>
     /// Get the current video system (PAL or NTSC).
@@ -1035,6 +1045,18 @@ public static partial class NESLib
     public static bool zapper_light() => (peek(JOYPAD2) & ZAPPER_LIGHT) != 0;
     /// <summary>True if the zapper trigger is pulled (reads <see cref="JOYPAD2"/>).</summary>
     public static bool zapper_trigger() => (peek(JOYPAD2) & ZAPPER_TRIGGER) != 0;
+
+    /// <summary>Raw read of controller port 1 ($4016).</summary>
+    public static byte joypad1_read() => peek(JOYPAD1);
+    /// <summary>Raw read of controller port 2 ($4017).</summary>
+    public static byte joypad2_read() => peek(JOYPAD2);
+    /// <summary>Raw write to controller port 1 ($4016) — typically the strobe line.</summary>
+    public static void joypad1_write(byte value) => poke(JOYPAD1, value);
+    /// <summary>Write APU frame counter ($4017). Same address as <see cref="JOYPAD2"/> on read.</summary>
+    public static void apu_frame(APUFRAME value) => poke(APU_FRAME, (byte)value);
+
+    /// <summary>Write APUSTATUS ($4015) channel enables immediately.</summary>
+    public static void apu_status_write(APUSTATUS value) => poke(APU_STATUS, (byte)value);
 
     // Battery-backed SRAM address range ($6000-$7FFF) for use with peek()/poke()
 

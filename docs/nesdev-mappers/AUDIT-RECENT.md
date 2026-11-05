@@ -666,3 +666,188 @@ Also: `NESRomReader` now reads NES 2.0 mapper bits 8–11.
 - **543** CH-501: serial `$5000` lean — OK
 - **544** FS306: `$9C00` PRG2 — OK
 - **558** Yancheng: `$5000`/`$5100`/`$5300` — OK; 32K
+
+# Batch 17
+- **268** COOLBOY: outer write + MMC3 — OK
+- **281/282** JY outer `$D003` — OK; 16K
+- **288** GKCX1 address latch — OK; 32K
+- **289** 60311C: `$6000`/`$6001`/`$8000` — OK
+- **307** KS7037 MMC3-like — OK
+- **319** HP898F: `$6000`/`$6004` — OK; 32K
+- **342** COOLGIRL supervisor write — OK; 32K lean
+- **344** GN-26: `$6000` + MMC3 — OK
+- **348** 830118C: `$6800` + MMC3 — OK
+- **353** Super Mario Family outer write + MMC3 — OK
+- **449** Super Games King latch — OK; 32K
+- **513** SA-9602B MMC3 — OK
+- **526** BJ-56 absolute PRG — OK
+
+# Batch 18
+- **295** JY outer `$D003` — OK
+- **309** LH51 `$8000` — OK; 16K
+- **310** K-1053 latch write — OK; 32K
+- **312** KS7013B `$6000` — OK; 16K
+- **314** 64in1NoRepeat `$5000`/`$5001`/`$8000` — OK; 32K
+- **322** K-3033 `$6000`+MMC3 — OK
+- **337/350** CTC/891227 latch write — OK; 32K
+- **460** FC-29-40 `$6000`+MMC3 — OK
+- **512** Zhongguo Daheng `$4100`+MMC3 — OK
+- **514** Subor Karaoke `$8000` — OK; 32K
+- **538** Soccer Champion `$C000` — OK; 16K
+- **548** CTC-15 `$4800`/`$5000` — OK; 16K
+- **550** JY820845C `$7000`/`$8000` — OK; 32K
+- **551** Jncota `$4800`–`$4802` — OK; 32K
+
+# Batch 19
+- **267** JY-119 `$6000`+MMC3 — OK; 16K
+- **287** 411120-C `$6000`+MMC3 — OK; 16K
+- **291** Kasheng MK6 `$6000`+MMC3 — OK; 16K
+- **290** NTD-03 address latch — OK; 32K+bus
+- **294** 63-1601 outer `$4100` — OK; 16K+Nina
+- **299** BMC-11160 `$8000` latch — OK; 32K+bus
+- **300** 190in1 address latch — OK; 16K+bus
+- **321** 820310 `$6000`+MMC3 — OK; 16K
+- **333** NEWSTAR outer write + MMC3 — OK; 16K
+- **335** CTC-09 `$C000`/`$8000` — OK; 32K+bus
+- **338** SA005-A address latch — OK; 16K+bus
+- **345** L6IN1 `$6000`+MMC3 — OK; 16K
+- **364** JY830832C `$6000`+MMC3 — OK; 16K
+- **379** NROM35 `$8000` latch — OK; 32K+bus
+- **434** S-009 `$6000`+UNROM `$8000` — OK; 16K+bus
+- **437** TH2348 outer `$5000` write — OK; 16K
+
+# Batch 20
+- **261** 810544 address latch — OK; 32K+bus
+- **265** T-262 latch write — OK; 16K+bus
+- **301** GG1/8157 address latch — OK; 16K+bus
+- **324** Farid UNROM `$8000` — OK; 16K+bus
+- **329** EDU2000 BNROM `$8000` — OK; 32K+bus
+- **332** BMC-WS `$6000`/`$6001`/`$8000` — OK; 32K
+- **336** K-3046 `$C000` — OK; 16K (no bus; sub1 has partial bus, not modeled)
+- **340** K-3036 latch write — OK; 16K+bus
+- **341** TJ-03 address latch — OK; 16K+bus
+- **349** G-146 address latch — OK; 16K+bus
+- **430** 831031C `$6000`+MMC3 — OK; 16K
+- **441** 841026C `$6000`+MMC3 — OK; 16K
+- **443** NC3000M `$6000`+MMC3 — OK; 16K
+- **450** YY841157C outer `$6000` — OK; 16K
+- **453** Realtec 8042 `$8000` — OK; 32K+bus
+- **455** N625836 `$4100`+MMC3 — OK; 16K+Nina
+- **456** K6C3001A `$4100`+MMC3 — OK; 16K+Nina
+- **457** 810431C `$6000`+MMC3 — OK; 16K
+- **458** K-3102 `$6000`+MMC3 CHR — OK; 32K
+
+# Batch 21
+- **283** GS-2004 `$8000` — OK; 32K+bus
+- **320** 830425C `$F0E0`+`$8000` — OK; 16K
+- **323** Farid SLROM `$6000` — OK; 16K (MMC1 via existing)
+- **346** KS7012 `$E0A0`/`$EE36` — OK; 32K+bus
+- **361** YY841101C `$7000`+MMC3 — OK; 16K
+- **370** F600 `$5000`+MMC3 — OK; 16K
+- **376** YY841155C `$7000`/`$7001`+MMC3 — OK; 16K
+- **381** KN-42 `$8000` — OK; 16K+bus
+- **382** 830928C latch write+`$8000` — OK; 16K+bus
+- **385** NTDEC 2779 address latch — OK; 16K+bus
+- **393** 820720C `$6000`+MMC3 — OK; 16K
+- **395** Realtec 8210 `$6000`/`$6010`+MMC3 — OK; 16K
+- **396** YY850437C `$A000`+`$8000` — OK; 16K no bus
+- **403** 89433 `$4100`–`$4102` — OK; 32K+Nina
+- **414** 9999999-in-1 latch write — OK; 32K+bus
+- **448** 830768C `$6000` — OK; 16K
+- **515** Noraebang `$8000` — OK; 16K no bus
+- **516** Cocoma `$8010`+MMC3 — OK; 16K
+- **541** LittleCom `$C000` — OK; 16K
+
+# Batch 22
+- **262** SHERO `$4100`+MMC3 — OK; 16K+Nina
+- **271** BMC-22026 `$8000` — OK; 32K+bus
+- **293** NewStar dual write — OK; 16K+bus
+- **297** TXC `$4120`+`$8000` — OK; 16K+bus
+- **327** 10-24-C-A1 `$6000`+MMC3 — OK; 16K
+- **334** 5/20-in-1 `$6000` PRG+MMC3 — OK; 32K
+- **339** K-3006 `$6000`+MMC3 — OK; 16K
+- **367** 205 addr-latch `$6000`+MMC3 — OK; 16K
+- **369** N49C-300 `$4100`+MMC3 — OK; 16K+Nina
+- **378** Ax/UNROM latch write — OK; 32K+bus
+- **386/388** JY outer `$D003` — OK; 16K
+- **402** J-2282 latch write — OK; 32K+bus
+- **409** DPCMcart `$C000` — OK; 16K+bus
+- **435** F-1002 latch write — OK; 16K+bus
+- **439** YS2309 `$8000`/`$6000`/`$6001` — OK; 16K+bus
+- **445** DG574B `$5000`–`$5002`+MMC3 — OK; 16K
+- **447** KL-06 `$6000` — OK; 16K
+- **519** EH8813A latch write — OK; 32K+bus
+- **525** KS7021A `$8000` — OK; 16K
+
+# Batch 23
+- **306** KS7016 `$D903` — OK; no $8000 window
+- **356** JY-208 `$6000`+MMC3 — OK; 16K
+- **358** YY860606C `$D003` — OK; 16K
+- **366** GN-45 `$6800`+MMC3 — OK; 16K
+- **387** YY850735C `$D003` — OK; 16K
+- **389** Caltron 9-in-1 write — OK; 32K+bus
+- **392** 00202650 `$6000`+MMC3 — OK; 16K
+- **394** HSK007 `$5009`/`$500B`+MMC3 — OK; 16K
+- **397** JY-082 `$D003` — OK; 16K
+- **404** JY012005 `$6000` — OK; 16K
+- **410** JY-302 `$6000`+MMC3 — OK; 16K
+- **412** Henggedianzi `$6000`–`$6002`+MMC3 — OK; 16K
+- **416** 4-in-1 SMB2J `$8000` — OK; 32K+bus
+- **432** Realtec 8090 `$6000`/`$6001`+MMC3 — OK; 16K
+- **461** CM-9309 `$6000` — OK; 16K
+- **467** 47-2 `$9000`+MMC3 — OK; 16K
+- **470** INX_007T `$5000`+AOROM — OK; 32K+bus
+- **471** IM1 latch write — OK; 32K+bus
+- **517** Kkachi `$8000` — OK; 16K no bus
+- **521** Korean Igo `$5020` — OK; 16K
+
+# Batch 24 (mop-up)
+- **263** KOF97 write (scramble left to caller) — OK; 16K
+- **372/373** SFC-12/13 `$6000`+MMC3 — OK; 16K
+- **377** JY-111 `$6000`+MMC3 — OK; 16K
+- **384** L1A16 `$6800` — OK; 16K
+- **401** KC885 `$6000`+MMC3 — OK; 16K
+- **415** Lucky Rabbit `$8000`→`$6000` — OK; no $8000 window
+- **438** K-3071 latch write — OK; 32K+bus
+- **522** LH10 MMC3-like bank — OK; 16K lean
+- **523** Jncota MMC3 bank — OK; 16K
+- **533** Sachen 3014 CHR `$8000` — OK; no PRG bank
+- **535** LH53 `$F000`→`$6000` — OK; no $8000 window
+- **539** Kid Icarus `$A000` — OK; no fixed 16K window
+- **540** 82112C CHR write — OK; 16K (PRG≡359)
+
+# Batch 25
+- **298** TF1201 VRC4b PRG — OK; 16K+VRC
+- **303** KS7017 `$4A00`+`$5100` — OK; 16K
+- **308** TH2131-1 VRC2b PRG — OK; 16K+VRC
+- **313** RESET-TXROM MMC3 bank — OK; 16K (outer=reset)
+- **325** MALISB MMC3 bank (scramble→caller) — OK; 16K
+- **362** 830506C VRC4f write — OK; 16K
+- **406** Haradius `$8000`/`$8002` — OK; 16K
+- **411** A88S-1 `$5FF0`/`$5FF1`+MMC3 — OK; 16K
+- **423/424/425** VT369 outer `$4150`/`$411E`/`$41E6` — OK; Nina
+- **436** ZLX-08 `$4100`/`$410F` — OK; Nina
+- **468** BlazePro `$5700` — OK; Nina
+- **520** Datach VRC4e write — OK
+- **527** AX-40G VRC2b PRG — OK; 16K+VRC
+- **529** T-230 `$A000` PRG — OK; 16K
+- **530** AX5705 VRC4f PRG — OK; 16K+VRC
+
+# Batch 26
+- **256/408/419** OneBus lean `$4107`/`$4108`/`$411C`(+`$4169`/`$410F`) + MMC3 bank — OK; 16K+Nina
+- **422** ≡534 `$6000`+MMC3 — OK; 16K
+- **426/427** VT369 GPIO `$4150`/`$4148`(+write) — OK; Nina
+- **433** ≡233 latch `$8000` — OK; 32K+bus
+- **469** ≡468 `$5700` — OK; Nina
+- **472** ≡52 `$6000`+MMC3 (bits→caller) — OK; 16K
+- **536/537** ≡195 MMC3 bank — OK; 16K
+- **547** QTa `$D200`/`write` — OK; 16K lean
+- **552** ≡taito82 `$7EF0` — OK; 16K
+- **561** Game Doctor `$42FC`/`$4100`/`$4101`/`$8000` — OK; 32K+Nina (no bus)
+
+# Batch 27
+- **363** ≡358 `$D003` — OK; 16K
+- **390** ≡236 `$8000` — OK; 32K+bus
+- **405/407** OneBus lean `$4107`/`$4108`(+`$4169`)/MMC3 — OK; 16K+Nina
+- **431** ≡396 `$A000`+`$8000` — OK; 16K
+- **562** Turbo Doctor `$42FC`/`$4411`/`$440D`/`$440C`/`$8000` — OK; 32K+Nina (no bus)
