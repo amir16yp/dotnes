@@ -1,0 +1,158 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 197</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_197"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 197</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_197">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_197">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 197 denotes an <a href="MMC3.xhtml" title="MMC3">MMC3</a> clone wired to support 512 KiB of CHR-ROM by increasing CHR banking granularity from 1/2 KiB to 2/4 KiB.
+All of its games are mapper hacks, usually by 卡聖 (Kǎshèng, NT-xxx cartridge codes), of games originally released on mappers <a href="J_Y__Company_ASIC.xhtml" class="mw-redirect" title="INES Mapper 090">90</a> and <a href="INES_Mapper_091.xhtml" title="INES Mapper 091">91</a>.
+Submappers, assigned by Nestopia Plus!, denote three different wiring variants. PRG-ROM, nametable mirroring and IRQs function as in mapper <a href="MMC3.xhtml" class="mw-redirect" title="INES Mapper 004">4</a>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Submapper_0"><span class="tocnumber">1</span> <span class="toctext">Submapper 0</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Submapper_1"><span class="tocnumber">2</span> <span class="toctext">Submapper 1</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Submapper_2"><span class="tocnumber">3</span> <span class="toctext">Submapper 2</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Submapper_3"><span class="tocnumber">4</span> <span class="toctext">Submapper 3</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Submapper_0">Submapper 0</span></h2>
+<ul><li><i>Super Fighter III</i> (PRG-ROM CRC32 0xC333F621), originally for Mapper <a href="INES_Mapper_091.xhtml" title="INES Mapper 091">91</a>.1.</li></ul>
+<pre>Pin            Connected to
+PPU A10        CHR-ROM A10
+PPU A11        MMC3 PA10
+GND            MMC3 PA11
+PPU A12        MMC3 PA12
+MMC3 CHR A10   CHR-ROM A11
+    :             :
+MMC3 CHR A17   CHR-ROM A18
+</pre>
+<p>So that the MMC3 sees the followings addresses:
+</p>
+<pre>Real PPU Addr  MMC3 PPU Addr
+$0000          $0000 -&gt; reg 0 AND $FE
+$0400          $0000 -&gt; reg 0 AND $FE
+$0800          $0400 -&gt; reg 0 OR $01
+$0C00          $0400 -&gt; reg 0 OR $01
+$1000          $1000 -&gt; reg 2
+$1400          $1000 -&gt; reg 2
+$1800          $1400 -&gt; reg 3
+$1C00          $1400 -&gt; reg 3
+</pre>
+<p>This results in the following CHR banks:
+</p>
+<pre>MMC3 reg#      Meaning
+0              4 KiB CHR-ROM bank at PPU $0000-$0FFF
+1              unused
+2              2 KiB CHR-ROM bank at PPU $1000-$17FF
+3              2 KiB CHR-ROM bank at PPU $1800-$1FFF
+4              unused
+5              unused
+</pre>
+<h2><span class="mw-headline" id="Submapper_1">Submapper 1</span></h2>
+<ul><li><i>Super Fighter III</i> (PRG-ROM CRC32 0x2091BEB2), UNIF board name <b>UNL-FC-28-5027</b>, originally for Mapper <a href="INES_Mapper_091.xhtml" title="INES Mapper 091">91</a>.1.</li></ul>
+<pre>Pin            Connected to
+PPU A10        CHR-ROM A10
+PPU A11        MMC3 PA10
+Vcc            MMC3 PA11
+PPU A12        MMC3 PA12
+MMC3 CHR A10   CHR-ROM A11
+    :             :
+MMC3 CHR A17   CHR-ROM A18
+</pre>
+<p>So that the MMC3 sees the followings addresses:
+</p>
+<pre>Real PPU Addr  MMC3 PPU Addr
+$0000          $0800 -&gt; reg 1 AND $FE
+$0400          $0800 -&gt; reg 1 AND $FE
+$0800          $0C00 -&gt; reg 1 OR $01
+$0C00          $0C00 -&gt; reg 1 OR $01
+$1000          $1800 -&gt; reg 4
+$1400          $1800 -&gt; reg 4
+$1800          $1C00 -&gt; reg 5
+$1C00          $1C00 -&gt; reg 5
+</pre>
+<p>This results in the following CHR banks:
+</p>
+<pre>MMC3 reg#      Meaning
+0              unused
+1              4 KiB CHR-ROM bank at PPU $0000-$0FFF
+2              unused
+3              unused
+4              2 KiB CHR-ROM bank at PPU $1000-$17FF
+5              2 KiB CHR-ROM bank at PPU $1800-$1FFF
+</pre>
+<h2><span class="mw-headline" id="Submapper_2">Submapper 2</span></h2>
+<ul><li><i>Mortal Kombat III Special (NT-328/YY-030)</i> (PRG-ROM CRC32 0x60815A7D), originally for Mapper <a href="J_Y__Company_ASIC.xhtml" class="mw-redirect" title="INES Mapper 090">90</a>.</li></ul>
+<pre>Pin            Connected to
+PPU A10        CHR-ROM A10
+PPU A11        MMC3 PA10 and MMC3 PA11
+PPU A12        MMC3 PA12
+MMC3 CHR A10   CHR-ROM A11
+    :             :
+MMC3 CHR A17   CHR-ROM A18
+</pre>
+<p>So that the MMC3 sees the followings addresses:
+</p>
+<pre>Real PPU Addr  MMC3 PPU Addr
+$0000          $0000 -&gt; reg 0 AND $FE
+$0400          $0000 -&gt; reg 0 AND $FE
+$0800          $0C00 -&gt; reg 1 OR $01
+$0C00          $0C00 -&gt; reg 1 OR $01
+$1000          $1000 -&gt; reg 2
+$1400          $1000 -&gt; reg 2
+$1800          $1C00 -&gt; reg 5
+$1C00          $1C00 -&gt; reg 5
+</pre>
+<p>This results in the following CHR banks:
+</p>
+<pre>MMC3 reg#      Meaning
+0 (AND $FE)    2 KiB CHR-ROM bank at PPU $0000-$07FF
+1 (OR $01)     2 KiB CHR-ROM bank at PPU $0800-$0FFF
+2              2 KiB CHR-ROM bank at PPU $1000-$17FF
+3              unused
+4              unused
+5              2 KiB CHR-ROM bank at PPU $1800-$1FFF
+</pre>
+<h2><span class="mw-headline" id="Submapper_3">Submapper 3</span></h2>
+<ul><li><i>1995 Super 2-in-1 (2B20)</i></li></ul>
+<p>Like Submapper 0, but with an additional outer bank register at $6000-$7FFF:
+</p>
+<pre>Mask: $E000
+
+D~7654 3210
+  ---------
+  .... S..P
+       |  +- PRG A17 if S=1
+       +---- PRG A17 mode
+              0: PRG A17=MMC3 PRG A17 (256 KiB)
+              1: PRG A17=P (128 KiB)
+</pre>
+<p>As the outer bank register uses the MMC3 clone's WRAM interface, writes only have an effect if WRAM is enabled and not write-protected via $A001.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123163727
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.019 seconds
+Real time usage: 0.025 seconds
+Preprocessor visited node count: 24/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:481-0!canonical and timestamp 20241123163727 and revision id 5527.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_NES_2_0_mappers_with_submappers.xhtml">NES 2.0 mappers with submappers</a></p></div></body></html>

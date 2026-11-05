@@ -1,0 +1,249 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>GTROM</title><link rel="canonical" href="https://www.nesdev.org/wiki/GTROM"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>GTROM</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/GTROM">current version</a> | View <a href="Special_AllPages.xhtml#GTROM">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><div class="infobox">
+<div style="text-align: center"><b>Cheapocabra (GTROM)</b>
+</div>
+<table class="oddf0">
+
+<tbody><tr>
+<td><b>Company</b>
+</td>
+<td>Membler Industries
+</td></tr>
+
+
+
+
+<tr>
+<td><b>Boards</b>
+</td>
+<td>GTROM
+</td></tr>
+<tr>
+<td><b>PRG ROM capacity</b>
+</td>
+<td>512K
+</td></tr>
+<tr>
+<td><b>PRG ROM window</b>
+</td>
+<td>32K
+</td></tr>
+<tr>
+<td><b>PRG RAM capacity</b>
+</td>
+<td>None
+</td></tr>
+<tr>
+<td><b>CHR capacity</b>
+</td>
+<td>16K
+</td></tr>
+<tr>
+<td><b>CHR window</b>
+</td>
+<td>8K
+</td></tr>
+<tr>
+<td><b>Nametable <a href="Mirroring.xhtml" title="Mirroring">mirroring</a></b>
+</td>
+<td>4 fixed
+</td></tr>
+<tr>
+<td><b><a href="Bus_conflict.xhtml" title="Bus conflict">Bus conflicts</a></b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>IRQ</b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>Audio</b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>iNES <a href="Mapper.xhtml" title="Mapper">mappers</a></b>
+</td>
+<td><a href="GTROM.xhtml" class="mw-redirect" title="INES Mapper 111">111</a>
+</td></tr></tbody></table>
+</div>
+<p><br/>
+<b>Cheapocabra</b> or <b>GTROM</b> is a self-flashable cartridge board intended for homebrew releases with its own unique mapper assigned to <b>iNES Mapper 111</b>. The board and mapper were designed by Membler Industries which also manufactures the cartridges.
+</p><p>Releases:
+</p>
+<ul><li><i>Anguna: Scourge of the Goblin King</i></li>
+<li><i>Candelabra Estoscerro</i> (also available as <a href="UNROM_512.xhtml" class="mw-redirect" title="UNROM512">UNROM512</a>)</li>
+<li><i>The Incident</i></li>
+<li><i>NEScape</i></li>
+<li><i>Project Blue</i> (First US batch of the kickstarter fulfillment. Later and international batches use <a href="BNROM.xhtml" title="BNROM">BNROM</a>)</li>
+<li><i>Spook-o-tron</i></li>
+<li><i>Storied Sword</i></li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Bank_select_(%245000-%245FFF,_others)"><span class="tocnumber">2.1</span> <span class="toctext">Bank select ($5000-$5FFF, others)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-4"><a href="#Banks"><span class="tocnumber">3</span> <span class="toctext">Banks</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#PRG_ROM_(CPU_%248000-%24FFFF)"><span class="tocnumber">3.1</span> <span class="toctext">PRG ROM (CPU $8000-$FFFF)</span></a>
+<ul>
+<li class="toclevel-3 tocsection-6"><a href="#Self-flashing"><span class="tocnumber">3.1.1</span> <span class="toctext">Self-flashing</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-7"><a href="#PPU_RAM"><span class="tocnumber">3.2</span> <span class="toctext">PPU RAM</span></a>
+<ul>
+<li class="toclevel-3 tocsection-8"><a href="#CHR_RAM_(PPU_%240000-%241FFF)"><span class="tocnumber">3.2.1</span> <span class="toctext">CHR RAM (PPU $0000-$1FFF)</span></a></li>
+<li class="toclevel-3 tocsection-9"><a href="#VRAM_(PPU_%242000-%243EFF)"><span class="tocnumber">3.2.2</span> <span class="toctext">VRAM (PPU $2000-$3EFF)</span></a>
+<ul>
+<li class="toclevel-4 tocsection-10"><a href="#Bonus_RAM"><span class="tocnumber">3.2.2.1</span> <span class="toctext">Bonus RAM</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-11"><a href="#Emulator_Support"><span class="tocnumber">4</span> <span class="toctext">Emulator Support</span></a>
+<ul>
+<li class="toclevel-2 tocsection-12"><a href="#Mesen"><span class="tocnumber">4.1</span> <span class="toctext">Mesen</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#FCEUX"><span class="tocnumber">4.2</span> <span class="toctext">FCEUX</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#PowerPak"><span class="tocnumber">4.3</span> <span class="toctext">PowerPak</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#EverDrive"><span class="tocnumber">4.4</span> <span class="toctext">EverDrive</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-16"><a href="#Hardware_Teardown"><span class="tocnumber">5</span> <span class="toctext">Hardware Teardown</span></a></li>
+<li class="toclevel-1 tocsection-17"><a href="#Variations"><span class="tocnumber">6</span> <span class="toctext">Variations</span></a>
+<ul>
+<li class="toclevel-2 tocsection-18"><a href="#GTMP3"><span class="tocnumber">6.1</span> <span class="toctext">GTMP3</span></a></li>
+<li class="toclevel-2 tocsection-19"><a href="#Famiclone-compatible_mode"><span class="tocnumber">6.2</span> <span class="toctext">Famiclone-compatible mode</span></a></li>
+<li class="toclevel-2 tocsection-20"><a href="#Ninja_Ryukenden_Chinese_Fan_Translation"><span class="tocnumber">6.3</span> <span class="toctext">Ninja Ryukenden Chinese Fan Translation</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-21"><a href="#See_also"><span class="tocnumber">7</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Overview">Overview</span></h2>
+<p>The Cheapocabra board and mapper were developed in 2015 by Memblers to meet the needs of the lower end of the homebrew cartridge market. This includes games that would have historically used an <a href="NROM.xhtml" title="NROM">NROM</a> board as well as other simpler boards which provide some kind of bank switching but lacked more advanced features like IRQs. The underlying philosophy is that stocking larger numbers of a single board design allows for lower costs by economies of scale when compared to stocking smaller individual quantities of a suite of lower end boards all with similar capabilities.
+</p><p>The name Cheapocabra is a play on <a href="https://en.wikipedia.org/wiki/Chupacabra" class="extiw" title="wikipedia:Chupacabra">Chupacabra</a>, a creature from American folklore, where the similar sounding first syllable is replaced with the word &quot;cheap&quot; to indicate the intended low cost of the hardware. The GTROM moniker, meaning &quot;Goat ROM,&quot; is derived directly from this as Chupacabra translates literally as &quot;goat-sucker&quot; and the Chupacabras of legend are known for attacking goats and other livestock.
+</p>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<h3><span id="Bank_select_.28.245000-.245FFF.2C_others.29"/><span class="mw-headline" id="Bank_select_($5000-$5FFF,_others)">Bank select ($5000-$5FFF, others)</span></h3>
+<p>The register is mapped to the CPU addresses <b>$5000-$5FFF</b> and <b>$7000-$7FFF</b> and writing a byte to any of these addresses all have the same result. Programs most commonly use <b>$5000</b> for writing to the register but any of the others work equally well. Note that reading from the register effectively writes the value of open bus, so bitwise manipulation will require keeping a copy of the mapper register's value in RAM.
+</p>
+<pre>7  bit  0
+---- ----
+GRNC PPPP
+|||| ||||
+|||| ++++- Select 32 KB PRG ROM bank for CPU $8000-$FFFF
+|||+------ Select 8 KB CHR RAM bank for PPU $0000-$1FFF
+||+------- Select 8 KB nametable for PPU $2000-$3EFF
+|+-------- Red LED - 0=On; 1=Off
++--------- Green LED - 0=On; 1=Off
+</pre>
+<p>There are two LEDs on the board; one red and one green. They can be independently turned on and off using the register at any time. The LEDs are potentially useful as a simple means of communicating debug information or some kind of indicator for the player. Another approach is to turn the light off during processing and on during idle resulting in the brightness of the light being a rough indicator of available CPU time.
+</p>
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<h3><span id="PRG_ROM_.28CPU_.248000-.24FFFF.29"/><span class="mw-headline" id="PRG_ROM_(CPU_$8000-$FFFF)">PRG ROM (CPU $8000-$FFFF)</span></h3>
+<p>512 KB of flash memory is mapped to a 32 KB window located at <b>$8000-$FFFF</b> in CPU address space providing the PRG ROM for the cartridge. The full 512 KB is divided into sixteen 32 KB pages which can be selected by writing the index number of the desired page to the lower nybble of the control register located at $5000. No portion of the bank is fixed and no portion of the pages overlap and so switching pages results in all the addresses in the bank being redirected to another unique location on the flash chip.
+</p><p>The lack of a fixed bank may make development more difficult since care must be taken to ensure that the next instruction of the program to execute after the register update will be located at the next address in the page that is being switched in. If the new page contains something else at that address then the program will likely crash since the CPU will still proceed to execute it anyway. The simplest way to handle this is to create a faux fixed bank by duplicating the same data at the same offset within all 16 pages. A common approach is to imitate a <a href="UxROM.xhtml" title="UxROM">UxROM</a> style layout by duplicating the same 16 KB of data at $C000-$FFFF but this effectively reduces the size of the ROM to 272 KB (16 KB * 16 pages + 16 KB fixed). Memblers has released a command line utility called the <a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?f=2&amp;t=18035">Fixed Bank Creator</a> that can be used to duplicate data across multiples pages in a variety of configurations.
+</p>
+<h4><span class="mw-headline" id="Self-flashing">Self-flashing</span></h4>
+<p>Like <a href="UNROM_512.xhtml" title="UNROM 512">UNROM 512</a>, GTROM uses a SST39SF040 flash chip as the PRG ROM storage device. Both of these mappers lack PRG RAM for game saves but the configuration of both boards make it possible to erase and rewrite sections of the chip using NES software thus allowing games to store saved games and other variable information on the &quot;ROM&quot; chip. The saved data actually becomes part of the ROM image since its just stored alongside the rest of the program and game data on the flash chip.
+</p><p>Rewriting is accomplished by writing specific sequences of bytes to specific addresses on the chip to unlock and perform a particular action such as erasing a sector or writing a byte value. The particular sequences are documented on the <a rel="nofollow" class="external text" href="https://www.microchip.com/wwwproducts/Devices.aspx?product=SST39SF040">data sheet</a> for the chip. The addresses given on the data sheet are in addresses on the chip and thus <b>5555h</b> corresponds to CPU <b>$D555</b> and <b>2AAAh</b> corresponds to CPU <b>$AAAA</b> regardless of the PRG page selected.
+</p><p>NES programs must execute from RAM while erasing and writing to the chip since the CPU fetching instructions from it would interfere with the command sequence. Writing data to a sector is accomplished by first erasing the sector and then writing each byte in turn which requires writing the appropriate command sequence to the chip each time. This would be similar to the <a href="https://www.nesdev.org/w/images/default/f/fa/Flash.asm.txt" class="internal" title="Flash.asm.txt">example code</a> for UNROM except that the bank switches and addresses would need to be adjusted to match GTROM's requirements.
+</p>
+<h3><span class="mw-headline" id="PPU_RAM">PPU RAM</span></h3>
+<p>The board contains a 32KiB RAM. This RAM is always enabled, and the NES's internal 2KiB CIRAM is always disabled.
+</p>
+<h4><span id="CHR_RAM_.28PPU_.240000-.241FFF.29"/><span class="mw-headline" id="CHR_RAM_(PPU_$0000-$1FFF)">CHR RAM (PPU $0000-$1FFF)</span></h4>
+<p>The <a href="PPU_pattern_tables.xhtml" title="PPU pattern tables">pattern tables</a> can select between the first two 8KiB of the PPU RAM, vaguely like <a href="INES_Mapper_087.xhtml" title="INES Mapper 087">mapper 87</a>. The page is selected by setting or clearing bit 4 of the control register.
+</p><p>All of the <a href="CHR_ROM_vs__CHR_RAM.xhtml" title="CHR ROM vs. CHR RAM">normal advantages</a> of CHR RAM over CHR ROM apply to this board such as being able to dynamical update tiles between frames for animations and other effects. Since the RAM bank is paged it also has the same kind of &quot;flip book&quot; capabilities often associated with CHR ROM.
+</p>
+<h4><span id="VRAM_.28PPU_.242000-.243EFF.29"/><span class="mw-headline" id="VRAM_(PPU_$2000-$3EFF)">VRAM (PPU $2000-$3EFF)</span></h4>
+<p>The <a href="PPU_nametables.xhtml" title="PPU nametables">nametables</a> can select between the last two 8KiB of the PPU RAM. This provides unique memory in both banks for all 4 nametables. This means the mapper always uses 4-screen <a href="Mirroring.xhtml" title="Mirroring">mirroring</a> and can neither use nor benefit from a switch to control the nametable arrangement.
+</p><p>Use bit 5 of the control register to select the specific page. 
+</p>
+<h5><span class="mw-headline" id="Bonus_RAM">Bonus RAM</span></h5>
+<p>The nametable RAM on the board covers not only the full nametable <a href="PPU_memory_map.xhtml" title="PPU memory map">address range</a>, but also the next 4KiB. Normally, PPU $3000-$3EFF is just a mirror of $2000-$2EFF and so is not usually useful.
+</p><p>On this board these addresses are not mirrored and instead are wired to real, independent addresses on the RAM chip. Since these PPU addresses aren't actually used by the system this creates some additional RAM space that can be used for general purposes. Both pages in this bank contain their own copy of this bonus RAM so the total is almost 8 KB split evenly across the two pages.
+</p><p>However, the last 256 bytes are unwriteable because <a href="PPU_palettes.xhtml" title="PPU palettes">palette RAM</a> is mapped to $3F00-$3FFF.
+</p>
+<h2><span class="mw-headline" id="Emulator_Support">Emulator Support</span></h2>
+<p>Emulator support for this mapper is currently spotty. Most were designed before GTROM and have been slow to add support but this may be a chicken-or-the-egg problem with the current lack of many freely distributed ROM images that use the mapper. Some of the implementations that are available are incomplete since they commonly lack support for the bonus RAM or self-flashing capabilities. The LED lights on the board are universally unsupported at this time.
+</p>
+<h3><span class="mw-headline" id="Mesen">Mesen</span></h3>
+<p><a rel="nofollow" class="external text" href="https://www.mesen.ca/">Mesen</a> added full support for GTROM as of <a rel="nofollow" class="external text" href="https://www.mesen.ca/#Changelog">version 0.9.0</a> (released May 13, 2017).
+</p>
+<h3><span class="mw-headline" id="FCEUX">FCEUX</span></h3>
+<p>Since version 2.3.0 FCEUX has officially supported GTROM.
+</p><p>Prior to that release, it had been available in interim builds for several years. On Memblers' homepage is <a rel="nofollow" class="external text" href="https://membler-industries.com/nes/fceux-r3293.zip">an interim build</a> with GTROM.
+</p><p>This implementation does not support the &quot;bonus RAM&quot; at PPU $3000-$3EFF because the architecture of the emulator makes implementing this infeasible. The <a rel="nofollow" class="external text" href="https://github.com/TASVideos/fceux/blob/master/src/boards/cheapocabra.cpp">source code</a> is available on GitHub.
+</p>
+<h3><span class="mw-headline" id="PowerPak">PowerPak</span></h3>
+<p><a href="PowerPak.xhtml" title="PowerPak">PowerPak</a> has had a <a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?f=9&amp;t=16631">3rd-party mapper</a> made to support GTROM. The current implementation supports bonus RAM but does not support self-flashing.
+</p>
+<h3><span class="mw-headline" id="EverDrive">EverDrive</span></h3>
+<p><a href="Everdrive_N8.xhtml" title="Everdrive N8">Everdrive N8</a> has had a <a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?f=9&amp;t=18841">3rd-party mapper</a> made to support GTROM, based on the PowerPak mapper. As such, the current implementation supports bonus RAM but does not support self-flashing.
+</p>
+<h2><span class="mw-headline" id="Hardware_Teardown">Hardware Teardown</span></h2>
+<p>The specific hardware on this board is a <a href="74377.xhtml" title="74377">74377</a>, a <a href="7402.xhtml" title="7402">7402</a>, and a <a href="7410.xhtml" title="7410">7410</a>.
+</p><p>Memblers shared the <a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?p=226364#p226364">schematic here</a>.
+</p><p>The functions evaluated by the logic include:
+</p>
+<ul><li>CHRRAMA14 = <b>N</b> if (PPUA13==1) otherwise <b>C</b></li>
+<li>PRGROM/OE = NOT(R/W)</li>
+<li>Latch on falling edge of M2, if /ROMSEL, A14, and A12 all high.</li></ul>
+<p>Note that reads from the latch will write the value of open bus to the latch, which includes dummy reads from indexed addressing.
+</p>
+<h2><span class="mw-headline" id="Variations">Variations</span></h2>
+<h3><span class="mw-headline" id="GTMP3">GTMP3</span></h3>
+<p>A new variant of this mapper known as <a rel="nofollow" class="external text" href="https://docs.google.com/document/d/108LuUaH3KgHwvCuID_jHYiMAcHVZ-3EHLE9EOahEzTk">GTMP3</a> was introduced in October 2019. The new version adds an audio expansion and is mostly backward compatible with the original. Memblers intends to continue to make the original GTROM board available for purchase since it's still less expensive to produce than the enhanced MP3 version.
+</p><p>This adds a YX5200 coprocessor which can be instructed by NES code to play MP3 or WAV audio stored on a microSD card. It is controlled using asynchronous serial emitted on bit 7 of the mapper's register, instead of the green LED. Code designed to run from a classic GTROM board should otherwise be fully compatible with GTMP3. <a rel="nofollow" class="external text" href="https://github.com/Memblers/mp3player">Example code</a> is available on GitHub.
+</p>
+<h3><span class="mw-headline" id="Famiclone-compatible_mode">Famiclone-compatible mode</span></h3>
+<p>Many Famiclones don't permit the cartridge to replace the nametables, sometimes even using the relevant pins to detect cartridge insertion and replace the built-in games. A set of solder jumpers are available to reconfigure this to instead act like a self-flashable <a href="GxROM.xhtml" class="mw-redirect" title="GNROM">GNROM</a> board with four 8KB banks of CHR RAM and fixed nametable mirroring. Nothing has yet been released using this mode, and when found it should probably be allocated a new mapper number.
+</p>
+<h3><span class="mw-headline" id="Ninja_Ryukenden_Chinese_Fan_Translation">Ninja Ryukenden Chinese Fan Translation</span></h3>
+<p>Prior to the introduction of GTROM, Mapper 111 was assigned to a Chinese Fan Translation of Ninja Ryukenden (Japanese Ninja Gaiden).  This translation uses a non-serialized version of MMC1 and supports 256KiB of CHR-ROM, whereas the official MMC1 is limited to 128KiB.  This assignment can coexist with GTROM provided the emulator recognizes that the translation uses CHR-ROM and therefore must emulate the MMC1 variant instead of GTROM hardware.
+</p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?p=146039">Membler Industries in 2015</a> - forum post describing the board.</li>
+<li><a href="BNROM.xhtml" title="BNROM">BNROM</a> - The easiest other mapper to convert to/from, so long as you don't use GTROM's unique features.</li>
+<li><a href="UNROM_512.xhtml" title="UNROM 512">UNROM 512</a> - A very similar homebrew mapper, but with a 16k + fixed PRG configuration.</li>
+<li><a rel="nofollow" class="external text" href="https://bacteriamage.wordpress.com/2019/03/01/how-i-learned-to-play-the-incident-and-other-gtrom-favorites-sans-the-cartridge/">How I learned to play The Incident and other GTROM favorites sans the cartridge</a> - Blog post describing patching some popular GTROM games to run from other mappers (<a rel="nofollow" class="external text" href="https://bacteriamage.wordpress.com/2019/03/10/patch-scripts-released-for-the-incident-scramble-and-khan-4-in-1/">patches</a>)</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123120449
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.044 seconds
+Real time usage: 0.051 seconds
+Preprocessor visited node count: 162/1000000
+Post‐expand include size: 599/2097152 bytes
+Template argument size: 85/2097152 bytes
+Highest expansion depth: 4/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    9.073      1 Template:Infobox_iNES_mapper
+100.00%    9.073      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:254-0!canonical and timestamp 20241123120450 and revision id 22244.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_using__4020__5FFF.xhtml">Mappers using $4020-$5FFF</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Mappers_with_flash_save.xhtml">Mappers with flash save</a>, <a href="Category_GNROM_like_mappers.xhtml">GNROM-like mappers</a></p></div></body></html>

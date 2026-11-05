@@ -1,0 +1,40 @@
+INES Mapper 152
+
+INES Mapper 152
+
+ ========================
+ =  Mapper 152          =
+ ========================
+
+
+ Example Games:
+ --------------------------
+ Arkanoid 2 (J)
+ Gegege no Kitarou 2
+
+
+
+ Registers: (** BUS CONFLICTS **)
+ --------------------------
+
+   $8000-FFFF:  [MPPP CCCC]
+     M = Mirroring:
+         0 = 1ScA
+         1 = 1ScB
+
+     P = PRG Reg (16k @ $8000)
+     C = CHR Reg (8k @ $0000)
+
+
+ PRG Setup:
+ --------------------------
+
+       $8000   $A000   $C000   $E000
+     +---------------+---------------+
+     |     $8000     |     { -1}     |
+     +---------------+---------------+
+
+The version of this board without mirroring control is mapper 70.
+One variant of mapper 78 is the same thing with the nibbles swapped.
+
+Categories: In NesCartDB, Discrete logic mappers, INES Mappers, Mappers with bus conflicts

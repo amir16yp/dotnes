@@ -1,0 +1,5 @@
+INES Mapper 130
+
+INES Mapper 130
+
+iNES Mapper 130 was an alternative assignment to the mapper behavior later implemented by NES 2.0 Mapper 331.

@@ -1,0 +1,58 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 017</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_017"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 017</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_017">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_017">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 017</b> denotes ROM images that have been extracted from disk images for the <i>Front Fareast Super Magic Card</i> <a href="RAM_cartridge.xhtml" title="RAM cartridge">RAM cartridge</a>. They represent games whose <a href="Game_Doctor_Magic_Card_FDS_Format.xhtml#Front_Fareast_Super_Magic_Card_disks" title="Game Doctor/Magic Card FDS Format">Doctor Header file</a> denotes a Super Magic Card disk (byte $0 bit 7 set, byte $7=$AA). Refer to the <a href="Super_Magic_Card.xhtml" title="Super Magic Card">Super Magic Card</a> article for details on bankswitching. The Super Magic Card's registers are initialized to:
+</p>
+<pre>; Play mode, WRAM bank 0, 1 KiB CHR mode enabled
+<a href="Super_Magic_Card.xhtml#Super_Magic_Card_mode_.28.244500.2C_write-only.29" title="Super Magic Card">$4500</a> = $47 
+
+; PRG memory write-protected, two-screen mirroring
+<a href="Super_Magic_Card.xhtml#1M_banking_mode_.28.2442FC-.2442FF.2C_write-only.29" title="Super Magic Card">$42FF</a> = $20 | (verticalMirroring? 0x00: 0x10)
+
+; 4M banking mode enabled
+<a href="Super_Magic_Card.xhtml#2M.2F4M_PRG_banking_mode_.28.2443FC-.2443FF.2C_write-only.29" title="Super Magic Card">$43FC</a> = $00
+
+; Initial PRG register content
+$4504 = Number of 8 KiB PRG banks -4
+$4505 = Number of 8 KiB PRG banks -3
+$4506 = Number of 8 KiB PRG banks -2
+$4507 = Number of 8 KiB PRG banks -1 (originally <a href="Game_Doctor_Magic_Card_FDS_Format.xhtml#Front_Fareast_Super_Magic_Card_disks" title="Game Doctor/Magic Card FDS Format">Doctor Header file</a> byte $5)
+</pre>
+<p>The <a href="INES.xhtml" title="INES">iNES</a> header may specify a <a href="INES.xhtml#Trainer" title="INES">512-byte trainer</a> (corresponding to <a href="Game_Doctor_Magic_Card_FDS_Format.xhtml#Front_Fareast_Super_Magic_Card_disks" title="Game Doctor/Magic Card FDS Format">Doctor Header file</a>'s byte $0 bit 6 being set). The trainer must be loaded to an address originally denoted by the <a href="Game_Doctor_Magic_Card_FDS_Format.xhtml#Front_Fareast_Super_Magic_Card_disks" title="Game Doctor/Magic Card FDS Format">Doctor Header file</a>'s byte $2, and is here denoted by the NES 2.0 submapper. In its presence, instead of jumping to the game's reset vector on a hard reset, trainer offset +$000 must be JMPed to.
+</p>
+<pre>Submapper    Trainer load address
+ 0           $7000
+ 1           $5D00
+ 2           $5E00
+ 3           $5F00
+</pre>
+<p>Battery-saving of WRAM content is not supported by any Magic Card model. Hard-resetting a game while restoring previously-saved WRAM content in emulators interferes with the correct operation of the trainer's program.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123163356
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.011 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 2/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:300-0!canonical and timestamp 20241123163356 and revision id 18933.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a>, <a href="Category_Mappers_with_ROM_nametables.xhtml">Mappers with ROM nametables</a></p></div></body></html>

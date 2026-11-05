@@ -1,0 +1,15 @@
+NES 2.0 Mapper 437
+
+NES 2.0 Mapper 437
+
+NES 2.0 Mapper 437 denotes the NTDEC TH2348 multicart circuit board for eight UNROM games with an additional outer bank register.
+
+Outer Bank register ($5000-$5FFF, write)
+
+A~[0101 .... .... MOOO]
+                  |+++- PRG A19..A17
+                  +---- Nametable mirroring
+                        0: CIRAM A10=PPU A10 (vertical)
+                        1: CIRAM A10=PPU A11 (horizontal)
+
+Categories: Mappers with CHR RAM, Multicart mappers

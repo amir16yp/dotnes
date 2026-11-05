@@ -1,0 +1,103 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 012</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_012"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 012</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_012">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_012">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 012</b> denotes ...
+</p>
+<ul><li>the 哥德 (Gouder) <b>SL-5020B</b> circuit board (<b>submapper 0</b>);</li>
+<li>ROM images that have been extracted from disk images for the Front Fareast Magic Card 4M <a href="RAM_cartridge.xhtml" title="RAM cartridge">RAM cartridge</a> (<b>submapper 1</b>).</li></ul>
+<p>Even as FFE 4M was assigned earlier (as &quot;FFE F6xxx&quot;) than SL-5020B, the latter was emulated earlier and so is assigned submapper 0.
+</p>
+<h1><span id="SL-5020B_.28submapper_0.29"/><span class="mw-headline" id="SL-5020B_(submapper_0)">SL-5020B (submapper 0)</span></h1>
+<p><b>Submapper 0'</b>s circuit board mounts a chip-on-board variant of the same Huang-1 ASIC as mappers <a href="INES_Mapper_014.xhtml" title="INES Mapper 014">14</a>, <a href="INES_Mapper_116.xhtml" title="INES Mapper 116">116</a> and <a href="INES_Mapper_238.xhtml" title="INES Mapper 238">238</a> plus GAL16V8 programmable logic. It is used for two games:
+</p>
+<ul><li>Rex Soft's <i>Dragon Ball Z 5</i> cartrige;</li>
+<li>Version 7.5 of the homebrew hack <i>Ultimate Mortal Kombat III</i>.</li></ul>
+<p>The Huang-1 ASIC functions exclusively as an MMC3A clone on this PCB; <a href="MMC3.xhtml#IRQ_Specifics" title="MMC3">MMC3A-specific IRQ behavior</a> is necessary for running <i>Dragon Ball Z 5</i>. The GAL16V8 provides an outer CHR bank register at $4132 to support 512 KiB of CHR-ROM:
+</p>
+<pre>Mask: $E100
+
+D~7654 3210 (write)
+  ---------
+  ...B ...A
+     |    +- CHR A18 when PPU A12=0
+     +------ CHR A18 when PPU A12=1
+</pre>
+<p>Because this register is implemented outside the ASIC, it is not affected by MMC3 $8000 bit 7, and writes take effect immediately. FCEUX instead emulates it as a temporary latch register that takes effect on the next write to an MMC3 CHR bank register. The homebrew hack <i>Ultimate Mortal Kombat III</i> relies on FCEUX' behavior and would therefore not work on the original PCB.
+</p><p><i>Dragon Ball Z 5</i> reads the same address to select between Chinese and English text.
+</p>
+<pre>Mask: $E100
+
+D~7654 3210 (read)
+  ---------
+  .... ...A
+          +- Language-determining bit value
+</pre>
+<p>It was previously thought that the value of this bit reflects a jumper or solder pad. Pictures of the circuit board however show no sign of either. Either such a solder pad is hidden underneath the GAL16V8, or the GAL16V8 has the value hard-wired (to Chinese text in all known copies).
+</p><p>See also: <a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?p=160268#p160268">Forum thread about adding parts to an MMC3A board to make this mapper</a>
+</p>
+<ul class="gallery mw-gallery-traditional">
+		<li class="gallerybox" style="width: 155px"><div style="width: 155px">
+			<div class="thumb" style="width: 150px;"><div style="margin:48px auto;"><a href="File_SL_5020B_front_jpg.xhtml" class="image" title="PCB front"><img alt="PCB front" src="../wiki-images/SL-5020B-front.jpg" decoding="async" width="120" height="54" srcset="/w/images/default/thumb/9/9b/SL-5020B-front.jpg/180px-SL-5020B-front.jpg 1.5x, /w/images/default/thumb/9/9b/SL-5020B-front.jpg/240px-SL-5020B-front.jpg 2x"/></a></div></div>
+			<div class="gallerytext">
+<p>PCB front
+</p>
+			</div>
+		</div></li>
+		<li class="gallerybox" style="width: 155px"><div style="width: 155px">
+			<div class="thumb" style="width: 150px;"><div style="margin:48px auto;"><a href="File_SL_5020B_back_jpg.xhtml" class="image" title="PCB back"><img alt="PCB back" src="../wiki-images/SL-5020B-back.jpg" decoding="async" width="120" height="54" srcset="/w/images/default/thumb/a/a3/SL-5020B-back.jpg/180px-SL-5020B-back.jpg 1.5x, /w/images/default/thumb/a/a3/SL-5020B-back.jpg/240px-SL-5020B-back.jpg 2x"/></a></div></div>
+			<div class="gallerytext">
+<p>PCB back
+</p>
+			</div>
+		</div></li>
+</ul>
+<h1><span id="Front_Fareast_Magic_Card_4M_.28submapper_1.29"/><span class="mw-headline" id="Front_Fareast_Magic_Card_4M_(submapper_1)">Front Fareast Magic Card 4M (submapper 1)</span></h1>
+<p><b>Submapper 1</b> denotes ROM images that have been extracted from disk images for the <i>Front Fareast Magic Card 4M</i> <a href="RAM_cartridge.xhtml" title="RAM cartridge">RAM cartridge</a>. It represents games whose <a href="Game_Doctor_Magic_Card_FDS_Format.xhtml#Front_Fareast_Magic_Card_1M.2F2M.2F4M_disks" title="Game Doctor/Magic Card FDS Format">Doctor Header file</a> denotes a Magic Card 4M disk (byte $0 bit 7 set, bits 4 or 5 set, byte $7=$00). Refer to the <a href="Super_Magic_Card.xhtml" title="Super Magic Card">Super Magic Card</a> article for details on bankswitching. The Super Magic Card's registers are initialized to:
+</p>
+<pre>; Play mode, WRAM bank 0, 1 KiB CHR mode disabled
+<a href="Super_Magic_Card.xhtml#Super_Magic_Card_mode_.28.244500.2C_write-only.29" title="Super Magic Card">$4500</a> = $42 
+
+; PRG memory write-protected, two-screen mirroring
+<a href="Super_Magic_Card.xhtml#1M_banking_mode_.28.2442FC-.2442FF.2C_write-only.29" title="Super Magic Card">$42FF</a> = $20 | (verticalMirroring? 0x00: 0x10)
+
+; 4M banking mode enabled
+<a href="Super_Magic_Card.xhtml#2M.2F4M_PRG_banking_mode_.28.2443FC-.2443FF.2C_write-only.29" title="Super Magic Card">$43FC</a> = $00
+
+; Initial PRG register content
+$4504 = Number of 8 KiB PRG banks -4
+$4505 = Number of 8 KiB PRG banks -3
+$4506 = Number of 8 KiB PRG banks -2
+$4507 = Number of 8 KiB PRG banks -1
+</pre>
+<p>The <a href="INES.xhtml" title="INES">iNES</a> header may specify a <a href="INES.xhtml#Trainer" title="INES">512-byte trainer</a> (corresponding to <a href="Game_Doctor_Magic_Card_FDS_Format.xhtml#Front_Fareast_Magic_Card_1M.2F2M.2F4M_disks" title="Game Doctor/Magic Card FDS Format">Doctor Header file</a>'s byte $0 bit 6 being set), which must be loaded to $7000-$71FF, be writable, and (on a hard reset) initialized by JSRing to $7003 before JMPing to the game's reset vector.
+</p><p>Battery-saving of WRAM content is not supported by any Magic Card model. Hard-resetting a game while restoring previously-saved WRAM content in emulators interferes with the correct operation of the trainer's program.
+</p><p>Because the Magic Card 4M only had 32 KiB of CHR-RAM, CHR data is loaded into <i>PRG</i> address space at offset $40000, i.e. the second half of its 512 KiB of PRG memory, so that the trainer program can copy portions of it to 32 KiB CHR-RAM as needed. The iNES header specifies it as CHR-ROM nonetheless so that the initial PRG registers can be correctly initialized to point to the game's reset vector.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123024255
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.026 seconds
+Real time usage: 0.037 seconds
+Preprocessor visited node count: 23/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 1317/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:294-0!canonical and timestamp 20241123024255 and revision id 18954.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_using__4020__5FFF.xhtml">Mappers using $4020-$5FFF</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

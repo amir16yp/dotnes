@@ -1,0 +1,117 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 178</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_178"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 178</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_178">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_178">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 178</b> is used by some games from Waixing (on a PCB named <b>FS305</b>), Nanjing (on a PCB named <b>NJ0430</b>), Jncota and Henge Dianzi as well as some educational computers from GameStar, a.k.a. Belsonic. The chipset is designed for using 8 KiB of chip-internal unbanked CHR-RAM, but can address external RAM/ROM as well, banked in 8 KiB amounts. Circuit boards described by iNES Mapper 178 connect external RAM as bankable PRG-RAM mapped to CPU $6000-$7FFF.
+</p><p>A company named <i>Gameinis</i> uses this chipset along with an infrared sensor built right into the cartridge shell. This sensor will generate IRQs upon detecting movement. As some non-sensor mapper 178 games are bothered by IRQs that they are not expecting, <b>Submapper 0</b> denotes the absence, <b>Submapper 1</b> the presence of the infrared sensor, used by at least the following cartridges:
+</p>
+<ul><li><i>Gameinis Boxing+Soccer</i></li>
+<li><i>Gameinis Ping Pong</i></li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Mode_Register_(%244800)"><span class="tocnumber">2.1</span> <span class="toctext">Mode Register ($4800)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Low_PRG_Bank_Register_(%244801)"><span class="tocnumber">2.2</span> <span class="toctext">Low PRG Bank Register ($4801)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#High_PRG_Bank_Register_(%244802)"><span class="tocnumber">2.3</span> <span class="toctext">High PRG Bank Register ($4802)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#PRG-RAM_Bank_register_(%244803)"><span class="tocnumber">2.4</span> <span class="toctext">PRG-RAM Bank register ($4803)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Infrared"><span class="tocnumber">2.5</span> <span class="toctext">Infrared</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#Errata"><span class="tocnumber">3</span> <span class="toctext">Errata</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#See_also"><span class="tocnumber">4</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: 8 KiB switchable PRG-RAM bank</li>
+<li>CPU $8000-$FFFF: 16/32 KiB PRG-ROM bank, switchable</li>
+<li>PPU $0000-$1FFF: 8 KiB unbanked CHR-RAM</li>
+<li>Nametable mirroring: Switchable horizontal/vertical settings</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="Mode_Register_.28.244800.29"/><span class="mw-headline" id="Mode_Register_($4800)">Mode Register ($4800)</span></h2>
+<pre>7654 3210
+---------
+.... .SSM
+      ||+- Nametable mirroring
+      ||    0: Vertical
+      ||    1: Horizontal
+      ++-- PRG banking mode
+            0: NROM-256/BNROM (PRG A14=CPU A14)
+            1: UNROM (PRG A14..16=111b if CPU A14=1)
+            2: NROM-128
+            3: UNROM but with bit 0 of &quot;fixed&quot; bank selectable
+               (PRG A15..16=11b if CPU A14=1)
+</pre>
+<h2><span id="Low_PRG_Bank_Register_.28.244801.29"/><span class="mw-headline" id="Low_PRG_Bank_Register_($4801)">Low PRG Bank Register ($4801)</span></h2>
+<pre>7654 3210
+---------
+.... .LLL
+      +++- PRG A16..A14
+</pre>
+<p>This can be considered an inner bank register for UNROM mode.
+</p>
+<h2><span id="High_PRG_Bank_Register_.28.244802.29"/><span class="mw-headline" id="High_PRG_Bank_Register_($4802)">High PRG Bank Register ($4802)</span></h2>
+<pre>7654 3210
+---------
+HHHH HHHH
+++++-++++- PRG A24?..A17
+</pre>
+<p>This can be considered an outer bank register for UNROM mode.
+</p>
+<h2><span id="PRG-RAM_Bank_register_.28.244803.29"/><span class="mw-headline" id="PRG-RAM_Bank_register_($4803)">PRG-RAM Bank register ($4803)</span></h2>
+<pre>7654 3210
+---------
+BBBB BBBB
+++++-++++- PRG-RAM A20?..A13
+</pre>
+<p>PRG-RAM is mapped to CPU $6000-$7FFF and is banked in 8 KiB amounts.
+</p>
+<h2><span class="mw-headline" id="Infrared">Infrared</span></h2>
+<p>Some cartridges have an additional infrared sensor. Infrared receiving is working by having two registers:
+</p>
+<pre> $5000-$5FFF:  [.... ...V]  (read only)
+    V = read current bit from IR sensor
+ $6000-$7FFF:  [I... ....]  (write only)
+    I = set to activate interrupts by infrared signal
+</pre>
+<p>The I bit is set at power-on, i.e. without writing to the $6000-$7FFF register, interrupts will be <i>enabled</i>.
+</p>
+<h1><span class="mw-headline" id="Errata">Errata</span></h1>
+<ul><li>The commonly-available ROM images of
+<ul><li><i>宠物: 小精灵 IV (Chǒngwù: Xiǎo Jīnglíng IV)</i>, headerless CRC32 0xB0B13DBD</li>
+<li><i>Education Computer 32-in-1 (Game Star) [!]</i>, headerless CRC32 0xF834F634</li></ul></li></ul>
+<dl><dd>will not work when emulated using the above description. The meaning of registers $4801 and $4802 is swapped, and an emulator must shift the value of $4802 one bit to the left before ORing with $4801. While it cannot be ruled out that these games use an alternative version of the hardware, the more likely explanation is that these are simply bad dumps (notwithstanding GoodNES 3.23b's [!] tag) where the dumper confused the two bank registers.</dd></dl>
+<ul><li>Supposedly, the new PRG bank is only committed when $4801 is written. Emulating this supposed behavior however will break <i>Ping Pong</i>, while commiting the PRG bank after any $480x write does not seem to break anything else.</li>
+<li>Most of the educational computers using this mapper require Dendy video timing and will freeze at various points when run with NTSC timing.</li>
+<li>The Waixing FS305 circuit board connects PRG A14 directly to CPU A14, making all PRG banking modes except BNROM unusable. Since it writes the correct banking mode to $4800, it does not require any special treatment.</li></ul>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<ul><li><a rel="nofollow" class="external free" href="https://forums.nesdev.org/viewtopic.php?t=16657">https://forums.nesdev.org/viewtopic.php?t=16657</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123050113
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.014 seconds
+Real time usage: 0.020 seconds
+Preprocessor visited node count: 31/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:462-0!canonical and timestamp 20241123050113 and revision id 5373.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_using__4020__5FFF.xhtml">Mappers using $4020-$5FFF</a>, <a href="Category_Mappers_with_large_PRG_RAM.xhtml">Mappers with large PRG RAM</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a></p></div></body></html>

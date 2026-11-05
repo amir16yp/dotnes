@@ -1,0 +1,73 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 542</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_542"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 542</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_542">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_542">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 542 denotes the unmarked PCB used in <i>毛泽东诞辰: 一百周年纪念 1893-1993</i> (Máozédōng Dànchén꞉ Yībǎi Zhōunián Jìniàn 1893-1993, Mao Zedong's Birthday: 100th Anniversary 1893-1993). The game is a modification of <i>英雄傳 - World Hero</i>, which is assigned either to mapper <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">23.1</a> or to <a href="INES_Mapper_027.xhtml" title="INES Mapper 027">27</a>.
+</p><p>It uses the same VRC4 clone (A0/A1), increases the PRG-ROM size from the original's 128 KiB to 256 KiB, keeps the 512 KiB of CHR-ROM, additionally maps another fixed part of PRG-ROM to $6000-$7FFF, and most interestingly, can map CIRAM into CHR address space.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Enable_CIRAM_mapping_to_PPU_%240C00-%240FFF_(%24D800,_write)"><span class="tocnumber">2.1</span> <span class="toctext">Enable CIRAM mapping to PPU $0C00-$0FFF ($D800, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Disable_CIRAM_mapping_to_PPU_%240C00-%240FFF_(%24E800,_write)"><span class="tocnumber">2.2</span> <span class="toctext">Disable CIRAM mapping to PPU $0C00-$0FFF ($E800, write)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#VRC4_registers_(%248000-%24FFFF)"><span class="tocnumber">2.3</span> <span class="toctext">VRC4 registers ($8000-$FFFF)</span></a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: 8 KiB PRG-ROM bank, fixed to bank $0F</li>
+<li>CPU $8000-$9FFF (or $C000-$DFFF): 8 KiB switchable PRG ROM bank (like VRC4)</li>
+<li>CPU $A000-$BFFF: 8 KiB switchable PRG ROM bank (like VRC4)</li>
+<li>CPU $C000-$DFFF (or $8000-$9FFF): 8 KiB PRG ROM bank, fixed to the second-last bank (like VRC4)</li>
+<li>CPU $E000-$FFFF: 8 KiB PRG ROM bank, fixed to the last bank (like VRC4, $1F in this case)</li>
+<li>PPU $0000-$03FF: 1 KiB switchable CHR bank (like VRC4)</li>
+<li>PPU $0400-$07FF: 1 KiB switchable CHR bank (like VRC4)</li>
+<li>PPU $0800-$0BFF: 1 KiB switchable CHR bank (like VRC4)</li>
+<li>PPU $0C00-$0FFF: 1 KiB switchable CHR bank (like VRC4) <i>or</i> 1 KiB CIRAM bank #1</li>
+<li>PPU $1000-$13FF: 1 KiB switchable CHR bank (like VRC4)</li>
+<li>PPU $1400-$17FF: 1 KiB switchable CHR bank (like VRC4)</li>
+<li>PPU $1800-$1BFF: 1 KiB switchable CHR bank (like VRC4)</li>
+<li>PPU $1C00-$1FFF: 1 KiB switchable CHR bank (like VRC4)</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="Enable_CIRAM_mapping_to_PPU_.240C00-.240FFF_.28.24D800.2C_write.29"/><span class="mw-headline" id="Enable_CIRAM_mapping_to_PPU_$0C00-$0FFF_($D800,_write)">Enable CIRAM mapping to PPU $0C00-$0FFF ($D800, write)</span></h2>
+<p>Mask: $F800
+</p><p>Once address $D800 is written to, PPU $0C00-$0FFF is mapped to CIRAM bank 1 instead, ignoring the respective VRC4 register. The game uses this CIRAM as pseudo-CHR-RAM to animate the screen showing the next opponent.
+</p>
+<h2><span id="Disable_CIRAM_mapping_to_PPU_.240C00-.240FFF_.28.24E800.2C_write.29"/><span class="mw-headline" id="Disable_CIRAM_mapping_to_PPU_$0C00-$0FFF_($E800,_write)">Disable CIRAM mapping to PPU $0C00-$0FFF ($E800, write)</span></h2>
+<p>Mask: $F800
+</p><p>Once address $E800 is written to, PPU $0C00-$0FFF is no longer mapped to CIRAM bank 1, and the respective VRC4 register applies again.
+</p>
+<h2><span id="VRC4_registers_.28.248000-.24FFFF.29"/><span class="mw-headline" id="VRC4_registers_($8000-$FFFF)">VRC4 registers ($8000-$FFFF)</span></h2>
+<p>Same as on <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">VRC4</a>.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123144739
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.010 seconds
+Real time usage: 0.013 seconds
+Preprocessor visited node count: 19/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:848-0!canonical and timestamp 20241123144739 and revision id 8160.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

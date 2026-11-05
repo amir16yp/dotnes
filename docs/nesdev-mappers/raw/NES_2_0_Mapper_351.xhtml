@@ -1,0 +1,100 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 351</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_351"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 351</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_351">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_351">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 351 is used for Techline XB-xxx multicarts.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Set_CHR-ROM_Base_(%245000,_write)"><span class="tocnumber">1</span> <span class="toctext">Set CHR-ROM Base ($5000, write)</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Set_PRG-ROM_Base_(%245001,_write)"><span class="tocnumber">2</span> <span class="toctext">Set PRG-ROM Base ($5001, write)</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Set_Banking_Mode_(%245002,_write)"><span class="tocnumber">3</span> <span class="toctext">Set Banking Mode ($5002, write)</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#NROM_Mirroring_(%244025,_write)"><span class="tocnumber">4</span> <span class="toctext">NROM Mirroring ($4025, write)</span></a></li>
+</ul>
+</div>
+
+<h2><span id="Set_CHR-ROM_Base_.28.245000.2C_write.29"/><span class="mw-headline" id="Set_CHR-ROM_Base_($5000,_write)">Set CHR-ROM Base ($5000, write)</span></h2>
+<pre>Mask: $F003
+
+D~7654 3210
+  ---------
+  BBBB BBMM
+  |||| ||++- ASIC compatibility mode for inner bank selection
+  |||| ||     0/1: <a href="MMC3.xhtml" title="MMC3">MMC3</a>
+  |||| ||     2: <a href="MMC1.xhtml" title="MMC1">MMC1</a>
+  |||| ||     3: <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">VRC4</a>
+  ++++-++--- Select 8 KiB CHR-ROM base
+</pre>
+<p>All bits are cleared on reset, so that MMC3 mode is active. VRC4 mode uses bits 2 and 3 ($004s and $008s) as VRC A0/A1 if address bit 11 ($800s) is clear, and as VRC A1/A0 if bit 11 is address set during a write.
+</p>
+<h2><span id="Set_PRG-ROM_Base_.28.245001.2C_write.29"/><span class="mw-headline" id="Set_PRG-ROM_Base_($5001,_write)">Set PRG-ROM Base ($5001, write)</span></h2>
+<pre>Mask: $F003
+
+D~7654 3210
+  ---------
+  BBBB BB..
+  ++++-++--- Select 16 KiB PRG-ROM base
+</pre>
+<p>All bits are cleared on reset.
+</p>
+<h2><span id="Set_Banking_Mode_.28.245002.2C_write.29"/><span class="mw-headline" id="Set_Banking_Mode_($5002,_write)">Set Banking Mode ($5002, write)</span></h2>
+<pre>Mask: $F003
+
+D~7654 3210
+  ---------
+  .CCp PP.R
+   ||| || +- 0: CHR-ROM mode
+   ||| ||    1: CHR-RAM mode
+   ||| ++--- Inner PRG-ROM bank size
+   |||        00: 256 KiB (p=0), 32 KiB (p=1)
+   |||        01: 128 KiB (p=0), 16 KiB (p=1)
+   |||        1x: 8 KiB (p=1)
+   ||+------ PRG-ROM banking mode
+   |||        0: ASIC (selecte by $5000.0-1)
+   |||        1: NROM
+   +++------ Inner CHR-ROM bank size
+              1xx: 8 KiB
+              01x: 128 KiB
+              001: 32 KiB
+              000: 256 KiB
+</pre>
+<p>All bits are cleared on reset. Unusually, in CHR-RAM mode (R=1), CHR-ROM becomes the second half of an enlarged PRG address space that becomes addressable via register $5001. At least one multicart containing both TLROM and UNROM games makes use of this feature and puts the UNROM game's PRG data into CHR-ROM. This seems to be possible as the mapper ASIC, PRG and CHR-ROM are under a single glob.
+</p>
+<h2><span id="NROM_Mirroring_.28.244025.2C_write.29"/><span class="mw-headline" id="NROM_Mirroring_($4025,_write)">NROM Mirroring ($4025, write)</span></h2>
+<pre>Mask: $FFFF
+
+D~7654 3210
+  ---------
+  .... M...
+       +---- 0: Vertical Mirroring
+             1: Horizontal Mirroring
+</pre>
+<p>In NROM mode ($5002.4=1), mirroring can be changed via this <a href="Family_Computer_Disk_System.xhtml" class="mw-redirect" title="FDS">FDS</a>-inspired register as well, apparently in an attempt to become compatible with FDS conversions.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123101016
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.016 seconds
+Real time usage: 0.020 seconds
+Preprocessor visited node count: 20/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:736-0!canonical and timestamp 20241123101016 and revision id 19719.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multi_ASIC_mappers.xhtml">Multi-ASIC mappers</a>, <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

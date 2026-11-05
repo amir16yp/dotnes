@@ -1,0 +1,78 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 245</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_245"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 245</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_245">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_245">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 245</b> denotes the Waixing <b>F003</b> circuit board. It mounts an <a href="MMC3.xhtml" title="MMC3">MMC3</a> clone with 8 KiB of battery-backed WRAM and 8 KiB of unbanked CHR-RAM, making it functionally similar to <a href="TxROM.xhtml" class="mw-redirect" title="TNROM">TNROM</a>. Additionally however, in a similar fashion to <a href="SxROM.xhtml" class="mw-redirect" title="SUROM">SUROM</a>, the MMC3's CHR address outputs are repurposed as higher PRG address lines to extend the PRG address space from the MMC3's own 512 KiB to 1 MiB.
+</p><p>Its features are used on a single game: &quot;勇者斗恶龙 VII - Dragon Quest&quot; (Yǒngzhě dòu è lóng VII - Dragon Quest), Waixing's Chinese translation of Dragon Quest IV. Waixing used that PCB however for other MMC3/CHR-RAM games with smaller PRG-ROM sizes as well, for which the board reduces to TNROM-like functionality.
+</p>
+<h1><span class="mw-headline" id="Pin_Connections">Pin Connections</span></h1>
+<pre>Normal MMC3 pin function  F003 pin function
+-------------------------------------------
+PPU A12 -&gt;                GND -&gt;
+-&gt; CHR A10                none
+-&gt; CHR A11                -&gt; PRG A19
+-&gt; CHR A12                none
+-&gt; CHR A13                none
+-&gt; CHR A14                none
+-&gt; CHR A15                none
+-&gt; CHR A16                none
+-&gt; CHR A17                none
+</pre>
+<p>CHR-RAM's A10-A12 inputs are connected directly to PPU A10-A12; as a result, the MMC3's CHR bank registers have no effect at all on pattern tables. The MMC3's PPU A12 input is connected to GND, meaning that only MMC3 CHR bank registers 0/1 ($8000.7=0) or 2-5 ($8000.7=1) are functional. The MMC3's CHR A11 output is connected to the PRG-ROM chip's A19 input. This means that bit 1 (bit value $02) of the currently active MMC3 CHR bank register selects the 512 KiB PRG-ROM bank that applies to the entire CPU $8000-$FFFF address range.
+</p>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<pre>$8001 when $8000=$x0: [.... ..B.]
+          Select 512 KiB PRG-ROM bank at CPU $8000-$FFFF
+          when PPU is rendering from BG or OBJ tiles $00-$7F
+          and $8000.7=0
+$8001 when $8000=$x1: [.... ..B.]
+          Select 512 KiB PRG-ROM bank at CPU $8000-$FFFF
+          when PPU is rendering from BG or OBJ tiles $80-$FF
+          and $8000.7=0
+
+$8001 when $8000=$x2: [.... ..B.]
+          Select 512 KiB PRG-ROM bank at CPU $8000-$FFFF
+          when PPU is rendering from BG or OBJ tiles $00-$3F
+          and $8000.7=1
+$8001 when $8000=$x3: [.... ..B.]
+          Select 512 KiB PRG-ROM bank at CPU $8000-$FFFF
+          when PPU is rendering from BG or OBJ tiles $40-$7F
+          and $8000.7=1
+$8001 when $8000=$x4: [.... ..B.]
+          Select 512 KiB PRG-ROM bank at CPU $8000-$FFFF
+          when PPU is rendering from BG or OBJ tiles $80-$BF
+          and $8000.7=1
+$8001 when $8000=$x5: [.... ..B.]
+          Select 512 KiB PRG-ROM bank at CPU $8000-$FFFF
+          when PPU is rendering from BG or OBJ tiles $C0-$FF
+          and $8000.7=1
+</pre>
+<p>Registers 0/1 or 2-5 must specify the same 512 KiB PRG-ROM bank, otherwise the bank would switch as the PPU is rendering. The only game using this mapper has boot code and reset vectors in both 512 KiB PRG halves, making the initial CHR register content irrelevant.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123155247
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.010 seconds
+Real time usage: 0.015 seconds
+Preprocessor visited node count: 14/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:529-0!canonical and timestamp 20241123155247 and revision id 5871.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

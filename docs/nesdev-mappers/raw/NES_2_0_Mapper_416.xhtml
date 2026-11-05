@@ -1,0 +1,75 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 416</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_416"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 416</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_416">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_416">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 416</b> denotes the PCB used for a 4-in-1 multicart that includes the <a href="INES_Mapper_050.xhtml" title="INES Mapper 050">N-32 cartridge conversion</a> of SMB2J.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Data_Latch"><span class="tocnumber">2.1</span> <span class="toctext">Data Latch</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#PRG_Bank_Select_(SMB2J_mode_only)"><span class="tocnumber">2.2</span> <span class="toctext">PRG Bank Select (SMB2J mode only)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#IRQ_Control_(SMB2J_mode_only)"><span class="tocnumber">2.3</span> <span class="toctext">IRQ Control (SMB2J mode only)</span></a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: Fixed 8 KiB PRG-ROM bank #7</li>
+<li>CPU $8000-$FFFF: Switchable 8/16/32 KiB PRG-ROM bank(s)</li>
+<li>PPU $0000-$1FFF: 8 KiB switchable CHR-ROM bank</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span class="mw-headline" id="Data_Latch">Data Latch</span></h2>
+<pre>Write to $8000 (mask $8000):
+D~[BPA. Mcc.]
+   |||  |++--- CHR A14..A13
+   |||  |+---- 1=Horizontal, 0=Vertical mirroring
+   |||  +----- PRG A16, also select SMB2J (0)/Normal (1) mode
+   ||+-------- PRG A14 in Normal mode
+   +|--------- PRG A15 in Normal mode
+   ++--------- 00: NROM-064 banking (PRG A13=0, PRG A14=A)
+               01: NROM-128 banking (PRG A13=CPU A13, PRG A14=A)
+               1x: NROM-256 banking (PRG A13=CPU A13, PGR A14=CPU A14)
+</pre>
+<h2><span id="PRG_Bank_Select_.28SMB2J_mode_only.29"/><span class="mw-headline" id="PRG_Bank_Select_(SMB2J_mode_only)">PRG Bank Select (SMB2J mode only)</span></h2>
+<pre>Write to $4020 (mask unknown)
+D~[.... .BAC]
+         ||+- PRG A15
+         ++-- PRG A14..13
+</pre>
+<h2><span id="IRQ_Control_.28SMB2J_mode_only.29"/><span class="mw-headline" id="IRQ_Control_(SMB2J_mode_only)">IRQ Control (SMB2J mode only)</span></h2>
+<pre>Write to $4120 (mask unknown)
+D~[.... ...E]
+           +- 1=Counting, generate IRQ on 12-bit counter overflow
+              0=Counter reset, acknowledge/disable IRQ
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123164357
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.013 seconds
+Real time usage: 0.017 seconds
+Preprocessor visited node count: 20/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:800-0!canonical and timestamp 20241123164357 and revision id 8044.
+ -->
+</div><p class="categories">Categories: <a href="Category_FDS_conversion_mappers.xhtml">FDS conversion mappers</a>, <a href="Category_Mappers_with_fixed_timing_cycle_IRQs.xhtml">Mappers with fixed-timing cycle IRQs</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

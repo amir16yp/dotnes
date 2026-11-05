@@ -1,0 +1,117 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 208</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_208"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 208</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_208">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_208">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>This mapper is used on exactly one known game: <a rel="nofollow" class="external text" href="http://bootleggames.wikia.com/wiki/Street_Fighter_IV">快打傳説 Street Fighter IV</a>. It uses <a href="MMC3.xhtml" title="MMC3">MMC3</a>-compatible registers for CHR ROM bankswitching and IRQ control, and additional registers for PRG ROM bankswitching, mirroring control, and protection.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#PRG_Bank_and_Mirroring_(%244800-%244FFF,_%246800-%246FFF,_write-only)"><span class="tocnumber">2.1</span> <span class="toctext">PRG Bank and Mirroring ($4800-$4FFF, $6800-$6FFF, write-only)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Protection_Table_Index_(%245000-%2457FF,_write-only)"><span class="tocnumber">2.2</span> <span class="toctext">Protection Table Index ($5000-$57FF, write-only)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Protection_Data_Access_(%245800-%245FFF,_read)"><span class="tocnumber">2.3</span> <span class="toctext">Protection Data Access ($5800-$5FFF, read)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Protection_Data_Access_(%245800-%245FFF,_write)"><span class="tocnumber">2.4</span> <span class="toctext">Protection Data Access ($5800-$5FFF, write)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#IRQ_latch_(%24C000-%24DFFE,_even)"><span class="tocnumber">2.5</span> <span class="toctext">IRQ latch ($C000-$DFFE, even)</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#IRQ_reload_(%24C001-%24DFFF,_odd)"><span class="tocnumber">2.6</span> <span class="toctext">IRQ reload ($C001-$DFFF, odd)</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#IRQ_disable_(%24E000-%24FFFE,_even)"><span class="tocnumber">2.7</span> <span class="toctext">IRQ disable ($E000-$FFFE, even)</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#IRQ_enable_(%24E001-%24FFFF,_odd)"><span class="tocnumber">2.8</span> <span class="toctext">IRQ enable ($E001-$FFFF, odd)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-11"><a href="#Submapper_1"><span class="tocnumber">3</span> <span class="toctext">Submapper 1</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#Related"><span class="tocnumber">4</span> <span class="toctext">Related</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>CPU $8000-$FFFF: 32 KB switchable PRG ROM bank</li>
+<li>PPU $0000-$07FF (or $1000-$17FF): 2 KB switchable CHR bank (same as MMC3)</li>
+<li>PPU $0800-$0FFF (or $1800-$1FFF): 2 KB switchable CHR bank (same as MMC3)</li>
+<li>PPU $1000-$13FF (or $0000-$03FF): 1 KB switchable CHR bank (same as MMC3)</li>
+<li>PPU $1400-$17FF (or $0400-$07FF): 1 KB switchable CHR bank (same as MMC3)</li>
+<li>PPU $1800-$1BFF (or $0800-$0BFF): 1 KB switchable CHR bank (same as MMC3)</li>
+<li>PPU $1C00-$1FFF (or $0C00-$0FFF): 1 KB switchable CHR bank (same as MMC3)</li></ul>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>This description is based on <a rel="nofollow" class="external text" href="https://github.com/asfdfdfd/fceux/blob/master/src/boards/208.cpp">FCEUX's implementation</a>, except for the additional information on the mirroring control.
+</p>
+<h3><span id="PRG_Bank_and_Mirroring_.28.244800-.244FFF.2C_.246800-.246FFF.2C_write-only.29"/><span class="mw-headline" id="PRG_Bank_and_Mirroring_($4800-$4FFF,_$6800-$6FFF,_write-only)">PRG Bank and Mirroring ($4800-$4FFF, $6800-$6FFF, write-only)</span></h3>
+<pre>7  bit  0
+---- ----
+..MP ...P
+  ||    |
+  |+----+- Select 32KB page of PRG-ROM at $8000
+  +------- Select mirroring
+             0: Vertical
+             1: Horizontal
+</pre>
+<p>The initial value of this register is $11.
+</p>
+<h3><span id="Protection_Table_Index_.28.245000-.2457FF.2C_write-only.29"/><span class="mw-headline" id="Protection_Table_Index_($5000-$57FF,_write-only)">Protection Table Index ($5000-$57FF, write-only)</span></h3>
+<p>Specifies the index into the 256-byte table that will be used for the next write to $5800-$5FFF.
+</p>
+<h3><span id="Protection_Data_Access_.28.245800-.245FFF.2C_read.29"/><span class="mw-headline" id="Protection_Data_Access_($5800-$5FFF,_read)">Protection Data Access ($5800-$5FFF, read)</span></h3>
+<p>Returns the content of one of the four protection registers determined by the two lower bits of the address being read. The correct result is checked for by executing code at $5800, which in the case of proper emulation of the protection scheme will result in the execution of a JMP opcode to a desired address.
+</p>
+<h3><span id="Protection_Data_Access_.28.245800-.245FFF.2C_write.29"/><span class="mw-headline" id="Protection_Data_Access_($5800-$5FFF,_write)">Protection Data Access ($5800-$5FFF, write)</span></h3>
+<p>Writes to one of the four protection registers determined by the two lower bits of the address being written to. The value that is written to the protection register is the CPU data XORed with the table entry indexed by the last write to $5000-$57FF. The table holds the following values:
+</p>
+<pre>static uint8 lut[256] = {
+	0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x49, 0x19, 0x09, 0x59, 0x49, 0x19, 0x09,
+	0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x51, 0x41, 0x11, 0x01, 0x51, 0x41, 0x11, 0x01,
+	0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x49, 0x19, 0x09, 0x59, 0x49, 0x19, 0x09,
+	0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x51, 0x41, 0x11, 0x01, 0x51, 0x41, 0x11, 0x01,
+	0x00, 0x10, 0x40, 0x50, 0x00, 0x10, 0x40, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x08, 0x18, 0x48, 0x58, 0x08, 0x18, 0x48, 0x58, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x10, 0x40, 0x50, 0x00, 0x10, 0x40, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x08, 0x18, 0x48, 0x58, 0x08, 0x18, 0x48, 0x58, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x58, 0x48, 0x18, 0x08, 0x58, 0x48, 0x18, 0x08,
+	0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x50, 0x40, 0x10, 0x00, 0x50, 0x40, 0x10, 0x00,
+	0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x58, 0x48, 0x18, 0x08, 0x58, 0x48, 0x18, 0x08,
+	0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x50, 0x40, 0x10, 0x00, 0x50, 0x40, 0x10, 0x00,
+	0x01, 0x11, 0x41, 0x51, 0x01, 0x11, 0x41, 0x51, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x09, 0x19, 0x49, 0x59, 0x09, 0x19, 0x49, 0x59, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x01, 0x11, 0x41, 0x51, 0x01, 0x11, 0x41, 0x51, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x09, 0x19, 0x49, 0x59, 0x09, 0x19, 0x49, 0x59, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+};
+</pre>
+<h3><span id="IRQ_latch_.28.24C000-.24DFFE.2C_even.29"/><span class="mw-headline" id="IRQ_latch_($C000-$DFFE,_even)">IRQ latch ($C000-$DFFE, even)</span></h3>
+<h3><span id="IRQ_reload_.28.24C001-.24DFFF.2C_odd.29"/><span class="mw-headline" id="IRQ_reload_($C001-$DFFF,_odd)">IRQ reload ($C001-$DFFF, odd)</span></h3>
+<h3><span id="IRQ_disable_.28.24E000-.24FFFE.2C_even.29"/><span class="mw-headline" id="IRQ_disable_($E000-$FFFE,_even)">IRQ disable ($E000-$FFFE, even)</span></h3>
+<h3><span id="IRQ_enable_.28.24E001-.24FFFF.2C_odd.29"/><span class="mw-headline" id="IRQ_enable_($E001-$FFFF,_odd)">IRQ enable ($E001-$FFFF, odd)</span></h3>
+<p>These registers are identical to the respective <a href="MMC3.xhtml" title="MMC3">MMC3</a> registers.
+</p>
+<h2><span class="mw-headline" id="Submapper_1">Submapper 1</span></h2>
+<p>A version of the game that removes the &quot;Gouder Co. Ltd.&quot; copyright notice from the title screen uses a different MMC3-like mapper that is incompatible to the description above. That version of the game is inexplicably labelled &quot;Mortal Kombat (JJ-01) (Ch) [!]&quot; in GoodNES v3.23b. <a rel="nofollow" class="external text" href="http://nestopia.gamemw.com/index.php/34-nestopia-plus-1-4-0-10-r272">The Nestopia Plus! author has assigned this different mapper to submapper number 1 of mapper 208</a>.
+</p><p>There are no additional registers, even as the ROM image retains some leftovers of code writing to $5800. Instead of switching PRG ROM banks MMC3-style, there is only one 32k PRG ROM bank at CPU $8000. Its value is determined by MMC3 bank register 6; the actual bank number is the bank register value SHR 2. CHR ROM bankswitching, mirroring and IRQ control are performed using the normal MMC3 registers.
+</p>
+<h2><span class="mw-headline" id="Related">Related</span></h2>
+<p>This is reminiscent of <a href="INES_Mapper_189.xhtml" title="INES Mapper 189">iNES Mapper 189</a>.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123163747
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.016 seconds
+Real time usage: 0.020 seconds
+Preprocessor visited node count: 41/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:493-0!canonical and timestamp 20241123163747 and revision id 5614.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

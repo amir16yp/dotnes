@@ -1,0 +1,68 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 389</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_389"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 389</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_389">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_389">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 389</b> denotes the circuit board of the <i>Caltron 9-in-1</i> multicart.
+</p>
+<h2><span id="Mirroring.2FOuter_PRG-ROM_Bank_register_.28.248000-.248FFF.2C_write.29"/><span class="mw-headline" id="Mirroring/Outer_PRG-ROM_Bank_register_($8000-$8FFF,_write)">Mirroring/Outer PRG-ROM Bank register ($8000-$8FFF, write)</span></h2>
+<pre>Mask: $F000
+
+A~FEDC BA98 7654 3210
+  -------------------
+  1000 0000 .PPP P..M
+             ||| |  +- Mirroring: 0=Vertical, 1=Horizontal
+             +++-+---- PRG A15-A18
+
+Power-up value: $00
+</pre>
+<h2><span id="PRG_Mode.2FOuter_CHR-ROM_Bank_register_.28.249000-.249FFF.2C_write.29"/><span class="mw-headline" id="PRG_Mode/Outer_CHR-ROM_Bank_register_($9000-$9FFF,_write)">PRG Mode/Outer CHR-ROM Bank register ($9000-$9FFF, write)</span></h2>
+<pre>Mask: $F000
+
+A~FEDC BA98 7654 3210
+  -------------------
+  1001 0000 ..CC C.U.
+              || | +-- 0=NROM-256, 1=UNROM-064
+              ++-+---- CHR A15-A17
+
+Power-up value: $00
+</pre>
+<p>In NROM-256 mode, the Inner Bank register's PRG bits are ignored. In UNROM-064 mode, the Inner Bank register's PRG bits select one of four 16 KiB PRG-ROM banks at CPU $8000-$BFFF, while CPU $C000-$FFFF is hard-wired to inner bank #3, similarly to <a href="INES_Mapper_081.xhtml" title="INES Mapper 081">INES Mapper 081</a>, used by the stand-alone version of the only game using this mode.
+</p>
+<h2><span id="Inner_Bank_register_.28.24A000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Inner_Bank_register_($A000-$FFFF,_write)">Inner Bank register ($A000-$FFFF, write)</span></h2>
+<pre>Mask: $E000
+
+A~FEDC BA98 7654 3210
+  -------------------
+  .... .... .... PPCC
+                 ||++- CHR A13-A14
+                 ++--- PRG A14-A15 in UNROM-064 mode when CPU A14=0
+
+Power-up value: $00
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123064607
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.013 seconds
+Preprocessor visited node count: 12/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:774-0!canonical and timestamp 20241123064607 and revision id 8004.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

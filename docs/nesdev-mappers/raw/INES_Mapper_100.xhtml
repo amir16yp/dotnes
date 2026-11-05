@@ -1,0 +1,64 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 100</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_100"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 100</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_100">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_100">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 100 was assigned by fwNES<sup id="cite_ref-1" class="reference"><a href="#cite_note-1">[1]</a></sup> to denote <a href="Glossary.xhtml" class="mw-redirect" title="Mapper hack">mapper hacks</a> for the <a href="MMC3.xhtml" class="mw-redirect" title="INES Mapper 004">MMC3</a> emulation of Nesticle, an influential NES emulator for MS-DOS in the late 1990s. Nesticle did not directly support many of the custom ASICs by Irem, Konami and Namco, but did incorrectly emulate the MMC3 in a way that made it useful to run modified ROM images. Most of them use 512-byte trainers that must be loaded to CPU address $7000.
+</p><p>Nestopia uses iNES mapper 100 as a magic number for UNIF-only boards. Nintendulator uses this as a general-purpose debugging mapper, allowing PRG/CHR banks to be selected arbitrarily using a control dialog.
+</p>
+<h2><span id="Bankswitch_Index_Register_.28.248000.29.2FData_Register_.28.248001.29"/><span class="mw-headline" id="Bankswitch_Index_Register_($8000)/Data_Register_($8001)">Bankswitch Index Register ($8000)/Data Register ($8001)</span></h2>
+<pre>Mask: $E001 (nominally)
+
+$00: 1 KiB CHR-ROM bank at PPU $0000-$03FF := Value AND $FE
+     1 KiB CHR-ROM bank at PPU $0400-$07FF := Value OR $01
+$01: 1 KiB CHR-ROM bank at PPU $0800-$0BFF := Value AND $FE
+     1 KiB CHR-ROM bank at PPU $0C00-$0FFF := Value OR $01
+$02: 1 KiB CHR-ROM bank at PPU $1000-$13FF := Value
+$03: 1 KiB CHR-ROM bank at PPU $1400-$17FF := Value
+$04: 1 KiB CHR-ROM bank at PPU $1800-$1BFF := Value
+$05: 1 KiB CHR-ROM bank at PPU $1C00-$1FFF := Value
+$06: 8 KiB PRG-ROM bank at CPU $8000-$9FFF := Value
+$07: 8 KiB PRG-ROM bank at CPU $A000-$BFFF := Value
+$46: 8 KiB PRG-ROM bank at CPU $C000-$DFFF := Value
+$47: 8 KiB PRG-ROM bank at CPU $A000-$BFFF := Value
+$80: 1 KiB CHR-ROM bank at PPU $1000-$13FF := Value AND $FE
+     1 KiB CHR-ROM bank at PPU $1400-$17FF := Value OR $01
+$81: 1 KiB CHR-ROM bank at PPU $1800-$1BFF := Value AND $FE
+     1 KiB CHR-ROM bank at PPU $1C00-$1FFF := Value OR $01
+$82: 1 KiB CHR-ROM bank at PPU $0000-$03FF := Value
+$83: 1 KiB CHR-ROM bank at PPU $0400-$07FF := Value
+$84: 1 KiB CHR-ROM bank at PPU $0800-$0BFF := Value
+$85: 1 KiB CHR-ROM bank at PPU $0C00-$0FFF := Value
+</pre>
+<p>On an actual MMC3, changing bits 6 and 7 in the index register would immediately apply the current content of all seven bank registers to their flipped meaning. Nesticle applies these bits only on the next $8001 write, which makes eight independent 1 KiB CHR-ROM banks available: Registers $82-$85 to set four 1 KiB banks at CPU $0000-$0FFF, and registers $02-$05 to set four more 1 KiB banks at CPU $1000-$1FFF.
+</p>
+<div class="mw-references-wrap"><ol class="references">
+<li id="cite_note-1"><span class="mw-cite-backlink"><a href="#cite_ref-1">↑</a></span> <span class="reference-text">FWNES98E.TXT, fwNES 0.302b, 1998/11/16, by FanWen Yang</span>
+</li>
+</ol></div>
+<!-- 
+NewPP limit report
+Cached time: 20241123100259
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.013 seconds
+Real time usage: 0.018 seconds
+Preprocessor visited node count: 22/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 83/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:384-0!canonical and timestamp 20241123100259 and revision id 4790.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_Bad_iNES_Mappers.xhtml">Bad iNES Mappers</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

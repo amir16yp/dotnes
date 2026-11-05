@@ -1,0 +1,27 @@
+NES 2.0 Mapper 434
+
+NES 2.0 Mapper 434
+
+NES 2.0 Mapper 434 denotes the S-009 PCB, used by multicarts consisting of several UNROM games.
+
+Outer Bank Register ($6000-$7FFF)
+
+Mask: $E000
+
+D~7654 3210
+  ---------
+  ..M. .PPP
+    |   +++- PRG A19..A17
+    +------- 0: Horizontal mirroring
+             1: Vertical mirroring
+
+Inner Bank Register ($8000-$FFFF)
+
+Mask: $8000
+
+D~7654 3210 (bus conflicts)
+  ---------
+  .... .PPP
+        +++- PRG A16..A14 if CPU A14=0
+
+Categories: Mappers with CHR RAM, Multicart mappers

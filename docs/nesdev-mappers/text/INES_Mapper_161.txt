@@ -1,0 +1,5 @@
+INES Mapper 161
+
+INES Mapper 161
+
+iNES Mapper 161 seems to have been assigned to 'Hanjuku Hero' before the MMC1's behavior was more fully understood.  iNES Mapper 001 should be assigned to this game.

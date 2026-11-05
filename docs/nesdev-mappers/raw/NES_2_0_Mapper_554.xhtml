@@ -1,0 +1,57 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 554</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_554"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 554</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_554">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_554">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 554</b> denotes the Kaiser <b>KS-7010</b> circuit board, used for one of several cartridge conversions of the FDS version of <i>悪魔城 Dracula</i>, the Japanese version of <i>Castlevania</i>. Bankswitching is unusual in being triggered entirely through <i>reads</i> from &quot;magic&quot; addresses. The board mounts 128 KiB PRG-ROM, 128 KiB CHR-ROM, a KS-201 ASIC and a 74'32.
+</p>
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: Switchable 8 KiB PRG-ROM bank</li>
+<li>CPU $8000-$9FFF: Fixed 8 KiB PRG-ROM bank #10</li>
+<li>CPU $A000-$BFFF: Fixed 8 KiB PRG-ROM bank #11</li>
+<li>CPU $C000-$DFFF: Fixed 8 KiB PRG-ROM bank #6</li>
+<li>CPU $E000-$FFFF: Fixed 8 KiB PRG-ROM bank #7</li>
+<li>PPU $0000-$1FFF: Switchable 8 KiB CHR-ROM bank</li>
+<li>Nametable mirroring: hard-wired (to vertical)</li></ul>
+<h1><span class="mw-headline" id="Bankswitching_Reads">Bankswitching Reads</span></h1>
+<p>The 8 KiB PRG-ROM bank at $6000, and the 8 KiB CHR-ROM bank, are both switched to the same bank number whenever certain addresses are read from.
+</p>
+<pre>A~FEDC BA98 7654 3210
+  -------------------
+  .??? ???? ??DC BA1.
+              ++-++--- PRG/CHR A16..13
+</pre>
+<p>The exact address mask is not known; the following addresses have been verified to trigger a bankswitch, and are used by the game:
+</p>
+<ul><li>CAB6-CAD6</li>
+<li>EBE2, EE32</li>
+<li>FFFC</li></ul>
+<h1><span class="mw-headline" id="ASIC_connection">ASIC connection</span></h1>
+<p>See: <a href="KS_201_pinout.xhtml" title="KS-201 pinout">KS-201 pinout</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123132800
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.010 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 12/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:860-0!canonical and timestamp 20241123132800 and revision id 8195.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_triggering_on_reads.xhtml">Mappers triggering on reads</a>, <a href="Category_FDS_conversion_mappers.xhtml">FDS conversion mappers</a></p></div></body></html>

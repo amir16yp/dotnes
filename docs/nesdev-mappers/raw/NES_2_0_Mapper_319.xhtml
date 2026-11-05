@@ -1,0 +1,95 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 319</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_319"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 319</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_319">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_319">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 319 denotes the <b>HP-898F</b> and <b>KD-7/9-E</b> circuit boards. Its UNIF board name is <b>BMC-HP898F</b> (<a href="#UNIF_bank_order">with a different bank order</a>). Used for:
+</p>
+<ul><li><i>Prima Soft 9999999-in-1</i></li>
+<li><i>Olympic 2000 1000000-in-1</i></li>
+<li><i>4-in-1 (0207)</i></li>
+<li><i>4-in-1 (0210)</i></li>
+<li><i>4-in-1 (KG-443)</i></li>
+<li><i>9999999-in-1 (KD-6037-B)</i></li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#PRG-ROM_Bank_and_Mirroring_(%246004)"><span class="tocnumber">2.1</span> <span class="toctext">PRG-ROM Bank and Mirroring ($6004)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#CHR-ROM_Bank_(%246000)"><span class="tocnumber">2.2</span> <span class="toctext">CHR-ROM Bank ($6000)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Solder_Pad_Register_(%245FF0)"><span class="tocnumber">2.3</span> <span class="toctext">Solder Pad Register ($5FF0)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#UNIF_bank_order"><span class="tocnumber">3</span> <span class="toctext">UNIF bank order</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$BFFF: 16 KiB switchable PRG-ROM bank</li>
+<li>CPU $C000-$FFFF: 16 KiB switchable PRG-ROM bank</li>
+<li>PPU $0000-$1FFF: 8 KiB switchable CHR-ROM bank</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="PRG-ROM_Bank_and_Mirroring_.28.246004.29"/><span class="mw-headline" id="PRG-ROM_Bank_and_Mirroring_($6004)">PRG-ROM Bank and Mirroring ($6004)</span></h2>
+<pre>Mask: $6004
+
+D~7654 3210
+  ---------   
+  MDaB C...
+  |||| +---- PRG A15
+  |||+------ PRG A16
+  ||+------- PRG A14 if D=0
+  |+-------- PRG A14 mode
+  |           0: PRG A14=p (NROM-128)
+  |           1: PRG A14=CPU A14 (NROM-256)
+  +--------- Select nametable mirroring type
+              0: Horizontal
+              1: Vertical
+</pre>
+<h2><span id="CHR-ROM_Bank_.28.246000.29"/><span class="mw-headline" id="CHR-ROM_Bank_($6000)">CHR-ROM Bank ($6000)</span></h2>
+<pre>Mask: $6004
+
+D~7654 3210
+  ---------
+  CCCC ....
+  ||||
+  ||||
+  ++++------ Select 8 KiB CHR-ROM bank at PPU $0000-$1FFF
+</pre>
+<h2><span id="Solder_Pad_Register_.28.245FF0.29"/><span class="mw-headline" id="Solder_Pad_Register_($5FF0)">Solder Pad Register ($5FF0)</span></h2>
+<pre>Mask: probably $F000
+
+D~7654 3210
+  ---------
+  .P.. ....
+   +-------- Solder pad value
+</pre>
+<h1><span class="mw-headline" id="UNIF_bank_order">UNIF bank order</span></h1>
+<p>The publicly-available UNIF ROM file of <i>Prima Soft 9999999-in-1</i> has the order of the 16 KiB PRG-ROM banks slightly mixed up, so that the PRG A14 mode bit operates on A16 instead of A14. To obtain the correct bank order, use UNIF 16 KiB PRG banks 0, 4, 1, 5, 2, 6, 3, 7.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123055354
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.012 seconds
+Real time usage: 0.016 seconds
+Preprocessor visited node count: 19/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:704-0!canonical and timestamp 20241123055354 and revision id 7820.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

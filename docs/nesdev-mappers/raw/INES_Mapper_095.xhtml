@@ -1,0 +1,69 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 095</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_095"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 095</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_095">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_095">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>Mapper 95 represents <b>NAMCOT-3425</b>, a board used only for the game <a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/1806/dragon-buster">Dragon Buster (J)</a>.
+</p><p>It is to the ordinary Namco 108 family boards (<a href="INES_Mapper_206.xhtml" title="INES Mapper 206">mapper 206</a>) as TKSROM and TLSROM (<a href="INES_Mapper_118.xhtml" title="INES Mapper 118">mapper 118</a>) is to ordinary <a href="MMC3.xhtml" title="MMC3">MMC3</a> boards.
+Instead of having hardwired mirroring like mapper 206, it has CHR A15 directly controlling CIRAM A10, just as CHR A17 controls CIRAM A10 on TxSROM.
+Only horizontal mirroring and 1-screen mirroring are possible because the Namco 108 lacks the C bit of MMC3.
+</p><p><i>Dragon Buster</i> has only 32 KiB of CHR ROM, but homebrew using this mapper could use the full 64 KiB through careful arrangement of CHR ROM to put game background tiles in one half (which would always use one nametable) and status bar and menu tiles in the other half (which would always use the other nametable).
+</p><p>Disch's older notes described an extended and mistaken version of this mapper with a full MMC3, so some emulators may be doing it that way. That extended version is identical to mapper 118, except CHR A15 (bank bit 5) controls CIRAM A10 instead of CHR A17 (bank bit 7).
+</p><p>Here's a terse pseudocode:
+</p>
+<pre>chr_rom_addr = namco108_chrmap(ppu_addr&amp;0x1FFF) &amp; 0xFFFF;
+ciram_addr = ((namco108_chrmap(ppu_addr&amp;0x1FFF)&gt;&gt;15)&lt;&lt;10) | (ppu_addr&amp;0x03FF);
+</pre>
+<h3><span id="Bank_select_.28.248000-.249FFE.2C_even.29"/><span class="mw-headline" id="Bank_select_($8000-$9FFE,_even)">Bank select ($8000-$9FFE, even)</span></h3>
+<pre>7  bit  0
+---- ----
+xxxx xRRR
+      |||
+      +++- Specify which bank register to update on next write to Bank Data register
+           0: Select 2 KB CHR bank at PPU $0000-$07FF and nametable at PPU $2000-$27FF
+           1: Select 2 KB CHR bank at PPU $0800-$0FFF and nametable at PPU $2800-$2FFF
+           2: Select 1 KB CHR bank at PPU $1000-$13FF
+           3: Select 1 KB CHR bank at PPU $1400-$17FF
+           4: Select 1 KB CHR bank at PPU $1800-$1BFF
+           5: Select 1 KB CHR bank at PPU $1C00-$1FFF
+           6: Select 8 KB PRG ROM bank at $8000-$9FFF
+           7: Select 8 KB PRG ROM bank at $A000-$BFFF
+</pre>
+<h3><span id="Bank_data_.28.248001-.249FFF.2C_odd.29"/><span class="mw-headline" id="Bank_data_($8001-$9FFF,_odd)">Bank data ($8001-$9FFF, odd)</span></h3>
+<pre>7  bit  0
+---- ----
+..ND DDDD
+  || ||||
+  |+-++++- New bank value, based on last value written to Bank select register
+  |          All registers as standard <a href="INES_Mapper_206.xhtml" title="INES Mapper 206">Namco 108</a>
+  |
+  +------- Nametable select, based on last value written to Bank select register
+             0: Select Nametable A
+             1: Select Nametable B
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123151309
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.012 seconds
+Real time usage: 0.018 seconds
+Preprocessor visited node count: 11/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:380-0!canonical and timestamp 20241123151309 and revision id 21297.
+ -->
+</div><p class="categories">Categories: <a href="Category_In_NesCartDB.xhtml">In NesCartDB</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

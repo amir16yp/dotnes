@@ -7,31 +7,304 @@ const NES.NESLib.APU_DMC_LEN = 16403 -> ushort
 const NES.NESLib.APU_DMC_RAW = 16401 -> ushort
 const NES.NESLib.APU_DMC_START = 16402 -> ushort
 const NES.NESLib.APU_FRAME = 16407 -> ushort
+const NES.NESLib.BANDAI_MIRRORING = 32777 -> ushort
+const NES.NESLib.BANDAI_PRG_BANK = 32776 -> ushort
+const NES.NESLib.FME7_COMMAND = 32768 -> ushort
+const NES.NESLib.FME7_PARAMETER = 40960 -> ushort
+const NES.NESLib.IREM32_PRG_BANK0 = 32768 -> ushort
+const NES.NESLib.IREM32_PRG_BANK1 = 40960 -> ushort
+const NES.NESLib.IREM65_PRG_BANK0 = 32768 -> ushort
+const NES.NESLib.IREM65_PRG_BANK1 = 40960 -> ushort
+const NES.NESLib.JALECO18_PRG0_HI = 32769 -> ushort
+const NES.NESLib.JALECO18_PRG0_LO = 32768 -> ushort
 const NES.NESLib.JOYPAD1 = 16406 -> ushort
 const NES.NESLib.JOYPAD2 = 16407 -> ushort
+const NES.NESLib.MMC2_CHR_BANK0_FD = 45056 -> ushort
+const NES.NESLib.MMC2_CHR_BANK0_FE = 49152 -> ushort
+const NES.NESLib.MMC2_CHR_BANK1_FD = 53248 -> ushort
+const NES.NESLib.MMC2_CHR_BANK1_FE = 57344 -> ushort
+const NES.NESLib.MMC2_MIRRORING = 61440 -> ushort
+const NES.NESLib.MMC2_PRG_BANK = 40960 -> ushort
+const NES.NESLib.MMC4_CHR_BANK0_FD = 45056 -> ushort
+const NES.NESLib.MMC4_CHR_BANK0_FE = 49152 -> ushort
+const NES.NESLib.MMC4_CHR_BANK1_FD = 53248 -> ushort
+const NES.NESLib.MMC4_CHR_BANK1_FE = 57344 -> ushort
+const NES.NESLib.MMC4_MIRRORING = 61440 -> ushort
+const NES.NESLib.MMC4_PRG_BANK = 40960 -> ushort
+const NES.NESLib.MMC5_CHR_BANK0 = 20768 -> ushort
+const NES.NESLib.MMC5_CHR_MODE = 20737 -> ushort
+const NES.NESLib.MMC5_PRG_BANK0 = 20756 -> ushort
+const NES.NESLib.MMC5_PRG_MODE = 20736 -> ushort
+const NES.NESLib.NAMCO163_PRG_BANK0 = 57344 -> ushort
+const NES.NESLib.NAMCO163_PRG_BANK1 = 59392 -> ushort
+const NES.NESLib.NAMCO163_PRG_BANK2 = 61440 -> ushort
+const NES.NESLib.NINA_BANK_SELECT = 16640 -> ushort
 const NES.NESLib.PPU_OAM_ADDR = 8195 -> ushort
 const NES.NESLib.PPU_OAM_DATA = 8196 -> ushort
 const NES.NESLib.PPU_OAM_DMA = 16404 -> ushort
+const NES.NESLib.SUNSOFT3_PRG_BANK = 32768 -> ushort
+const NES.NESLib.SUNSOFT4_PRG_BANK = 32768 -> ushort
+const NES.NESLib.TAITO33_PRG_BANK0 = 32768 -> ushort
+const NES.NESLib.TAITO33_PRG_BANK1 = 32769 -> ushort
+const NES.NESLib.TAITO80_PRG_BANK0 = 32504 -> ushort
+const NES.NESLib.TAITO80_PRG_BANK1 = 32505 -> ushort
+const NES.NESLib.VRC1_CHR_BANK0 = 57344 -> ushort
+const NES.NESLib.VRC1_CHR_BANK1 = 61440 -> ushort
+const NES.NESLib.VRC1_MIRRORING = 36864 -> ushort
+const NES.NESLib.VRC1_PRG_BANK0 = 32768 -> ushort
+const NES.NESLib.VRC1_PRG_BANK1 = 40960 -> ushort
+const NES.NESLib.VRC24_MIRRORING = 36864 -> ushort
+const NES.NESLib.VRC24_PRG_BANK0 = 32768 -> ushort
+const NES.NESLib.VRC24_PRG_BANK1 = 40960 -> ushort
+const NES.NESLib.VRC3_PRG_BANK = 61440 -> ushort
+const NES.NESLib.VRC6_PRG_BANK16 = 32768 -> ushort
+const NES.NESLib.VRC6_PRG_BANK8 = 49152 -> ushort
+const NES.NESLib.VRC7_PRG_BANK0 = 32768 -> ushort
+const NES.NESLib.VRC7_PRG_BANK1 = 40960 -> ushort
 const NES.NESLib.ZAPPER_LIGHT = 8 -> byte
 const NES.NESLib.ZAPPER_TRIGGER = 16 -> byte
 static NES.NESLib.NT_ATTR_A(byte x, byte y) -> ushort
 static NES.NESLib.NT_ATTR_B(byte x, byte y) -> ushort
 static NES.NESLib.NT_ATTR_C(byte x, byte y) -> ushort
 static NES.NESLib.NT_ATTR_D(byte x, byte y) -> ushort
+static NES.NESLib.action52_write(ushort register, byte value) -> void
+static NES.NESLib.action53_set(byte value) -> void
 static NES.NESLib.apu_play_noise(byte period, byte volume, bool toneMode) -> void
 static NES.NESLib.apu_play_triangle(ushort period, byte linear) -> void
 static NES.NESLib.apu_stop_all() -> void
 static NES.NESLib.apu_stop_noise() -> void
 static NES.NESLib.apu_stop_triangle() -> void
+static NES.NESLib.asder112_set_prg_bank(byte bank) -> void
+static NES.NESLib.axrom_set_prg_bank(byte bank) -> void
+static NES.NESLib.bandai152_set(byte value) -> void
+static NES.NESLib.bandai153_set_prg_bank(byte bank) -> void
+static NES.NESLib.bandai154_set(byte value) -> void
+static NES.NESLib.bandai157_set_prg_bank(byte bank) -> void
+static NES.NESLib.bandai159_set_prg_bank(byte bank) -> void
+static NES.NESLib.bandai16_set_mirroring(byte mirror) -> void
+static NES.NESLib.bandai16_set_prg_bank(byte bank) -> void
+static NES.NESLib.bandai_set_prg_bank(byte bank) -> void
+static NES.NESLib.bf9096_set(byte value) -> void
+static NES.NESLib.bnrom_set_prg_bank(byte bank) -> void
 static NES.NESLib.brk() -> void
+static NES.NESLib.camerica_set_prg_bank(byte bank) -> void
+static NES.NESLib.cnrom185_set_chr_bank(byte bank) -> void
+static NES.NESLib.colordreams_set(byte value) -> void
+static NES.NESLib.colordreams_set_banks(byte prgBank, byte chrBank) -> void
+static NES.NESLib.cony83_set_prg_bank(byte bank) -> void
+static NES.NESLib.cprom_set_chr_bank(byte bank) -> void
 static NES.NESLib.dex() -> void
 static NES.NESLib.dey() -> void
+static NES.NESLib.dxrom206_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.ffe17_set_prg_bank(byte bank) -> void
+static NES.NESLib.ffe6_set_prg_bank(byte bank) -> void
+static NES.NESLib.ffe8_set(byte value) -> void
+static NES.NESLib.fme7_set_chr_bank(byte reg, byte bank) -> void
+static NES.NESLib.fme7_set_prg_bank(byte reg, byte bank) -> void
+static NES.NESLib.fme7_write(byte command, byte parameter) -> void
+static NES.NESLib.gxrom_set(byte value) -> void
+static NES.NESLib.gxrom_set_banks(byte prgBank, byte chrBank) -> void
+static NES.NESLib.holydiver_set(byte value) -> void
+static NES.NESLib.holydiver_set_banks(byte prgBank, byte chrBank, byte mirror) -> void
 static NES.NESLib.inx() -> void
 static NES.NESLib.iny() -> void
+static NES.NESLib.irem32_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.irem65_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.irem77_set(byte value) -> void
+static NES.NESLib.irem97_set(byte value) -> void
+static NES.NESLib.jaleco140_set(byte value) -> void
+static NES.NESLib.jaleco18_set_prg0(byte bank) -> void
+static NES.NESLib.jaleco72_set(byte value) -> void
+static NES.NESLib.jaleco86_set(byte value) -> void
+static NES.NESLib.jaleco92_set(byte value) -> void
+static NES.NESLib.jaleco_set_chr_bank(byte bank) -> void
+static NES.NESLib.jy209_set_prg_bank(byte reg, byte bank) -> void
+static NES.NESLib.jy211_set_prg_bank(byte reg, byte bank) -> void
+static NES.NESLib.jy90_set_prg_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper100_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper101_set_chr_bank(byte bank) -> void
+static NES.NESLib.mapper103_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper105_write(ushort addr, byte value) -> void
+static NES.NESLib.mapper106_write(ushort register, byte value) -> void
+static NES.NESLib.mapper107_set(byte value) -> void
+static NES.NESLib.mapper108_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper111_set(byte value) -> void
+static NES.NESLib.mapper114_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper115_set_outer(byte bank) -> void
+static NES.NESLib.mapper116_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper117_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper12_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper120_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper121_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper121_set_outer(byte value) -> void
+static NES.NESLib.mapper123_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper123_set_outer(byte value) -> void
+static NES.NESLib.mapper125_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper132_set(byte value) -> void
+static NES.NESLib.mapper134_set(byte value) -> void
+static NES.NESLib.mapper134_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper135_set(byte value) -> void
+static NES.NESLib.mapper142_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper144_set(byte value) -> void
+static NES.NESLib.mapper14_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper151_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper155_write(ushort addr, byte value) -> void
+static NES.NESLib.mapper156_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper15_set(byte value) -> void
+static NES.NESLib.mapper160_set_prg_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper161_write(ushort addr, byte value) -> void
+static NES.NESLib.mapper162_set_mode(byte value) -> void
+static NES.NESLib.mapper162_set_prg_high(byte value) -> void
+static NES.NESLib.mapper162_set_prg_low(byte value) -> void
+static NES.NESLib.mapper163_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper164_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper165_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper166_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper167_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper169_set(byte value) -> void
+static NES.NESLib.mapper171_set(byte value) -> void
+static NES.NESLib.mapper172_set(byte value) -> void
+static NES.NESLib.mapper173_write(ushort register, byte value) -> void
+static NES.NESLib.mapper174_set(byte value) -> void
+static NES.NESLib.mapper175_set(byte value) -> void
+static NES.NESLib.mapper176_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper177_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper178_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper179_set(byte value) -> void
+static NES.NESLib.mapper180_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper181_set(byte value) -> void
+static NES.NESLib.mapper182_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper183_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper187_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper187_set_outer(byte value) -> void
+static NES.NESLib.mapper188_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper190_write(ushort register, byte value) -> void
+static NES.NESLib.mapper191_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper192_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper193_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper194_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper195_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper196_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper197_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper198_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper199_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper200_write(ushort register, byte value) -> void
+static NES.NESLib.mapper201_write(ushort register, byte value) -> void
+static NES.NESLib.mapper202_write(ushort register, byte value) -> void
+static NES.NESLib.mapper203_set(byte value) -> void
+static NES.NESLib.mapper204_write(ushort register, byte value) -> void
+static NES.NESLib.mapper205_set_outer(byte bank) -> void
+static NES.NESLib.mapper207_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper208_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper208_set_prg(byte value) -> void
+static NES.NESLib.mapper212_write(ushort register, byte value) -> void
+static NES.NESLib.mapper213_write(ushort register, byte value) -> void
+static NES.NESLib.mapper214_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper215_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper216_write(ushort register, byte value) -> void
+static NES.NESLib.mapper217_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper219_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper219_set_outer(ushort register, byte value) -> void
+static NES.NESLib.mapper21_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper220_set(byte value) -> void
+static NES.NESLib.mapper221_write(ushort register, byte value) -> void
+static NES.NESLib.mapper222_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper223_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper224_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper225_write(ushort register, byte value) -> void
+static NES.NESLib.mapper226_set(byte value) -> void
+static NES.NESLib.mapper227_write(ushort register, byte value) -> void
+static NES.NESLib.mapper229_set(byte value) -> void
+static NES.NESLib.mapper22_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper230_set(byte value) -> void
+static NES.NESLib.mapper231_set(byte value) -> void
+static NES.NESLib.mapper233_set(byte value) -> void
+static NES.NESLib.mapper234_write(ushort register, byte value) -> void
+static NES.NESLib.mapper235_set(byte value) -> void
+static NES.NESLib.mapper236_set(byte value) -> void
+static NES.NESLib.mapper237_set(byte value) -> void
+static NES.NESLib.mapper238_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper239_set(byte value) -> void
+static NES.NESLib.mapper23_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper240_set(byte value) -> void
+static NES.NESLib.mapper241_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper242_set(byte value) -> void
+static NES.NESLib.mapper244_set(byte value) -> void
+static NES.NESLib.mapper245_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper246_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper247_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper248_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper249_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper24_set_prg16(byte bank) -> void
+static NES.NESLib.mapper250_write(ushort register, byte value) -> void
+static NES.NESLib.mapper251_set_outer(byte bank) -> void
+static NES.NESLib.mapper252_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper253_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper254_set_outer(byte bank) -> void
+static NES.NESLib.mapper255_write(ushort register, byte value) -> void
+static NES.NESLib.mapper25_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper26_set_prg16(byte bank) -> void
+static NES.NESLib.mapper27_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.mapper31_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper35_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper37_set_outer(byte bank) -> void
+static NES.NESLib.mapper38_set(byte value) -> void
+static NES.NESLib.mapper39_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper40_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper41_set(byte value) -> void
+static NES.NESLib.mapper42_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper43_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper44_set_outer(byte bank) -> void
+static NES.NESLib.mapper45_set_outer(byte bank) -> void
+static NES.NESLib.mapper46_set(byte value) -> void
+static NES.NESLib.mapper47_set_outer(byte bank) -> void
+static NES.NESLib.mapper49_set(byte value) -> void
+static NES.NESLib.mapper50_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper51_set(byte value) -> void
+static NES.NESLib.mapper52_set_outer(byte bank) -> void
+static NES.NESLib.mapper53_set(byte value) -> void
+static NES.NESLib.mapper54_set(byte value) -> void
+static NES.NESLib.mapper56_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper57_set(byte value) -> void
+static NES.NESLib.mapper58_set(byte value) -> void
+static NES.NESLib.mapper59_set(byte value) -> void
+static NES.NESLib.mapper60_set(byte value) -> void
+static NES.NESLib.mapper61_write(ushort register, byte value) -> void
+static NES.NESLib.mapper62_write(ushort register, byte value) -> void
+static NES.NESLib.mapper63_write(ushort register, byte value) -> void
+static NES.NESLib.mapper74_set_prg_bank(byte reg, byte bank) -> void
+static NES.NESLib.mapper81_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper84_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper91_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper98_set_prg_bank(byte bank) -> void
+static NES.NESLib.mapper_bus_set(byte value) -> void
+static NES.NESLib.mapper_outer_set(byte value) -> void
+static NES.NESLib.mmc2_set_chr_bank0(byte fdBank, byte feBank) -> void
+static NES.NESLib.mmc2_set_chr_bank1(byte fdBank, byte feBank) -> void
+static NES.NESLib.mmc2_set_mirroring(byte mirror) -> void
+static NES.NESLib.mmc2_set_prg_bank(byte bank) -> void
 static NES.NESLib.mmc3_set_prg_bank(byte reg, byte bank) -> void
 static NES.NESLib.mmc3_wram_enable(byte value) -> void
+static NES.NESLib.mmc4_set_chr_bank0(byte fdBank, byte feBank) -> void
+static NES.NESLib.mmc4_set_chr_bank1(byte fdBank, byte feBank) -> void
+static NES.NESLib.mmc4_set_mirroring(byte mirror) -> void
+static NES.NESLib.mmc4_set_prg_bank(byte bank) -> void
+static NES.NESLib.mmc5_set_chr_bank(byte reg, byte bank) -> void
+static NES.NESLib.mmc5_set_chr_mode(byte mode) -> void
+static NES.NESLib.mmc5_set_prg_bank(byte reg, byte bank) -> void
+static NES.NESLib.mmc5_set_prg_mode(byte mode) -> void
+static NES.NESLib.namco163_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.namco210_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.namco88_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.namcot76_set_prg_bank(byte bank) -> void
+static NES.NESLib.namcot95_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.nina113_set(byte value) -> void
+static NES.NESLib.nina113_set_banks(byte prgBank, byte chrBank) -> void
+static NES.NESLib.nina_set(byte value) -> void
+static NES.NESLib.nina_set_banks(byte prgBank, byte chrBank) -> void
 static NES.NESLib.nop() -> void
 static NES.NESLib.oam_dma(byte page) -> void
+static NES.NESLib.oeka96_set(byte value) -> void
 static NES.NESLib.pad1_poll() -> NES.PAD
 static NES.NESLib.pad1_state() -> NES.PAD
 static NES.NESLib.pad1_trigger() -> NES.PAD
@@ -44,14 +317,58 @@ static NES.NESLib.plp() -> void
 static NES.NESLib.ppu_scroll(byte x, byte y) -> void
 static NES.NESLib.ppu_status() -> byte
 static NES.NESLib.ppu_use_native_renderer() -> void
+static NES.NESLib.racermate168_set(byte value) -> void
+static NES.NESLib.rambo64_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.retcufrom29_set(byte value) -> void
+static NES.NESLib.retcufrom29_set_banks(byte prgBank, byte chrBank) -> void
+static NES.NESLib.sachen133_set(byte value) -> void
+static NES.NESLib.sachen136_set(byte value) -> void
+static NES.NESLib.sachen137_set(byte value) -> void
+static NES.NESLib.sachen138_set(byte value) -> void
+static NES.NESLib.sachen139_set(byte value) -> void
+static NES.NESLib.sachen141_set(byte value) -> void
+static NES.NESLib.sachen143_set(byte value) -> void
+static NES.NESLib.sachen145_set_chr_bank(byte bank) -> void
+static NES.NESLib.sachen146_set(byte value) -> void
+static NES.NESLib.sachen147_set(byte value) -> void
+static NES.NESLib.sachen148_set(byte value) -> void
+static NES.NESLib.sachen149_set_chr_bank(byte bank) -> void
+static NES.NESLib.sachen150_set(byte value) -> void
+static NES.NESLib.sachen243_set(byte value) -> void
 static NES.NESLib.sprite0_hit() -> bool
 static NES.NESLib.sprite0_wait() -> void
+static NES.NESLib.sunsoft184_set_chr_bank(byte bank) -> void
+static NES.NESLib.sunsoft3_set_prg_bank(byte bank) -> void
+static NES.NESLib.sunsoft4_set_prg_bank(byte bank) -> void
+static NES.NESLib.sunsoft89_set(byte value) -> void
+static NES.NESLib.sunsoft93_set_prg_bank(byte bank) -> void
+static NES.NESLib.taito33_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.taito48_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.taito80_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.taito82_set_prg_bank(byte bank) -> void
 static NES.NESLib.tax() -> void
 static NES.NESLib.tay() -> void
+static NES.NESLib.tengen158_set_bank(byte reg, byte bank) -> void
+static NES.NESLib.tqrom119_set_bank(byte reg, byte bank) -> void
 static NES.NESLib.tsx() -> void
 static NES.NESLib.txa() -> void
+static NES.NESLib.txc189_set_prg_bank(byte bank) -> void
+static NES.NESLib.txc36_set_prg_bank(byte bank) -> void
 static NES.NESLib.txs() -> void
+static NES.NESLib.txsrom118_set_bank(byte reg, byte bank) -> void
 static NES.NESLib.tya() -> void
+static NES.NESLib.un1rom_set_prg_bank(byte bank) -> void
+static NES.NESLib.unrom512_set_prg_bank(byte bank) -> void
 static NES.NESLib.uxrom_set_prg_bank(byte bank) -> void
+static NES.NESLib.vrc1_set_chr_bank(byte which, byte bank) -> void
+static NES.NESLib.vrc1_set_mirroring(byte mirror) -> void
+static NES.NESLib.vrc1_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.vrc24_set_mirroring(byte mirror) -> void
+static NES.NESLib.vrc24_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.vrc3_set_prg_bank(byte bank) -> void
+static NES.NESLib.vrc6_set_prg16(byte bank) -> void
+static NES.NESLib.vrc6_set_prg8(byte bank) -> void
+static NES.NESLib.vrc7_set_prg_bank(byte which, byte bank) -> void
+static NES.NESLib.vs99_set_chr_bank(byte bank) -> void
 static NES.NESLib.zapper_light() -> bool
 static NES.NESLib.zapper_trigger() -> bool

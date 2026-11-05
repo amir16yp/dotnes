@@ -1,0 +1,54 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 525</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_525"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 525</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_525">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_525">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 525 is used for mapper hacks of VRC2-using games. Specific known games include Kaiser bootleg versions of <i>Contra</i> and 月風魔伝 (Getsu Fūma Den). Its UNIF board name is <b>UNL-KS7021A</b>.
+</p>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>Mask: $F000
+</p>
+<pre> $8000: [.... PPP.] - Select 16KiB PRG bank at $8000-$BFFF
+ $9000: [.... ...M] - like VRC2, 0: Vertical Mirroring (PPU A10); 1: Horizontal Mirroring (PPU A11)
+</pre>
+<p>Mask: $F007
+</p>
+<ul><li>$B000: Select 1 KiB CHR-ROM bank at PPU $0000-$03FF</li>
+<li>$B001: Select 1 KiB CHR-ROM bank at PPU $0400-$07FF</li>
+<li>$B002: Select 1 KiB CHR-ROM bank at PPU $0800-$0BFF</li>
+<li>$B003: Select 1 KiB CHR-ROM bank at PPU $0C00-$0FFF</li>
+<li>$B004: Select 1 KiB CHR-ROM bank at PPU $1000-$13FF</li>
+<li>$B005: Select 1 KiB CHR-ROM bank at PPU $1400-$17FF</li>
+<li>$B006: Select 1 KiB CHR-ROM bank at PPU $1800-$1BFF</li>
+<li>$B007: Select 1 KiB CHR-ROM bank at PPU $1C00-$1FFF</li></ul>
+<h2><span class="mw-headline" id="Hardware">Hardware</span></h2>
+<p>The 7021A PCB contains a <a href="7400.xhtml" title="7400">7400</a>, a <a href="7427.xhtml" title="7427">7427</a>, a <a href="7432.xhtml" title="7432">7432</a>, a <a href="7474.xhtml" title="7474">7474</a>, a <a href="74139.xhtml" title="74139">74139</a>, a <a href="74157.xhtml" title="74157">74157</a>, a <a href="74174.xhtml" title="74174">74174</a>, two <a href="https://www.nesdev.org/w/index.php?title=74189&amp;action=edit&amp;redlink=1" class="new" title="74189 (page does not exist)">74189s</a>, and the two ROMs.
+</p>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li>Getsu Fūma Den PCB images and analysis: <a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?t=21091">BBS</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123000138
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.012 seconds
+Real time usage: 0.016 seconds
+Preprocessor visited node count: 19/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:831-0!canonical and timestamp 20241123000138 and revision id 8120.
+ -->
+</div><p class="categories">Categories: <a href="Category_Discrete_logic_mappers.xhtml">Discrete logic mappers</a></p></div></body></html>

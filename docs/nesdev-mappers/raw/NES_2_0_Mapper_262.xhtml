@@ -1,0 +1,60 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 262</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_262"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 262</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_262">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_262">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 262 is used for <i>Street Heroes/侍魂 (Shìhún)</i> by Sachen. It uses an <a href="MMC3.xhtml" title="MMC3">MMC3</a> clone with both CHR-ROM and 8 KiB of CHR-RAM, as well 4 KiB of additional VRAM for four-screen mirroring. Its UNIF board name is <b>UNL-SHERO</b>.
+</p>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>Mask: probably $E001
+</p>
+<pre>   $8000, $8001, $A000, $A001, $C000, $C001, $E000, $E001: As normal MMC3.
+</pre>
+<p>Mask: unknown, but probably $C100
+</p>
+<pre>$4100 (read): Read jumper setting
+   Bit 7654 3210
+       ---------
+       J... ....
+       +--------- Jumper value
+                  0: Game title is <i>Street Heroes</i>
+                  1: Game title is <i>侍魂 (Shìhún)</i> (Samurai Spirits)
+
+$4100 (write): High CHR-ROM bits and CHR-ROM/-RAM selection
+   Bit 7654 3210
+       ---------
+       .M.. 8421
+        |   |||+- Select 256 KiB CHR-ROM bank at PPU $1000-$17FF
+        |   ||+-- Select 256 KiB CHR-ROM bank at PPU $1800-$1FFF
+        |   |+--- Select 256 KiB CHR-ROM bank at PPU $0800-$0FFF
+        |   +---- Select 256 KiB CHR-ROM bank at PPU $0000-$07FF
+        +-------- Select CHR-ROM/-RAM
+                  0: CHR-ROM
+                  1: CHR-RAM
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241122235319
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.008 seconds
+Real time usage: 0.011 seconds
+Preprocessor visited node count: 5/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:647-0!canonical and timestamp 20241122235319 and revision id 7640.
+ -->
+</div><p class="categories">Categories: <a href="Category_MMC3_with_CHR_ROM_and_CHR_RAM.xhtml">MMC3 with CHR ROM and CHR RAM</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

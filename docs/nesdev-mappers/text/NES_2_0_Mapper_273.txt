@@ -1,0 +1,9 @@
+NES 2.0 Mapper 273
+
+NES 2.0 Mapper 273
+
+NES 2.0 Mapper 273 is used for a bootleg version of Gremlins 2: 新種誕生.
+
+See also
+
+PCB reverse-engineering and emulator implementation

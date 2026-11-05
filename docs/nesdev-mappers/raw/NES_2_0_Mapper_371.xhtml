@@ -1,0 +1,109 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 371</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_371"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 371</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_371">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_371">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><div class="thumb tright"><div class="thumbinner" style="width:302px;"><a href="File_PEC_586_Spanish_PCB_F_jpg.xhtml" class="image"><img alt="" src="../wiki-images/PEC-586_Spanish_PCB_F.jpg" decoding="async" width="300" height="265" class="thumbimage" srcset="/w/images/default/thumb/4/44/PEC-586_Spanish_PCB_F.jpg/450px-PEC-586_Spanish_PCB_F.jpg 1.5x, /w/images/default/thumb/4/44/PEC-586_Spanish_PCB_F.jpg/600px-PEC-586_Spanish_PCB_F.jpg 2x"/></a>  <div class="thumbcaption"><div class="magnify"><a href="File_PEC_586_Spanish_PCB_F_jpg.xhtml" class="internal" title="Enlarge"/></div>PCB front</div></div></div>
+<div class="thumb tright"><div class="thumbinner" style="width:302px;"><a href="File_PEC_586_Spanish_PCB_B_jpg.xhtml" class="image"><img alt="" src="../wiki-images/PEC-586_Spanish_PCB_B.jpg" decoding="async" width="300" height="256" class="thumbimage" srcset="/w/images/default/thumb/b/bd/PEC-586_Spanish_PCB_B.jpg/450px-PEC-586_Spanish_PCB_B.jpg 1.5x, /w/images/default/thumb/b/bd/PEC-586_Spanish_PCB_B.jpg/600px-PEC-586_Spanish_PCB_B.jpg 2x"/></a>  <div class="thumbcaption"><div class="magnify"><a href="File_PEC_586_Spanish_PCB_B_jpg.xhtml" class="internal" title="Enlarge"/></div>PCB back (mirrored, pin 31 on the left)</div></div></div>
+<p>NES 2.0 Mapper 371 denotes the Spanish PEC-586 home computer main cartridge, which differs from both the Chinese and Russian equivalents. It has two PRG-ROM chips, one with 64 KiB, one with 512 KiB, for a total of 576 KiB. The first chip contains normal home computer applications such as a BASIC interpreter and a text editor, while the second chip contains a selection of common NROM games. Like all PEC-586 machines and cartridges, it adds a 1bpp video mode by appropriately mapping CHR-RAM, and requires the <a href="https://www.nesdev.org/w/index.php?title=PEC-586_Keyboard&amp;action=edit&amp;redlink=1" class="new" title="PEC-586 Keyboard (page does not exist)">PEC-586 Keyboard</a> to operate.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Main_Register_(%245000,_write)"><span class="tocnumber">2.1</span> <span class="toctext">Main Register ($5000, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Auxiliary_Register_(%245100,_write)"><span class="tocnumber">2.2</span> <span class="toctext">Auxiliary Register ($5100, write)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Tape_In_(%245500,_read)"><span class="tocnumber">2.3</span> <span class="toctext">Tape In ($5500, read)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Protection"><span class="tocnumber">3</span> <span class="toctext">Protection</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#1bpp_CHR_mode"><span class="tocnumber">4</span> <span class="toctext">1bpp CHR mode</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<p>Common:
+</p>
+<ul><li>CPU $6000-$7FFF: 8 KiB of unbanked PRG-RAM</li>
+<li>PPU $0000-$1FFF: 8 KiB of unbanked CHR-RAM</li></ul>
+<p>When the first (64 KiB) PRG-ROM chip is selected
+</p>
+<ul><li>CPU $8000-$BFFF: Switchable 16 KiB PRG-ROM bank (#0-#3)</li>
+<li>CPU $C000-$FFFF: Fixed 16 KiB PRG-ROM bank #3</li></ul>
+<p>When the second (512 KiB) PRG-ROM chip is selected:
+</p>
+<ul><li>CPU $8000-$BFFF: Switchable 16 KiB PRG-ROM bank</li>
+<li>CPU $C000-$FFFF: Mirror of CPU $8000-$BFFF</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="Main_Register_.28.245000.2C_write.29"/><span class="mw-headline" id="Main_Register_($5000,_write)">Main Register ($5000, write)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  1CCC PPPP
+  |||| ++++- Select 16 KiB PRG-ROM bank at CPU $8000-$BFFF (PRG A14..A17)
+  |+++------ Select PRG-ROM source
+  |           0: First chip (64 KiB)
+  |           5: Second chip (512 KiB)
+  |           7: Expansion slot
+  +--------- Select 1bpp CHR mode
+              0: Disabled
+              1: Enabled
+</pre>
+<p>Power-on value: $00
+</p>
+<h2><span id="Auxiliary_Register_.28.245100.2C_write.29"/><span class="mw-headline" id="Auxiliary_Register_($5100,_write)">Auxiliary Register ($5100, write)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  .... ..MP
+         |+- If first PRG-ROM chip selected: Tape Out data
+         |   If second PRG-ROM chip selected: PRG A18 (256 KiB)
+         +-- Select nametable mirroring type
+              0: Horizontal
+              1: Vertical
+</pre>
+<p>Power-on value: $03
+</p>
+<h2><span id="Tape_In_.28.245500.2C_read.29"/><span class="mw-headline" id="Tape_In_($5500,_read)">Tape In ($5500, read)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  .... .T..
+        +--- Tape In data
+</pre>
+<h1><span class="mw-headline" id="Protection">Protection</span></h1>
+<p>When the second PRG-ROM chip is selected <i>and</i> PRG A18=0, the cartridge hardware will forcibly reset on attempts to read from CPU $D100-$D1FF. As the first 256 KiB bank of the second PRG-ROM chip only contains data for CHR-RAM as well as some code that is copied into and executed from PRG-RAM, and $C000-$FFFF is a mirror of $8000-$BFFF in that configuration, the $D100-$D1FF range is never read from during normal operation.
+</p>
+<h1><span class="mw-headline" id="1bpp_CHR_mode">1bpp CHR mode</span></h1>
+<p>When register $5000 bit 7 is set, CHR A3 is substituted with PPU A0 from the last nametable (not attribute table) read, and CHR A12 is substituted with PPU A9 from the last nametable (not attribute table) read. This creates a 1bpp all-points-addressable video mode that allows the 8 KiB CHR-RAM to hold just enough data for one screen.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164251
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.038 seconds
+Real time usage: 0.051 seconds
+Preprocessor visited node count: 27/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:756-0!canonical and timestamp 20241123164251 and revision id 7978.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

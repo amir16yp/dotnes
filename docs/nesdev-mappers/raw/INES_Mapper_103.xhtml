@@ -1,0 +1,91 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 103</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_103"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 103</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_103">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_103">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><a class="mw-selflink selflink">iNES Mapper 103</a> describes a specific pirate port of the FDS version of Doki Doki Panic.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#PRG_bank_(%248000-%248FFF)"><span class="tocnumber">2.1</span> <span class="toctext">PRG bank ($8000-$8FFF)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Mirroring_control_(%24E000-%24EFFF)"><span class="tocnumber">2.2</span> <span class="toctext">Mirroring control ($E000-$EFFF)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#RAM_disable_(%24F000-%24FFFF)"><span class="tocnumber">2.3</span> <span class="toctext">RAM disable ($F000-$FFFF)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Hardware"><span class="tocnumber">3</span> <span class="toctext">Hardware</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#See_also"><span class="tocnumber">4</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>CPU $6000-$7FFF: 8 KiB RAM, or 8 KiB controllable ROM bank.</li>
+<li>CPU $8000-$B7FF: 14 KiB ROM, starting at ROM offset 0x18000</li>
+<li>CPU $B800-$D7FF: 8 KiB RAM, or 8 KiB fixed ROM bank, starting at ROM offset 0x1B800</li>
+<li>CPU $D800-$FFFF: 10 KiB ROM, starting at ROM offset 0x1D800</li></ul>
+<p>Writes to regions where RAM can be mapped will always write to RAM, even if RAM isn't enabled for reading.
+</p>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>Registers are not cleared on reset, and state is unknown on power-up. No bus conflicts.
+</p>
+<h3><span id="PRG_bank_.28.248000-.248FFF.29"/><span class="mw-headline" id="PRG_bank_($8000-$8FFF)">PRG bank ($8000-$8FFF)</span></h3>
+<p>Mask: $F000
+</p>
+<pre>7  bit  0
+---- ----
+.... PPPP
+     ||||
+     ++++-- select 8 KiB PRG bank at $6000
+</pre>
+<h3><span id="Mirroring_control_.28.24E000-.24EFFF.29"/><span class="mw-headline" id="Mirroring_control_($E000-$EFFF)">Mirroring control ($E000-$EFFF)</span></h3>
+<p>Mask: $F000
+</p>
+<pre>7  bit  0
+---- ----
+.... m...
+     |
+     +----- 0=V (PPU A10), 1=H (PPU A11)
+</pre>
+<h3><span id="RAM_disable_.28.24F000-.24FFFF.29"/><span class="mw-headline" id="RAM_disable_($F000-$FFFF)">RAM disable ($F000-$FFFF)</span></h3>
+<p>Mask: $F000
+</p>
+<pre>7  bit  0
+---- ----
+...d ....
+   |
+   +------- 0=RAM available at $6000-$7FFF and $B800-$D7FF
+            1=ROM instead
+</pre>
+<h2><span class="mw-headline" id="Hardware">Hardware</span></h2>
+<p>This hardware involves three <a href="7400.xhtml" title="7400">7400</a>, two <a href="7410.xhtml" title="7410">7410</a>, a <a href="7432.xhtml" title="7432">7432</a>, a <a href="7474.xhtml" title="7474">7474</a>, a <a href="74138.xhtml" title="74138">74138</a>, a <a href="74157.xhtml" title="74157">74157</a>, and a <a href="74161.xhtml" title="74161">74161</a>.
+</p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?f=9&amp;t=18956">Krzysiobal's reverse engineered documentation</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123163535
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.016 seconds
+Real time usage: 0.021 seconds
+Preprocessor visited node count: 33/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:387-0!canonical and timestamp 20241123163535 and revision id 4802.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Discrete_logic_mappers.xhtml">Discrete logic mappers</a>, <a href="Category_FDS_conversion_mappers.xhtml">FDS conversion mappers</a></p></div></body></html>

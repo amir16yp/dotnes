@@ -1,0 +1,83 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 050</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_050"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 050</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_050">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_050">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 050</b> denotes the <b>N-32</b> conversion of <i>Super Mario Bros. 2 (J)</i>. A hack of the <a href="NES_2_0_Mapper_368.xhtml" title="NES 2.0 Mapper 368">YUNG-08</a> conversion, it replaces references to &quot;Mario&quot; with &quot;Romeo&quot;. Its PCB code is <b>761214</b>.
+</p>
+<pre> Here are Disch's original notes:  
+ ========================
+ =  Mapper 050          =
+ ========================
+ 
+ Example Game:
+ --------------------------
+ Super Mario Bros. (JU) (Alt Levels)   (SMB2j pirate cart)
+ 
+ 
+ Notes:
+ ---------------------------
+ No PRG-RAM.  PRG setup is bizarre, as is the scrambled PRG reg.
+ 
+ 
+ Registers:
+ ---------------------------
+ 
+ Range,Mask:   $4020-5FFF, $4120
+ 
+ 
+   $4020:  [.... HLLM]
+     L,M,H = Low, middle, and high bits of PRG Reg
+ 
+ 
+   $4120:  [.... ...E]  IRQ Enable (0=Disabled, 1=Enabled)
+ 
+ 
+ 
+ PRG Setup:
+ ---------------------------
+ 
+       $6000   $8000   $A000   $C000   $E000  
+     +-------+-------+-------+-------+-------+
+     | {$0F} | { 8 } | { 9 } | $4020 | {$0B} |
+     +-------+-------+-------+-------+-------+
+ 
+ 
+ IRQs:
+ ---------------------------
+ 
+   Writing to $4120 with E=0 will disable IRQs, acknowledge the pending IRQ, and reset the IRQ counter to 0.
+ Writing with E=1 will just enable IRQs (but will not change anything else).
+ 
+   When enabled, The IRQ counter will count up every CPU cycle.  When it makes the transition from
+ $0FFF-&gt;$1000, and IRQ is generated.  The counter appears to be a full 16-bits (so it will not wrap until
+ $FFFF)
+</pre>
+<p>The purported 16-bit counter seems unlikely. Both FCEUX and Nestopia disable the counter when it fires. The actual hardware is more likely a 13-bit counter with its MSB inverted into the Famicom's /IRQ line.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123163433
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.012 seconds
+Preprocessor visited node count: 2/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:335-0!canonical and timestamp 20241123163433 and revision id 4310.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_FDS_conversion_mappers.xhtml">FDS conversion mappers</a>, <a href="Category_Mappers_with_fixed_timing_cycle_IRQs.xhtml">Mappers with fixed-timing cycle IRQs</a></p></div></body></html>

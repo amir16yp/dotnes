@@ -1,0 +1,7 @@
+NES 2.0 Mapper 549
+
+NES 2.0 Mapper 549
+
+NES 2.0 Mapper 549 is used for the Kaiser port of Meikyuu Jiin Dababa from the Famicom Disk System.
+
+Categories: FDS conversion mappers, Mappers with CHR RAM

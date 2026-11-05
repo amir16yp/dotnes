@@ -1,0 +1,66 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 445</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_445"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 445</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_445">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_445">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 445</b> denotes the <b>DG574B</b> <a href="MMC3.xhtml" title="MMC3">MMC3</a>-compatible multicart circuit board.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Outer_PRG_Bank_(%245000,_write)"><span class="tocnumber">1</span> <span class="toctext">Outer PRG Bank ($5000, write)</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Outer_CHR_Bank_(%245001,_write)"><span class="tocnumber">2</span> <span class="toctext">Outer CHR Bank ($5001, write)</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Mode_(%245002,_write)"><span class="tocnumber">3</span> <span class="toctext">Mode ($5002, write)</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Lock_(%245003,_write)"><span class="tocnumber">4</span> <span class="toctext">Lock ($5003, write)</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#MMC3-compatible_registers"><span class="tocnumber">5</span> <span class="toctext">MMC3-compatible registers</span></a></li>
+</ul>
+</div>
+
+<h2><span id="Outer_PRG_Bank_.28.245000.2C_write.29"/><span class="mw-headline" id="Outer_PRG_Bank_($5000,_write)">Outer PRG Bank ($5000, write)</span></h2>
+<pre>D~[.PPP ....]  Address mask: $F003
+    +++------- PRG A19..A17
+</pre>
+<h2><span id="Outer_CHR_Bank_.28.245001.2C_write.29"/><span class="mw-headline" id="Outer_CHR_Bank_($5001,_write)">Outer CHR Bank ($5001, write)</span></h2>
+<pre>D~[.CCC ....]  Address mask: $F003
+    +++------- CHR A19..A17
+</pre>
+<h2><span id="Mode_.28.245002.2C_write.29"/><span class="mw-headline" id="Mode_($5002,_write)">Mode ($5002, write)</span></h2>
+<pre>D~[...? c.?p]  Address Mask: $F003
+        |  +- PRG A17 Mode
+        |      0: from MMC3
+        |      1: from Outer PRG Bank
+        +---- CHR A17 Mode
+               0: from MMC3
+</pre>
+<h2><span id="Lock_.28.245003.2C_write.29"/><span class="mw-headline" id="Lock_($5003,_write)">Lock ($5003, write)</span></h2>
+<pre>D~[..L. ....]  Address Mask: $F003
+     +------- 1: Lock registers $5000-$5003
+</pre>
+<h2><span class="mw-headline" id="MMC3-compatible_registers">MMC3-compatible registers</span></h2>
+<p>See <a href="MMC3.xhtml" title="MMC3">MMC3</a>.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164438
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.009 seconds
+Real time usage: 0.010 seconds
+Preprocessor visited node count: 20/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:2294-0!canonical and timestamp 20241123164438 and revision id 19271.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

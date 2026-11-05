@@ -1,0 +1,54 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 324</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_324"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 324</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_324">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_324">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 324 is used for Farid's homebrew 8-in-1 UNROM multicart board. It consists of an UNROM latch with an additional outer bank register. Mirroring is hard-wired. Its UNIF board name is <b>FARID_UNROM_8-IN-1</b>.
+</p>
+<h2><span id="Bank_Register_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Bank_Register_($8000-$FFFF,_write)">Bank Register ($8000-$FFFF, write)</span></h2>
+<pre>Mask: $8000
+
+D~7654 3210  **BUS CONFLICTS**
+  ---------
+  Cooo kIII
+  |||| ||||
+  |||| |+++- Standard UNROM inner bank (select 16K at $8000-$BFFF)
+  |||| +---- 1=Lock Outer Bank
+  |+++------ Select 128 KiB outer PRG-ROM bank
+  +--------- Clock Generator (&quot;oook&quot; bits latched only when this changes from 0 to 1 if k had been 0)
+</pre>
+<p>The middle four bits ($78, lowercase) are one 74'161; their contents are explicitly zeroed on power-up or reset.
+The outer four bits ($87, uppercase) are the other 74'161; their contents are NOT.
+</p>
+<h2><span id="UNROM_latch_.28.248000-.24FFFF.29"/><span class="mw-headline" id="UNROM_latch_($8000-$FFFF)">UNROM latch ($8000-$FFFF)</span></h2>
+<p>See <a href="UxROM.xhtml" class="mw-redirect" title="INES Mapper 002">INES Mapper 002</a>.
+</p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?f=9&amp;t=11099">NesDev discussion</a></li>
+<li><a href="INES_Mapper_072.xhtml" title="INES Mapper 072">Mapper 72</a> uses a similar &quot;one latch's output clocks another latch&quot; structure.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123110145
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.008 seconds
+Real time usage: 0.012 seconds
+Preprocessor visited node count: 13/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:709-0!canonical and timestamp 20241123110145 and revision id 7835.
+ -->
+</div><p class="categories">Categories: <a href="Category_Discrete_logic_mappers.xhtml">Discrete logic mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

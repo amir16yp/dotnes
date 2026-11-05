@@ -1,0 +1,47 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 519</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_519"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 519</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_519">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_519">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 519 is used for Chinese-language multicarts designated by the UNIF board name <b>UNL-EH8813A</b>. It latches both the CPU address and data buses.
+</p>
+<pre>A~[1... ...L pDPP PPPP] D~[MCCC CCCC]
+           | |||| ||||     |||| ||++-- Select Inner 8 KiB CHR-ROM bank at PPU $0000-$1FFF
+           | |||| ||||     |+++-++---- Select Outer 32 KiB CHR-ROM bank at PPU $0000-$1FFF (*)
+           | |||| ||||     +---------- Select Nametable mirroring type (0=Vertical, 1=Horizontal) (*)
+           | ||++-++++---------------- Select 16 KiB PRG-ROM bank at CPU $8000-$BFFF/$C000-$FFFF (*)
+           | |+----------------------- Read DIP switch mode (*)
+           | |                           0: Disabled, reads from $8000-$FFFF normal
+           | |                           1: Enabled, when reading from $8000-$FFFF:
+           | |                               Bitwise AND address with $FFF0 and OR with the DIP switch setting ($0-$F)
+           | +------------------------ PRG-ROM banking mode (*)
+           |                             0: NROM-256 (32 KiB, bit 0 ignored)
+           |                             1: NROM-128 (16 KiB, $8000-$BFFF mirrored at $C000-$FFFF)
+           +-------------------------- 1=Lock all fields marked (*)
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241122220625
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.004 seconds
+Real time usage: 0.007 seconds
+Preprocessor visited node count: 2/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:825-0!canonical and timestamp 20241122220625 and revision id 8101.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

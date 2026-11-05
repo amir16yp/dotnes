@@ -1,0 +1,73 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 202</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_202"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 202</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_202">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_202">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><br/>
+Implemented in BizHawk as of commit f72875b584abd79201ad9d3d0131fa5afcf0c429
+</p><p>Used for the 150-in-1 pirate cart (which was shipped with dual sloat SP60 famiclone console).
+</p>
+<div class="thumb tright"><div class="thumbinner" style="width:302px;"><a href="File_150in1_top_jpg.xhtml" class="image"><img alt="" src="../wiki-images/150in1_top.jpg" decoding="async" width="300" height="132" class="thumbimage" srcset="/w/images/default/thumb/5/59/150in1_top.jpg/450px-150in1_top.jpg 1.5x, /w/images/default/thumb/5/59/150in1_top.jpg/600px-150in1_top.jpg 2x"/></a>  <div class="thumbcaption"><div class="magnify"><a href="File_150in1_top_jpg.xhtml" class="internal" title="Enlarge"/></div>150-in-1 PCB top side</div></div></div> <div class="thumb tright"><div class="thumbinner" style="width:302px;"><a href="File_150in1_bottom_jpg.xhtml" class="image"><img alt="" src="../wiki-images/150in1_bottom.jpg" decoding="async" width="300" height="137" class="thumbimage" srcset="/w/images/default/thumb/c/c2/150in1_bottom.jpg/450px-150in1_bottom.jpg 1.5x, /w/images/default/thumb/c/c2/150in1_bottom.jpg/600px-150in1_bottom.jpg 2x"/></a>  <div class="thumbcaption"><div class="magnify"><a href="File_150in1_bottom_jpg.xhtml" class="internal" title="Enlarge"/></div>150-in-1 PCB bottom side</div></div></div> <div class="thumb tright"><div class="thumbinner" style="width:302px;"><a href="File_150in1_schematics_png.xhtml" class="image"><img alt="" src="../wiki-images/150in1_schematics.png" decoding="async" width="300" height="264" class="thumbimage" srcset="/w/images/default/thumb/7/78/150in1_schematics.png/450px-150in1_schematics.png 1.5x, /w/images/default/thumb/7/78/150in1_schematics.png/600px-150in1_schematics.png 2x"/></a>  <div class="thumbcaption"><div class="magnify"><a href="File_150in1_schematics_png.xhtml" class="internal" title="Enlarge"/></div>150-in-1 schematics</div></div></div>
+<pre> Registers:
+ $8000-FFFF: A~[.... .... .... O..O]
+               [.... .... .... RRRM]
+ 
+ 
+ O = PRG Mode, if 3, will use 32 PRG mode, else 16
+ R = Page registers, used for both CHR 8k banks, and PRG banks (in both 16k and 32k modes)
+ M = Mirroring, 0 = Vertical, 1 = Horizontal
+ 
+ CHR Setup:
+ 
+                    $0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
+                   +-------------------------------+-------------------------------+
+ CHR-ROM:          |                             $8000                             |
+                   +-------------------------------+-------------------------------+
+ 
+ 
+ 
+ PRG Setup:
+ ------------------------------
+ 32k Mode:
+ 
+ $8000     $A000     $C000     $E000
+ +-------------------------------------+
+ |               &lt;$8000&gt;               |
+ +-------------------------------------+
+ 
+ 
+ 16k Mode:
+ 
+ In 16k mode both regions are mapped to the same PRG bank
+ 
+ $8000     $A000     $C000     $E000     
+ +--------------------------------------+
+ |       $8000       |      $8000       |
+ +--------------------------------------+
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123163736
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.020 seconds
+Real time usage: 0.028 seconds
+Preprocessor visited node count: 1/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 1/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:486-0!canonical and timestamp 20241123163736 and revision id 5551.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

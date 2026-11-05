@@ -1,0 +1,9 @@
+INES Mapper 248
+
+INES Mapper 248
+
+Mapper 248 was mistakenly assigned to some Chinese games, for instance, Bao Qing Tian. iNES Mapper 115, when implemented correctly, will handle this game, and should render Mapper 248's assignment obsolete.
+
+It has been proposed in #nesdev that mapper 248 should be reassigned for private use for mappers still in development, such as in emulators and in the PowerPak.
+
+Categories: Bad iNES Mappers, INES Mappers

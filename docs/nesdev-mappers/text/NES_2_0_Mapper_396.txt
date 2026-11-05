@@ -1,0 +1,39 @@
+NES 2.0 Mapper 396
+
+NES 2.0 Mapper 396
+
+NES 2.0 Mapper 396 denotes the 晶太 YY850437C and Realtec GN-51 multicart PCBs, basically an UNROM mapper with an outer bank register. Its UNIF MAPR is BMC-830752C.
+
+1995 Super 8-in-1 (JY-050 rev0)
+
+Super 8-in-1 Gold Card Series (JY-085)
+
+Super 8-in-1 Gold Card Series (JY-086)
+
+2-in-1 (Realtec PG-07, GN-51 PCB)
+
+Outer Bank Register ($A000-$BFFF)
+
+Mask: $E000
+
+D~7654 3210
+  ---------
+  .Mm. .ppp
+   ||   +++- PRG A19..A17
+   |+------- Mirroring (GN-51), 1=Horizontal
+   +-------- Mirroring (YY850437C), 1=Horizontal
+
+No bus conflicts. Since no multicart menu sets the respective "other" mirroring bit, submapper-less emulation is possible by selecting horizontal mirroring if either bit is 1, and vertical mirroring if both are 0.
+
+Inner Bank Register ($8000-$9FFF, $C000-$FFFF)
+
+Mask: $E000
+
+D~7654 3210
+  ---------
+  .... .PPP
+        +++- PRG A16..A14 if CPU A14=0
+
+No bus conflicts.
+
+Categories: Mappers with CHR RAM, Multicart mappers

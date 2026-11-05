@@ -1,0 +1,44 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 381</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_381"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 381</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_381">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_381">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 381</b> denotes the <b>KN-42</b> PCB, used by the <i>2-in-1 High Standard Game (BC-019)</i> reset-based multicart containing two (modified) <a href="UxROM.xhtml" class="mw-redirect" title="UOROM">UOROM</a> games, in this case, the two Codemasters &quot;Bignose&quot; titles.
+</p>
+<h2><span id="Data_Latch_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Data_Latch_($8000-$FFFF,_write)">Data Latch ($8000-$FFFF, write)</span></h2>
+<pre>Mask: $8000
+
+D~7654 3210
+  ---------
+  ...b .aaa
+     |  +++- PRG A15..A17
+     +------ PRG A14
+</pre>
+<p>The actual 16 KiB bank number is therefore <i>aaab</i>. PRG A14..A17 are forced to $F if CPU A14=1, just like UOROM. PRG A18 is flipped on each reset cycle, which is detected through interruption of the M2 signal. The data latch exhibits bus conflicts.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241122211623
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.005 seconds
+Real time usage: 0.006 seconds
+Preprocessor visited node count: 7/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:766-0!canonical and timestamp 20241122211623 and revision id 7993.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

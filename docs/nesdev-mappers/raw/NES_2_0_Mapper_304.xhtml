@@ -1,0 +1,81 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 304</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_304"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 304</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_304">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_304">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 304 is used for several ROM cartridge conversions of Famicom Disk Systems for which, along with the entirely-different <a href="INES_Mapper_043.xhtml" title="INES Mapper 043">INES Mapper 043</a> and <a href="NES_2_0_Mapper_311.xhtml" title="NES 2.0 Mapper 311">NES 2.0 Mapper 311</a>, UNIF MAPR <b>UNL-SMB2J</b> is used.
+</p>
+<ul><li><i>Super Mario Bros. 2 (J)</i> (Whirlwind Manu LE10, <a rel="nofollow" class="external text" href="https://archive.org/details/youtube-M2-ovBQW978">hangs after completing level 4-4 on real hardware</a>)</li>
+<li><i>Volleyball (J)</i> (Whirlwind Manu LE08)</li>
+<li><i>Zanac (J)</i> (Whirlwind Manu LF11)</li></ul>
+<p>FCEUX' source code says that the PCB for both the CHR-ROM and CHR-RAM variants is named <i>09-034A</i>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Unknown_Registers_(%244042-%244055,_read)"><span class="tocnumber">2.1</span> <span class="toctext">Unknown Registers ($4042-$4055, read)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#PRG_Bank_Select_(%244027,_write)"><span class="tocnumber">2.2</span> <span class="toctext">PRG Bank Select ($4027, write)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#IRQ_Control_(%244068,_write)"><span class="tocnumber">2.3</span> <span class="toctext">IRQ Control ($4068, write)</span></a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: Switchable 8 KiB PRG-ROM bank (#4-#5)</li>
+<li>CPU $8000-$FFFF: Fixed 32 KiB PRG-ROM bank #0</li>
+<li>PPU $0000-$1FFF: Unbanked 8 KiB CHR-ROM or CHR-RAM.</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="Unknown_Registers_.28.244042-.244055.2C_read.29"/><span class="mw-headline" id="Unknown_Registers_($4042-$4055,_read)">Unknown Registers ($4042-$4055, read)</span></h2>
+<p>Reading from these addresses must return $FF rather than open bus, otherwise SMB2J will freeze.
+</p>
+<h2><span id="PRG_Bank_Select_.28.244027.2C_write.29"/><span class="mw-headline" id="PRG_Bank_Select_($4027,_write)">PRG Bank Select ($4027, write)</span></h2>
+<p>Mask: Unknown
+</p>
+<pre>Bit 7654 3210
+    ---------
+    .... ...B
+            +- 0: CPU $6000-$7FFF to 8 KiB bank #4
+               1: CPU $6000-$7FFF to 8 KiB bank #5
+</pre>
+<p>On games with only 32 KiB ROM, $6000-$7FFF will (as usual) wrap to banks #0 and #1.
+</p>
+<h2><span id="IRQ_Control_.28.244068.2C_write.29"/><span class="mw-headline" id="IRQ_Control_($4068,_write)">IRQ Control ($4068, write)</span></h2>
+<p>Mask: Unknown
+</p>
+<pre>Bit 7654 3210
+    ---------
+    .... ...I
+            +- 0: Disable and Acknowledge IRQ, and reset counter
+               1: Enable IRQ
+</pre>
+<p>According to <a rel="nofollow" class="external text" href="https://github.com/TASVideos/fceux/blob/master/src/boards/09-034a.cpp">FCEUX</a>, when enabled, IRQ counter increases on every M2 cycle until it reaches 5750, upon which an IRQ is fired. While this does work nicely with the ROM image of LE10, the <a rel="nofollow" class="external text" href="https://archive.org/details/youtube-M2-ovBQW978">hardware video recording</a> seems to indicate that the actual hardware does not have a functioning IRQ counter.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241122235339
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.013 seconds
+Real time usage: 0.018 seconds
+Preprocessor visited node count: 20/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:689-0!canonical and timestamp 20241122235339 and revision id 7785.
+ -->
+</div><p class="categories">Categories: <a href="Category_FDS_conversion_mappers.xhtml">FDS conversion mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

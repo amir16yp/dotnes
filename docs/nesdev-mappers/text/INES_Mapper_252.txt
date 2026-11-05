@@ -1,0 +1,11 @@
+INES Mapper 252
+
+INES Mapper 252
+
+iNES Mapper 252 is used for Waixing's Chinese localization of the Japanese Namcot game 三国志: 中原の覇者 (Sangokushi: Chūgen no Hasha). It uses a clone of the Konami VRC4, with the chip's A0 connected to CPU A2 and the chip's A1 connected to CPU A3 (VRC4e, Mapper 23 submapper 2). It has 8 KiB of PRG-RAM at CPU $6000-$7FFF, and 1 KiB CHR pages 6 and 7 are CHR-RAM.
+
+INES Mapper 253 is the same, except that it's 1 KiB CHR pages 4 and 5 that are CHR-RAM.
+
+Mappers 74, 192, 194, and 195, also used for Waixing's localizations, are similar but use an MMC3.
+
+Categories: INES Mappers, Mappers with cycle IRQs

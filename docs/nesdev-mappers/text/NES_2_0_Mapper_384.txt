@@ -1,0 +1,20 @@
+NES 2.0 Mapper 384
+
+NES 2.0 Mapper 384
+
+NES 2.0 Mapper 384 denotes the L1A16 circuit board, used on a 4-in-1 multicart containing Crisis Force, among other games. It uses a VRC4 clone in the VRC4e configuration (VRC4 A0=CPU A2, VRC4 A1=CPU A3) and has 2 KiB of WRAM, mirrored once, in the CPU $6000-$6FFF area. The outer bank register overlays this area and contains a Lock bit to prevent Crisis Force's WRAM writes from changing the outer bank.
+
+Outer Bank Register ($6800-$6FFF, write)
+
+Mask: $F800
+
+D~7654 3210
+  ---------
+  .... LbBB
+       ||++- PRG/CHR A17/A18 (128 KiB outer bank)
+       |+--- unused, but could be PRG/CHR A19 on a larger multicart
+       +---- 1: Lock outer bank
+
+Power-on value: $00
+
+Categories: Mappers with single-screen mirroring, Mappers with cycle IRQs, Multicart mappers

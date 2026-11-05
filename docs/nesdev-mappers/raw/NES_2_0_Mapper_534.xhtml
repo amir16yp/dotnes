@@ -1,0 +1,176 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 534</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_534"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 534</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_534">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_534">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES/NES 2.0 Mappers <b>126</b>, <b>422</b> and <b>534</b> denote circuit boards using the <a href="MMC3.xhtml" title="MMC3">MMC3</a>-based <b>TEC9719</b>, <b>ING003C</b> and <b>ING-022</b> ASICs. Four additional outer bank registers are provided at $6000-$7FFF for multicart use, overlaying WRAM. They can only be written to if the WRAM bit is enabled in the MMC3 ($A001=$80). Clearing the WRAM bit does <i>not</i> disable WRAM itself.
+</p><p>According to its datasheet, the ASIC can address up to 4 MiB of PRG ROM, while CHR ROM/RAM capacity is still limited to 256 KiB. Some cartridges mount more CHR ROM than that, repurposing higher PRG address lines as higher CHR address lines for that purpose. Mapper <b>126</b> differs from mappers <b>422</b> and <b>534</b> in which repurposed higher PRG address lines are used for which higher CHR address lines. This implies that in the absence of more than 256 KiB of CHR ROM or when using CHR RAM, mappers 126 and 422 are identical.
+</p><p>Mapper <b>534</b> differs from mappers <b>126</b> and <b>422</b> in the implementation of the MMC3's scanline counter. Mappers 126 and 422 implement it normally, while mapper <b>534</b> takes the <i>inverted</i> (XOR $FF) $C000 value (<b>ING-022</b> behavior).
+</p><p>A few circuit boards mount two PRG ROM chips and select between them outside of the normal addressing scheme. Two NES 2.0 Submappers denote this non-contiguous address space:
+</p>
+<ul><li><b>Submapper 1</b> uses PRG A21 as a chip select between two 1 MiB chips.</li>
+<li><b>Submapper 2</b> uses $6001 bit 2 as a chip select between two 1 MiB chips.</li></ul>
+<p>Two UNIF board names have been assigned that resemble mapper 422: <b>BMC-BS-400R</b> and <b>BMC-BS-4040R</b>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Outer_Bank/PRG_Mask_Register_(%246000,_write)"><span class="tocnumber">1</span> <span class="toctext">Outer Bank/PRG Mask Register ($6000, write)</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Miscellaneous_Register_(%246001,_write)"><span class="tocnumber">2</span> <span class="toctext">Miscellaneous Register ($6001, write)</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#8_KiB_CHR_Bank_Register_(%246002,_write)"><span class="tocnumber">3</span> <span class="toctext">8 KiB CHR Bank Register ($6002, write)</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Mode_Register_(%246003,_write)"><span class="tocnumber">4</span> <span class="toctext">Mode Register ($6003, write)</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Example_Cartridges"><span class="tocnumber">5</span> <span class="toctext">Example Cartridges</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#See_also"><span class="tocnumber">6</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span id="Outer_Bank.2FPRG_Mask_Register_.28.246000.2C_write.29"/><span class="mw-headline" id="Outer_Bank/PRG_Mask_Register_($6000,_write)">Outer Bank/PRG Mask Register ($6000, write)</span></h2>
+<pre>Mask: $E003, set to $00 on reset
+
+D~7654 3210
+  ---------
+  XYbB CPPp
+  |||| |||+- PRG A17 if Y=1
+  ||||-|++-- PRG A19..A18
+  ||++-|---- <b>Submapper 0</b>: PRG A21..A20
+  ||+|-|---- <b>Submapper 1</b>: PRG A20
+  ||||-+---- CHR A17 if X=1
+  ||++------ CHR A19,A18 (mappers 422/534), CHR A18,A19 (mapper 126)
+  |+-------- PRG A17 mode
+  |           0: PRG A17=MMC3 PRG A17 (256 KiB inner PRG bank)
+  |           1: PRG A17=p (128 KiB inner PRG bank)
+  +--------- CHR A17 mode
+              0: CHR A17=MMC3 CHR A17 (256 KiB inner CHR bank)
+              1: CHR A17=C (128 KiB inner CHR bank)
+</pre>
+<p>Bit 5 (b) is <i>inverted</i> before being output to the respective ASIC pin. Because the register is set to $00 on reset, this means that in the case of 4 MiB of PRG ROM, the cartridge boots in the second 2 MiB half. Older dumps do not take this inversion into account.
+</p>
+<h2><span id="Miscellaneous_Register_.28.246001.2C_write.29"/><span class="mw-headline" id="Miscellaneous_Register_($6001,_write)">Miscellaneous Register ($6001, write)</span></h2>
+<pre>Mask: $E003, set to $00 on reset
+
+D~7654 3210
+  ---------
+  .... .PEM
+        ||+- 0: PRG A0=CPU A0
+        ||   1: PRG A0=SL0 input (used for menu selection)
+        |+-- 0: MMC3 can only use V and H mirroring via $A000.0
+        |    1: MMC3 can also select single-screen mirroring via $A000.1
+        +--- <b>Submapper 2</b>: Select PRG chip 0 or 1
+</pre>
+<h2><span id="8_KiB_CHR_Bank_Register_.28.246002.2C_write.29"/><span class="mw-headline" id="8_KiB_CHR_Bank_Register_($6002,_write)">8 KiB CHR Bank Register ($6002, write)</span></h2>
+<pre>Mask: $E003, set to $00 on reset
+
+D~7654 3210
+  ---------
+  LGFE DCBA
+  |||| ++++- CHR A16..A13 in 8 KiB CHR mode
+  |||+------ Lock B bit
+  ||+------- Lock C bit
+  |+-------- Lock D bit
+  +--------- Lock GFE bits
+</pre>
+<h2><span id="Mode_Register_.28.246003.2C_write.29"/><span class="mw-headline" id="Mode_Register_($6003,_write)">Mode Register ($6003, write)</span></h2>
+<pre>Mask: $E003, set to $00 on reset
+
+D~7654 3210
+  ---------
+  L.M8 DCBA
+  | || ++++- PRG Banking Mode (see below)
+  | |+------ CHR Banking Mode
+  | |         0: Use MMC3 CHR banks
+  | |         1: Use 8 KiB CHR banks using register $6002
+  | +------- Nametable Mirroring Mode
+  |           0: MMC3, use register $A000
+  |           1: ANROM, use register $8000.6 bit 4
+  +--------- Lock registers $6000,$6001,$6003
+</pre>
+<p>The DCBA bits determine ...
+</p>
+<ol><li>what is being fed to the MMC3 clone's CPU A13 and A14 inputs when $8000-$FFFF is being written to, in order to replicate the UNROM/ANROM latch being reachable across the entire $8000-$FFFF address range;</li>
+<li>what is being fed to the MMC3 clone's CPU A13 and A14 inputs when $8000-$FFFF is being read from, in order to disable the MMC3's fixed banks in NROM and ANROM modes, or to obtain one switchable 16 KiB instead of two switchable 8 KiB banks in UNROM mode;</li>
+<li>how the MMC3 clone's PRG A17..A13 outputs are shifted to switch 16 or 32 KiB banks, instead of 8 KiB banks, in UNROM/ANROM modes;</li>
+<li>how the MMC3 clone's PRG A14..A13 outputs are substituted to create UNROM, ANROM, NROM-128 and NROM-256 modes.</li></ol>
+<p>In PRG Banking Modes $8-$F (bit D=1), CPU A0 is forced to 1 during writes to $8000-$FFFF, meaning that only the odd-numbered MMC3 registers are available. Furthermore, in modes D and F (bits D,C,A=1), CPU A13 and CPU A14 are forced to 0 during writes to $8000-$FFFF, meaning that any write actually goes to $8001, which after having set $8000 to 6 before, makes MMC3 register 6 serve as an UNROM/ANROM latch.
+</p><p>This results in the following modes:
+</p>
+<pre> PRG    PRG Bit Source                      Address
+ Mode#  A17    A16    A15    A14    A13     Range       Comment
+--------------------------------------------------------------------
+  0     R6.4   R6.3   R6.2   R6.1   R6.0    8000-9FFF   Regular MMC3
+        R7.4   R7.3   R7.2   R7.1   R7.0    A000-BFFF
+        =1     =1     =1     =1     CPUA13  C000-FFFF
+
+  1,2   R6.4   R6.3   R6.2   R6.1   CPUA13  8000-FFFF   NROM-128
+
+  3     R6.4   R6.3   R6.2   CPUA14 CPUA13  8000-FFFF   NROM-256 
+--------------------------------------------------------------------
+  C     R6.3   R6.2   R6.1   R6.1   R6.0    8000-9FFF   Nonsense
+        R7.3   R7.2   R7.1   R7.1   R7.0    A000-BFFF
+        =1     =1     =1     =1     CPUA13  C000-FFFF
+
+  D     R6.3   R6.2   R6.1   R6.0   CPUA13  8000-BFFF   UNROM
+        =1     =1     =1     =1     CPUA13  C000-FFFF
+
+  E     R6.2   R6.1   R6.0   R6.1   R6.0    8000-9FFF   Nonsense
+        R7.2   R7.1   R7.0   R7.1   R7.0    A000-BFFF
+        =1     =1     =1     =1     CPUA13  C000-FFFF
+
+  F     R6.2   R6.1   R6.0   CPUA14 CPUA13  8000-FFFF   ANROM
+--------------------------------------------------------------------
+  4-7   Same as 0-3
+  8-B   Same as C-F, but latch reachable only at $8000-$9FFF
+----------------------------------------------------------------
+</pre>
+<p>Note that PRG A17 is still subject to being substituted with register $6000 bit 0 if register $6000 bit 6=1.
+</p>
+<h2><span class="mw-headline" id="Example_Cartridges">Example Cartridges</span></h2>
+<ul><li>Mapper 126:
+<ul><li><i>Power Joy Classic TV Game 84-in-1 (PJ-008)</i></li>
+<li><i>Gamezone 118-in-1 (AT-207)</i></li></ul></li>
+<li>Mapper 422:
+<ul><li><i>(AB-099) 7-in-1</i></li>
+<li><i>(AB-199) AB 一簇 10-in-1</i></li>
+<li><i>(AB-239) 最新力作 Well 4-in-1</i></li>
+<li><i>(BL-4029) Well 4-in-1</i></li>
+<li><i>(GD-105) 9898-in-1</i></li>
+<li><i>(GD-106) 18-in-1</i></li>
+<li><i>(TL-8248) 6-in-1 Superstar Edition</i></li>
+<li><i>(V-76005) 76-in-1</i></li>
+<li><i>1998 4000000-in-1</i> (BS-400 PCB)</li>
+<li><i>3000000-in-1</i> (BS-300 PCB)</li>
+<li><i>700000-in-1</i> (BS-400 PCB)</li>
+<li><i>Double Dragon 530-in-1</i> (BS-4040 PCB)</li></ul></li>
+<li>Mapper 534:
+<ul><li><i>Atari Flashback Mini 7800</i></li>
+<li><i>TV Play Power - Intellivision 25-in-1</i></li>
+<li><i>2-in-1 数独/五子棋</i> (NJ064) by Shenzhen Nanjing</li>
+<li><i>18-in-1 Educational Computer</i> by Zhuhai S.E.Z. Liming Electronic Co. Ltd.</li>
+<li><i>8-in-1</i> (kk3311-kk3315) by Waixing</li>
+<li><i>101-in-1</i> (a variant of which uses <a href="INES_Mapper_045.xhtml" title="INES Mapper 045">INES Mapper 045</a>).</li></ul></li></ul>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?t=24629">Discussion and original data sheet</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123162721
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.021 seconds
+Real time usage: 0.026 seconds
+Preprocessor visited node count: 25/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:840-0!canonical and timestamp 20241123162721 and revision id 21452.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

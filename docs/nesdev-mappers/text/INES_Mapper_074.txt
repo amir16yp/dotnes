@@ -1,0 +1,25 @@
+INES Mapper 074
+
+INES Mapper 074
+
+iNES Mapper 074 denotes the 43-393/43-406/860908C PCB, used by several games from Waixing:
+
+機甲戰士 (Jījiǎ Zhànshì, Chinese translation of Data East's Metal Max)
+
+甲A - China Soccer League for Division A
+
+第四次: 机器人大战 - Robot War IV
+
+風雲 - Traitor Legend (original 1997 version)
+
+The circuit board mounts an MMC3 clone together with a 74LS138 and 74LS139 to redirect 1 KiB CHR-ROM banks #8 and #9 to 2 KiB of CHR-RAM.
+
+Notes
+
+SMYNES and older versions of VirtuaNES EX/Plus use mapper 74 to denote any MMC3-based mixed CHR-ROM/CHR-RAM game by simply making all of CHR-ROM writable, even if those games actually use 191, 192, 194, or 195. This approach fails in the case of 甲A - China Soccer League for Division A, as the game writes all zeros to whatever CHR-ROM banks are mapped at power-on, overwriting CHR-ROM data in the process. As a result, the publicly available dump of that game (PRG-ROM CRC32 0x78FB3ED6) has been modified to remove those writes.
+
+Nestopia emulates all of Waixing's MMC3 clones with a slight variation on the mirroring control register at $A000, additionally treating a written value of 2 or 3 as 1scA and 1scB mirroring respectively.
+
+iNES Mapper 119 is Nintendo's first-party analog. Mappers 252 and 253, also used for Waixing's localizations, are similar but use a VRC4.
+
+Categories: Mappers with scanline IRQs, INES Mappers, MMC3 with CHR ROM and CHR RAM

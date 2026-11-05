@@ -1,0 +1,31 @@
+NES 2.0 Mapper 521
+
+NES 2.0 Mapper 521
+
+NES 2.0 Mapper 521 is used for 장두진 바둑교실: 입문편, commonly known as Korean Igo. Its UNIF board name is DREAMTECH01, without prefix.
+
+Banks
+
+CPU $8000-$BFFF: 16 KiB switchable PRG-ROM bank
+
+CPU $C000-$FFFF: 16 KiB fixed PRG-ROM bank (last bank in ROM file)
+
+PPU $0000-$1FFF: 8 KiB of unbanked CHR-RAM.
+
+Mirroring is hard-wired.
+
+Since the fixed PRG-ROM bank comes from a separate PRG-ROM chip, the ROM file can have a non-power-of-two size.
+
+Bank Register ($5020, write)
+
+Mask: $F030
+D~[.... BBBB]
+        ++++- PRG A18..14 when CPU A14=0
+
+Note that writes to $5030 are ignored.
+
+See also
+
+PCB images and circuit diagram
+
+Categories: Mappers with CHR RAM

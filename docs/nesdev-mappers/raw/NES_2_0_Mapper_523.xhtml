@@ -1,0 +1,52 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 523</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_523"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 523</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_523">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_523">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 523 is used for the 晶科泰 (Jncota) re-release of the game 封神榜: 伏魔三太子 (Fēngshénbǎng: Fúmó Sān Tàizǐ), originally released by C&amp;E on <a href="INES_Mapper_246.xhtml" title="INES Mapper 246">INES Mapper 246</a>. It is basically identical to the <a href="INES_Mapper_176.xhtml" title="INES Mapper 176">Waixing FS005</a> board, except that ...
+</p>
+<ul><li>Mirroring is hard-wired (to Horizontal in Fēngshénbǎng's case),</li>
+<li>CHR-ROM A10 is directly connected to PPU A10,</li>
+<li>CHR-ROM A11-A18 are connected to the MMC3 clone's CHR A10-A17 outputs,</li>
+<li>the MMC3 clone's PPU A10 input is connected to Ground.</li></ul>
+<p>With the MMC3 clone set to <a href="INES_Mapper_176.xhtml#MMC3-compatible_registers_(%248000/%248001,_%24A000,_%24C000/%24C001,_%24E000/%24E001)" title="INES Mapper 176">Extended MMC3 Mode</a>, the bank registers at $8000 therefore change from their normal to the following meanings:
+</p>
+<pre>$0: Select 2 KiB CHR bank at PPU $0000-$07FF (or $1000-$17FF)
+$1: Select 2 KiB CHR bank at PPU $0800-$0FFF (or $1800-$1FFF)
+$2: Select 2 KiB CHR bank at PPU $1000-$17FF (or $0000-$07FF)
+$3: No function
+$4: Select 2 KiB CHR bank at PPU $1800-$1FFF (or $0800-$0FFF)
+$5: No function
+$6: Select 8 KiB PRG ROM bank at $8000-$9FFF (or $C000-$DFFF)
+$7: Select 8 KiB PRG ROM bank at $A000-$BFFF
+$8: Select 8 KiB PRG ROM bank at $C000-$DFFF (or $8000-$9FFF)
+$9: Select 8 KiB PRG ROM bank at $E000-$FFFF
+$A: No function
+$B: No function
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123150136
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.013 seconds
+Preprocessor visited node count: 1/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 1/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:829-0!canonical and timestamp 20241123150136 and revision id 8114.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

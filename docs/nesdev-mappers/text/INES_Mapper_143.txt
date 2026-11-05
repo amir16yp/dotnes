@@ -1,0 +1,22 @@
+INES Mapper 143
+
+INES Mapper 143
+
+iNES Mapper 143 denotes an NROM circuit board with a simple form of protection:
+
+Dancing Blocks
+
+Magical Mathematics (NTSC version only)
+
+The functional description is consistent with a 74138 and a 74368.
+
+Reads from these addresses produce this output:
+
+A:[010. ...1 ..DD DDDD] -> [xxii iiii]
+               || ||||      |||| ||||
+               ++-++++------||++-++++-- reads provide the logical inversion of DDDDDD in the bits iiiiii
+                            ++--------- open bus
+
+Nestopia additionally implies that at least Dancing Blocks relies extensively on the values of uninitialized memory, and so manually sets the emulated console's 2K of internal RAM to a different pattern than Nestopia's default.
+
+http://cah4e3.shedevr.org.ru/%5Blst%5D-sachen-mappers.txt

@@ -1,0 +1,7 @@
+INES Mapper 039
+
+INES Mapper 039
+
+Nestopia's and MESS's source claims that iNES Mapper 039 is assigned to Subor's “Study & Game 32-in-1”. But what they implement looks identical to oversize BNROM fully supported with iNES Mapper 241.
+
+Categories: INES Mappers

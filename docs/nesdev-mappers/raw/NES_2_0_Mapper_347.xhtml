@@ -1,0 +1,86 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 347</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_347"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 347</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_347">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_347">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 347 is used for Kaiser's cartridge conversion of the Famicom Disk System game <i>Yume Koujou: Doki Doki Panic</i>. Its UNIF board name is <b>UNL-KS7030</b>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#PRG-ROM_Bank_Select_#1/Mirroring_Select_(%248000-%248FFF,_write)"><span class="tocnumber">2.1</span> <span class="toctext">PRG-ROM Bank Select #1/Mirroring Select ($8000-$8FFF, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#PRG-ROM_Bank_Select_#2_(%249000-%249FFF,_write)"><span class="tocnumber">2.2</span> <span class="toctext">PRG-ROM Bank Select #2 ($9000-$9FFF, write)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#Notes"><span class="tocnumber">3</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<p>A typical example of a board designed to accomodate a single (converted) FDS game while using only 8 KiB of PRG-RAM, its memory map is quite complicated.
+</p>
+<ul><li>CPU $6000-$6BFF: 3 KiB PRG-RAM bank</li>
+<li>CPU $6C00-$6FFF: 1 KiB PRG-ROM bank, selected by register at $9000</li>
+<li>CPU $7000-$7FFF: 4 KiB PRG-ROM bank, selected by register at $8000</li>
+<li>CPU $8000-$B7FF: 14 KiB PRG-ROM bank, hard-wired</li>
+<li>CPU $B800-$BFFF: 2 KiB PRG-RAM bank</li>
+<li>CPU $C000-$CBFF: 3 KiB PRG-ROM bank, selected by register at $9000</li>
+<li>CPU $CC00-$D7FF: 3 KiB PRG-RAM bank</li>
+<li>CPU $D800-$FFFF: 10 KiB PRG-ROM bank, hard-wired</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="PRG-ROM_Bank_Select_.231.2FMirroring_Select_.28.248000-.248FFF.2C_write.29"/><span class="mw-headline" id="PRG-ROM_Bank_Select_#1/Mirroring_Select_($8000-$8FFF,_write)">PRG-ROM Bank Select #1/Mirroring Select ($8000-$8FFF, write)</span></h2>
+<pre>A~FEDC BA98 7654 3210
+  -------------------
+  1000 .... .... MBBB
+                 |+++- Select 4 KiB PRG-ROM bank at CPU $7000-$7FFF
+                 +---- Select nametable mirroring type
+                        0: Vertical
+                        1: Horizontal
+</pre>
+<h2><span id="PRG-ROM_Bank_Select_.232_.28.249000-.249FFF.2C_write.29"/><span class="mw-headline" id="PRG-ROM_Bank_Select_#2_($9000-$9FFF,_write)">PRG-ROM Bank Select #2 ($9000-$9FFF, write)</span></h2>
+<pre>A~FEDC BA98 7654 3210
+  -------------------
+  1001 .... .... BBBB
+                 ++++- Select 4 KiB PRG-ROM bank,
+                       the first 3 KiB of which mapped to CPU $C000-$CBFF,
+                       the second 1 KiB of which mapped to CPU $6C00-$6FFF
+</pre>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>As the <a rel="nofollow" class="external text" href="https://github.com/OpenEmu/FCEU-Core/blob/master/src/boards/ks7030.cpp">FCEUX</a> source code comment indicates, the actual bank order in the 128 KiB mask ROM was unknown until July 2020. Emulators expected the ROM image to be laid out like this:
+<ul><li>the first 32 KiB to contain the eight banks selected by register $8000 mapped to $7000-$7FFF;</li>
+<li>the next 64 KiB to contain the sixteen banks selected by register $9000, with the first 1 KiB mapped to CPU $6C00-$6FFF and the second 3 KiB mapped to CPU $C000-$CBFF;</li>
+<li>the final 32 KiB mapped to CPU $8000-$FFFF except where replaced by RAM and the switchable PRG-ROM bank.</li></ul></li>
+<li>The actual mask ROM layout is as follows:
+<ul><li>the first 64 KiB contain the sixteen banks selected by register $9000, with the first 3 KiB mapped to CPU $C000-$CBFF and the second 1 KiB mapped to CPU $6C00-$6FFF;</li>
+<li>the next 32 KiB contain the eight banks selected by register $8000 mapped to $7000-$7FFF;</li>
+<li>the final 32 KiB mapped to CPU $8000-$FFFF except where replaced by RAM and the switchable PRG-ROM bank.</li></ul></li>
+<li>The conversion retains all writes to the FDS sound channel registers, so an emulator could provide the expansion sound channel even though the original Kaiser cartridge did not.</li>
+<li>A different cartridge conversion of the same game is described by <a href="INES_Mapper_103.xhtml" title="INES Mapper 103">INES Mapper 103</a>. Its memory map is simpler, at the cost of requiring 16 KiB of WRAM instead of just 8 KiB.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123000302
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.010 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 18/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:732-0!canonical and timestamp 20241123000302 and revision id 7902.
+ -->
+</div><p class="categories">Categories: <a href="Category_FDS_conversion_mappers.xhtml">FDS conversion mappers</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a></p></div></body></html>

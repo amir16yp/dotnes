@@ -1,0 +1,5 @@
+INES Mapper 251
+
+INES Mapper 251
+
+iNES Mapper 251 appears to be a Nestopia assignment which duplicates iNES Mapper 45. Mapper 45 should be used.

@@ -1,0 +1,433 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 018</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_018"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 018</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_018">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_018">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><div class="infobox">
+<div style="text-align: center"><b>SS 88006</b>
+</div>
+<table class="oddf0">
+
+<tbody><tr>
+<td><b>Company</b>
+</td>
+<td>Jaleco
+</td></tr>
+<tr>
+<td><b>Games</b>
+</td>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/search/advanced?ines=18">15 in NesCartDB</a>
+</td></tr>
+<tr>
+<td><b>Complexity</b>
+</td>
+<td>ASIC
+</td></tr>
+<tr>
+<td><b>Boards</b>
+</td>
+<td>JF-24, others
+</td></tr>
+<tr>
+<td><b>Pinout</b>
+</td>
+<td><a href="Jaleco_SS_88006_pinout.xhtml" title="Jaleco SS 88006 pinout">Jaleco SS 88006 pinout</a>
+</td></tr>
+<tr>
+<td><b>PRG ROM capacity</b>
+</td>
+<td>512K
+</td></tr>
+<tr>
+<td><b>PRG ROM window</b>
+</td>
+<td>8K + 8K + 8K + 8K fixed
+</td></tr>
+<tr>
+<td><b>PRG RAM capacity</b>
+</td>
+<td>8K
+</td></tr>
+<tr>
+<td><b>PRG RAM window</b>
+</td>
+<td>8K
+</td></tr>
+<tr>
+<td><b>CHR capacity</b>
+</td>
+<td>256K
+</td></tr>
+<tr>
+<td><b>CHR window</b>
+</td>
+<td>1Kx8
+</td></tr>
+<tr>
+<td><b>Nametable <a href="Mirroring.xhtml" title="Mirroring">mirroring</a></b>
+</td>
+<td>H, V, or 1, switchable
+</td></tr>
+<tr>
+<td><b><a href="Bus_conflict.xhtml" title="Bus conflict">Bus conflicts</a></b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>IRQ</b>
+</td>
+<td>Yes
+</td></tr>
+<tr>
+<td><b>Audio</b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>iNES <a href="Mapper.xhtml" title="Mapper">mappers</a></b>
+</td>
+<td><a class="mw-selflink selflink">018</a>
+</td></tr></tbody></table>
+</div>
+<div class="infobox">
+<div style="text-align: center"><b>NESCartDB</b></div>
+<table class="oddf0">
+
+<tbody><tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/search/advanced?ines=18">iNES 018</a>
+</td></tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</tbody></table>
+</div>
+<p><b>iNES Mapper 018</b> represents the <a href="Jaleco_SS_88006_pinout.xhtml" title="Jaleco SS 88006 pinout">Jaleco SS 88006 mapper</a> used for <i>Magic John</i> (Japanese version of <i>Totally Rad</i>) and about a dozen other games.
+</p><p>This mapper is connected only to A12-A14, A0-A1, and D0-D3, so the PRG bank and CHR bank numbers are split over two sequential addresses.  Bits 0-3 are in the lower address of a pair (e.g. $xxx0 or $xxx2), and bits 4-7 are in the next higher address.
+</p><p>This mapper resembles a scrambled <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">VRC4</a>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#PRG_Select_0_low(%248000),_high(%248001)"><span class="tocnumber">2.1</span> <span class="toctext">PRG Select 0 low($8000), high($8001)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#PRG_Select_1_and_2_(%248002-%249FFD)"><span class="tocnumber">2.2</span> <span class="toctext">PRG Select 1 and 2 ($8002-$9FFD)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#PRG_RAM_protect_(%249002)"><span class="tocnumber">2.3</span> <span class="toctext">PRG RAM protect ($9002)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#CHR_Select_0_low(%24A000),_high(%24A001)"><span class="tocnumber">2.4</span> <span class="toctext">CHR Select 0 low($A000), high($A001)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#CHR_Selects_1%E2%80%A67_(%24A002-%24DFFF)"><span class="tocnumber">2.5</span> <span class="toctext">CHR Selects 1…7 ($A002-$DFFF)</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#IRQ_reload_value_(%24E000-%24EFFF)"><span class="tocnumber">2.6</span> <span class="toctext">IRQ reload value ($E000-$EFFF)</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#IRQ_reload_(%24F000-%24FFFC)"><span class="tocnumber">2.7</span> <span class="toctext">IRQ reload ($F000-$FFFC)</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#IRQ_counter_size_(%24F001-%24FFFD)"><span class="tocnumber">2.8</span> <span class="toctext">IRQ counter size ($F001-$FFFD)</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Mirroring_Control_(%24F002-%24FFFE)"><span class="tocnumber">2.9</span> <span class="toctext">Mirroring Control ($F002-$FFFE)</span></a></li>
+<li class="toclevel-2 tocsection-12"><a href="#Expansion_sound_(%24F003-%24FFFF)"><span class="tocnumber">2.10</span> <span class="toctext">Expansion sound ($F003-$FFFF)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-13"><a href="#Disch's_Notes"><span class="tocnumber">3</span> <span class="toctext">Disch's Notes</span></a></li>
+<li class="toclevel-1 tocsection-14"><a href="#See_also"><span class="tocnumber">4</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>CPU $6000-$7FFF: 8 KB PRG RAM bank (optional)</li>
+<li>CPU $8000-$9FFF: 8 KB switchable PRG ROM bank</li>
+<li>CPU $A000-$BFFF: 8 KB switchable PRG ROM bank</li>
+<li>CPU $C000-$DFFF: 8 KB switchable PRG ROM bank</li>
+<li>CPU $E000-$FFFF: 8 KB PRG ROM bank, fixed to the last bank</li>
+<li>PPU $0000-$03FF: 1 KiB switchable CHR bank</li>
+<li>PPU $0400-$07FF: 1 KiB switchable CHR bank</li>
+<li>PPU $0800-$0BFF: 1 KiB switchable CHR bank</li>
+<li>PPU $0C00-$0FFF: 1 KiB switchable CHR bank</li>
+<li>PPU $1000-$13FF: 1 KiB switchable CHR bank</li>
+<li>PPU $1400-$17FF: 1 KiB switchable CHR bank</li>
+<li>PPU $1800-$1BFF: 1 KiB switchable CHR bank</li>
+<li>PPU $1C00-$1FFF: 1 KiB switchable CHR bank</li></ul>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<h3><span id="PRG_Select_0_low.28.248000.29.2C_high.28.248001.29"/><span class="mw-headline" id="PRG_Select_0_low($8000),_high($8001)">PRG Select 0 low($8000), high($8001)</span></h3>
+<pre>  $8000        $8001
+7  bit  0    7  bit  0
+---------    ---------
+.... LLLL    .... ..HH
+     ||||           ||
+     ||||           ++- High 2 bits of 8 KiB PRG bank at CPU $8000
+     ++++-------------- Low 4 bits
+</pre>
+<h3><span id="PRG_Select_1_and_2_.28.248002-.249FFD.29"/><span class="mw-headline" id="PRG_Select_1_and_2_($8002-$9FFD)">PRG Select 1 and 2 ($8002-$9FFD)</span></h3>
+<p>The other two PRG bank selects continue similarly:
+</p>
+<table class="wikitable">
+<tbody><tr>
+<th colspan="2">Write to CPU address
+</th>
+<th rowspan="2">8KB PRG bank affected
+</th></tr>
+<tr>
+<th>(low 4 bits)</th>
+<th>(high 2 bits)
+</th></tr>
+<tr>
+<td>$8002</td>
+<td>$8003</td>
+<td>$A000-$BFFF
+</td></tr>
+<tr>
+<td>$9000</td>
+<td>$9001</td>
+<td>$C000-$DFFF
+</td></tr></tbody></table>
+<h3><span id="PRG_RAM_protect_.28.249002.29"/><span class="mw-headline" id="PRG_RAM_protect_($9002)">PRG RAM protect ($9002)</span></h3>
+<pre>7  bit  0
+---------
+.... ..WR
+       ||
+       |+- PRG RAM chip enable (0: disable; 1: enable) (same as MMC3)
+       +-- Write protection (0: deny writes; 1: allow writes) (opposite MMC3)
+</pre>
+<h3><span id="CHR_Select_0_low.28.24A000.29.2C_high.28.24A001.29"/><span class="mw-headline" id="CHR_Select_0_low($A000),_high($A001)">CHR Select 0 low($A000), high($A001)</span></h3>
+<pre>  $A000        $A001
+7  bit  0    7  bit  0
+---------    ---------
+.... LLLL    .... HHHH
+     ||||         ||||
+     ||||         ++++- High 4 bits of 1 KiB CHR bank at PPU $0000
+     ++++-------------- Low 4 bits
+</pre>
+<h3><span id="CHR_Selects_1.E2.80.A67_.28.24A002-.24DFFF.29"/><span class="mw-headline" id="CHR_Selects_1…7_($A002-$DFFF)">CHR Selects 1…7 ($A002-$DFFF)</span></h3>
+<p>The other seven CHR bank selects continue similarly:
+</p>
+<table class="wikitable">
+<tbody><tr>
+<th colspan="2">Write to CPU address
+</th>
+<th rowspan="2">1KB CHR bank affected
+</th></tr>
+<tr>
+<th>(low 4 bits)</th>
+<th>(high 4 bits)
+</th></tr>
+<tr>
+<td>$A002</td>
+<td>$A003</td>
+<td>$0400-$07FF
+</td></tr>
+<tr>
+<td>$B000</td>
+<td>$B001</td>
+<td>$0800-$0BFF
+</td></tr>
+<tr>
+<td>$B002</td>
+<td>$B003</td>
+<td>$0C00-$0FFF
+</td></tr>
+<tr>
+<td>$C000</td>
+<td>$C001</td>
+<td>$1000-$13FF
+</td></tr>
+<tr>
+<td>$C002</td>
+<td>$C003</td>
+<td>$1400-$17FF
+</td></tr>
+<tr>
+<td>$D000</td>
+<td>$D001</td>
+<td>$1800-$1BFF
+</td></tr>
+<tr>
+<td>$D002</td>
+<td>$D003</td>
+<td>$1C00-$1FFF
+</td></tr></tbody></table>
+<h3><span id="IRQ_reload_value_.28.24E000-.24EFFF.29"/><span class="mw-headline" id="IRQ_reload_value_($E000-$EFFF)">IRQ reload value ($E000-$EFFF)</span></h3>
+<p>The four registers here represent a 16-bit reload value, split into four four-bit numbers, least significant four bits first.
+</p>
+<h3><span id="IRQ_reload_.28.24F000-.24FFFC.29"/><span class="mw-headline" id="IRQ_reload_($F000-$FFFC)">IRQ reload ($F000-$FFFC)</span></h3>
+<p>Any write to this register will immediately reload the IRQ counter from the above reload value and acknowledge the IRQ.
+</p>
+<h3><span id="IRQ_counter_size_.28.24F001-.24FFFD.29"/><span class="mw-headline" id="IRQ_counter_size_($F001-$FFFD)">IRQ counter size ($F001-$FFFD)</span></h3>
+<pre>7  bit  0
+---------
+.... FETC
+     ||||
+     |||+- 1: Enable counting 
+     ||+-- 1: Don't propagate counter borrow to bit 12; instead assert IRQ
+     |+--- 1: Don't propagate counter borrow to bit 8; instead assert IRQ
+     +---- 1: Don't propagate counter borrow to bit 4; instead assert IRQ
+</pre>
+<p>F overrides E overrides T. If none are set, the counter is 16 bits wide.
+</p><p>Writes to this register also acknowledge the IRQ.
+</p><p>When enabled, the counter counts down.
+</p>
+<h3><span id="Mirroring_Control_.28.24F002-.24FFFE.29"/><span class="mw-headline" id="Mirroring_Control_($F002-$FFFE)">Mirroring Control ($F002-$FFFE)</span></h3>
+<pre>7  bit  0
+---------
+.... ..MM
+       ||
+       ++-- 0: Horizontal (A11)
+            1: Vertical (A10)
+            2: 1scA (Ground)
+            3: 1scB (Vcc)
+</pre>
+<h3><span id="Expansion_sound_.28.24F003-.24FFFF.29"/><span class="mw-headline" id="Expansion_sound_($F003-$FFFF)">Expansion sound ($F003-$FFFF)</span></h3>
+<p>Some games also have a µPD7755C or µPD7756C ADPCM sound IC. If so,
+</p>
+<pre>7  bit  0
+---------
+NNNN NNRS
+|||| ||||
+|||| |||+-- 1: Assert (drive low) RESET on the ADPCM sound IC. 0: deassert (drive high)
+|||| ||+--- 1: Assert START on the ADPCM sound IC. 0: deassert
+++++-++---- Which sample to start, if START becomes asserted while RESET is deasserted.
+            
+</pre>
+<p>This is the same audio playback IC used in other Jaleco mappers, with the same timing constraints. 
+RESET must be asserted for at least 34 cycles to be assured of stopping playback. 
+START must be de-asserted before the sample finishes playback, or else a random sample (depending on the current contents of the data bus) will start playing.
+START will be ignored until 23 cycles after RESET is deasserted.
+</p>
+<h2><span id="Disch.27s_Notes"/><span class="mw-headline" id="Disch's_Notes">Disch's Notes</span></h2>
+<pre> Here are Disch's original notes:
+ ========================
+ =  Mapper 018          =
+ ========================
+ 
+ 
+ Example Games:
+ --------------------------
+ The Lord of King
+ Magic John
+ Pizza Pop
+ 
+ 
+ Registers:
+ ---------------------------
+ 
+ Range,Mask:   $8000-FFFF, $F003
+ 
+   $800x,$900x:  [.... PPPP]  PRG Regs
+   $A00x-$D00x:  [.... CCCC]  CHR Regs
+   $E00x:  [.... IIII]  IRQ Reload value
+   $F000:  [.... ....]  IRQ Reset
+   $F001:  [.... SSSE]  IRQ Control
+      S = Size of IRQ counter
+      E = Enable
+ 
+   $F002:  [.... ..MM]  Mirroring
+      %00 = Horz
+      %01 = Vert
+      %10 = 1ScA
+      %11 = 1ScB
+ 
+ 
+ CHR Setup:
+ ---------------------------
+ 
+ Only low 4 bits of written value significant [.... CCCC]
+ 
+ 2 regs combined to get an 8-bit page number
+ 
+ $x000 or $x002 are the low 4 bits
+ $x001 or $x003 are the high 4 bits
+ 
+ 
+       $0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
+     +-------+-------+-------+-------+-------+-------+-------+-------+
+     |$A000+1|$A002+3|$B000+1|$B002+3|$C000+1|$C002+3|$D000+1|$D002+3|
+     +-------+-------+-------+-------+-------+-------+-------+-------+
+ 
+ 
+ PRG Setup:
+ ---------------------------
+ 
+ Same as CHR, $x000 low, $x001 high
+ 
+       $8000   $A000   $C000   $E000 
+     +-------+-------+-------+-------+
+     |$8000+1|$8002+3|$9000+1| { -1} |
+     +-------+-------+-------+-------+
+ 
+ 
+ IRQ:
+ ---------------------------
+ 
+ 16-bit IRQ Reload value is set via regs $E00x.  $E000 sets the low 4 bits, $E003 sets the high 4 bits.
+ 
+ When enabled, the IRQ counter counts down every CPU cycle.  When it wraps, an IRQ is generated.
+ 
+ The 'S' bits in the control reg determine the size of the IRQ counter.  It can be 4, 8, 12, or 16 bits wide:
+ 
+   %000 = 16 bits wide
+   %001 = 12 bits wide
+   %01x = 8 bits wide
+   %1xx = 4 bits wide
+ 
+ If the counter is less than 16 bits, the high bits are not altered by IRQ counter clocking; they retain their
+ value.
+ 
+ Example:  if the IRQ counter contains $1232, and is in 4-bit mode, it counts like so:
+ 
+   $1232
+   $1231
+   $1230
+   $123F  &lt;--- IRQ here
+   $123E
+    ...
+ 
+ 
+ Any write to the reset reg ($F000) will copy the 16-bit reload value into the IRQ counter (full 16 bits are
+ copied, regardless of current 'S' value).
+ 
+ Any write to $F000 or $F001 will acknowledge the IRQ.
+</pre>
+<p><br/>
+</p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="http://www.romhacking.net/documents/362/">NES mapper list</a> by Disch</li>
+<li><a rel="nofollow" class="external text" href="http://nesdev.org/mappers.zip">Comprehensive NES Mapper Document</a> by \Firebug\, information about mapper's initial state is inaccurate.</li>
+<li>Sound IC D7756 <a rel="nofollow" class="external text" href="http://www.cpu-world.com/Support/7/77.html">description</a> and <a rel="nofollow" class="external text" href="http://bootgod.dyndns.org:7777/downloads/UPD7755_UPD7756_UPD7757_UPD7758.pdf">datasheet</a></li>
+<li>Sound IC BBS topics <a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?t=762">762</a> and <a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?p=32572#p32572">4030</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123084809
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.069 seconds
+Real time usage: 0.086 seconds
+Preprocessor visited node count: 263/1000000
+Post‐expand include size: 1493/2097152 bytes
+Template argument size: 261/2097152 bytes
+Highest expansion depth: 10/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%   38.153      1 -total
+ 68.80%   26.250      1 Template:Nesdbbox
+ 39.78%   15.177      1 Template:Nesdblink
+ 30.52%   11.646      1 Template:Infobox_iNES_mapper
+ 25.50%    9.730      3 Template:Strip_whitespace
+ 12.53%    4.781      3 Template:Strip_whitespace/1
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:301-0!canonical and timestamp 20241123084809 and revision id 3918.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_In_NesCartDB.xhtml">In NesCartDB</a>, <a href="Category_Expansion_audio.xhtml">Expansion audio</a>, <a href="Category_ASIC_mappers.xhtml">ASIC mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

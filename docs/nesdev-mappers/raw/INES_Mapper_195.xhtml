@@ -1,0 +1,67 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 195</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_195"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 195</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_195">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_195">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><a class="mw-selflink selflink">iNES Mapper 195</a> describes Waixing's <b>FS303</b> PCB, which has an MMC3 clone and a GAL that can dynamically change which CHR banks are mapped to RAM. Used by the following games:
+</p>
+<ul><li><i>哥伦布传 - 黄金中文版</i>: Waixing's Chinese translation of Tomy's <i>Columbus - Ougon no Yoake</i>, original release only (PRG-ROM CRC32 0xE4E842D0)</li>
+<li><i>天使之翼 2</i>, <i>足球小将</i>: Waixing's Chinese translation of Tecmo's <i>Captain Tsubasa Vol. II: Super Strike</i></li>
+<li><i>赌神 - Numen Wager</i>, <i>赌王 - Moses Wager</i>, <i>洛克人 X</i>: Waixing's Chinese translation of Technos' <i>Sugoro Quest: Dice no Senshi-tachi</i></li></ul>
+<p>A compatible circuit board (with unknown PCB code) adds 4 KiB of non-battery-backed PRG-RAM (recognizable as such in the NES 2.0 header) mapped to CPU $5000-$5FFF:
+</p>
+<ul><li><i>天神之剑</i>: Waixing's Chinese translation of SNK's <i>God Slayer</i>/<i>Crystalis</i>.</li></ul>
+<p><br/>
+The games write, via the PPU, to specific CHR banks in order to select both which and how many CHR banks are mapped to RAM instead of ROM. Writes to CHR ROM in multiples of 1 KiB:
+</p>
+<pre>CHRB~[1Z.D L.L.]
+      || | | |
+      |+-|-+-+---------------- Select first bank and size of CHR RAM:
+      || |                      $80 = $28-$2B
+      || |                      $82 = $00-$03
+      || |                      $88 = $4C-$4F
+      || |                      $8A = $64-$67
+      || |                      $C0 = $46-$47
+      || |                      $C2 = $7C-$7D
+      || |                      $C8 = $0A-$0B
+      || |                      $CA = only CHR ROM
+      || +-------------------- If 1, ignore above and always enable CHR ROM / disable CHR RAM
+      |+---------------------- Number of banks of CHR RAM, 0=4KiB, 1=2KiB
+      +----------------------- Must be 1 
+Power-on value: $80
+</pre>
+<p>The PCB mounts 32 KiB of CHR-RAM, although address lines for only 8 KiB are connected. Since CHR A10-A12 are connected to CHR-RAM just as they are connected to CHR-ROM, setting $80 ($28-$2B) will select different 4 KiB of CHR-RAM from setting $88 ($4C-$4F), but the same 4 KiB as setting $82 ($00-$03), because CHR A13 is not connected to CHR-RAM.
+</p><p>Notes:
+</p>
+<ul><li>The more common ROM image of the Chinese translation of <i>Columbus</i> (PRG-ROM CRC32 0xBFF2E9EC) is actually from a 2006 re-release of the game that uses <a href="INES_Mapper_176.xhtml" title="INES Mapper 176">INES Mapper 176</a> instead, recognizable by the values it writes to $A001.</li>
+<li>The common ROM images of the Chinese translation of <i>Captain Tsubasa II</i> have been hacked to work with a fixed setting of $82 ($00-$03) and can be identified by having the bytes at 60 EA EA EA at .NES file offset $41CC.</li>
+<li>The game <i>風雲 - Traitor Legend</i> is commonly set to mapper 195. The ROM images to which this applies (PRG-ROM CRC32 0xA9B36A7D/0xC7E3F93A) are actually from 2005/2006 re-releases of the game that use <a href="INES_Mapper_176.xhtml" title="INES Mapper 176">INES Mapper 176</a>, recognizable by the values they write to $A001. The original 1997 release of the game used <a href="INES_Mapper_074.xhtml" title="INES Mapper 074">INES Mapper 074</a> instead.</li></ul>
+<p>Mappers <a href="INES_Mapper_252.xhtml" title="INES Mapper 252">252</a> and <a href="INES_Mapper_253.xhtml" title="INES Mapper 253">253</a>, also used for Waixing's localizations, are similar but use a VRC4.
+</p><p>See also: <a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?p=240335#p240335">NewRisingSun's findings</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123062924
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.008 seconds
+Real time usage: 0.012 seconds
+Preprocessor visited node count: 2/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:479-0!canonical and timestamp 20241123062924 and revision id 21455.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_MMC3_with_CHR_ROM_and_CHR_RAM.xhtml">MMC3 with CHR ROM and CHR RAM</a></p></div></body></html>

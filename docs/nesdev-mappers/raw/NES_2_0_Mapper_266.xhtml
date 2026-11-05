@@ -1,0 +1,92 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 266</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_266"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 266</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_266">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_266">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 266</b> is used by <i>City Fighter IV</i>, a hack of <i>Master Fighter II</i> that adds (very grungy) PCM speech output. Given that its resolution (four bits) is worse than the NES/Famicom's own DAC at $4011 (seven bits), it's not immediately obvious what the purpose of including its own DAC is, other than perhaps the possibility of low-pass filtering the 3.5 kHz-sampled PCM data on the circuit board. Its UNIF board name is <b>UNL-CITYFIGHT</b>.
+</p><p>The circuit board mounts a <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">VRC4</a> clone (A2/A3) with two of its higher CPU address lines mixed up:
+</p>
+<pre>CPU A3  -&gt; VRC4 CPU Ax (pin 03)
+CPU A2  -&gt; VRC4 CPU Ay (pin 04)
+CPU A13 -&gt; VRC4 CPU A14 (pin 02)
+CPU A14 -&gt; VRC4 CPU A13 (pin 01)
+</pre>
+<p>... and two additional registers that are selected via the VRC4 /WR9003 pin, e.g. by writing to $900C, and distinguished via CPU A11 ($0800). This results in the following effective registers:
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Mirroring_Control_(%249000)"><span class="tocnumber">1</span> <span class="toctext">Mirroring Control ($9000)</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#PRG_Select_(%24900C)"><span class="tocnumber">2</span> <span class="toctext">PRG Select ($900C)</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#DAC_Output_(%24980C)"><span class="tocnumber">3</span> <span class="toctext">DAC Output ($980C)</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#CHR_Select_(%24A00x/%24B00x/%24D00x/%24E00x)"><span class="tocnumber">4</span> <span class="toctext">CHR Select ($A00x/$B00x/$D00x/$E00x)</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#IRQ_Control_(%24F00x)"><span class="tocnumber">5</span> <span class="toctext">IRQ Control ($F00x)</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Notes"><span class="tocnumber">6</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</div>
+
+<h2><span id="Mirroring_Control_.28.249000.29"/><span class="mw-headline" id="Mirroring_Control_($9000)">Mirroring Control ($9000)</span></h2>
+<p>Mask: $F00C, see <a href="VRC2_and_VRC4.xhtml#Mirroring_Control_.28.249000.2C_.249001.2C_.249002.2C_.249003.29" title="VRC2 and VRC4">VRC4 description</a>.
+</p>
+<h2><span id="PRG_Select_.28.24900C.29"/><span class="mw-headline" id="PRG_Select_($900C)">PRG Select ($900C)</span></h2>
+<pre>Mask: $F80C
+
+D~7654 3210
+  ---------
+  .... PP..
+       ++--- PRG A16..A15
+</pre>
+<p>Similar to <a href="INES_Mapper_189.xhtml" title="INES Mapper 189">INES Mapper 189</a>, VRC4's fine-grained PRG banking is replaced with a single 32 KiB bank switch.
+</p>
+<h2><span id="DAC_Output_.28.24980C.29"/><span class="mw-headline" id="DAC_Output_($980C)">DAC Output ($980C)</span></h2>
+<pre>Mask: $F80C
+
+D~7654 3210
+  ---------
+  .... DDDD
+       ++++- 4 bit unsigned PCM data
+</pre>
+<h2><span id="CHR_Select_.28.24A00x.2F.24B00x.2F.24D00x.2F.24E00x.29"/><span class="mw-headline" id="CHR_Select_($A00x/$B00x/$D00x/$E00x)">CHR Select ($A00x/$B00x/$D00x/$E00x)</span></h2>
+<pre>Mask: $F00C
+
+$D000/$D004 (LSB/MSB): Select 1 KiB CHR-ROM bank at PPU $0000-$03FF
+$D008/$D00C (LSB/MSB): Select 1 KiB CHR-ROM bank at PPU $0400-$07FF
+$A000/$A004 (LSB/MSB): Select 1 KiB CHR-ROM bank at PPU $0800-$0BFF
+$A008/$A00C (LSB/MSB): Select 1 KiB CHR-ROM bank at PPU $0C00-$0FFF
+$B000/$B004 (LSB/MSB): Select 1 KiB CHR-ROM bank at PPU $1000-$13FF
+$B008/$B00C (LSB/MSB): Select 1 KiB CHR-ROM bank at PPU $1400-$17FF
+$E000/$E004 (LSB/MSB): Select 1 KiB CHR-ROM bank at PPU $1800-$1BFF
+$E008/$E00C (LSB/MSB): Select 1 KiB CHR-ROM bank at PPU $1C00-$1FFF
+</pre>
+<h2><span id="IRQ_Control_.28.24F00x.29"/><span class="mw-headline" id="IRQ_Control_($F00x)">IRQ Control ($F00x)</span></h2>
+<p>Mask: $F00C, see <a href="VRC2_and_VRC4.xhtml#IRQ_Control_.28.24F00x.29_VRC4" title="VRC2 and VRC4">VRC4 description</a>.
+</p>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<div class="thumb tright"><div class="thumbinner" style="width:302px;"><a href="File_City_fighter_4_dac_audio_png.xhtml" class="image"><img alt="" src="../wiki-images/City_fighter_4_dac_audio.png" decoding="async" width="300" height="361" class="thumbimage" srcset="/w/images/default/thumb/0/0c/City_fighter_4_dac_audio.png/450px-City_fighter_4_dac_audio.png 1.5x, /w/images/default/thumb/0/0c/City_fighter_4_dac_audio.png/600px-City_fighter_4_dac_audio.png 2x"/></a>  <div class="thumbcaption"><div class="magnify"><a href="File_City_fighter_4_dac_audio_png.xhtml" class="internal" title="Enlarge"/></div>Captured waveform of the audio speech when using R-2R as DAC</div></div></div>
+<p>The game uses the VRC4's pseudo-scanline mode during speech output. FCEUX only emulates a downward-counting CPU cycle counter, counting on every other cycle, causing speech to be played at too low a pitch compared to hardware.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241122222047
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.020 seconds
+Real time usage: 0.026 seconds
+Preprocessor visited node count: 24/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:651-0!canonical and timestamp 20241122222047 and revision id 7660.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

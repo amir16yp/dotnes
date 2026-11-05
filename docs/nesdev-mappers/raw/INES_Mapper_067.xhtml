@@ -1,0 +1,145 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 067</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_067"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 067</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_067">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_067">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><br/>
+<b>iNES Mapper 067</b> represents the <a href="Sunsoft_3_pinout.xhtml" title="Sunsoft 3 pinout">Sunsoft-3</a> mapper, used in <i>Fantasy Zone II</i> (J), <i>Mito Koumon II - Sekai Manyuu Ki</i>, and the <a href="Vs__System.xhtml" title="Vs. System">Vs. System</a> game <i>Vs. Platoon</i>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Banks"><span class="tocnumber">2</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Registers"><span class="tocnumber">3</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Interrupt_Acknowledge_(%248000)"><span class="tocnumber">3.1</span> <span class="toctext">Interrupt Acknowledge ($8000)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#CHR_bank_0%E2%80%A63_(%248800..%24BFFF)"><span class="tocnumber">3.2</span> <span class="toctext">CHR bank 0…3 ($8800..$BFFF)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#IRQ_load_(%24C800,_write_twice)"><span class="tocnumber">3.3</span> <span class="toctext">IRQ load ($C800, write twice)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#IRQ_enable_(%24D800)"><span class="tocnumber">3.4</span> <span class="toctext">IRQ enable ($D800)</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Mirroring_(%24E800)"><span class="tocnumber">3.5</span> <span class="toctext">Mirroring ($E800)</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#PRG_bank_(%24F800)"><span class="tocnumber">3.6</span> <span class="toctext">PRG bank ($F800)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="#IRQ_Operation"><span class="tocnumber">4</span> <span class="toctext">IRQ Operation</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#References"><span class="tocnumber">5</span> <span class="toctext">References</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Overview">Overview</span></h2>
+<ul><li>PRG ROM size: Hardware supports at most 256 KiB</li>
+<li>PRG ROM bank size: 16 KiB</li>
+<li>PRG RAM: Unused, but mapper IC provides RAM enables.</li>
+<li>CHR bank size: 2 KiB</li>
+<li>CHR ROM size: Hardware supports at most 128 KiB</li>
+<li>Nametable <a href="Mirroring.xhtml" title="Mirroring">mirroring</a>: Controlled by mapper (Horizontal, Vertical, 1-screen)</li>
+<li>Subject to <a href="Bus_conflict.xhtml" title="Bus conflict">bus conflicts</a>: No</li></ul>
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>CPU $8000-$BFFF: 16 KiB switchable PRG ROM bank</li>
+<li>CPU $C000-$FFFF: 16 KiB PRG ROM bank, fixed to the last bank</li>
+<li>PPU $0000-$07FF: 2 KiB switchable CHR bank</li>
+<li>PPU $0800-$0FFF: 2 KiB switchable CHR bank</li>
+<li>PPU $1000-$17FF: 2 KiB switchable CHR bank</li>
+<li>PPU $1800-$1FFF: 2 KiB switchable CHR bank</li></ul>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<h3><span id="Interrupt_Acknowledge_.28.248000.29"/><span class="mw-headline" id="Interrupt_Acknowledge_($8000)">Interrupt Acknowledge ($8000)</span></h3>
+<p>Mask: $8800
+</p><p>Any write to this address or any of its mirrors acknowledges a pending IRQ.
+</p>
+<h3><span id="CHR_bank_0.E2.80.A63_.28.248800...24BFFF.29"/><span class="mw-headline" id="CHR_bank_0…3_($8800..$BFFF)">CHR bank 0…3 ($8800..$BFFF)</span></h3>
+<p>Mask: $F800
+</p><p>Note that the hardware only has six pins for CHR banking, for a limit of 128KB of CHR.
+</p>
+<table class="wikitable">
+<tbody><tr>
+<th>Write to CPU address
+</th>
+<th>2KB CHR bank affected
+</th></tr>
+<tr>
+<td>$8800</td>
+<td>$0000-$07FF
+</td></tr>
+<tr>
+<td>$9800</td>
+<td>$0800-$07FF
+</td></tr>
+<tr>
+<td>$A800</td>
+<td>$1000-$07FF
+</td></tr>
+<tr>
+<td>$B800</td>
+<td>$1800-$07FF
+</td></tr></tbody></table>
+<h3><span id="IRQ_load_.28.24C800.2C_write_twice.29"/><span class="mw-headline" id="IRQ_load_($C800,_write_twice)">IRQ load ($C800, write twice)</span></h3>
+<p>Mask: $F800
+</p><p>Write the high then low byte of a 16-bit CPU cycle count, much like <a href="PPU_registers.xhtml" title="PPU registers">PPUADDR</a>. This directly affects the current count, not a reload value. The write state is reset by writing to the register at $D800.
+</p>
+<h3><span id="IRQ_enable_.28.24D800.29"/><span class="mw-headline" id="IRQ_enable_($D800)">IRQ enable ($D800)</span></h3>
+<p>Mask: $F800
+</p>
+<pre>7  bit  0
+...P ....
+   |
+   +------ 0: Pause counter; 1: Count
+</pre>
+<p>While bit 4 is true, the 16-bit count decreases by 1 every CPU cycle.
+Whenever the count wraps from $0000 to $FFFF, the mapper asserts an IRQ and pauses itself.
+Writes reset a latch such that the next $C800 write goes to the <i>high</i> byte of the count.
+</p><p>Despite previous notes, writes to this register do not acknowledge the IRQ.
+</p><p>If counting is enabled, the External IRQ pin is also capable of asserting an IRQ. No existing hardware uses this functionality.
+</p>
+<h3><span id="Mirroring_.28.24E800.29"/><span class="mw-headline" id="Mirroring_($E800)">Mirroring ($E800)</span></h3>
+<p>Mask: $F800
+</p>
+<pre>7  bit  0
+.... ..MM
+       ||
+       ++- Nametable mirroring (0=vertical, 1=horizontal, 2=1scA, 3=1scB)
+            aka connect VRAM A10 to (0=PPU A10, 1=PPU A11, 2=Gnd, 3=Vcc)
+</pre>
+<h3><span id="PRG_bank_.28.24F800.29"/><span class="mw-headline" id="PRG_bank_($F800)">PRG bank ($F800)</span></h3>
+<p>Mask: $F800
+</p>
+<pre>7  bit  0
+...X PPPP
+   | ||||
+   | ++++- select a 16 KiB CHR ROM bank at CPU $8000-$BFFF. $C000-$FFFF is fixed to the last bank of PRG ROM.
+   +------ 1 bit latch, present but unused. Could be combined with an external OR gate to increase PRG capacity to 512KB.
+</pre>
+<h2><span class="mw-headline" id="IRQ_Operation">IRQ Operation</span></h2>
+<p>$C800 is a write-twice register (similar to $2005 and $2006).  The first write sets the <b>high</b> 8 bits of the
+IRQ counter, and the second write sets the <b>low</b> 8 bits.  This directly changes the actual IRQ counter – not
+a reload value.
+</p><p>In addition to enabling/disabling counting, any write to $D800 will reset the toggle so that the next write to $C800 will be the first write.
+</p><p>The IRQ counter, when enabled, counts down every CPU cycle.  When it wraps ($0000→FFFF), it disables
+itself and triggers an IRQ.
+</p>
+<h2><span class="mw-headline" id="References">References</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="http://www.romhacking.net/documents/362/">Disch's Mapper Notes</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123161623
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.021 seconds
+Real time usage: 0.025 seconds
+Preprocessor visited node count: 43/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:352-0!canonical and timestamp 20241123161623 and revision id 4411.
+ -->
+</div><p class="categories">Categories: <a href="Category_In_NesCartDB.xhtml">In NesCartDB</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_ASIC_mappers.xhtml">ASIC mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

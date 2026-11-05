@@ -1,0 +1,61 @@
+INES Mapper 094
+
+INES Mapper 094
+
+NESCartDB
+
+iNES 094
+
+UN1ROM
+
+INES Mapper 094 is used to represent the board HVC-UN1ROM. Senjou no Ookami (Japanese version of Commando) is the only game known to utilize this mapper. It is very similar to UxROM, but the register is shifted by two bits.
+
+Contents
+
+1 Overview
+
+2 Banks
+
+3 Registers
+
+3.1 Bank select ($8000-$FFFF)
+
+4 References
+
+Overview
+
+PRG ROM size: 128 KB
+
+PRG ROM bank size: 16 KB
+
+PRG RAM: None
+
+CHR capacity: 8 KB RAM
+
+CHR bank size: Not bankswitched
+
+Nametable mirroring: Solder pads select vertical or horizontal mirroring
+
+Subject to bus conflicts: Yes
+
+Banks
+
+CPU $8000-$BFFF: 16 KB switchable PRG ROM bank
+
+CPU $C000-$FFFF: 16 KB PRG ROM bank, fixed to the last bank
+
+Registers
+
+Bank select ($8000-$FFFF)
+
+7  bit  0
+---- ----
+xxxP PPxx
+   | ||
+   +-++--- Select 16 KB PRG ROM bank for CPU $8000-$BFFF
+
+References
+
+NES mapper list by Disch [1]
+
+Categories: Nintendo licensed mappers, INES Mappers, In NesCartDB, Mappers with CHR RAM, Discrete logic mappers

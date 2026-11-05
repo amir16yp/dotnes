@@ -1,0 +1,54 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 295</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_295"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 295</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_295">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_295">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 295 is used for several multicarts from J.Y. Company: 
+</p>
+<ul><li><i>1996 Soccer 7-in-1 (JY-014B)</i></li>
+<li><i>1997 Super HIK 4-in-1 (JY-095)</i></li>
+<li><i>1997 Super HIK 7-in-1 (JY-096)</i></li>
+<li><i>1997 Super HIK 4-in-1 (JY-099)</i></li>
+<li><i>1997 Super 9-in-1 (JY-109)</i></li>
+<li><i>1997 Super 13-in-1 (JY-110)</i></li></ul>
+<p>Its UNIF board name is <b>BMC-13in1JY110</b>, although FCEUX' support is non-working. It uses the <a href="J_Y__Company_ASIC.xhtml" title="J.Y. Company ASIC">J.Y. Company ASIC</a>. 
+</p><p>The same bits in register $D003 select both PRG and CHR outer banks. It is almost identical to <a href="NES_2_0_Mapper_281.xhtml" title="NES 2.0 Mapper 281">NES 2.0 Mapper 281</a>, except that the outer bank size is 128 KiB rather than 256 KiB.
+</p>
+<h2><span id="Outer_Bank_Register_.28.24D003.29"/><span class="mw-headline" id="Outer_Bank_Register_($D003)">Outer Bank Register ($D003)</span></h2>
+<pre>Mask: $F003
+
+7654 3210
+---- ----
+.... .CCC
+      +++- Select 128 KiB outer PRG-ROM bank
+      +++- Select 128 KiB outer CHR-ROM bank
+</pre>
+<p>PRG ($8000-$8FFF) and CHR ($9000-$AFFF) bank select register bits that select 128/256 KiB banks are masked off. 
+</p><p>For a description of all other registers, see <a href="J_Y__Company_ASIC.xhtml" title="J.Y. Company ASIC">J.Y. Company ASIC</a>.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164102
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.010 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 6/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:680-0!canonical and timestamp 20241123164102 and revision id 18940.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a>, <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_Mappers_using_J_Y__Company_ASIC.xhtml">Mappers using J.Y. Company ASIC</a>, <a href="Category_Mappers_with_ROM_nametables.xhtml">Mappers with ROM nametables</a></p></div></body></html>

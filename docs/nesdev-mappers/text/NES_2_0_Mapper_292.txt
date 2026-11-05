@@ -1,0 +1,59 @@
+NES 2.0 Mapper 292
+
+NES 2.0 Mapper 292
+
+NES 2.0 Mapper 292 is used for the unlicensed game Dragon Fighter. Its PCB name is "BMW8544", its UNIF board name is UNL-DRAGONFIGHTER. It's an MMC3 clone with some extremely odd bankswitching that is poorly understood. The description below is based on the FCEUX source code, which sort-of runs the game, albeit with occasional graphical glitches.
+
+Contents
+
+1 Banks
+
+2 Registers
+
+2.1 PRG Bank Register ($6000, write)
+
+2.2 CHR Bank Register ($6000, read)
+
+2.3 MMC3-compatible registers ($8000-$FFFF)
+
+Banks
+
+CPU $8000-$9FFF: 8 KiB switchable PRG-ROM bank selected by writing to $6000.
+
+CPU $A000-$BFFF: 8 KiB switchable PRG-ROM bank selected by MMC3 register $07, or fixed to last bank if PRG A14 inversion is active
+
+CPU $C000-$DFFF: 8 KiB PRG-ROM bank, fixed to the second-last bank, or switchable PRG-ROM bank selected by MMC3 register $06 if PRG A14 inversion is active
+
+CPU $E000-$FFFF: 8 KiB PRG-ROM bank, fixed to the last bank, or switchable PRG-ROM bank selected by MMC3 register $07 if PRG A14 inversion is active
+
+PPU $0000-$07FF: 2 KiB switchable CHR-ROM bank selected by (MMC3 register 0 SHR 1) XOR the low CHR bank.
+
+PPU $0800-$0FFF: 2 KiB switchable CHR-ROM bank selected by (MMC3 register 2 SHR 1) ORed with (bit 6 of the high CHR bank SHR 1).
+
+PPU $1000-$1FFF: 4 KiB switchable CHR-ROM bank selected by bits 0-5 of the high CHR bank.
+
+MMC3 CHR A12 inversion ($8000 bit 7) is not supported.
+
+Registers
+
+PRG Bank Register ($6000, write)
+
+Mask: Probably $E001
+
+Selects the 8 KiB PRG-ROM bank at CPU $8000-$9FFF.
+
+CHR Bank Register ($6000, read)
+
+Mask: Probably $E001
+
+When this register is read and the PRG Bank AND $E0 is ==$C0, then the low CHR bank is replaced with the value previously written to CPU RAM at $006A.
+
+When this register is read and the PRG Bank AND $E0 is !=$C0, then the high CHR bank is replaced with the value previously written to CPU RAM at $00FF.
+
+MMC3-compatible registers ($8000-$FFFF)
+
+Mask: $E001
+
+Same as regular MMC3 except where noted.
+
+Categories: MMC3-like mappers

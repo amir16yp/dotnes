@@ -1,0 +1,73 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 398</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_398"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 398</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_398">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_398">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 398</b> denotes the 晶太 YY840820C circuit board, used for a single multicart:
+</p>
+<ul><li><i>1995 Super HiK 5-in-1 - 新系列米奇老鼠組合卡</i> (JY-048)</li></ul>
+<p>It adds an outer bank register to a <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">VRC4</a> clone (A0/A1, VRC4f) together with ridiculously complex logic to implement a GNROM-like mode.
+The first 128 KiB of PRG-ROM and 512 KiB (first chip) of CHR-ROM contain <i>World Hero</i>, the second 128 KiB of PRG-ROM and 128 KiB (second chip) of CHR-ROM contain four CNROM-256 games.
+</p>
+<h2><span id="Outer_Bank_Register_.28.248000-.24FFFF.29"/><span class="mw-headline" id="Outer_Bank_Register_($8000-$FFFF)">Outer Bank Register ($8000-$FFFF)</span></h2>
+<pre>Mask: $8000
+ 
+A~FEDC BA98 7654 3210
+  -------------------
+  1... .... BA.. ....
+            ++-------- PRG A17..A16
+            |+-------- CHR A16
+            +--------- CHR chip select (CHR A19 in NES 2.0 ROM image)
+            |           0: first (512 KiB)
+            |           1: second (128 KiB)
+            +--------- Mode Select
+                        0: VRC4, first CHR chip
+                        1: GNROM-like, second CHR chip
+Power-on value: $C0
+</pre>
+<p>The Outer Bank Register overlaps the VRC4 registers in the same address range.
+</p>
+<h2><span class="mw-headline" id="GNROM-like_mode_operation">GNROM-like mode operation</span></h2>
+<p>In the GNROM-like mode (Outer Bank Register 'B' bit =1), the address bits come from the following sources:
+</p>
+<pre>PRG-ROM A13: CPU A13
+PRG-ROM A14: CPU A14
+PRG-ROM A15: VRC4 CHR A12
+PRG-ROM A16: Outer Bank Register 'A' bit
+PRG-ROM A17: Outer Bank Register 'B' bit, i.e. always 1
+CHR-ROM A10: PPU A10
+CHR-ROM A11: PPU A11
+CHR-ROM A12: PPU A12
+CHR-ROM A13: VRC4 CHR A10
+CHR-ROM A14: VRC4 CHR A11
+CHR-ROM A15: VRC4 CHR A12
+CHR-ROM A16: Outer Bank Register 'A' bit
+</pre>
+<p>As with SOROM, SUROM and SXROM, if the several CHR bank registers' CHR A12 bit does not specify the same outer bank, then PRG-ROM will would be bankswitched as the PPU renders.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164329
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.013 seconds
+Preprocessor visited node count: 10/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:783-0!canonical and timestamp 20241123164329 and revision id 8021.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

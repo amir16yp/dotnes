@@ -1,0 +1,50 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 229</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_229"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 229</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_229">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_229">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><a class="mw-selflink selflink">iNES Mapper 229</a> aka &quot;BMC 31-IN-1&quot; is a simple mapper. Writing to anywhere in $8000-FFFF will affect both mirroring and its mapping for CHR and both PRG pages.
+</p>
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>PRG: 2x16KiB</li>
+<li>CHR: 1x8KiB</li></ul>
+<h2><span class="mw-headline" id="Register">Register</span></h2>
+<pre>Mask $803F, range $8000-FFFF
+Address:
+%1xxx xxxx xxHP PPPP
+              C CCCC
+ H = mirroring [0=vertical, 1=horizontal]
+ P,C = bits for mapping both CHR and PRG, all pages
+</pre>
+<p>This means that both PRG pages will be loaded with the same bank. However, if all M bits are 0, then the second page of PRG gets mapped to 1 instead of 0.
+</p><p>Nestopia does not seem to restrict the CHR banking to the lower five bits, potentially using all 16. Otherwise, Nintendulator does the same. 
+</p>
+<h2><span class="mw-headline" id="Sources">Sources</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="https://github.com/rdanbrook/nestopia/blob/88d130fd083b9662ef49e8d5ef95513f4bb8759e/source/core/board/NstBoardBmc31in1.cpp">Nestopia implementation</a></li>
+<li><a rel="nofollow" class="external text" href="https://sourceforge.net/p/nintendulator/code/1335/tree/mappers/trunk/src/iNES/mapper229.cpp">Nintendulator implementation</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123163815
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.010 seconds
+Real time usage: 0.013 seconds
+Preprocessor visited node count: 13/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:514-0!canonical and timestamp 20241123163815 and revision id 5785.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a></p></div></body></html>

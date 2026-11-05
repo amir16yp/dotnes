@@ -1,0 +1,67 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 116</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_116"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 116</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_116">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_116">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 116 is used for the SOMARI-P board bearing the <b>Huang-1</b> or <b>Huang-2</b> ASICs and a PAL, used by releases from Gouder, also known as 哥德 (Gēdé):
+</p>
+<ul><li><b>Huang-1</b> chip:
+<ul><li><i>A.V. 美少女戰士 Girl Fighting</i> (A.V. Měi Shàonǚ Zhànshì)</li>
+<li><i>餓狼伝説 Special</i> (Garō Densetsu Special, original Gouder release only)</li>
+<li><i>Kart Fighter</i></li>
+<li><i>Somari the Adventurer</i> (original Gouder and Kǎshèng releases)</li></ul></li>
+<li><b>Huang-2</b> chip:
+<ul><li><i>A.V. 究極麻將 II</i> (A.V. Jiūjí Májiàng, original Gouder release only)</li></ul></li></ul>
+<p><br/>
+This mapper can simulate three different ASICs: the Nintendo <a href="MMC1.xhtml" title="MMC1">MMC1</a>, <a href="MMC3.xhtml" title="MMC3">MMC3</a> and Konami <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC2">VRC2</a> (A0/A1, i.e. VRC2b). All three simulated chips have their separate registers, so that when switching between modes using the supervisor register, the entire mapper state changes including PRG/CHR ROM switchable and fixed banks as well as IRQ state.
+</p>
+<h2><span id="Supervisor_Register_.28.244100.2C_write.29"/><span class="mw-headline" id="Supervisor_Register_($4100,_write)">Supervisor Register ($4100, write)</span></h2>
+<pre>Mask: $E100
+
+D~7654 3210
+  ---------
+  .... .CMM
+        |++- Mapper mode
+        |     0: VRC2
+        |     1: MMC3
+        |     2: MMC1
+        |     3: same as 2
+        +--- Outer 256 KiB CHR-ROM bank (CHR A18)
+</pre>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li>The <b>Huang-2</b> chip differs from the <b>Huang-1</b> chip in that the MMC1 PRG-ROM bank register is shifted by one bit to the left compared to what one would write to a normal MMC1, or to the Huang-1 in MMC1 mode. No submapper has been proposed yet for this behavior. In the meantime, the one game relying on this can be heuristically detected by having PRG-ROM and CHR-ROM sizes each of only 128 KiB.</li>
+<li>When switching <i>to</i> MMC1 mode, the serial shift register is reset. <i>Garō Densetsu Special</i> relies on this. Supposedly, only the -W configuration of the PAL actually does this, though no game seems to be adversely affected by always emulating this behavior.</li>
+<li>The VRC2 CHR-ROM registers are initialized on power-up to $FF. The original release of <i>Somari the Adventurer</i> relies on this.</li>
+<li><i>Garō Densetsu Special</i> relies on being able to write to <a href="Mirroring.xhtml#Memory_Mirroring" title="Mirroring">mirrors</a> of $8xxx, $9xxx, and $Axxx in VRC2 mode.</li>
+<li>The Kǎshèng rerelease of <i>Garō Densetsu Special</i> uses <a href="INES_Mapper_115.xhtml" title="INES Mapper 115">INES Mapper 115</a> instead.</li>
+<li>The Kǎshèng rerelease of <i>A.V. 究極麻將 II</i> uses <a href="INES_Mapper_115.xhtml" title="INES Mapper 115">INES Mapper 115</a> instead.</li></ul>
+<p>With a iNES 2.0 Header Sub Mapper 3 sets Mapper 116 as a Reset Based Mapper that will switch games on a Hard Reset this however is current only used for one known 5-in-1 Multi-Cart that has 5 MMC3 based Mario Hacks. (SL-FC5-1) Mario 5-in-1
+</p>
+<h2><span class="mw-headline" id="Similar_mappers">Similar mappers</span></h2>
+<ul><li><a href="INES_Mapper_014.xhtml" title="INES Mapper 014">INES Mapper 014</a> and <a href="INES_Mapper_238.xhtml" title="INES Mapper 238">INES Mapper 238</a> uses the same ASIC but with the PAL programmed differently to respond in other ways to other addresses.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123012021
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.021 seconds
+Real time usage: 0.025 seconds
+Preprocessor visited node count: 23/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:400-0!canonical and timestamp 20241123012021 and revision id 21172.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_using__4020__5FFF.xhtml">Mappers using $4020-$5FFF</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a>, <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_Multi_ASIC_mappers.xhtml">Multi-ASIC mappers</a></p></div></body></html>

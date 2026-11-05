@@ -1,0 +1,34 @@
+INES Mapper 093
+
+INES Mapper 093
+
+This is part of a family of Sunsoft mappers used by Japanese games: (iNES Mapper 089, iNES Mapper 093, iNES Mapper 184)
+
+This mapper represents the Sunsoft-2 IC on the Sunsoft-3R board. It is used by Shanghai, as well as Fantasy Zone whose program is compatible with both this board and a different one that used the Sunsoft-1 IC.
+
+Mapper 89 uses the same Sunsoft-2 IC but on the Sunsoft-3 board and so differs in that it has mapper-controlled one-screen mirroring and CHR ROM banking. Note that the CHR bank lines are still hooked up to the RAM, explaining the RAM enable bit. For homebrew and hacks, games with CHR ROM should use 89's banking behavior with fixed mirroring.
+
+Despite the mapper existing as a single IC, its functionality is describable using just a 74377 and a 7432 and should probably be considered discrete logic.
+
+Here is the documentation in disch's original style:
+
+ Registers **BUS CONFLICTS**:
+ --------------------------
+
+   $8000-FFFF:  [.PPP ...E]
+     P = PRG Reg  (16k @ $8000)
+     E = CHR RAM enable:
+         0 = RAM is disabled; writes are ignored and reads are open bus
+             (like iNES Mapper 185 except no games use this)
+         1 = normal operation.
+
+
+ PRG Setup:
+ --------------------------
+
+       $8000   $A000   $C000   $E000
+     +---------------+---------------+
+     |     $8000     |     { -1}     |
+     +---------------+---------------+
+
+Categories: In NesCartDB, Discrete logic mappers, INES Mappers

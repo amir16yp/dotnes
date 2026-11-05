@@ -1,0 +1,67 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 361</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_361"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 361</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_361">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_361">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 361 is used for an early MMC3-based multicart PCB (YY841101C) from J.Y. Company, preceding the <a href="J_Y__Company_ASIC.xhtml" title="J.Y. Company ASIC">J.Y. Company ASIC</a>:
+</p>
+<ul><li><i>1994 Ball 4-in-1 Series (JY-009)</i></li>
+<li><i>1996 Super HiK 4-in-1 (JY-018)</i></li>
+<li><i>1995 Super HiK 4-in-1 (JY-019)</i></li>
+<li><i>Game 4-in-1 (OK-411)</i></li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Outer_Bank_Register_(%247000)"><span class="tocnumber">1</span> <span class="toctext">Outer Bank Register ($7000)</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#MMC3-compatible_registers"><span class="tocnumber">2</span> <span class="toctext">MMC3-compatible registers</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Note"><span class="tocnumber">3</span> <span class="toctext">Note</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#See_also"><span class="tocnumber">4</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span id="Outer_Bank_Register_.28.247000.29"/><span class="mw-headline" id="Outer_Bank_Register_($7000)">Outer Bank Register ($7000)</span></h2>
+<pre>Mask: unknown
+
+D~7654 3210
+  ---------
+  OOOO ....
+  ++++------ Select outer 128 KiB PRG-ROM and CHR-ROM bank
+</pre>
+<p>This register is accessible regardless of whether WRAM is enabled in the MMC3 clone's A001 register.
+</p>
+<h2><span class="mw-headline" id="MMC3-compatible_registers">MMC3-compatible registers</span></h2>
+<pre>Mask: $E001
+
+See <a href="MMC3.xhtml" title="MMC3">MMC3</a>.
+</pre>
+<h2><span class="mw-headline" id="Note">Note</span></h2>
+<p><a rel="nofollow" class="external text" href="https://github.com/TASVideos/fceux/blob/master/src/boards/mmc3.cpp">FCEUX emulates this PCB under mapper number 205</a> as &quot;OK-411&quot; together with the GN-45 PCB, both of which are in turn different from the <a href="INES_Mapper_205.xhtml" title="INES Mapper 205">iNES Mapper 205</a> described in that mapper's wiki article.
+</p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<p><a href="NES_2_0_Mapper_364.xhtml" title="NES 2.0 Mapper 364">NES 2.0 Mapper 364</a> describes a slightly more complex variant supporting a selectable outer bank size.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123153046
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.011 seconds
+Real time usage: 0.015 seconds
+Preprocessor visited node count: 17/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:746-0!canonical and timestamp 20241123153046 and revision id 7951.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

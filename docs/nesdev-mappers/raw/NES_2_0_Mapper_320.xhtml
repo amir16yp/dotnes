@@ -1,0 +1,57 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 320</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_320"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 320</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_320">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_320">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 320 is used for the <i>Super HiK 6-in-1 A-030</i> multicart. Basically <a href="UxROM.xhtml" title="UxROM">UxROM</a> with an address-latch-based outer bank register, its UNIF board name is <b>BMC-830425C-4391T</b>. Mirroring is hard-wired.
+</p>
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$BFFF: 16 KiB switchable inner and outer PRG-ROM bank</li>
+<li>CPU $C000-$FFFF: 16 KiB fixed inner and switchable outer PRG-ROM bank</li>
+<li>PPU $0000-$1FFF: 8 KiB unbanked CHR-RAM</li></ul>
+<h2><span id="Outer_Bank_Register_.28.24F0E0-.24F0FF.2C_write.29"/><span class="mw-headline" id="Outer_Bank_Register_($F0E0-$F0FF,_write)">Outer Bank Register ($F0E0-$F0FF, write)</span></h2>
+<pre>Mask: $FFE0
+
+A~FEDC BA98 7654 3210
+  -------------------
+  1111 0000 111M BBBB
+               | ++++- Select 128 KiB Outer Bank at CPU $8000-$FFFF
+               +------ Select Outer Bank Size
+                        0: 256 KiB (UOROM), fixed inner bank #15 at CPU $C000-$FFFF
+                        1: 128 KiB (UNROM), fixed inner bank #7 at CPU $C000-$FFFF
+</pre>
+<h2><span id="Inner_Bank_Register_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Inner_Bank_Register_($8000-$FFFF,_write)">Inner Bank Register ($8000-$FFFF, write)</span></h2>
+<pre>Mask: $8000
+
+D~7654 3210
+  ---------
+  .... pPPP
+       |+++- Select 16 KiB Inner PRG-ROM bank at CPU $8000-$BFFF
+       +---- Select 128 KiB Inner PRG-ROM bank at CPU $8000-$BFFF if Outer Bank bit 4=0
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241122171434
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.010 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 12/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:705-0!canonical and timestamp 20241122171434 and revision id 20234.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

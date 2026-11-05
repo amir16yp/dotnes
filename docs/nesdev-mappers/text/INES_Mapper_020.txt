@@ -1,0 +1,12 @@
+INES Mapper 020
+
+INES Mapper 020
+
+Mapper 20 is defined as reserved for the Famicom Disk System (FDS) in official iNES specs.
+The mapper number is mostly intended for being internally used by emulators (to indicate to themselves that they are emulating the FDS hardware).
+
+Actual FDS game disk images normally use the FDS disk format.
+
+The mapper number could be theoretically used for the FDS BIOS ROM-image, but this isn't done in practice. The FDS BIOS is typically stored as NROM if it is dumped in iNES format, or it's stored as raw BIOS dump (without iNES header and thus without mapper number).
+
+Categories: Bad iNES Mappers, INES Mappers

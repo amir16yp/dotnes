@@ -1,0 +1,281 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 342</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_342"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 342</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_342">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_342">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 342 is used for the homebrew COOLGIRL multicart. In addition to native registers, it can simulate about 25 commercial-era mappers on a hardware level. It can address up to 128 MiB of PRG-ROM, 512 KiB of CHR-RAM, and 32 KiB of WRAM. Like the <a href="NES_2_0_Mapper_268.xhtml" title="NES 2.0 Mapper 268">COOLBOY</a> mapper that inspired it, CHR-RAM is filled with pattern data copied from PRG-ROM by the multicart menu after a game has been selected. Its UNIF board name is just <b>COOLGIRL</b>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#%245xx0"><span class="tocnumber">1.1</span> <span class="toctext">$5xx0</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#%245xx1"><span class="tocnumber">1.2</span> <span class="toctext">$5xx1</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#%245xx2"><span class="tocnumber">1.3</span> <span class="toctext">$5xx2</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#%245xx3"><span class="tocnumber">1.4</span> <span class="toctext">$5xx3</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#%245xx4"><span class="tocnumber">1.5</span> <span class="toctext">$5xx4</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#%245xx5"><span class="tocnumber">1.6</span> <span class="toctext">$5xx5</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#%245xx6"><span class="tocnumber">1.7</span> <span class="toctext">$5xx6</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#%245xx7"><span class="tocnumber">1.8</span> <span class="toctext">$5xx7</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="#Mapper_codes"><span class="tocnumber">2</span> <span class="toctext">Mapper codes</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#PRG_banking_modes"><span class="tocnumber">3</span> <span class="toctext">PRG banking modes</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#CHR_banking_modes"><span class="tocnumber">4</span> <span class="toctext">CHR banking modes</span></a></li>
+<li class="toclevel-1 tocsection-13"><a href="#See_also"><span class="tocnumber">5</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>Range: $5000-$5FFF
+</p><p>Mask: $5007
+</p><p>All registers are $00 on power-on and reset.
+</p>
+<h3><span id=".245xx0"/><span class="mw-headline" id="$5xx0">$5xx0</span></h3>
+<pre> 7  bit  0
+ ---- ----
+ PPPP PPPP
+ |||| ||||
+ ++++-++++-- PRG base offset (A29-A22)
+</pre>
+<h3><span id=".245xx1"/><span class="mw-headline" id="$5xx1">$5xx1</span></h3>
+<pre> 7  bit  0
+ ---- ----
+ PPPP PPPP
+ |||| ||||
+ ++++-++++-- PRG base offset (A21-A14)
+</pre>
+<h3><span id=".245xx2"/><span class="mw-headline" id="$5xx2">$5xx2</span></h3>
+<pre> 7  bit  0
+ ---- ----
+ AMMM MMMM
+ |||| ||||
+ |+++-++++-- PRG mask (A20-A14, inverted+anded with PRG address)
+ +---------- CHR mask (A18, inverted+anded with CHR address)
+</pre>
+<h3><span id=".245xx3"/><span class="mw-headline" id="$5xx3">$5xx3</span></h3>
+<pre> 7  bit  0
+ ---- ----
+ BBBC CCCC
+ |||| ||||
+ |||+-++++-- CHR bank A (bits 7-3)
+ +++-------- PRG banking mode (see below)
+</pre>
+<h3><span id=".245xx4"/><span class="mw-headline" id="$5xx4">$5xx4</span></h3>
+<pre> 7  bit  0
+ ---- ----
+ DDDE EEEE
+ |||| ||||
+ |||+-++++-- CHR mask (A17-A13, inverted+anded with CHR address)
+ +++-------- CHR banking mode (see below)
+</pre>
+<h3><span id=".245xx5"/><span class="mw-headline" id="$5xx5">$5xx5</span></h3>
+<pre> 7  bit  0
+ ---- ----
+ CDDE EEWW
+ |||| ||||
+ |||| ||++-- 8KiB WRAM page at $6000-$7FFF
+ |+++-++---- PRG bank A (bits 5-1)
+ +---------- CHR bank A (bit 8)
+</pre>
+<h3><span id=".245xx6"/><span class="mw-headline" id="$5xx6">$5xx6</span></h3>
+<pre> 7  bit  0
+ ---- ----
+ FFFM MMMM
+ |||| ||||
+ |||+ ++++-- Mapper code (bits 4-0, see below)
+ +++-------- Flags 2-0, functionality depends on selected mapper
+</pre>
+<h3><span id=".245xx7"/><span class="mw-headline" id="$5xx7">$5xx7</span></h3>
+<pre> 7  bit  0
+ ---- ----
+ LMTR RSNO
+ |||| |||+-- Enable WRAM (read and write) at $6000-$7FFF
+ |||| ||+--- Allow writes to CHR RAM
+ |||| |+---- Allow writes to flash chip
+ |||+-+----- Mirroring (00=vertical, 01=horizontal, 10=1Sa, 11=1Sb)
+ ||+-------- Enable four-screen mode
+ |+-- ------ Mapper code (bit 5, see below)
+ +---------- Lockout bit (prevent further writes to all registers)
+</pre>
+<h2><span class="mw-headline" id="Mapper_codes">Mapper codes</span></h2>
+<pre> | Code   | iNES mapper number(s) and name(s)  | Flags meaning                         | Notes                                     |
+ | ====== + ================================== + ===================================== + ========================================= |
+ | 000000 | 0 (NROM) †                         |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 000001 | 2 (UxROM) †                        | 0 - enable &quot;Fire Hawk&quot; mirroring for  | Mapper 2 is fully compartible with mapper |
+ |        | 71 (Codemasters) *                 |     mapper 71 (Codemasters)           | 71 but &quot;Fire Hawk&quot; only uses mirroring    |
+ |        | 30 (UNROM-512)                     | 1 - Enable one screen mirroring       | control. UNROM-512 self-writable feature  |
+ |        |                                    |     select for mapper 30 (UNROM-512)  | is not supported                          |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 000010 | 2 (CNROM) †                        |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 000011 | 78 (Irem) *                        |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 000100 | 97 (Irem's TAM-S1)                 |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 000101 | 93 (Sunsoft-2) *                   |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 000110 | 163 (Nanjing)                      |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 000111 | 18 (Jaleco SS 88006)               |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 001000 | 7 (AxROM) †                        | 0 - disable mirroring control, used   | Can be oversized to 512 KiB.              |
+ |        | 34 (BNROM, NINA-001) *             |     to select mapper 34 instead of 7  | iNES Mapper 034 is used to designate both |
+ |        |                                    |                                       | the BNROM and NINA-001 boards but only    |
+ |        |                                    |                                       | BNROM is supported                        |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 001001 | 228 (Action 52)                    |                                       | Only Cheetahmen II is supported           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 001010 | 11 (Color Dreams) *                |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 001011 | 66 (GxROM) *                       |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 001100 | 87 *                               |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 001101 | 90 (J.Y. Company) *                |                                       | Partial support only, can be used for     |
+ |        |                                    |                                       | &quot;Aladdin&quot; and &quot;Super Mario World&quot; only.   |
+ |        |                                    |                                       | &quot;Super Mario World&quot; requires to enable    |
+ |        |                                    |                                       | accurate IRQs and multiplier (disabled by |
+ |        |                                    |                                       | default)                                  |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 001110 | 65 (Irem's H3001) *                |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 001111 | 5 (MMC5) *                         |                                       | Experimental partically support, can be   |
+ |        |                                    |                                       | used for &quot;Castlevania 3 (U)&quot; only         |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 010000 | 1 (MMC1) †                         | 0 - enable 16KiB of WRAM              |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 010001 | 9 (MMC2) *                         |                                       |                                           |
+ |        | 10 (MMC4) *                        | 0 - 0=MMC2, 1=MMC4                    |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 010010 | 70 *                               | 0 - 0=70, 1=152                       |                                           |
+ |        | 152 *                              |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 010011 | 73 (VRC3)                          |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 010100 | 4 (MMC3/MMC6) †                    | 0 - use mapper 118 (TxROM)            | Can be oversized up to 2 MiB              |
+ |        | 118 (TxROM) *                      | 1 - use mapper 189                    |                                           |
+ |        | 189 *                              | 2 - use mapper 206                    |                                           |
+ |        | 206 (Namco, Tengen, others)        |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 010101 | 112                                |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 010110 | 33 (Taito) *                       | 0 - 0=33, 1=48                        |                                           |
+ |        | 48 (Taito) *                       |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 010111 | 42 (FDS conversions) *             |                                       | Interrupts disabled by default            |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 011000 | 21 (VRC2/VRC4) *                   | 2,0 - A0 and A1 lines configuration:  |                                           |
+ |        | 22 (VRC2/VRC4) *                   |     0,0 - like mapper 21              |                                           |
+ |        | 23 (VRC2/VRC4) *                   |     0,1 - like mapper 22              |                                           |
+ |        | 25 (VRC2/VRC4) *                   |     1,0 - like mapper 23              |                                           |
+ |        |                                    |     1,1 - like mapper 25              |                                           |
+ |        |                                    | 1 - divide CHR bank select by two     |                                           |
+ |        |                                    |     (VRC2a, mapper 22)                |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 011001 | 69 (Sunsoft FME-7) *               |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 011010 | 32 (IREM G-101) *                  |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 011011 | 79 (NINA-03/06)                    |                                       |                                           |
+ |        | 146 (Sachen 3015)                  |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 011100 | 133 (Sachen)                       |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 011101 | 36 (TXC's PCB 01-22000-400)        |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 011110 | Reserved                           |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 011111 | 184 (Sunsoft-1)                    |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 100000 | 38                                 |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 100001 | Reserved                           |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 100010 | 75 (VRC1)                          |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 100011 | 83                                 | 0 - DIP switch 0                      | Partial support, submapper 1 requires     |
+ |        |                                    | 1 - DIP switch 1                      | 512 KiB of CHR RAM                        |
+ |        |                                    | 2 - use submapper 1                   |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 100100 | 67 (Sunsoft-3)                     |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | 100101 | 89 (Sunsoft-2 on Sunsoft-3 PCB)    |                                       |                                           |
+ | ------ + ---------------------------------- + ------------------------------------- + ----------------------------------------- |
+ | ...... | Reserved                           |                                       |                                           |
+  
+ † - very popular mappers, can't be disabled in config
+ * - enabled by default in config
+</pre>
+<h2><span class="mw-headline" id="PRG_banking_modes">PRG banking modes</span></h2>
+<p>Power-on/reset state: A=0, B=~2, C=~1, D=~0
+</p>
+<pre> | Code | $8000 | $A000 | $E000 | $C000 | Notes                                    |
+ | ==== + ===== + ===== + ===== + ===== + ======================================== |
+ | 000  |       A       |       C       | UxROM, MMC4, MMC1 mode #3, etc.          |
+ | ---- + ------------- + ------------- + ---------------------------------------- |
+ | 001  |       C       |       A       | Mapper 97 (TAM-S1)                       |
+ | ---- + ------------- + ------------- + ---------------------------------------- |
+ | 010  |           Reserved            |                                          |
+ | ---- + ----------------------------- + ---------------------------------------- |
+ | 011  |           Reserved            |                                          |
+ | ---- + ----- + ----- + ----- + ----- + ---------------------------------------- |
+ | 100  |   A   |   B   |   C   |   D   | Universal, used by MMC3 mode 0, etc.     |
+ | ---- + ----- + ----- + ----- + ----- + ---------------------------------------- |
+ | 101  |   C   |   B   |   A   |   D   | MMC3 mode 1                              |
+ | ---- + ----- + ----- + ----- + ----- + ---------------------------------------- |
+ | 110  |               B               | Mapper 163                               |
+ | ---- + ----------------------------- + ---------------------------------------- |
+ | 111  |               A               | AxROM, MMC1 modes 0/1, Color Dreams      |
+</pre>
+<h2><span class="mw-headline" id="CHR_banking_modes">CHR banking modes</span></h2>
+<p>Power-on/reset state: A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7
+</p>
+<pre> | Code | $0000 | $0400 | $0800 | $0C00 | $1000 | $1400 | $1800 | $1C00 | Notes                                    |
+ | ==== + ===== + ===== + ===== + ===== + ===== + ===== + ===== + ===== + ======================================== |
+ | 000  |                               A                               | Used by many simple mappers              |
+ | ---- + ------------------------------------------------------------- + ---------------------------------------- |
+ | 001  |                          Special mode                         | Used by mapper 163                       |
+ | ---- + ----- + ----- + ----- + ----- + ----- + ----- + ----- + ----- + ---------------------------------------- |
+ | 010  |       A       |       C       |   E   |   F   |   G   |   H   | Used by MMC3 mode 0                      |
+ | ---- + ----- + ----- + ----- + ----- + ----- + ----- + ----- + ----- + ---------------------------------------- |
+ | 011  |   E   |   F   |   G   |   H   |       A       |       C       | Used by MMC3 mode 1                      |
+ | ---- + ----- + ----- + ----- + ----- + ------------- + ------------- + ---------------------------------------- |
+ | 100  |               A               |               E               | Used by MMC1                             |
+ | ---- + ----------------------------- + ------------- + ------------- + ---------------------------------------- |
+ | 101  |              A/B              |              E/F              | MMC2/MMC4, switched by tiles $FD or $FE  |
+ | ---- + ------- ----- + ------------- + ------------- + ------------- + ---------------------------------------- |
+ | 110  |       A       |       C       |       E       |       G       | Used by many complicated mappers         |
+ | ---- + ----- + ----- + ----- + ----- + ----- + ----- + ----- + ----- + ---------------------------------------- |
+ | 111  |   A   |   B   |   C   |   D   |   E   |  F    |   G   |   H   | Used by very complicated mappers         |
+</pre>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<ul><li><a rel="nofollow" class="external text" href="https://github.com/ClusterM/coolgirl-multirom-builder">Project on GitHub with schematic and CPLD source code</a></li>
+<li><a rel="nofollow" class="external text" href="https://github.com/TASEmulators/fceux/blob/master/src/boards/coolgirl.cpp">FCEUX implementation</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241122201045
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.024 seconds
+Real time usage: 0.027 seconds
+Preprocessor visited node count: 45/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:727-0!canonical and timestamp 20241122201045 and revision id 21111.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multi_ASIC_mappers.xhtml">Multi-ASIC mappers</a>, <a href="Category_Mappers_with_large_PRG_RAM.xhtml">Mappers with large PRG RAM</a>, <a href="Category_Mappers_with_flash_save.xhtml">Mappers with flash save</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

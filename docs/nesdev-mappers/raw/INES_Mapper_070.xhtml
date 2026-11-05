@@ -1,0 +1,66 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 070</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_070"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 070</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_070">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_070">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><pre> ========================
+ =  Mapper 070          =
+ ========================
+ 
+ 
+ Example Games:
+ --------------------------
+ Family Trainer - Manhattan Police
+ <a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/4091/family-trainer-5-meiro-daisakusen">Family Trainer - Meiro Daisakusen</a>
+ <a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/1742/kamen-rider-club-gekitotsu-shocker-land">Kamen Rider Club</a>
+ Space Shadow
+ 
+ 
+ Notes:
+ ---------------------------
+ Many of these games use the <a href="Power_Pad.xhtml#Family_Trainer_Mat" title="Power Pad">Family Trainer Mat</a> as an input device.
+ 
+ 
+ Registers: **BUS CONFLICTS**
+ --------------------------
+   $8000-FFFF:  [PPPP CCCC]
+     P = Selects 16k PRG @ $8000
+     C = Selects 8k CHR @ $0000
+ 
+ 
+ PRG Setup:
+ --------------------------
+ 
+       $8000   $A000   $C000   $E000  
+     +---------------+---------------+
+     |     $8000     |     { -1}     |
+     +---------------+---------------+
+</pre>
+<p>The version of this board with 1-screen mapper-controlled mirroring is <a href="INES_Mapper_152.xhtml" title="INES Mapper 152">mapper 152</a>, and the version without a fixed bank at $C000-$FFFF is oversize <a href="GxROM.xhtml" title="GxROM">GxROM</a>. Before Mapper 152 was defined, the version with 1-screen mirroring had been denoted by setting the &quot;alternative nametables&quot; bit in the iNES header (according to the FWNES98E.TXT file of the fwNES emulator version 0.302b).
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123163457
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 1/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 1/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:355-0!canonical and timestamp 20241123163457 and revision id 21587.
+ -->
+</div><p class="categories">Categories: <a href="Category_In_NesCartDB.xhtml">In NesCartDB</a>, <a href="Category_Discrete_logic_mappers.xhtml">Discrete logic mappers</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a></p></div></body></html>

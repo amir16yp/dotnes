@@ -1,0 +1,91 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 115</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_115"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 115</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_115">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_115">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 115</b> denotes the 卡聖 (Kǎshèng) SFC-02B/-03/-004 boards, bearing an <a href="MMC3.xhtml" title="MMC3">MMC3</a>-clone with a 256 KiB outer CHR-ROM bank register and an NROM-like PRG-ROM register that can override the MMC3 clone's PRG-ROM bank. Used by:
+</p>
+<ul><li><i>A.V. 究極麻將 II</i> (<i>A.V. Jiūjí Májiàng II</i>, Kǎshèng re-release, originally released by 哥德 (Gouder) on <a href="INES_Mapper_116.xhtml" title="INES Mapper 116">INES Mapper 116</a>)</li>
+<li><i>包青天</i> (<i>Bāo Qīngtiān</i>, Justice Pao)</li>
+<li><i>餓狼伝説 Special</i> (<i>Garō Densetsu Special</i>, Kǎshèng re-release, originally released by 哥德 (Gouder) on <a href="INES_Mapper_116.xhtml" title="INES Mapper 116">INES Mapper 116</a>)</li>
+<li><i>雷電 II - Thunderbolt Fighting Plane</i> (<i>Léidiàn II</i>)</li>
+<li><i>三國春秋: 四川省</i> (<i>Sānguó Chūnqiū: Sìchuān Shěng</i>)</li>
+<li><i>幽☆遊☆白書 Final</i> (<i>Yū Yū Hakusho Final</i>, both Chinese and English versions)</li>
+<li><i>1997 Super HiK 16-in-1</i> multicart</li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Mode/NROM_Bank_Register_(%246000,_write)"><span class="tocnumber">1.1</span> <span class="toctext">Mode/NROM Bank Register ($6000, write)</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Outer_CHR-ROM_Bank_Register_(%246001,_write)"><span class="tocnumber">1.2</span> <span class="toctext">Outer CHR-ROM Bank Register ($6001, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Solder_Pad_Register_(%246002,_read)"><span class="tocnumber">1.3</span> <span class="toctext">Solder Pad Register ($6002, read)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#MMC3-compatible_registers_(%248000-%24FFFF)"><span class="tocnumber">1.4</span> <span class="toctext">MMC3-compatible registers ($8000-$FFFF)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Notes"><span class="tocnumber">2</span> <span class="toctext">Notes</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Similar_Mappers"><span class="tocnumber">3</span> <span class="toctext">Similar Mappers</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="Mode.2FNROM_Bank_Register_.28.246000.2C_write.29"/><span class="mw-headline" id="Mode/NROM_Bank_Register_($6000,_write)">Mode/NROM Bank Register ($6000, write)</span></h2>
+<pre>Mask: $E003
+
+D~[MPN. PPPp]
+   |||  ++++- If M=1: PRG A17..A14
+   ||+------- 0: If M=1: PRG A14=p (NROM-128)
+   ||         1: If M=1: PRG A14=CPU 14 (NROM-256)
+   |+-------- PRG A18
+   +--------- 0: MMC3 mode, PRG A17..A14=MMC3 PRG A17..A14
+              1: NROM mode, PRG A17..A14=PPPp and &quot;N&quot; bit applies
+Power-on value: $00
+</pre>
+<h2><span id="Outer_CHR-ROM_Bank_Register_.28.246001.2C_write.29"/><span class="mw-headline" id="Outer_CHR-ROM_Bank_Register_($6001,_write)">Outer CHR-ROM Bank Register ($6001, write)</span></h2>
+<pre>Mask: $E003
+
+D~[.... ...C]
+           +- CHR A18
+Power-on value: $00
+</pre>
+<h2><span id="Solder_Pad_Register_.28.246002.2C_read.29"/><span class="mw-headline" id="Solder_Pad_Register_($6002,_read)">Solder Pad Register ($6002, read)</span></h2>
+<pre>Mask: $E003
+
+D~[.... .VVV]
+         +++- Solder Pad value
+</pre>
+<h2><span id="MMC3-compatible_registers_.28.248000-.24FFFF.29"/><span class="mw-headline" id="MMC3-compatible_registers_($8000-$FFFF)">MMC3-compatible registers ($8000-$FFFF)</span></h2>
+<p>Mask: $E001, see <a href="MMC3.xhtml" title="MMC3">MMC3</a>.
+</p>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>Unlike many similar mappers, the $600x registers are not connected to the MMC3 clone's WRAM interface and thus function regardless of whether WRAM is enabled or not.</li>
+<li>IRQ behavior resembles &quot;Sharp&quot; behavior, i.e. a latch value of zero causes an IRQ on every scanline, on which the Chinese version of 幽☆遊☆白書 Final (Yuu Yuu Hakusho Final) depends.</li></ul>
+<h1><span class="mw-headline" id="Similar_Mappers">Similar Mappers</span></h1>
+<ul><li><a href="INES_Mapper_114.xhtml" title="INES Mapper 114">INES Mapper 114</a> has the same $6000 and $6001 registers, but additionally scrambles MMC3 register addresses and indices. Also, Mapper 114's IRQ behavior resembles &quot;NEC&quot; behavior, i.e. a latch value of zero disables IRQ.</li>
+<li><a href="INES_Mapper_187.xhtml" title="INES Mapper 187">INES Mapper 187</a> has a similar NROM override register, placed at $5000</li>
+<li><a href="INES_Mapper_248.xhtml" title="INES Mapper 248">INES Mapper 248</a> is a duplicate of Mapper 115.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123163547
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.016 seconds
+Real time usage: 0.020 seconds
+Preprocessor visited node count: 28/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:399-0!canonical and timestamp 20241123163547 and revision id 21614.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

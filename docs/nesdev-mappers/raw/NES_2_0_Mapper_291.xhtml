@@ -1,0 +1,53 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 291</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_291"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 291</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_291">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_291">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 291 is used for at least two Kasheng 2-in-1 multicarts both involving the game <i>Mortal Kombat 6</i>, a title screen hack of <i>餓狼伝説 Special</i> (Garou Densetsu Special) and another game. Nestopia Plus! for some inexplicable reason reuses <a href="INES_Mapper_047.xhtml" title="INES Mapper 047">INES Mapper 047</a> for them. It's an MMC3 clone with an outer bank register.
+</p>
+<h2><span id="Outer_Bank_Register_.28.246000.29.2C_write"/><span class="mw-headline" id="Outer_Bank_Register_($6000),_write">Outer Bank Register ($6000), write</span></h2>
+<pre>Mask: Probably $E000
+
+7654 3210
+---------
+?OM. .PP.
+|||   ++-- Select 32 KiB Inner PRG-ROM bank if Bit 5=1
+||+------- Select PRG-ROM banking mode
+||          0: Use MMC3 inner PRG-ROM bank (128 KiB)
+||          1: Select 32 KiB inner PRG-ROM bank using $6000 Bits 1 and 2
+|+-------- Select 128 KiB outer PRG and 256 KiB outer CHR-ROM bank
+|           0: First
+|           1: Second
++--------- Unknown function
+</pre>
+<p>The Outer Bank Register responds even when the MMC3 clone's WRAM bit is clear.
+</p>
+<h2><span class="mw-headline" id="Errata">Errata</span></h2>
+<p>The <i>2-in-1 (Mortal Kombat 6, Samurai Spirits)</i> ROM image in GoodNES 3.23b has the outer 128 KiB and 256 KiB CHR-ROM banks swapped. To run that image unmodified using the above description, the value written to $6000 would have to be XORed with 0x40.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123030247
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.010 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 10/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:676-0!canonical and timestamp 20241123030247 and revision id 7746.
+ -->
+</div><p class="categories">Categories: <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

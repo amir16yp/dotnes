@@ -1,0 +1,138 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 132</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_132"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 132</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_132">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_132">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>INES Mapper 132 is used to denote three compatible boards used by games from TXC Corporation:
+</p>
+<ul><li>TXC 01-22003-400 PCB: 72 pins with <a href="CIC_lockout_chip.xhtml" class="mw-redirect" title="CIC">CIC</a> stun circuit, <a href="TXC_05_00002_010_pinout.xhtml" title="TXC 05-00002-010 pinout">TXC 05-00002-010</a> ASIC, max. 64 KiB PRG-ROM, max. 32 KiB CHR-ROM</li>
+<li>TXC 01-22111-100 PCB: 60 pins, TXC 05-00002-010 ASIC, max. 64 KiB PRG-ROM, max. 32 KiB CHR-ROM</li>
+<li>TXC 01-22270-000 PCB: 60 pins, TXC 05-00002-010 ASIC or 74LS161 latch, max. 64 KiB PRG-ROM, max. 32 KiB CHR-ROM</li></ul>
+<table class="tabular">
+<tbody><tr>
+<th>Title</th>
+<th>Cartridge code</th>
+<th>PRG-ROM</th>
+<th>CHR-ROM</th>
+<th>Notes
+</th></tr>
+<tr>
+<td>棋王 (Qíwáng, Chinese Chess)</td>
+<td>MGC-001</td>
+<td>64 KiB</td>
+<td>32 KiB</td>
+<td>
+</td></tr>
+<tr>
+<td>Creatom</td>
+<td>MGC-003</td>
+<td>64 KiB</td>
+<td>32 KiB</td>
+<td>
+</td></tr>
+<tr>
+<td>小瑪琍 (Xiǎo Mǎlí)</td>
+<td>MGC-005</td>
+<td>16 KiB</td>
+<td>8 KiB</td>
+<td>TXC re-release, no bankswitching or copy-protection. Cartridge label titles it <i>Bingo</i>.
+</td></tr>
+<tr>
+<td>麻将方块 (Mahjong Block)</td>
+<td>MGC-008</td>
+<td>32 KiB</td>
+<td>32 KiB</td>
+<td>TXC re-release
+</td></tr>
+<tr>
+<td>Venice Beach Volley</td>
+<td>MGC-010</td>
+<td>32 KiB</td>
+<td>32 KiB</td>
+<td>TXC re-release
+</td></tr>
+<tr>
+<td>Rad Racket - Deluxe Tennis II</td>
+<td>MGC-011</td>
+<td>32 KiB</td>
+<td>32 KiB</td>
+<td>TXC re-release
+</td></tr></tbody></table>
+<p>Its UNIF board name is <b>UNL-22211</b>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#TXC_01-22270-000_PCB_with_74LS161_latch"><span class="tocnumber">3</span> <span class="toctext">TXC 01-22270-000 PCB with 74LS161 latch</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Notes"><span class="tocnumber">4</span> <span class="toctext">Notes</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Similar_Mappers"><span class="tocnumber">5</span> <span class="toctext">Similar Mappers</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#See_also"><span class="tocnumber">6</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>CPU $8000-$FFFF: 32 KiB switchable PRG ROM bank</li>
+<li>PPU $0000-$1FFF: 8 KiB switchable CHR ROM bank</li></ul>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>Mapper 132 uses a custom IC (real number 05-00002-010, often with fake markings) serving as a latch, adder and inverter. There are six registers: &quot;P&quot;, &quot;R&quot;, and Output (three bits each); &quot;S&quot;, inCrement, and and inVert (one bit each).
+</p>
+<pre>Mask: $E100
+ read $4100: [xxxx SRRR]
+              |||| ||||
+              |||| ++++- Copy internal registers 'RRR' and<b> 'S' XOR 'V' </b>to data bus.
+              ++++------ open bus
+Mask: $E103
+ write $4100: If Increment is set, internal register 'RRR' &lt;- 'RRR'+1
+              Otherwise, if Invert is clear, copy internal register 'PPP' to 'RRR'
+                         if Invert is set, copy '~PPP' to 'RRR'
+              'S' is not changed at all.
+ write $4101: [.... ...V] - Invert Mode
+ write $4102: [.... SPPP] - Copy data bus to internal registers 'S' and 'PPP'.
+                            'S' can be read back immediately; 'PPP' must be copied using $4100 first.
+ write $4103: [.... ...C] - Increment Mode
+Mask: $8000
+ write $8000: copy internal register 'RRR' to PRG A15, CHR A14, and CHR A13 banking pins, in order.
+</pre>
+<p>Games will also check the lower three or four bits of $4100 for the correct value after several increment and inversion operations as a copy-protection measure.
+</p>
+<h2><span class="mw-headline" id="TXC_01-22270-000_PCB_with_74LS161_latch">TXC 01-22270-000 PCB with 74LS161 latch</span></h2>
+<p>Instead of the 05-00002-010 ASIC, the 01-22270-000 PCB variant can also use a simple 74LS161 latch, which would make the board function as <a href="GxROM.xhtml" class="mw-redirect" title="MHROM">MHROM</a>.
+</p>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li><i>戰國四川省</i> (Zhànguó Sìchuān Shěng, original version of AVE's <i>Tiles of Fate</i>) is set to Mapper 132 in GoodNES 3.23b. That ROM image is actually a mapper hack with the PRG-ROM code unmodified but the CHR-ROM banks rearranged to work as Mapper 132; the correct mapper is <a href="INES_Mapper_173.xhtml" title="INES Mapper 173">INES Mapper 173</a>. That mapper hack only works on certain emulators' implementation of Mapper 132, not on the above implementation based on studying the circuit board.</li>
+<li>The TXC re-release of <i>小瑪琍</i> (Xiǎo Mǎlí), with cartridge code MGC-005, uses the 01-22111-100 board as well, but since it does not use any bankswitching whatsoever, it can be emulated as mapper 0.</li>
+<li><i>麻将方块 (Mahjong Block)</i> (TXC re-release, headerless CRC32 0ACFC3CD) is commonly set to <a href="INES_Mapper_173.xhtml" title="INES Mapper 173">INES Mapper 173</a>, but since it expects Output bit 1 to select CHR A14, it actually uses INES Mapper 132. Note that the original <i>Super Mega</i> release of the game uses <a href="INES_Mapper_172.xhtml" title="INES Mapper 172">INES Mapper 172</a>.</li></ul>
+<h2><span class="mw-headline" id="Similar_Mappers">Similar Mappers</span></h2>
+<ul><li>On games with only 32 KiB PRG-ROM, Mapper 132 is almost identical to <a href="INES_Mapper_136.xhtml" title="INES Mapper 136">INES Mapper 136</a> except in the value read from $4100 due to Mapper 136 having four (28-pin JV001 ASIC) versus Mapper 132 having three adder bits (24-pin 05-00002-010 ASIC).</li>
+<li>On games with only 32 KiB PRG-ROM, <a href="INES_Mapper_173.xhtml" title="INES Mapper 173">INES Mapper 173</a> is similar to Mapper 132 except that CHR A14 is taken from the inverse of the Invert bit rather than Output bit 1.</li>
+<li><a href="INES_Mapper_036.xhtml" title="INES Mapper 036">INES Mapper 036</a> is somewhat similar, using the same 05-00002-010 ASIC. It utilizes CPU bits 4 and 5 instead of 2 for PRG-ROM banking and moves CHR-ROM banking to a separate data latch.</li></ul>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<p><a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?f=3&amp;t=15961&amp;p=213362#p213362">PCB images </a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123163606
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.022 seconds
+Real time usage: 0.027 seconds
+Preprocessor visited node count: 27/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:416-0!canonical and timestamp 20241123163606 and revision id 4967.
+ -->
+</div></div></body></html>

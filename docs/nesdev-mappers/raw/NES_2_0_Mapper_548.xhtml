@@ -1,0 +1,78 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 548</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_548"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 548</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_548">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_548">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 548</b> denotes 科統實業股份有限公司 (Co Tung Co.)'s <b>CTC-15</b> circuit board, used for their cartridge conversion of the FDS game <i>Almanaの奇跡 (Almana no Kiseki)</i>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Latch_and_IRQ_control_(%244800,_write)"><span class="tocnumber">2.1</span> <span class="toctext">Latch and IRQ control ($4800, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Latch_Apply_(%245000,_write)"><span class="tocnumber">2.2</span> <span class="toctext">Latch Apply ($5000, write)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#See_also"><span class="tocnumber">3</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: 8 KiB unbanked PRG-RAM</li>
+<li>CPU $8000-$BFFF: Switchable 16 KiB PRG-ROM bank</li>
+<li>CPU $C000-$FFFF: Fixed 16 KiB PRG-ROM bank #3</li>
+<li>PPU $0000-$1FFF: 8 KiB unbanked CHR-RAM</li></ul>
+<p>Mirroring is hard-wired to Horizontal.
+</p>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="Latch_and_IRQ_control_.28.244800.2C_write.29"/><span class="mw-headline" id="Latch_and_IRQ_control_($4800,_write)">Latch and IRQ control ($4800, write)</span></h2>
+<pre>Mask: $F800
+
+A~FEDC BA98 7654 3210
+  -------------------
+  0100 1... ..A. BC..
+              +--++--- Latch value
+                  +--- IRQ control
+
+Power-on value (ABC): $7
+</pre>
+<ul><li>The latch value is not used until the Latch Apply register is written to.</li>
+<li>IRQ control:
+<ul><li>0: Enable M2 counting and IRQ generation</li>
+<li>1: Disable M2 counting and IRQ generation, acknowledge IRQ, counter is reset to 0.</li></ul></li></ul>
+<p>If counting is enabled, the counter is clocked on every falling edge of M2. IRQ is asserted while <tt>((counter÷640)&amp;37)=37</tt>, so it is asserted the first time when the counter reaches 23680 and self-acknowledges the first time when it reaches 24320.
+</p>
+<h2><span id="Latch_Apply_.28.245000.2C_write.29"/><span class="mw-headline" id="Latch_Apply_($5000,_write)">Latch Apply ($5000, write)</span></h2>
+<p>Mask: $F800
+</p><p>Upon writing to the $5000-$57FF address range, the latched value written to $4800 is XOR'd with $05 and applied as the 16 KiB PRG-ROM bank at CPU $8000-$BFFF. The power-on bank is $7.
+</p>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<p><a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?f=9&amp;t=19359">PCB image and analysis</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164606
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.012 seconds
+Real time usage: 0.022 seconds
+Preprocessor visited node count: 19/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:854-0!canonical and timestamp 20241123164606 and revision id 8186.
+ -->
+</div><p class="categories">Categories: <a href="Category_FDS_conversion_mappers.xhtml">FDS conversion mappers</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Mappers_with_fixed_timing_cycle_IRQs.xhtml">Mappers with fixed-timing cycle IRQs</a></p></div></body></html>

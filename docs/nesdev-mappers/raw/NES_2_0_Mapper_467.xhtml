@@ -1,0 +1,52 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 467</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_467"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 467</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_467">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_467">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 467</b> denotes the <b>47-2</b> <a href="MMC3.xhtml" title="MMC3">MMC3</a>-based circuit board, used for a <i>72-in-1</i> multicart. It is effectively <a href="INES_Mapper_197.xhtml" title="INES Mapper 197">INES Mapper 197</a> submapper 0 with an outer bank register and an NROM mode.
+</p>
+<h2><span id="Outer_Bank_Register_.28.249000.2C_write.29"/><span class="mw-headline" id="Outer_Bank_Register_($9000,_write)">Outer Bank Register ($9000, write)</span></h2>
+<pre>Mask: $F000?
+
+D~[MSNQ QPPp]
+   ||++-++++- PRG A18..A14
+   ||+------- PRG banking mode
+   ||          0=NROM-128
+   ||          1=MMC3-based
+   |+-------- PRG (if N=1)/CHR banking mode
+   |           0=PRG A14..A13 from MMC3, PRG A19..A15 from NQQPP
+   |             CHR A12..A10=PPU A12..A10, CHR A18..A13 from MMC3 CHR A17..A12, CHR A19=0
+   |           1=PRG A16..A13 from MMC3, PRG A19..A17 from NQQ
+   |             CHR A10=PPU A10, CHR A18..A11 from MMC3 CHR A17..A10, CHR A19=1
+   +--------- Nametable mirroring
+               0=Vertical
+               1=Horizontal
+</pre>
+<p>The MMC3 clone ignores the PRG/CHR inversion bits D6 and D7 in the pointer register $8000, and its mirroring output is ignored in favor of the Outer Bank Register's.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164502
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.015 seconds
+Preprocessor visited node count: 9/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:2307-0!canonical and timestamp 20241123164502 and revision id 19326.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

@@ -10,6 +10,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <!-- Override transitive Pkcs from Analyzer.Testing until upstream bumps past GHSA-846f-f764-76mx -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
       <PrivateAssets>all</PrivateAssets>

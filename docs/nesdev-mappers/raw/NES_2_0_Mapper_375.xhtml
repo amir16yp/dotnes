@@ -1,0 +1,83 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 375</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_375"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 375</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_375">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_375">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 375</b> denotes an address-latch-based multicart circuit board mounting 2 MiB of PRG-ROM plus 8 KiB of unbanked CHR-RAM. It is basically an enhancement of <a href="INES_Mapper_227.xhtml" title="INES Mapper 227">INES Mapper 227</a> that increases the PRG-ROM size to 2 MiB and allows the UNROM-like switchable bank to be changed via a data latch like a normal <a href="UxROM.xhtml" class="mw-redirect" title="UNROM">UNROM</a> board.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Address_Latch_(%248000-%24FFFF,_write)"><span class="tocnumber">1</span> <span class="toctext">Address Latch ($8000-$FFFF, write)</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#UNROM-like_Data_Latch_(%248000-%24FFFF,_write)"><span class="tocnumber">2</span> <span class="toctext">UNROM-like Data Latch ($8000-$FFFF, write)</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Effective_banking_modes"><span class="tocnumber">3</span> <span class="toctext">Effective banking modes</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Similar_mappers"><span class="tocnumber">4</span> <span class="toctext">Similar mappers</span></a></li>
+</ul>
+</div>
+
+<h2><span id="Address_Latch_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Address_Latch_($8000-$FFFF,_write)">Address Latch ($8000-$FFFF, write)</span></h2>
+<pre>[A~1... UQLQ OQQP PpMS]
+        |||| |||| |||+-0: PRG A14=p
+        |||| |||| |||  1: PRG A14=CPU A14
+        |||| |||| ||+- 0: Vertical mirroring
+        |||| |||| ||   1: Horizontal mirroring
+        |||| |||+-++-- PRG A16..A14 (inner bank)
+        |+|+-|++------ PRG A20..A17 (outer bank)
+        | |  +-------- 0: When CPU A14=1: PRG A16..14=LLL
+        | |            1: When CPU A14=1: PRG A16..14=PPp
+        | +----------- Value for PRG A16..14 when CPU A14=1 and O=0
+        +------------- 0: Address latch writable, PRG A16..A14 normal
+                       1: Address latch locked, PRG A16..A14 from CBA
+Power-on value: 0
+</pre>
+<h2><span id="UNROM-like_Data_Latch_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="UNROM-like_Data_Latch_($8000-$FFFF,_write)">UNROM-like Data Latch ($8000-$FFFF, write)</span></h2>
+<pre>[D~.... .CBA]
+         +++- PRG A16..A14 when U=1 and CPU A14=0
+</pre>
+<h2><span class="mw-headline" id="Effective_banking_modes">Effective banking modes</span></h2>
+<pre>Bit 11  Bit 9   Bit 7   Bit 0   Meaning
+$800s   $200s   $080s   $001s
+ (U)     (L)     (O)     (S)
+  0       0       0       0     Switchable inner 16 KiB bank PPp at CPU $8000-$BFFF, fixed inner bank #0 at CPU $C000-$FFFF (UNROM-like with fixed bank 0)
+  0       0       0       1     Switchable inner 16 KIB bank PP0 at CPU $8000-$BFFF, fixed inner bank #0 at CPU $C000-$FFFF (UNROM-like with only even banks reachable, pointless)
+  0       1       0       0     Switchable inner 16 KiB bank PPp at CPU $8000-$BFFF, fixed inner bank #7 at CPU $C000-$FFFF (UNROM via address latch)
+  0       1       0       1     Switchable inner 16 KIB bank PP0 at CPU $8000-$BFFF, fixed inner bank #7 at CPU $C000-$FFFF (UNROM via address latch with only even banks reachable, pointless)
+  0       ?       1       0     Switchable 16 KiB inner bank PPp at CPU $8000-$BFFF, mirrored at CPU $C000-$FFFF (NROM-128)
+  0       ?       1       1     Switchable 32 KiB inner bank PP at CPU $8000-$FFFF (NROM-256)   
+  1       0       0       0     Switchable inner 16 KiB bank CBA at CPU $8000-$BFFF, fixed inner bank #0 at CPU $C000-$FFFF (UNROM-like with fixed bank 0)
+  1       0       0       1     Switchable inner 16 KIB bank CB0 at CPU $8000-$BFFF, fixed inner bank #0 at CPU $C000-$FFFF (UNROM-like with only even banks reachable, pointless)
+  1       1       0       0     Switchable inner 16 KiB bank CBA at CPU $8000-$BFFF, fixed inner bank #7 at CPU $C000-$FFFF (UNROM via data latch)
+  1       1       0       1     Switchable inner 16 KIB bank CB0 at CPU $8000-$BFFF, fixed inner bank #7 at CPU $C000-$FFFF (UNROM via data latch with only even banks reachable, pointless)
+</pre>
+<ul><li>CHR-RAM is write-protected when O=1 and write-enabled when O=0, i.e. write-protected in the NROM-128 and NROM-256 modes.</li>
+<li>Because all bits are cleared on reset, both CPU $8000-$BFFF and $C000-$FFFF are set to 16 KiB bank #0 on reset.</li></ul>
+<h2><span class="mw-headline" id="Similar_mappers">Similar mappers</span></h2>
+<ul><li><a href="INES_Mapper_227.xhtml" title="INES Mapper 227">INES Mapper 227</a> is a variant with only up to 1 MiB PRG-ROM without the data latch.</li>
+<li><a href="INES_Mapper_242.xhtml" title="INES Mapper 242">INES Mapper 242</a> is a variant with only up to 512 KiB PRG-ROM without the data latch that moves the <i>m</i> bit to a different bit location. A variant with two PRG-ROM chips exists as well.</li>
+<li><a href="NES_2_0_Mapper_380.xhtml" title="NES 2.0 Mapper 380">NES 2.0 Mapper 380</a> is an incompatible variant without the data latch.</li>
+<li><a href="NES_2_0_Mapper_449.xhtml" title="NES 2.0 Mapper 449">NES 2.0 Mapper 449</a> is an incompatible variant whose data latch is for 32 KiB CHR-RAM bankswitching functionality instead.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123010607
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.008 seconds
+Real time usage: 0.011 seconds
+Preprocessor visited node count: 18/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:760-0!canonical and timestamp 20241123010607 and revision id 18842.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

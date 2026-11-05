@@ -1,0 +1,58 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 058</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_058"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 058</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_058">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_058">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 058</b> is used for a number of simple NROM-/CNROM-based multicarts:
+</p>
+<ul><li><i>21-in-1 (AS-5321)</i></li>
+<li><i>50-in-1 (WQ1806 B)</i></li>
+<li><i>55-in-1 (WQ2006 B)</i></li>
+<li><i>68-in-1 (HKX5268)</i></li>
+<li><i>75-in-1 (WQ1905 E)</i></li>
+<li><i>86-in-1 (AP-5486)</i></li>
+<li><i>92-in-1 (WQ1605 E)</i></li>
+<li><i>97-in-1 (WQ1708 B)</i></li></ul>
+<h2><span id="Address_Latch_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Address_Latch_($8000-$FFFF,_write)">Address Latch ($8000-$FFFF, write)</span></h2>
+<pre>Mask: $8000
+
+A~FEDC BA98 7654 3210
+  -------------------
+  1... .... MSCC CPPP
+            |||| |+++- PRG A16..A14
+            ||++-+---- CHR A15..A13
+            |+-------- PRG Mode
+            |           0: NROM-256 (PRG A14=CPU A14)
+            |           1: NROM-128
+            +--------- Nametable mirroring
+                        0: Vertical
+                        1: Horizontal
+</pre>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li><a href="INES_Mapper_213.xhtml" title="INES Mapper 213">INES Mapper 213</a> is a duplicate.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123163445
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.006 seconds
+Real time usage: 0.007 seconds
+Preprocessor visited node count: 9/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:343-0!canonical and timestamp 20241123163445 and revision id 4340.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

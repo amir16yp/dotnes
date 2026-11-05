@@ -1,0 +1,92 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 518</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_518"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 518</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_518">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_518">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 518</b> is used for several games and educational computer cartridges from Subor:
+</p>
+<ul><li><i>小霸王 Subor 999</i></li>
+<li><i>小霸王 Subor V</i></li>
+<li><i>跳舞天使: 動感 2000</i> (also known as <i>Dance 2000 12-in-1</i>)</li></ul>
+<p>Its UNIF board name is <b>UNL-DANCE2000</b>. It banks PRG-ROM in 16 or 32 KiB amounts, has 8 KiB WRAM, and 2x4 KiB of CHR-RAM that can be bankswitched according to the current nametable offset during rendering.
+</p><p><i>小霸王 Subor V</i> was sold both as the built-in BIOS of the Subor SB-97 educational computer, and as a stand-alone cartridge; both versions have identical ROM content. The stand-alone cartridge is a plug-through cartridge to which an expansion cartridge can be connected. In its built-in SB-97 configuration, is additionally has access to a 3.5&quot; floppy disk drive and controller, as well as 128 KiB of secondary PRG-RAM.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#PRG-ROM_Bank_Register_(%245000)"><span class="tocnumber">1.1</span> <span class="toctext">PRG-ROM Bank Register ($5000)</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Mode_Register_(%245200)"><span class="tocnumber">1.2</span> <span class="toctext">Mode Register ($5200)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Floppy_Disk_Controller_(%2455xx-%2456xx)"><span class="tocnumber">1.3</span> <span class="toctext">Floppy Disk Controller ($55xx-$56xx)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Notes"><span class="tocnumber">1.4</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: 8 KiB of unbanked primary PRG-RAM</li>
+<li>CPU $8000-$BFFF: 16 KiB of PRG-ROM or PRG-RAM, switchable</li>
+<li>CPU $C000-$FFFF: 16 KiB of PRG-ROM, fixed to bank #0</li>
+<li>PPU $0000-$0FFF: 4 KiB of CHR-RAM, switchable</li>
+<li>PPU $0000-$1FFF: 4 KiB of CHR-RAM, fixed to bank #1</li></ul>
+<h2><span id="PRG-ROM_Bank_Register_.28.245000.29"/><span class="mw-headline" id="PRG-ROM_Bank_Register_($5000)">PRG-ROM Bank Register ($5000)</span></h2>
+<pre>Bit 7654 3210
+    REPP PPPP
+    ||++-++++- Select 16 or 32 KiB PRG bank at CPU $8000
+    |+-------- 0: Bank comes from main cartridge
+    |          1: Bank comes from expansion cartridge
+    +--------- 0: Bank comes from ROM (main or expansion cartridge)
+               1: Bank comes from 128 KiB secondary PRG-RAM (SB-97 only)
+</pre>
+<p>In 16 KiB PRG banking mode, $C000-$FFFF always comes from main cartridge ROM bank #0. ROM images of expansion cartridges contain the main cartridge data in their first 1 MiB, followed by the expansion cartridge's 1 MiB of data. This means that the 'E' bit needs no special treatment in emulators, as it merely maps to PRG A20 of the combined 2 MiB address space.
+</p>
+<h2><span id="Mode_Register_.28.245200.29"/><span class="mw-headline" id="Mode_Register_($5200)">Mode Register ($5200)</span></h2>
+<pre>Bit 7654 3210
+    .... .SBM
+          ||+- Select nametable mirroring
+          ||   0: Vertical
+          ||   1: Horizontal
+          |+-- Select CHR-RAM banking mode (during PPU read accesses only)
+          |     0: 8 KiB CHR-RAM at PPU $0000-$1FFF
+          |     1: 4 KiB CHR-RAM at PPU $0000-$0FFF automatically switched, 4 KiB CHR-RAM at PPU $1000-$1FFF fixed to second half of CHR-RAM
+          +--- Select PRG-ROM bank size
+                0: 16 KiB PRG-ROM bank at CPU $8000-$BFFF, $C000-$FFFF fixed to <b>first</b> PRG-ROM bank
+                1: 32 KiB PRG-ROM bank at CPU $8000-$FFFF
+</pre>
+<h2><span id="Floppy_Disk_Controller_.28.2455xx-.2456xx.29"/><span class="mw-headline" id="Floppy_Disk_Controller_($55xx-$56xx)">Floppy Disk Controller ($55xx-$56xx)</span></h2>
+<ul><li>$5500 (write): Corresponds to a µPD765-compatible floppy disk controller's Configuration Control register.</li>
+<li>$5501 (write): Corresponds to a µPD765-compatible floppy disk controller's Digital Output register.</li>
+<li>$5505 (write): Corresponds to a µPD765-compatible floppy disk controller's Data Register.</li>
+<li>$5604 (read): Corresponds to a µPD765-compatible floppy disk controller's Main Status register.</li>
+<li>$5605 (read): Corresponds to a µPD765-compatible floppy disk controller's Data Register.</li></ul>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li>When Bit 1 of the Mode register is set, PPU $0000-$0FFF will point to the first half of CHR-RAM while the PPU renders from the first CIRAM nametable, and the second half of CHR-RAM while the PPU renders from the second CIRAM nametable (offset $2400/$2C00 with vertical mirroring, or offset $2800/$2C00 with horizontal mirroring). The game uses this feature to have a CHR bankswitch in the middle of the screen by setting the scroll value such that the position at which the CHR bank needs to be switched is the seams between the two CIRAM nametables. This works even in the horizontal direction, providing a simple way for a mid-scanline bankswitch. Note that write accesses to CHR-RAM are never bankswitched.</li></ul>
+<ul><li>Note that these games require Dendy video timing and will produce graphical glitches with NTSC or regular PAL timing; <i>Subor V</i> will freeze with NTSC timing.</li></ul>
+<ul><li><a href="NES_2_0_Mapper_514.xhtml" title="NES 2.0 Mapper 514">NES 2.0 Mapper 514</a> is a simpler form of this mapper with only 32 KiB PRG-ROM banking.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123164527
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.013 seconds
+Real time usage: 0.018 seconds
+Preprocessor visited node count: 15/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:824-0!canonical and timestamp 20241123164527 and revision id 8095.
+ -->
+</div></div></body></html>

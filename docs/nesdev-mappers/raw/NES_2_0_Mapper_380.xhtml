@@ -1,0 +1,66 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 380</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_380"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 380</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_380">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_380">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 380</b> denotes the <b>970630C</b> (submapper 0) and <b>KN-35A</b> (submapper 1) multicart circuit board mounting 256-512 KiB of PRG-ROM plus 8 KiB of unbanked CHR-RAM.
+</p>
+<h2><span id="Address_Latch_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Address_Latch_($8000-$FFFF,_write)">Address Latch ($8000-$FFFF, write)</span></h2>
+<pre>[A~1... ..Om CRQP PpMS]
+          || |||| |||+-0: PRG A14=CPU A14
+          || |||| |||  1: PRG A14=p
+          || |||| ||+- 0: Vertical mirroring
+          || |||| ||   1: Horizontal mirroring
+          || |+++-++-- PRG A18..A14
+          || +-------- 0: CHR-RAM writeable
+          ||           1: CHR-RAM write-protected
+          |+---------- <b>Submapper 0</b>:
+          |            0: PRG A3..A0=CPU A3..A0
+          |            1: PRG A3..A0=Solder pad 3-0
+          |            <b>Submapper 1</b>:
+          |            0: PRG A17=Q if CPU A14=1
+          |            1: PRG A17=1 if CPU A14=1 (UOROM)
+          +----------- 0: When CPU A14=1: PRG A16..14=111 (UNROM)
+                       1: When CPU A14=1: PRG A16..14=PPp
+Power-on value: 0
+</pre>
+<p>Effective meaning:
+</p>
+<pre>Bit 9   Bit 8   Bit 0   Meaning
+$200s   $100s   $001s
+ (O)     (m)     (S)
+  0       0       ?     Switchable inner 16 KiB bank PPp at CPU $8000-$BFFF, fixed inner bank #7 at CPU $C000-$FFFF (UNROM)
+  0       1       ?     Switchable inner 16 KiB bank QPPp at CPU $8000-$BFFF, fixed inner bank #15 at CPU $C000-$FFFF (UOROM, submapper 1 only)
+  1       ?       0     Switchable 32 KiB inner bank PP at CPU $8000-$FFFF (NROM-256)
+  1       ?       1     Switchable 16 KiB inner bank PPp at CPU $8000-$BFFF, mirrored at CPU $C000-$FFFF (NROM-128)
+</pre>
+<ul><li>When the <i>m</i> bit is set, PRG A3-A0 are replaced with the values of four solder pads, which when the menu code reads particular ROM locations effectively selects one of up to 16 menus with different game counts (submapper 0 only).</li>
+<li>Because all bits are cleared on reset, CPU $8000-$BFFF is set to 16 KiB bank #0, and $C000-$FFFF is set to 16 KiB bank #7 on reset.</li></ul>
+<h2><span class="mw-headline" id="Similar_mappers">Similar mappers</span></h2>
+<ul><li><a href="INES_Mapper_227.xhtml" title="INES Mapper 227">INES Mapper 227</a> and <a href="INES_Mapper_242.xhtml" title="INES Mapper 242">INES Mapper 242</a> are incompatible variants with similar functionality.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123085552
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.011 seconds
+Real time usage: 0.017 seconds
+Preprocessor visited node count: 9/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:765-0!canonical and timestamp 20241123085552 and revision id 18847.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

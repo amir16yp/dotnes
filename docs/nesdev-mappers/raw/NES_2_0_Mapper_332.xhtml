@@ -1,0 +1,72 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 332</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_332"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 332</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_332">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_332">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 mapper 332</b> is used for the <i>Super 40-in-1</i> and <i>Super 500-in-1</i> multicarts. Its UNIF board name is <b>BMC-WS</b>.
+</p>
+<h2><span id="PRG.2FMirroring_Register_.28.246000.29"/><span class="mw-headline" id="PRG/Mirroring_Register_($6000)">PRG/Mirroring Register ($6000)</span></h2>
+<pre>Mask: probably $E001
+
+D~7654 3210
+  ---------
+  .H.M BPPp
+   | | |+++- PRG A14..A16 for CPU $8000-$BFFF and $C000-$FFFF
+   | | +---- Select PRG A14 Mode
+   | |        0: PRG A14=CPU A14 (NROM-256)
+   | |        1: PRG A14=p (NROM-128)
+   | +------ Select nametable mirroring mode
+   |          0: Vertical
+   |          1: Horizontal
+   +-------- Select PRG A17 and CHR A16
+Reset value: $00
+</pre>
+<h2><span id="CHR.2FSolder_Pad_Register_.28.246001.29"/><span class="mw-headline" id="CHR/Solder_Pad_Register_($6001)">CHR/Solder Pad Register ($6001)</span></h2>
+<pre>Mask: probably $E001
+
+D~7654 3210
+  ---------
+  DDMM .Cdc
+  ||||  |++- CHR A13..A14 for PPU $0000-$1FFF if MM=11
+  ||||  +--- CHR A15
+  ||++------ 00: CNROM-256 mode: CHR A13..A14 from CNROM latch
+  ||         10: CNROM-128 mode: CHR A13 from CNROM latch, CHR A14 from d
+  ||         11: NROM mode: CHR A13..A14 from dc
+  ++-------- Solder pad check
+Reset value: $00
+</pre>
+<p>The solder pads connect the latch output directly to PRG-ROM /CE. The menu code, executing from RAM, sets either bit to check whether CPU $8000-$FFFF now returns open bus, and selects a menu with different game counts depending on the result.
+</p>
+<h2><span id="CNROM_latch_.28.248000-.24FFFF.29"/><span class="mw-headline" id="CNROM_latch_($8000-$FFFF)">CNROM latch ($8000-$FFFF)</span></h2>
+<pre>D~7654 3210
+  ---------
+  .... ..CC
+         ++- CHR A13..A14 for PPU $0000-$1FFF if MM=00
+Reset value: $00
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123164156
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.020 seconds
+Preprocessor visited node count: 11/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:717-0!canonical and timestamp 20241123164156 and revision id 7853.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

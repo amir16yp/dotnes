@@ -1,0 +1,123 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 544</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_544"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 544</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_544">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_544">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 544 denotes the Waixing FS306 board, used for <i>覇王的大陸 (Bàwáng de Dàlù)</i>, which is their Chinese translation of Namco's <i>三国志 II: 覇王の大陸 (Sangokushi II: Haō no Tairiku)</i>. It is similar to <a href="INES_Mapper_253.xhtml" title="INES Mapper 253">INES Mapper 253</a> in combining a <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">VRC4</a> clone with a GAL chip that replaces a selectable two or four CHR banks with 2 KiB of CHR-RAM. It differs in the address lines to which the VRC4 responds, in adding a third selectable 8 KiB PRG-ROM bank, and in selecting the CIRAM bank for all four nametables independently.
+</p><p>A later re-release of the game uses <a href="INES_Mapper_176.xhtml" title="INES Mapper 176">INES Mapper 176</a>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#VRC4_registers"><span class="tocnumber">2.1</span> <span class="toctext">VRC4 registers</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#PRG-ROM_select_#2_(%249C00,_write)"><span class="tocnumber">2.2</span> <span class="toctext">PRG-ROM select #2 ($9C00, write)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#CIRAM_select_(%249C0C-%249C0F,_write)"><span class="tocnumber">2.3</span> <span class="toctext">CIRAM select ($9C0C-$9C0F, write)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#CHR-RAM_Bank_Selection"><span class="tocnumber">2.4</span> <span class="toctext">CHR-RAM Bank Selection</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-7"><a href="#See_also"><span class="tocnumber">3</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: 8 KiB fixed PRG-RAM bank (battery-backed)</li>
+<li>CPU $8000-$9FFF: 8 KiB switchable PRG-ROM bank</li>
+<li>CPU $A000-$BFFF: 8 KiB switchable PRG-ROM bank</li>
+<li>CPU $C000-$DFFF: 8 KiB switchable PRG-ROM bank</li>
+<li>CPU $E000-$FFFF: 8 KiB PRG-ROM bank, fixed to last bank</li>
+<li>PPU $0000-$03FF: 1 KiB switchable CHR-ROM/RAM bank</li>
+<li>PPU $0400-$07FF: 1 KiB switchable CHR-ROM/RAM bank</li>
+<li>PPU $0800-$0BFF: 1 KiB switchable CHR-ROM/RAM bank</li>
+<li>PPU $0C00-$0FFF: 1 KiB switchable CHR-ROM/RAM bank</li>
+<li>PPU $1000-$13FF: 1 KiB switchable CHR-ROM/RAM bank</li>
+<li>PPU $1400-$17FF: 1 KiB switchable CHR-ROM/RAM bank</li>
+<li>PPU $1800-$1BFF: 1 KiB switchable CHR-ROM/RAM bank</li>
+<li>PPU $1C00-$1FFF: 1 KiB switchable CHR-ROM/RAM bank</li>
+<li>PPU $2000-$23FF: 1 KiB switchable CIRAM bank</li>
+<li>PPU $2400-$27FF: 1 KiB switchable CIRAM bank</li>
+<li>PPU $2800-$2BFF: 1 KiB switchable CIRAM bank</li>
+<li>PPU $2C00-$2FFF: 1 KiB switchable CIRAM bank</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<p>The VRC4 clone's A0 and A1 inputs are connected to CPU A10 and A11, respectively. Subaddresses $000/$001/$002/$003 therefore become $000/$400/$800/$C00. The VRC4's External Select at $9C00 (pin 18) is used to select the third PRG-ROM bank and the CIRAM bank for all four nametables.
+</p>
+<h2><span class="mw-headline" id="VRC4_registers">VRC4 registers</span></h2>
+<ul><li>PRG-ROM select #0 ($8000, write)</li>
+<li>PRG-ROM select #1 ($A000, write)</li>
+<li>CHR Select Low/High ($B000-$EFFF, write)</li>
+<li>IRQ Control ($F000-$FFFF, write)</li></ul>
+<p>These registers function identically to a normal <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">VRC4</a>. Note that the game uses 512 KiB of CHR-ROM, which even the original VRC4 supported. The IRQ seems to occur one M2 cycle later than on an original VRC4.
+</p>
+<h2><span id="PRG-ROM_select_.232_.28.249C00.2C_write.29"/><span class="mw-headline" id="PRG-ROM_select_#2_($9C00,_write)">PRG-ROM select #2 ($9C00, write)</span></h2>
+<pre>Mask: $9C04
+
+D~7654 3210
+  ---------
+  ...P PPPP
+     | ||||
+     +-++++- Select 8 KiB PRG bank at $C000-$DFFF
+</pre>
+<h2><span id="CIRAM_select_.28.249C0C-.249C0F.2C_write.29"/><span class="mw-headline" id="CIRAM_select_($9C0C-$9C0F,_write)">CIRAM select ($9C0C-$9C0F, write)</span></h2>
+<pre>Mask: $9C07
+
+D~7654 3210
+  ---------
+  .... ...N
+          +- Select 1 KiB CIRAM bank
+
+$9C0C: Select 1 KiB CIRAM bank at PPU $2000-$23FF
+$9C0D: Select 1 KiB CIRAM bank at PPU $2400-$27FF
+$9C0E: Select 1 KiB CIRAM bank at PPU $2800-$2BFF
+$9C0F: Select 1 KiB CIRAM bank at PPU $2C00-$2FFF
+</pre>
+<h2><span class="mw-headline" id="CHR-RAM_Bank_Selection">CHR-RAM Bank Selection</span></h2>
+<p>The game writes, via the PPU, to specific CHR banks in order to select both which and how many CHR banks are mapped to RAM instead of ROM. Writes to CHR ROM in multiples of 1 KiB:
+</p>
+<pre>CHRB~[. 1Z.D L.L.]
+        || | | |
+        |+-|-+-+---------------- Select first bank and size of CHR RAM:
+        || |                      $80 = $028-$02B, $128-$12B
+        || |                      $82 = $000-$003, $100-$103
+        || |                      $88 = $04C-$04F, $14C-$14F
+        || |                      $8A = $064-$067, $164-$167
+        || |                      $C0 = $046-$047, $146-$147
+        || |                      $C2 = $07C-$07D, $17C-$17D
+        || |                      $C8 = $004-$005, $104-$105
+        || |                      $CA = only CHR ROM
+        || +-------------------- If 1, ignore above and always enable CHR ROM / disable CHR RAM
+        |+---------------------- Number of adjacent banks of CHR RAM, 0=four, 1=two
+        +----------------------- Must be 1 
+Power-on value: $80
+</pre>
+<p>The meanings are identical to <a href="INES_Mapper_195.xhtml" title="INES Mapper 195">INES Mapper 195</a> except for value $C8. The game uses different banks as CHR-RAM for different game situations, so the CHR-RAM Bank Selection feature must be emulated. Unlike Mapper 195, since there are only 2 KiB of CHR-RAM mounted on the circuit board, the 4 KiB settings cause CHR-RAM to be mirrored once, and all settings mapping the same 2 KiB of CHR-RAM.
+</p>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<p><a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?f=9&amp;t=19041">Discussion with PCB pictures</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164602
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.017 seconds
+Real time usage: 0.023 seconds
+Preprocessor visited node count: 30/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:850-0!canonical and timestamp 20241123164602 and revision id 8167.
+ -->
+</div><p class="categories">Categories: <a href="Category_MMC3_with_CHR_ROM_and_CHR_RAM.xhtml">MMC3 with CHR ROM and CHR RAM</a>, <a href="Category_ASIC_mappers.xhtml">ASIC mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

@@ -1,0 +1,42 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 321</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_321"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 321</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_321">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_321">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 321</b> denotes the <b>820310</b> <a href="MMC3.xhtml" title="MMC3">MMC3</a>-based multicart circuit board, <a href="UNIF.xhtml" title="UNIF">UNIF</a> MAPR <b>BMC-820310-C</b>. It is basically <a href="NES_2_0_Mapper_287.xhtml" title="NES 2.0 Mapper 287">NES 2.0 Mapper 287</a> looking at differently-ordered address bits.
+</p>
+<h2><span id="Outer_Bank_Register_.28.246000-.247FFF.2C_write.29"/><span class="mw-headline" id="Outer_Bank_Register_($6000-$7FFF,_write)">Outer Bank Register ($6000-$7FFF, write)</span></h2>
+<pre>A~[011. .... ..PP MB..], A001.7=1, A001.6=0
+               || |+---- PRG/CHR A17
+               || +----- 0=PRG A16..A13 from MMC3
+               ||        1=PRG A16..A15 from PP,
+               ||          PRG A14..A13=CPU A14..A13
+               ||          (NROM-256-like PRG banking)
+               ++------- PRG A16..A15 is M=1
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241122235422
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.006 seconds
+Real time usage: 0.007 seconds
+Preprocessor visited node count: 9/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:706-0!canonical and timestamp 20241122235422 and revision id 19761.
+ -->
+</div><p class="categories">Categories: <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

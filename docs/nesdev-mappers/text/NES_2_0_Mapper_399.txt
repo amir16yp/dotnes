@@ -1,0 +1,5 @@
+NES 2.0 Mapper 399
+
+NES 2.0 Mapper 399
+
+NES 2.0 Mapper 399 is used for the homebrew  game Star Versus and requires support for 32KiB of CHR-RAM.

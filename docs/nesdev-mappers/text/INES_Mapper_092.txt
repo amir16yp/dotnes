@@ -1,0 +1,30 @@
+INES Mapper 092
+
+INES Mapper 092
+
+ Here are Disch's original notes:
+ ========================
+ =  Mapper 092          =
+ ========================
+
+ Example Games:
+ --------------------------
+ Moero!! Pro Soccer
+ Moero!! Pro Yakyuu '88 - Ketteiban
+
+
+ Notes:
+ ---------------------------
+
+    This mapper is identical to mapper 072 except for the different PRG Setup.  See mapper 72 for details.
+
+
+ PRG Setup:
+ ---------------------------
+
+       $8000   $A000   $C000   $E000
+     +---------------+---------------+
+     |     { 0 }     |    PRG Reg    |
+     +---------------+---------------+
+
+Categories: In NesCartDB, INES Mappers, Discrete logic mappers, Expansion audio

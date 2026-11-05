@@ -1,0 +1,49 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 267</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_267"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 267</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_267">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_267">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 267 is used for the 8-in-1 JY-119 multicart. It consists of an <a href="MMC3.xhtml" title="MMC3">MMC3</a> clone with an outer bank register at $6000.
+</p>
+<h2><span class="mw-headline" id="MMC3-compatible_registers">MMC3-compatible registers</span></h2>
+<p>Mask: $E001
+</p>
+<ul><li>$8000, $8001, $A000, $A001, $C000, $C001, $E000, $E001: As normal <a href="MMC3.xhtml" title="MMC3">MMC3</a>. Inner PRG banks are limited to 256 KiB, Inner CHR banks to 128 KiB.</li></ul>
+<h2><span id="Outer_Bank_.28.246000.29"/><span class="mw-headline" id="Outer_Bank_($6000)">Outer Bank ($6000)</span></h2>
+<p>Mask: Unknown
+</p>
+<pre>7654 3210
+---- ----
+UUB. .BB.
+||+---++-- Select 256 KiB outer PRG-ROM and 128 KiB outer CHR-ROM bank
+++-------- Unknown, cleared when the menu is shown, both set once a game has been selected.
+</pre>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li>The initial value of this register must be $00 for the multicart menu to be shown.</li>
+<li>The cart seems to run just fine when ignoring the two unknown bits.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123164021
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.006 seconds
+Real time usage: 0.007 seconds
+Preprocessor visited node count: 14/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:652-0!canonical and timestamp 20241123164021 and revision id 7663.
+ -->
+</div><p class="categories">Categories: <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

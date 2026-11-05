@@ -1,0 +1,74 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 205</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_205"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 205</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_205">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_205">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><pre> Here are Disch's original notes:  
+ ========================
+ =  Mapper 205          =
+ ========================
+ 
+ 
+ Example Games:
+ --------------------------
+ 15-in-1 (can be set via solder pad to show a 3-in-1 menu, with different games than the other 3-in-1 cart)
+ 3-in-1
+ 
+ 
+ Registers:
+ ---------------------------
+ Regs at $6000-7FFF means no SRAM
+ 
+   $6000-7FFF:   [.... ..MM]  Game Mode / Block
+ 
+   $8000-FFFF:   <a href="MMC3.xhtml" title="MMC3">MMC3</a>
+ 
+ 
+ Notes:
+ ---------------------------
+ These multicarts select the game mode by writing to $6000-7FFF, the individual games then use traditional
+ MMC3 style regs at $8000-FFFF.  The MMC3 regs only swap to pages *within* the block specifed by the game
+ mode.  This can be easily emulated by ANDing the page numbers written to MMC3 with certain values, and then
+ ORing them with other values, based on the selected block.
+ 
+ Chart below to illustrate:
+ 
+   Block    PRG-AND     PRG-OR    CHR-AND    CHR-OR
+   -------------------------------------------------
+    0         $1F        $00        $FF       $000
+    1         $1F        $10        $FF       $080
+    2         $0F        $20        $7F       $100
+    3         $0F        $30        $7F       $180
+ 
+ 
+ For details on MMC3, see <a href="MMC3.xhtml" class="mw-redirect" title="INES Mapper 004">mapper 004</a>
+</pre>
+<p>This mapper is extremely similar to <a href="INES_Mapper_037.xhtml" title="INES Mapper 037">iNES Mapper 037</a>. Q1 directly connects to PRG A18 and CHR A18, and both ROMs' A17 pins are <tt>Q0 + A17·/Q1</tt> or <tt>NAND(NAND(Q0,Q0),NAND(A17,NAND(Q1,Q1)))</tt>
+</p><p>The PCB (UNIF board name <b>BMC-JC-016-2</b>) furthermore has a solder pad that can be set to force block 1, which nonsensically would select a PRG-AND of $1F but also with a PRG-OR of $10 and is therefore not used for any game on the multicart, to block 3. The 15-in-1's multicart menu writes a block value of 1, checks whether block 1 or block 3 is actually active, and shows a different menu depending on the result. The other 3-in-1 cartridge executes that same checking code, but shows the same menu regardless of the result.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123163741
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 1/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 1/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:489-0!canonical and timestamp 20241123163741 and revision id 5566.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

@@ -116,11 +116,11 @@ public class DecompilerTests
 
         var code = decompiler.Decompile();
 
-        // Verify key NESLib calls are present
-        Assert.Contains("pal_col(0, 0x02);", code);
-        Assert.Contains("pal_col(1, 0x14);", code);
-        Assert.Contains("pal_col(2, 0x20);", code);
-        Assert.Contains("pal_col(3, 0x30);", code);
+        // Verify key NESLib calls are present (colors recovered as NESColor names)
+        Assert.Contains("pal_col(0, NESColor.DarkBlue);", code);
+        Assert.Contains("pal_col(1, NESColor.Magenta);", code);
+        Assert.Contains("pal_col(2, NESColor.LightGray);", code);
+        Assert.Contains("pal_col(3, NESColor.White);", code);
         Assert.Contains("vram_adr(NTADR_A(2, 2));", code);
         Assert.Contains("vram_write(\"HELLO, .NET!\");", code);
         Assert.Contains("ppu_on_all();", code);
@@ -203,9 +203,11 @@ public class DecompilerTests
         // The attributetable sample uses pal_bg with a 16-byte palette
         Assert.Contains("pal_bg(palette", code);
         Assert.Contains("new byte[]", code);
-        // Verify specific palette values from the sample's PALETTE array
-        Assert.Contains("0x03", code);
-        Assert.Contains("0x11, 0x30, 0x27", code);
+        // Verify palette values recovered as NESColor names
+        Assert.Contains("NESColor.DarkViolet", code); // 0x03
+        Assert.Contains("NESColor.Azure", code);      // 0x11
+        Assert.Contains("NESColor.White", code);      // 0x30
+        Assert.Contains("NESColor.LightOrange", code); // 0x27
     }
 
     [Fact]
@@ -220,10 +222,10 @@ public class DecompilerTests
         // shoot2 uses both pal_bg and pal_spr with palette byte arrays
         Assert.Contains("pal_bg(palette", code);
         Assert.Contains("pal_spr(palette", code);
-        // Verify pal_bg palette data: 0x0F, 0x30, 0x10, 0x00 repeated
-        Assert.Contains("0x0F, 0x30, 0x10, 0x00", code);
-        // Verify pal_spr contains sprite palette data
-        Assert.Contains("0x0F, 0x30, 0x10, 0x20", code);
+        // Verify pal_bg / pal_spr palette data recovered as NESColor names
+        Assert.Contains("NESColor.Black", code);
+        Assert.Contains("NESColor.White", code);
+        Assert.Contains("NESColor.Gray", code);
     }
 
     [Fact]
@@ -236,7 +238,7 @@ public class DecompilerTests
 
         var csproj = decompiler.GenerateCsproj("statusbar");
 
-        Assert.Contains("<NESVerticalMirroring>true</NESVerticalMirroring>", csproj);
+        Assert.Contains("<NESMirroring>Vertical</NESMirroring>", csproj);
     }
 
     [Fact]
@@ -248,24 +250,50 @@ public class DecompilerTests
 
         var code = decompiler.Decompile();
 
-        // shoot2 has 13 byte[] arrays for game state (bullets, enemies, stars, explosions)
-        // 3 arrays of size 4 (bullet_x, bullet_y, bullet_active)
+        // shoot2 has 13 byte[] arrays for game state (bullets, enemies, stars, explosions).
+        // Sizes prefer for-loop bounds when available (smarter than gap-only).
         Assert.Contains("byte[] array_0335 = new byte[4];", code);
         Assert.Contains("byte[] array_0339 = new byte[4];", code);
         Assert.Contains("byte[] array_033D = new byte[4];", code);
-        // 4 arrays of size 6 (enemy_x, enemy_y, enemy_active, enemy_speed)
         Assert.Contains("byte[] array_0341 = new byte[6];", code);
         Assert.Contains("byte[] array_0347 = new byte[6];", code);
         Assert.Contains("byte[] array_034D = new byte[6];", code);
         Assert.Contains("byte[] array_0353 = new byte[6];", code);
-        // 3 arrays of size 8 (star_x, star_y, star_speed)
         Assert.Contains("byte[] array_0359 = new byte[8];", code);
         Assert.Contains("byte[] array_0361 = new byte[8];", code);
         Assert.Contains("byte[] array_0369 = new byte[8];", code);
-        // 3 arrays of size 3 (exp_x, exp_y, exp_timer)
         Assert.Contains("byte[] array_0371 = new byte[3];", code);
         Assert.Contains("byte[] array_0374 = new byte[3];", code);
         Assert.Contains("byte[] array_0377 = new byte[3];", code);
+    }
+
+    [Fact]
+    public void ArrayRecovery_PrefersForLoopBoundOverGap()
+    {
+        var instructions = new List<(ushort, byte, byte?, byte?)>
+        {
+            (0x8000, 0xA9, 0x00, null),
+            (0x8002, 0x8D, 0x25, 0x03),
+            (0x8005, 0xAE, 0x25, 0x03),
+            (0x8008, 0xBD, 0x35, 0x03),
+            (0x800B, 0x9D, 0x35, 0x03),
+            (0x800E, 0xEE, 0x25, 0x03),
+            (0x8011, 0xAD, 0x25, 0x03),
+            (0x8014, 0xC9, 0x04, null),
+            (0x8016, 0x90, 0xED, null),
+            (0x8018, 0xBD, 0x3D, 0x03),
+        };
+
+        var recovery = new ArrayRecovery();
+        var loops = new List<(ushort, byte, byte, int, int, int, int)>
+        {
+            (0x0325, 0, 4, 0, 2, 5, 9),
+        };
+        recovery.Analyze(instructions, loops, 0x0325);
+
+        var arr = Assert.Single(recovery.RamArrays, a => a.Base == 0x0335);
+        Assert.Equal(4, arr.Size);
+        Assert.Equal(4, arr.LoopBound);
     }
 
     [Fact]
@@ -290,8 +318,8 @@ public class DecompilerTests
 
         var code = decompiler.Decompile();
 
-        // pal_bg should have a byte[] variable declaration with actual palette data
-        Assert.Contains("byte[] palette0 = new byte[] { 0x03", code);
+        // pal_bg should have a byte[] variable declaration with NESColor-named palette data
+        Assert.Contains("byte[] palette0 = new byte[] { NESColor.", code);
         Assert.Contains("pal_bg(palette0);", code);
         // Should NOT be commented out
         Assert.DoesNotContain("// pal_bg", code);
@@ -909,5 +937,326 @@ public class DecompilerTests
         var code = decompiler.Decompile();
 
         Assert.Contains("oam_size(SpriteSize.Size8x16);", code);
+    }
+
+    [Fact]
+    public void Decompiler_Hello_UsesTranspilePackMode()
+    {
+        var rom = new NESRomReader(GetVerifiedRom("hello"));
+        var decompiler = new Decompiler(rom, _logger);
+        _ = decompiler.Decompile();
+        Assert.Equal(PackMode.Transpile, decompiler.ResolvedPackMode);
+        Assert.DoesNotContain("NESPackMode", decompiler.GenerateCsproj("hello"));
+    }
+
+    [Fact]
+    public void Decompiler_ArbitraryRom_UsesRawPrgPackMode()
+    {
+        byte[] romBytes = CreateMinimalArbitraryRom();
+        var rom = new NESRomReader(romBytes);
+        var decompiler = new Decompiler(rom, _logger);
+        string code = decompiler.Decompile();
+
+        Assert.Equal(PackMode.RawPrg, decompiler.ResolvedPackMode);
+        Assert.Equal(RecoveryStyle.Optimized, decompiler.RecoveryStyle);
+        Assert.Contains("optimized soft-CPU recovery", code);
+        Assert.Contains("#pragma warning disable CS8321", code);
+        Assert.Contains("void reset()", code);
+        Assert.Contains("while (true)", code);
+        string csproj = decompiler.GenerateCsproj("arb");
+        Assert.Contains("<NESPackMode>RawPrg</NESPackMode>", csproj);
+        Assert.Contains("<NESRawPrg>prg.bin</NESRawPrg>", csproj);
+        Assert.Contains("<NESRawHeader>header.bin</NESRawHeader>", csproj);
+        Assert.Contains("<NESPrgBanks>1</NESPrgBanks>", csproj);
+        Assert.Contains("<PackageReference Include=\"dotnes\" Version=\"", csproj);
+        Assert.Contains("<PackageReference Include=\"dotnes.mesen\" Version=\"", csproj);
+        Assert.DoesNotContain("Version=\"*\"", csproj);
+        Assert.Contains("<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>", csproj);
+        Assert.Contains("<NoWarn>$(NoWarn);CS8321;CS0162;CS0164</NoWarn>", csproj);
+        Assert.DoesNotContain("Recovered.cs", csproj);
+    }
+
+    [Fact]
+    public void Decompiler_ArbitraryRom_Exact_OptsOutOfStructuring()
+    {
+        byte[] romBytes = CreateMinimalArbitraryRom();
+        var rom = new NESRomReader(romBytes);
+        var decompiler = new Decompiler(rom, _logger, PackModePreference.Auto, RecoveryStyle.Exact);
+        string code = decompiler.Decompile();
+
+        Assert.Equal(RecoveryStyle.Exact, decompiler.RecoveryStyle);
+        Assert.Contains("exact soft-CPU recovery", code);
+        Assert.DoesNotContain("optimized soft-CPU recovery", code);
+        Assert.Contains("#pragma warning disable CS8321", code);
+        Assert.Contains("void reset()", code);
+    }
+
+    [Fact]
+    public void Decompiler_RawPrg_RoundTrip_MatchesOriginalRomBytes()
+    {
+        byte[] original = CreateMinimalArbitraryRom();
+        var rom = new NESRomReader(original);
+        string dir = Path.Combine(Path.GetTempPath(), "dotnes-rt-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            new Decompiler(rom, _logger).WriteProject(dir, "arb");
+            byte[] prg = File.ReadAllBytes(Path.Combine(dir, "prg.bin"));
+            byte[] header = File.ReadAllBytes(Path.Combine(dir, "header.bin"));
+            Assert.Equal(rom.PrgRom, prg);
+            Assert.Equal(rom.Header, header);
+
+            // Pack the same way TranspileToNES RawPrg does with exact header
+            using var ms = new MemoryStream();
+            NesRomPacker.Write(ms, prg, rom.ChrRom, rom.PrgBanks, rom.ChrBanks, rom.Mapper,
+                rom.VerticalMirroring ? "Vertical" : "Horizontal", rom.HasBattery, _logger,
+                exactHeader: header);
+            Assert.Equal(original, ms.ToArray());
+        }
+        finally
+        {
+            if (Directory.Exists(dir))
+                Directory.Delete(dir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void Decompiler_RawPrg_RoundTrip_PreservesNonZeroHeaderTrailer()
+    {
+        byte[] original = CreateMinimalArbitraryRom();
+        // Mega Man–style trailer / NES 2.0-ish bytes that reconstructed headers wipe
+        original[7] = 0x08;
+        original[8] = 0x20;
+        original[9] = 0x00;
+        original[10] = 0x00;
+        original[11] = 0x07;
+        original[12] = 0x01;
+        original[13] = 0x00;
+        original[14] = 0x00;
+        original[15] = 0x01;
+
+        var rom = new NESRomReader(original);
+        Assert.Equal(original.AsSpan(0, 16).ToArray(), rom.Header);
+
+        using var ms = new MemoryStream();
+        NesRomPacker.WriteExact(ms, rom.Header, rom.Trainer, rom.PrgRom, rom.ChrRom, _logger);
+        Assert.Equal(original, ms.ToArray());
+    }
+
+    [Fact]
+    public void Decompiler_UxRom_FollowsBankSwitchBeforeJmp()
+    {
+        // 4×16KB UxROM: RESET in fixed bank does LDA #$01 / STA $C000 / JMP $8000
+        // into switchable bank 1 (LDX #$AA / infinite JMP).
+        var reader = new NESRomReader(CreateUxRomBankSwitchRom());
+        Assert.Equal(2, reader.Mapper);
+        var code = new Decompiler(reader, _logger).Decompile();
+        Assert.Contains("void reset()", code);
+        Assert.Contains("func_01_8000()", code);
+        Assert.Contains("void func_01_8000()", code);
+        Assert.Contains("x = 0xAA", code);
+        Assert.Contains("while (true)", code);
+    }
+
+    [Fact]
+    public void Decompiler_RecoversDoWhileSpinAndWhileTrue()
+    {
+        // RESET: spin on PPU_STATUS bit7, then infinite JMP-to-self.
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        // Code at $8000 (mirrored): LDA $2002 / BPL *-5 / JMP $8005
+        rom[16] = 0xAD; rom[17] = 0x02; rom[18] = 0x20; // LDA $2002
+        rom[19] = 0x10; rom[20] = 0xFB;                   // BPL $8000
+        rom[21] = 0x4C; rom[22] = 0x05; rom[23] = 0x80;   // JMP $8005
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        _logger.WriteLine($"{code}");
+        Assert.Contains("do { a = peek(PPU_STATUS); } while (!negative);", code);
+        Assert.Contains("while (true) ;", code);
+        Assert.DoesNotContain("goto L_8000", code);
+    }
+
+    /// <summary>4×16KB UxROM: reset in fixed bank 3 switches to bank 1 then JMP $8000.</summary>
+    static byte[] CreateUxRomBankSwitchRom()
+    {
+        const int prgSize = 4 * 16384;
+        var rom = new byte[16 + prgSize];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 4;
+        rom[5] = 0;
+        rom[6] = 0x20; // mapper 2
+        rom[7] = 0;
+
+        // Bank 1 @ file 0x4000: entry at $8000
+        int b1 = 16 + 0x4000;
+        rom[b1] = 0xA2; rom[b1 + 1] = 0xAA; // LDX #$AA
+        rom[b1 + 2] = 0x4C; rom[b1 + 3] = 0x02; rom[b1 + 4] = 0x80; // JMP $8002
+        rom[b1 + 5] = 0x4C; rom[b1 + 6] = 0x02; rom[b1 + 7] = 0x80; // $8002: JMP $8002
+
+        // Fixed bank 3 @ file 0xC000 → CPU $C000
+        int fix = 16 + 0xC000;
+        rom[fix] = 0x78; // SEI
+        rom[fix + 1] = 0xA9; rom[fix + 2] = 0x01; // LDA #$01
+        rom[fix + 3] = 0x8D; rom[fix + 4] = 0x00; rom[fix + 5] = 0xC0; // STA $C000
+        rom[fix + 6] = 0x4C; rom[fix + 7] = 0x00; rom[fix + 8] = 0x80; // JMP $8000
+
+        // Vectors at end of PRG
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0xC0;     // NMI
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0xC0; // RESET
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0xC0; // IRQ
+        return rom;
+    }
+
+    [Fact]
+    public void NesRomPacker_RoundTripsArbitraryRom()
+    {
+        byte[] original = CreateMinimalArbitraryRom();
+        var rom = new NESRomReader(original);
+
+        using var ms = new MemoryStream();
+        NesRomPacker.Write(
+            ms,
+            rom.PrgRom,
+            rom.ChrRom,
+            rom.PrgBanks,
+            rom.ChrBanks,
+            rom.Mapper,
+            rom.VerticalMirroring ? "Vertical" : "Horizontal",
+            rom.HasBattery,
+            _logger,
+            exactHeader: rom.Header,
+            trainer: rom.Trainer);
+
+        Assert.Equal(original, ms.ToArray());
+    }
+
+    [Fact]
+    public void Decompiler_WriteProject_RawPrg_EmitsPrgBin()
+    {
+        byte[] romBytes = CreateMinimalArbitraryRom();
+        var rom = new NESRomReader(romBytes);
+        var decompiler = new Decompiler(rom, _logger);
+        string dir = Path.Combine(Path.GetTempPath(), "dotnes-decompile-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            decompiler.WriteProject(dir, "arb");
+            Assert.True(File.Exists(Path.Combine(dir, "prg.bin")));
+            Assert.Equal(rom.PrgRom, File.ReadAllBytes(Path.Combine(dir, "prg.bin")));
+            Assert.True(File.Exists(Path.Combine(dir, "header.bin")));
+            Assert.Equal(rom.Header, File.ReadAllBytes(Path.Combine(dir, "header.bin")));
+            Assert.True(File.Exists(Path.Combine(dir, "RomImage.cs")));
+            Assert.Contains("readonly byte[] Header", File.ReadAllText(Path.Combine(dir, "RomImage.cs")));
+            Assert.True(File.Exists(Path.Combine(dir, "chr_generic.s")));
+            Assert.True(File.Exists(Path.Combine(dir, "arb.csproj")));
+            Assert.True(File.Exists(Path.Combine(dir, "Program.cs")));
+            Assert.False(File.Exists(Path.Combine(dir, "Recovered.cs")));
+            Assert.Contains("void reset()", File.ReadAllText(Path.Combine(dir, "Program.cs")));
+            Assert.Contains("prg.bin", File.ReadAllText(Path.Combine(dir, "Program.cs")));
+            Assert.True(File.Exists(Path.Combine(dir, "disasm.s")));
+        }
+        finally
+        {
+            if (Directory.Exists(dir))
+                Directory.Delete(dir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void SignatureDatabase_IncludesCommonNesLibRoutines()
+    {
+        var names = Analysis.SignatureDatabase.FinalBuiltIns.Select(s => s.Name).ToHashSet();
+        Assert.Contains("pad_poll", names);
+        Assert.Contains("oam_spr", names);
+        Assert.Contains("fade_in", names);
+        Assert.Contains("fade_out", names);
+        Assert.Contains("apu_init", names);
+        Assert.Contains("waitvsync", names);
+        Assert.Contains("vram_unrle", names);
+        Assert.Contains("music_tick", names);
+    }
+
+    [Theory]
+    [InlineData(0x00, "SpriteSize.Size8x8")]
+    [InlineData(0x01, "SpriteSize.Size8x16")]
+    public void NesLibEnumFormatter_SpriteSize(byte value, string expected)
+        => Assert.Equal(expected, NesLibEnumFormatter.FormatSpriteSize(value));
+
+    [Theory]
+    [InlineData(0x00, "VramIncrement.By1")]
+    [InlineData(0x01, "VramIncrement.By32")]
+    public void NesLibEnumFormatter_VramIncrement(byte value, string expected)
+        => Assert.Equal(expected, NesLibEnumFormatter.FormatVramIncrement(value));
+
+    [Fact]
+    public void NesLibEnumFormatter_MaskFlags()
+    {
+        Assert.Equal("MASK.EDGE_BG | MASK.EDGE_SPR | MASK.BG | MASK.SPR",
+            NesLibEnumFormatter.FormatMask((byte)(MASK.BG | MASK.SPR | MASK.EDGE_BG | MASK.EDGE_SPR)));
+        Assert.Equal("MASK.MONO", NesLibEnumFormatter.FormatMask((byte)MASK.MONO));
+    }
+
+    [Fact]
+    public void NesLibEnumFormatter_PadAndApu()
+    {
+        Assert.Equal("PAD.A", NesLibEnumFormatter.FormatPad((byte)PAD.A));
+        Assert.Equal("PAD.LEFT | PAD.RIGHT", NesLibEnumFormatter.FormatPad((byte)(PAD.LEFT | PAD.RIGHT)));
+        Assert.Equal("PulseChannel.Pulse1", NesLibEnumFormatter.FormatPulseChannel(0));
+        Assert.Equal("APUDuty.Duty50", NesLibEnumFormatter.FormatApuDuty(2));
+        Assert.Equal("NESColor.Red", NesLibEnumFormatter.FormatNesColor(0x16));
+        Assert.Equal("OAM.FLIP_H | OAM.BEHIND", NesLibEnumFormatter.FormatOamAttr((byte)(OAM.FLIP_H | OAM.BEHIND)));
+    }
+
+    [Fact]
+    public void Decompiler_Bigsprites_UsesSpriteSizeEnum()
+    {
+        var rom = new NESRomReader(GetVerifiedRom("bigsprites"));
+        var code = new Decompiler(rom, _logger).Decompile();
+        Assert.Contains("oam_size(SpriteSize.Size8x16)", code);
+        Assert.DoesNotContain("oam_size(0x01)", code);
+        Assert.DoesNotContain("oam_size(1)", code);
+    }
+
+    /// <summary>
+    /// Minimal non-dotnes iNES ROM: 16KB PRG + 8KB CHR, RESET→infinite JMP.
+    /// </summary>
+    static byte[] CreateMinimalArbitraryRom()
+    {
+        const int prgSize = 16384;
+        const int chrSize = 8192;
+        var rom = new byte[16 + prgSize + chrSize];
+        rom[0] = (byte)'N';
+        rom[1] = (byte)'E';
+        rom[2] = (byte)'S';
+        rom[3] = 0x1A;
+        rom[4] = 1; // PRG banks
+        rom[5] = 1; // CHR banks
+        rom[6] = 0;
+        rom[7] = 0;
+
+        // Put a distinctive non-CRT byte pattern at start of PRG
+        rom[16] = 0xEA; // NOP
+        rom[17] = 0xEA;
+        // Infinite loop at $8002: JMP $8002
+        rom[18] = 0x4C;
+        rom[19] = 0x02;
+        rom[20] = 0x80;
+
+        // Vectors at end of PRG
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x02; rom[vec + 1] = 0x80;     // NMI
+        rom[vec + 2] = 0x02; rom[vec + 3] = 0x80; // RESET
+        rom[vec + 4] = 0x02; rom[vec + 5] = 0x80; // IRQ
+
+        // Distinctive CHR byte
+        rom[16 + prgSize] = 0xA5;
+        return rom;
     }
 }

@@ -1,0 +1,71 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 015</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_015"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 015</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_015">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_015">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 015</b> denotes the <b>K-1029</b> and <b>K-1030P</b> circuit boards, used for the <i>100-in-1 Contra Function 16</i> and <i>168-in-1 New Contra Function 16</i> multicarts. 
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Address_and_Data_Latch_(%248000-%24FFFF,_write)"><span class="tocnumber">2</span> <span class="toctext">Address and Data Latch ($8000-$FFFF, write)</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Use_for_mapper_hacks"><span class="tocnumber">3</span> <span class="toctext">Use for mapper hacks</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#See_also"><span class="tocnumber">4</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$FFFF: Switchable PRG-ROM banks (8/16/32 KiB)</li>
+<li>PPU $0000-$1FFF: Unbanked 8 KiB of CHR-RAM that can be write-protected</li>
+<li>Nametable mirroring: Switchable horizontal/vertical settings</li></ul>
+<h1><span id="Address_and_Data_Latch_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Address_and_Data_Latch_($8000-$FFFF,_write)">Address and Data Latch ($8000-$FFFF, write)</span></h1>
+<pre>Mask: $8000
+
+A~FEDC BA98 7654 3210  D~7654 3210
+  -------------------    ---------
+  1... .... .... ..SS    pMPP PPPP
+                   ||    ||++-++++- PRG A19..A14
+                   ||    |+-------- Nametable mirroring
+                   ||    |           0: Vertical
+                   ||    |           1: Horizontal
+                   ||    +--------- PRG A13 if SS=2, ignored otherwise
+                   ++-------------- PRG banking mode
+                                     0: NROM-256 (PRG A14=CPU A14)
+                                     1: UNROM    (PRG A14..16=111 when CPU A14=1)
+                                     2: NROM-64  (PRG A13=p)
+                                     3: NROM-128
+Power-on and reset value: All bits clear
+</pre>
+<p>CHR-RAM is write-protected in PRG banking modes 0 and 3, and write-enabled in modes 1 and 2.
+</p>
+<h1><span class="mw-headline" id="Use_for_mapper_hacks">Use for mapper hacks</span></h1>
+<p>The only known two cartridges using this mapper are the two listed multicarts. All other known ROM files claiming to use mapper 15 have been identified as being mapper hacks, usually from mappers <a href="INES_Mapper_164.xhtml" title="INES Mapper 164">164</a> and <a href="INES_Mapper_227.xhtml" title="INES Mapper 227">227</a>. To run these mapper-hacked games, emulators must not enforce CHR-RAM write-protection even though an actual K-1029 PCB would, and must provide 8 KiB of PRG-RAM at CPU $6000-$7FFF even though an actual K-1029 PCB would not.
+</p>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<ul><li><a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?p=192828#p192828">schematic RE'd</a> by krzysiobal</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123073350
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.013 seconds
+Real time usage: 0.018 seconds
+Preprocessor visited node count: 18/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:297-0!canonical and timestamp 20241123073350 and revision id 19956.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

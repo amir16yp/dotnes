@@ -1,0 +1,59 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 396</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_396"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 396</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_396">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_396">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 396</b> denotes the 晶太 <b>YY850437C</b> and Realtec <i>GN-51</i> multicart PCBs, basically an <a href="UxROM.xhtml" class="mw-redirect" title="UNROM">UNROM</a> mapper with an outer bank register. Its UNIF MAPR is <b>BMC-830752C</b>.
+</p>
+<ul><li><i>1995 Super 8-in-1</i> (JY-050 rev0)</li>
+<li><i>Super 8-in-1 Gold Card Series</i> (JY-085)</li>
+<li><i>Super 8-in-1 Gold Card Series</i> (JY-086)</li>
+<li><i>2-in-1</i> (Realtec PG-07, GN-51 PCB)</li></ul>
+<h2><span id="Outer_Bank_Register_.28.24A000-.24BFFF.29"/><span class="mw-headline" id="Outer_Bank_Register_($A000-$BFFF)">Outer Bank Register ($A000-$BFFF)</span></h2>
+<pre>Mask: $E000
+
+D~7654 3210
+  ---------
+  .Mm. .ppp
+   ||   +++- PRG A19..A17
+   |+------- Mirroring (GN-51), 1=Horizontal
+   +-------- Mirroring (YY850437C), 1=Horizontal
+</pre>
+<p>No bus conflicts. Since no multicart menu sets the respective &quot;other&quot; mirroring bit, submapper-less emulation is possible by selecting horizontal mirroring if either bit is 1, and vertical mirroring if both are 0.
+</p>
+<h2><span id="Inner_Bank_Register_.28.248000-.249FFF.2C_.24C000-.24FFFF.29"/><span class="mw-headline" id="Inner_Bank_Register_($8000-$9FFF,_$C000-$FFFF)">Inner Bank Register ($8000-$9FFF, $C000-$FFFF)</span></h2>
+<pre>Mask: $E000
+
+D~7654 3210
+  ---------
+  .... .PPP
+        +++- PRG A16..A14 if CPU A14=0
+</pre>
+<p>No bus conflicts.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241122210759
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.006 seconds
+Real time usage: 0.008 seconds
+Preprocessor visited node count: 10/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:781-0!canonical and timestamp 20241122210759 and revision id 19159.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

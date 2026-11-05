@@ -1,0 +1,187 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 185</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_185"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 185</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_185">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_185">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 185</b> denotes the <a href="CNROM.xhtml" title="CNROM">CNROM</a> circuit board with only 8 KiB of CHR-ROM. The particular ROM chip model (Sharp LH2367 or equivalent) changes the functionality of pins 26 (normally A13) and 27 (normally A14) into two programmable (during manufacturing) Chip Select inputs, effectively disabling CHR-ROM and tri-stating its data outputs when the one correct bank of four possible CHR-ROM banks is not selected.
+</p><p>While the original purpose of these two chip select pins was to allow four chips to sit on the same bus selected by a two-bit chip select number that does not have to be demultiplexed into four chip enable signals, Mapper 185 uses them as a second (and equally weak) copy protection mechanism, in addition to the <a href="CNROM.xhtml#Security_diodes" title="CNROM">security diodes</a>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Banks"><span class="tocnumber">2</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Registers"><span class="tocnumber">3</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Bank_select_(%248000-%24FFFF)"><span class="tocnumber">3.1</span> <span class="toctext">Bank select ($8000-$FFFF)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#References"><span class="tocnumber">4</span> <span class="toctext">References</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Overview">Overview</span></h2>
+<ul><li>PRG ROM size: 16 KiB or 32 KiB</li>
+<li>PRG ROM bank size: Not bankswitched</li>
+<li>PRG RAM: None</li>
+<li>CHR capacity: 8 KiB ROM (copy protected)</li>
+<li>Nametable <a href="Mirroring.xhtml" title="Mirroring">mirroring</a>: Solder pads select vertical or horizontal mirroring</li>
+<li>Subject to <a href="Bus_conflict.xhtml" title="Bus conflict">bus conflicts</a>: Yes</li></ul>
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>PPU $0000-$1FFF: 8 KB switchable CHR ROM bank</li></ul>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<h3><span id="Bank_select_.28.248000-.24FFFF.29"/><span class="mw-headline" id="Bank_select_($8000-$FFFF)">Bank select ($8000-$FFFF)</span></h3>
+<pre>7  bit  0
+---- ----
+..DC ..BA
+  ||   ||
+  ||   |+- Chip Select 2 (CS2)
+  ||   +-- Chip Select 1 (CS1)
+  |+------ Output to Diode 2 (D2)
+  +------- Output to Diode 1 (D1)
+</pre>
+<p>The games verify the functionality of the Chip Select bits by writing the wrong CS1/CS2 value, thereby disabling CHR-ROM, verify that reading CHR-ROM does not return the correct value, then write the correct CS1/CS2 bits to enable CHR-ROM so that graphics can be displayed. A few titles additionally verify that reading CHR-ROM <i>now</i> does return the correct value. If either check fails, the game is either reset or freezes. The correct CS1/CS2 value that enables CHR-ROM is game-specific and specified in the Submapper field of the <a href="NES_2_0.xhtml" title="NES 2.0">NES 2.0</a> header with a base of 4:
+</p>
+<pre>Submapper  Meaning
+  4        CS1/CS2=0 enables CHR-ROM, all other values disable CHR-ROM
+  5        CS1/CS2=1 enables CHR-ROM, all other values disable CHR-ROM
+  6        CS1/CS2=2 enables CHR-ROM, all other values disable CHR-ROM
+  7        CS1/CS2=3 enables CHR-ROM, all other values disable CHR-ROM
+</pre>
+<p>The base of 4 allows distinguishing &quot;CS1/CS2=0&quot; and a Submapper of &quot;0&quot; meaning &quot;Unknown&quot;: Any Submapper other than 4-7 means that the correct CS1/CS2 value is unknown and one of two heuristics must be used instead to allow the game to run:
+</p>
+<ul><li>Enable CHR-ROM only if the &quot;(latch data &amp;0xF) != 0 &amp;&amp; (latch data) != 0x13&quot;. This heuristic fails for <i>Seicross</i> and is therefore discouraged.</li>
+<li>Disable CHR-ROM for the first two reads $2007 after a reset and then enable it. This works with all games, as they all test for the bad value first, and the correct value (if at all) second.</li></ul>
+<p>When CHR is disabled, the pattern tables are <a href="Open_bus_behavior.xhtml" class="mw-redirect" title="Open bus">open bus</a>. Theoretically, this should return the LSB of the address read, but real-world behavior varies, and the earlier revision of <i>Mighty Bomb Jack</i> in fact relies on open bus at PPU address $0000 being something other than $00.
+</p><p>This table has been assembled from nocash and the sources of MESS, Nestopia, and FCEUX; the specific tests were traced from dumps in GoodNES.
+</p>
+<table class="datatable sortable">
+<tbody><tr>
+<th/>
+<th>bank</th>
+<th>PPU addr</th>
+<th>test</th>
+<th>bank</th>
+<th>PPU addr</th>
+<th>test
+</th></tr>
+<tr>
+<th>Game</th>
+<th colspan="3">Incorrect bank</th>
+<th colspan="3">Must work
+</th></tr>
+<tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/1262">Bird Week</a></td>
+<td>$F0</td>
+<td>$1FF0</td>
+<td>≠ $0C</td>
+<td>$0F</td>
+<td>$1FF0</td>
+<td>= $0C
+</td></tr>
+<tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/1264">B-Wings</a></td>
+<td>$00</td>
+<td>$0000</td>
+<td>≠ $3C</td>
+<td>$33</td>
+<td>$0000</td>
+<td>= $3C
+</td></tr>
+<tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/1261">Mighty Bomb Jack (J, PRG0)</a></td>
+<td>$00</td>
+<td>$0000</td>
+<td>≠ $00</td>
+<td>$11</td>
+<td colspan="2">untested
+</td></tr>
+<tr>
+<td>Mighty Bomb Jack (J, PRG1)</td>
+<td>$00</td>
+<td>$0001</td>
+<td>≠ $3C</td>
+<td>$11</td>
+<td colspan="2">untested
+</td></tr>
+<tr>
+<td>Sansuu 1 Nen</td>
+<td>$20</td>
+<td>$000C</td>
+<td>≠ $BC</td>
+<td>$22</td>
+<td>$000C</td>
+<td>= $BC
+</td></tr>
+<tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/1263">Sansuu 2 Nen</a></td>
+<td>$20</td>
+<td>$0003</td>
+<td>≠ $42</td>
+<td>$22</td>
+<td>$0003</td>
+<td>= $42
+</td></tr>
+<tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/4061">Othello</a></td>
+<td>$20</td>
+<td>$0006</td>
+<td>≠ $3F</td>
+<td>$22</td>
+<td>$0006</td>
+<td>= $3F
+</td></tr>
+<tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/3791">Sansuu 3 Nen</a></td>
+<td>$00</td>
+<td>$0006</td>
+<td>≠ $34</td>
+<td>$2A</td>
+<td>$0006</td>
+<td>= $34
+</td></tr>
+<tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/3592">Spy vs Spy</a></td>
+<td>$13</td>
+<td>$1F20</td>
+<td>≠ $55</td>
+<td>$21</td>
+<td colspan="2">untested
+</td></tr>
+<tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/2332">Seicross</a></td>
+<td>$21</td>
+<td>$0700…$0707</td>
+<td>≠ $20,$60,$70,$70,$70,$40,$08,$38</td>
+<td>$20</td>
+<td colspan="2">untested
+</td></tr></tbody></table>
+<p>The North American and PAL versions of <i>Mighty Bomb Jack</i> mount 32 KiB of CHR-ROM instead and so use normal <a href="INES_Mapper_003.xhtml" title="INES Mapper 003">mapper 3</a>.
+</p>
+<h2><span class="mw-headline" id="References">References</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="http://www.romhacking.net/documents/362/">Disch's Mapper Notes</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123072957
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.025 seconds
+Real time usage: 0.029 seconds
+Preprocessor visited node count: 31/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:469-0!canonical and timestamp 20241123072957 and revision id 22202.
+ -->
+</div><p class="categories">Categories: <a href="Category_Nintendo_licensed_mappers.xhtml">Nintendo licensed mappers</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_bus_conflicts.xhtml">Mappers with bus conflicts</a>, <a href="Category_In_NesCartDB.xhtml">In NesCartDB</a>, <a href="Category_NES_2_0_mappers_with_submappers.xhtml">NES 2.0 mappers with submappers</a>, <a href="Category_Discrete_logic_mappers.xhtml">Discrete logic mappers</a></p></div></body></html>

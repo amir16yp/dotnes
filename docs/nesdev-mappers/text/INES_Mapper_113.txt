@@ -1,0 +1,113 @@
+INES Mapper 113
+
+INES Mapper 113
+
+Mapper 113
+
+Company
+
+unknown
+
+Boards
+
+unknown
+
+PRG ROM capacity
+
+256K
+
+PRG ROM window
+
+32K
+
+PRG RAM capacity
+
+None
+
+CHR capacity
+
+128K
+
+CHR window
+
+8k
+
+Nametable mirroring
+
+H or V, controlled by mapper
+
+Bus conflicts
+
+No
+
+IRQ
+
+No
+
+Audio
+
+No
+
+iNES mappers
+
+113
+
+iNES Mapper 113 denotes the HES NTD-8 circuit board, used to create multicarts made for a bunch of NINA-03/06 games.
+
+Example Games:
+
+HES 6-in-1
+
+Mind Blower Pak
+
+Total Funpak
+
+Contents
+
+1 Banks
+
+2 Registers
+
+2.1 Control Register
+
+3 Variants
+
+4 References
+
+Banks
+
+CPU $8000-$FFFF: 32 KB switchable PRG ROM bank (max 256 KB)
+
+PPU $0000-$1FFF: 8 KB switchable CHR ROM bank (max 128 KB)
+
+Registers
+
+Control Register
+
+This register is located at addresses:
+
+F        bit      0
+---- ---- ---- ----
+010x xxx1 xxxx xxxx
+
+That is, $4100-$41FF, $4300-$43FF, $45xx, $47xx, ..., $5Dxx, and $5Fxx.
+
+7  bit  0
+---- ----
+MCPP PCCC
+|||| ||||
+|+||-|+++-- Select 8 KB CHR ROM bank for PPU $0000-$1FFF
+| ++-+----- Select 32 KB PRG ROM bank for CPU $8000-$FFFF
++---------- Mirroring control (0 = Horizontal, 1 = Vertical)
+
+Note the high bit of the CHR select is shifted away from the others.
+
+Variants
+
+This mapper extends the NINA-03/06 with an extra 4 bits of control register. The low 4 bits written behave the same, but the high 4 bits add mirroring control, 1 extra bit of CHR select, and 2 extra bits of PRG select.
+
+References
+
+NES mapper list by Disch
+
+Categories: Mappers using $4020-$5FFF, INES Mappers, GNROM-like mappers, Multicart mappers

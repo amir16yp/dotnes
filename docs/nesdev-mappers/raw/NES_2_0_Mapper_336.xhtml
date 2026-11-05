@@ -1,0 +1,61 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 336</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_336"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 336</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_336">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_336">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 mapper 336</b> is used for multicarts containing several UNROM games. Its UNIF board name is <b>BMC-K-3046</b>.
+</p><p><b>Submapper 0:</b>
+</p>
+<ul><li>11-in-1 (K-3046)</li>
+<li>2-in-1 (YH-217)</li>
+<li>4-in-1 (YH-4109)</li></ul>
+<p><b>Submapper 1 (M1K30 PCB):</b>
+</p>
+<ul><li>Top Gun III 2-in-1</li></ul>
+<p><b>Submapper 2:</b>
+</p>
+<ul><li>2-in-1 (YH-218)</li></ul>
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$BFFF: Switchable 16 KiB inner PRG-ROM bank and switchable 128 KiB outer PRG-ROM bank</li>
+<li>CPU $C000-$FFFF: Fixed 16 KiB inner PRG-ROM bank #7 and switchable 128 KiB outer PRG-ROM bank</li>
+<li>PPU $0000-$1FFF: Unbanked 8 KiB CHR-RAM</li></ul>
+<h2><span id="Data_Latch_.28.24C000-.24FFFF.29"/><span class="mw-headline" id="Data_Latch_($C000-$FFFF)">Data Latch ($C000-$FFFF)</span></h2>
+<pre>Mask: $8000
+
+D~7654 3210
+  ---------
+  ..OO OIII
+    || |+++- Select 16 KiB inner PRG-ROM bank at CPU $8000-$BFFF
+    ++-+---- Select 128 KiB outer PRG-ROM bank at CPU $8000-$FFFF
+    |  +---- Mirroring (<b>Submapper 2</b>), 1=H, 0=V
+    +------- Mirroring (<b>Submappers 0/1</b>), 1=H, 0=V
+</pre>
+<h2><span class="mw-headline" id="Note">Note</span></h2>
+<p><b>Submappers 0</b> and <b>2</b> have no bus conflicts. <b>Submapper 1</b> does: D0-D2 are affected by normal AND-type bus conflicts, while D3 has a resistor in the signal path to ensure that the ROM bit always &quot;wins&quot;, similar to <a href="INES_Mapper_144.xhtml" title="INES Mapper 144">INES Mapper 144</a>. This behavior is necessary for proper function.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164202
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.011 seconds
+Real time usage: 0.017 seconds
+Preprocessor visited node count: 12/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:721-0!canonical and timestamp 20241123164202 and revision id 21859.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

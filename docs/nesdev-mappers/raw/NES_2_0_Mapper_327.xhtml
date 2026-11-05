@@ -1,0 +1,57 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 327</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_327"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 327</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_327">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_327">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 mapper 327 is used for a <i>6-in-1</i> multicart. Its UNIF board name is <b>BMC-10-24-C-A1</b>. 
+</p>
+<h2><span id="Outer_Bank_Register_.28.246000-.247FFF.2C_write.29"/><span class="mw-headline" id="Outer_Bank_Register_($6000-$7FFF,_write)">Outer Bank Register ($6000-$7FFF, write)</span></h2>
+<pre>Mask: $E000
+
+A~FEDC BA98 7654 3210
+  -------------------
+  0110 .... ..CT POOO
+              || |+++- Select 128 KiB PRG-ROM and CHR-ROM outer bank
+              || +---- Select MMC3 inner PRG-ROM bank address mask
+              ||        0: 128 KiB
+              ||        1: 256 KiB
+              |+------ Select CHR memory type
+              |         0: CHR-ROM
+              |         1: CHR-RAM
+              +------- Select MMC3 inner CHR-ROM bank address mask
+                        0: 128 KiB
+                        1: 256 KiB
+</pre>
+<p>As it uses the MMC3 clones's WRAM interface, writing to the Outer Bank register requires enabling and not write-protecting WRAM in the MMC's $A001 register. Note that there are also 8 KiB of WRAM in the same address range. The outer bank register becomes locked against further writes once an outer bank other than 0 is selected, and is only unlocked on power-up. 
+</p>
+<h2><span class="mw-headline" id="MMC3-compatible_registers">MMC3-compatible registers</span></h2>
+<pre>Mask: $E001
+
+See <a href="MMC3.xhtml" title="MMC3">MMC3</a>.
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241122211741
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.007 seconds
+Real time usage: 0.009 seconds
+Preprocessor visited node count: 9/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:712-0!canonical and timestamp 20241122211741 and revision id 7840.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_with_CHR_ROM_and_CHR_RAM.xhtml">MMC3 with CHR ROM and CHR RAM</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

@@ -1,0 +1,75 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 172</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_172"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 172</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_172">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_172">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>INES Mapper 172 is used to denote the Super Mega P-4070 board, used by the following games:
+</p>
+<ul><li><i>1991 賭馬 Racing</i> (1991 Dǔmǎ Racing, &quot;Enjoyable Horse Racing&quot;)</li>
+<li><i>麻将方块</i> (Mahjong Block) (original release)</li>
+<li><i>Venice Beach Volley</i> (Super Mega release)</li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Errata"><span class="tocnumber">3</span> <span class="toctext">Errata</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Similar_Mappers"><span class="tocnumber">4</span> <span class="toctext">Similar Mappers</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#See_also"><span class="tocnumber">5</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>PPU $0000-$1FFF: 8 KB switchable CHR ROM bank</li></ul>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>Mapper 172 uses a custom IC (marked &quot;JV001&quot;) serving as a latch, adder and inverter. There are five registers: Input (6 bits), Output (6 bits), Register (6 bits), Mode (1 bit) and Invert (1 bit). 
+</p>
+<pre>Mask: $E103
+Read $4100-$4103: [..RR RRRR]: Read Register. Bits 4-5 are inverted if Invert==1. 
+                  Bits 6-7 are open bus. Note that the bit order D0-D5 is <i>reversed</i>.
+Write $4100: When Mode==0: Bits 0-5 of Register := Input, bits 0-3 being inverted if Invert==1.
+             When Mode==1: Bits 0-3 of Register incremented by one, bits 4-5 unaffected.
+Write $4101: Invert := Written value bit 5.
+Write $4102: Input := Written value bits 0-5. Note that the bit order D0-D5 is <i>reversed</i>.
+Write $4103: Mode := Written value bit 5.
+Write $8000-$FFFF: Output := Register, and nametable mirroring is changed; written value is ignored.
+</pre>
+<p>In Mapper 172, bits 0/1 of the 8 KiB CHR ROM bank number (CHR A13/A14) come from Output 5/4, or 0/1 after taking the reverse bit order into account:
+</p>
+<pre>8 KiB CHR-ROM bank number := (Output &amp;3);
+</pre>
+<p>Games will check the lower six bits of $4100 for the correct value after several increment and inversion operations as a copy-protection measure. Unlike most of the other boards using the JV001/TXC 05-00002-010 ICs, this board allows nametable mirroring to be controlled by software. When writing to $8000-$FFFF, nametable mirroring is changed to Horizontal if Invert was clear, and to Vertical if Invert was set.
+</p>
+<h2><span class="mw-headline" id="Errata">Errata</span></h2>
+<ul><li>The TXC re-release of <i>麻将方块 (Mahjong Block)</i> uses <a href="INES_Mapper_132.xhtml" title="INES Mapper 132">INES Mapper 132</a>.</li></ul>
+<h2><span class="mw-headline" id="Similar_Mappers">Similar Mappers</span></h2>
+<p>The board is identical to <a href="INES_Mapper_136.xhtml" title="INES Mapper 136">INES Mapper 136</a> except that the CPU bits D0-D5 are connected in reverse order, and that Mapper 136 has hard-wired nametable mirroring.
+</p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<p><a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?f=3&amp;t=15961&amp;p=213362#p210703">PCB images</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123163654
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.012 seconds
+Real time usage: 0.017 seconds
+Preprocessor visited node count: 17/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:456-0!canonical and timestamp 20241123163654 and revision id 5257.
+ -->
+</div></div></body></html>

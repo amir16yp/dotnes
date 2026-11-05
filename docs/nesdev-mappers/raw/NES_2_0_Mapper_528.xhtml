@@ -1,0 +1,86 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 528</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_528"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 528</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_528">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_528">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 528 is used for the <i>1995 New Series Super 2-in-1</i> multicart (title screen: Rugby 2-in-1), containing both of Sunsoft's <i>Dodge Danpei</i> games. Its UNIF board name is <b>UNL-831128C</b>. Although the ROM image's common name is &quot;1995 New Series Super 2-in-1 (Unl,Vrc7p)&quot;, only the IRQ counter functions like the <a href="VRC7.xhtml" title="VRC7">VRC7</a>'s; the other registers are more like Sunsoft's <a href="Sunsoft_FME_7.xhtml" class="mw-redirect" title="FME-7">FME-7</a>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Game_select_(%24A00x/C00x)"><span class="tocnumber">1.1</span> <span class="toctext">Game select ($A00x/C00x)</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#FME-7-compatible_registers_(%24A000-A00C/%24C000-%24C00C)"><span class="tocnumber">1.2</span> <span class="toctext">FME-7-compatible registers ($A000-A00C/$C000-$C00C)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#PRG_%246000-%247FFF_control_(%24A008/%24C008)"><span class="tocnumber">1.3</span> <span class="toctext">PRG $6000-$7FFF control ($A008/$C008)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#VRC-compatible_IRQ_(%24A00D-%24A00F/%24C00D-%24C00F)"><span class="tocnumber">1.4</span> <span class="toctext">VRC-compatible IRQ ($A00D-$A00F/$C00D-$C00F)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Notes"><span class="tocnumber">2</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="Game_select_.28.24A00x.2FC00x.29"/><span class="mw-headline" id="Game_select_($A00x/C00x)">Game select ($A00x/C00x)</span></h2>
+<pre>A~FEDC BA98 7654 3210
+  -------------------
+  1G.. .... .... ....
+   +------------------ Select game
+                        0: Dodge Danpei
+                        1: Dodge Danpei 2
+</pre>
+<h2><span id="FME-7-compatible_registers_.28.24A000-A00C.2F.24C000-.24C00C.29"/><span class="mw-headline" id="FME-7-compatible_registers_($A000-A00C/$C000-$C00C)">FME-7-compatible registers ($A000-A00C/$C000-$C00C)</span></h2>
+<p>These registers function like the Sunsoft <a href="Sunsoft_FME_7.xhtml" class="mw-redirect" title="FME-7">FME-7</a>'s registers $0-$C (excluding $8 and $B), except that A0-A3 select the register directly; there is no index register. Register $B is not functional, as the CPU $C000-$DFFF is hard-wired to the second-to-last bank (unlike the FME-7), and CPU $E000-$FFFF hard-wired to the last bank (as on the FME-7).
+</p>
+<pre>$A000: Set 1 KiB CHR-ROM bank at PPU $0000-$03FF
+$A001: Set 1 KiB CHR-ROM bank at PPU $0400-$07FF
+$A002: Set 1 KiB CHR-ROM bank at PPU $0800-$0BFF
+$A003: Set 1 KiB CHR-ROM bank at PPU $0C00-$0FFF
+$A004: Set 1 KiB CHR-ROM bank at PPU $1000-$13FF
+$A005: Set 1 KiB CHR-ROM bank at PPU $1400-$17FF
+$A006: Set 1 KiB CHR-ROM bank at PPU $1800-$1BFF
+$A007: Set 1 KiB CHR-ROM bank at PPU $1C00-$1FFF
+$A008: See below.
+$A009: Set 8 KiB PRG-ROM bank at CPU $8000-$9FFF
+$A00A: Set 8 KiB PRG-ROM bank at CPU $A000-$BFFF
+$A00B: No function
+$A00C: Select nametable mirroring type (V/H/S0/S1).
+</pre>
+<h2><span id="PRG_.246000-.247FFF_control_.28.24A008.2F.24C008.29"/><span class="mw-headline" id="PRG_$6000-$7FFF_control_($A008/$C008)">PRG $6000-$7FFF control ($A008/$C008)</span></h2>
+<p>This register seems to be a simplified version of the FME-7's register $8. Value $01 selects PRG-RAM, all other values select an 8 KiB PRG-ROM bank at CPU $6000-$7FFF.
+</p>
+<h2><span id="VRC-compatible_IRQ_.28.24A00D-.24A00F.2F.24C00D-.24C00F.29"/><span class="mw-headline" id="VRC-compatible_IRQ_($A00D-$A00F/$C00D-$C00F)">VRC-compatible IRQ ($A00D-$A00F/$C00D-$C00F)</span></h2>
+<pre>$A00D/$C00D: IRQ Control
+$A00E/$C00E: IRQ Acknowledge
+$A00F/$C00F: IRQ Latch.
+</pre>
+<p>See <a href="VRC_IRQ.xhtml" title="VRC IRQ">VRC IRQ</a> for details.
+</p>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<p>Note that the first Dodge Danpei game only has 128 KiB of PRG-ROM while the second has 256 KiB, requiring careful application of PRG-ROM base offsets and masks. Although the commonly-available UNIF ROM image only has one PRG chunk, it is highly likely that the cartridge used two PRG-ROM chips.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164542
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.013 seconds
+Real time usage: 0.017 seconds
+Preprocessor visited node count: 26/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:834-0!canonical and timestamp 20241123164542 and revision id 8126.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_single_screen_mirroring.xhtml">Mappers with single-screen mirroring</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

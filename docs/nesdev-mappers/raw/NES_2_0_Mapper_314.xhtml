@@ -1,0 +1,92 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 314</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_314"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 314</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_314">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_314">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 314 is used for the <i>32-in-1 Y2K</i>, <i>64-in-1 Y2K</i> and <i>76-in-1 Y2K</i> multicarts. Its UNIF board name is <b>BMC-64in1NoRepeat</b>. It exists in both CHR-ROM and unbanked 8 KiB CHR-RAM variants.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Miscellaneous_register_(%245000,_write)"><span class="tocnumber">1</span> <span class="toctext">Miscellaneous register ($5000, write)</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#PRG-ROM_register_(%245001,_write)"><span class="tocnumber">2</span> <span class="toctext">PRG-ROM register ($5001, write)</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#CHR-ROM_mode_(%245002,_write)"><span class="tocnumber">3</span> <span class="toctext">CHR-ROM mode ($5002, write)</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#UNROM_Latch_(%248000-%24FFFF,_write)"><span class="tocnumber">4</span> <span class="toctext">UNROM Latch ($8000-$FFFF, write)</span></a></li>
+</ul>
+</div>
+
+<h2><span id="Miscellaneous_register_.28.245000.2C_write.29"/><span class="mw-headline" id="Miscellaneous_register_($5000,_write)">Miscellaneous register ($5000, write)</span></h2>
+<pre>Mask: Unknown, probably $F003
+
+D~7654 3210
+  ---------
+  U.M. .CC.
+  | |   ++- Bits 0-1 of 8 KiB CHR-ROM bank at PPU $0000-$1FFF
+  | +------ Select nametable mirroring type
+  |          0: Vertical
+  |          1: Horizontal
+  +-------- 0: UNROM
+            1: NROM
+
+Power-on value: $80
+</pre>
+<h2><span id="PRG-ROM_register_.28.245001.2C_write.29"/><span class="mw-headline" id="PRG-ROM_register_($5001,_write)">PRG-ROM register ($5001, write)</span></h2>
+<pre>Mask: Unknown, probably $F003
+
+D~7654 3210
+  ---------
+  MpPP PPPP
+  ||++-++++- Select 32 KiB PRG-ROM bank at CPU $8000-$FFFF
+  |+-------- Select 16 KiB PRG-ROM bank at CPU $8000-$BFFF and
+  |          CPU $C000-$FFFF if M==0
+  +--------- Select PRG banking mode
+              0: NROM-128
+              1: NROM-256
+
+Power-on value: $43
+</pre>
+<h2><span id="CHR-ROM_mode_.28.245002.2C_write.29"/><span class="mw-headline" id="CHR-ROM_mode_($5002,_write)">CHR-ROM mode ($5002, write)</span></h2>
+<pre>Mask: Unknown, probably $F003
+
+D~7654 3210
+  ---------
+  .... CCCC
+       ++++- Bits 2-5 of 8 KiB CHR-ROM bank at PPU $0000-$1FFF
+
+Power-on value: $00
+</pre>
+<h2><span id="UNROM_Latch_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="UNROM_Latch_($8000-$FFFF,_write)">UNROM Latch ($8000-$FFFF, write)</span></h2>
+<pre>Mask: $8000
+
+D~7654 3210
+  ---------
+  .... .CCC
+        +++- Select 16 KiB PRG-ROM bank at CPU $8000-$BFFF
+
+Power-on value: $00
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241122220634
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.014 seconds
+Real time usage: 0.018 seconds
+Preprocessor visited node count: 14/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:699-0!canonical and timestamp 20241122220634 and revision id 7808.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

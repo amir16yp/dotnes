@@ -1,0 +1,156 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 215</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_215"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 215</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_215">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_215">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 215 is used for later single-game as well as multicart releases from Sugar Softec. They use an MMC3 clone with a selectable scrambling pattern.
+</p>
+<ul><li><b>Submapper 0</b>, UNIF board name <b>UNL-8237</b>:
+<ul><li><i>Earthworm Jim 2</i></li>
+<li><i>Mortal Kombat 3</i> (SuperGame, not <i>Extra 60</i>, not to be confused by similarly-named games from other developers)</li>
+<li><i>Mortal Kombat 3 Extra 60</i> (both existing ROM images are just extracts of the 2-in-1 multicart containing this game)</li>
+<li><i>Pocahontas Part 2</i></li>
+<li><i>2-in-1: Aladdin, EarthWorm Jim 2</i> (Super 808)</li>
+<li><i>2-in-1: The Lion King, Bomber Boy</i> (GD-103)</li>
+<li><i>2-in-1 Super Golden Card: EarthWorm Jim 2, Boogerman</i> (king002)</li>
+<li><i>2-in-1: Mortal Kombat 3 Extra 60, The Super Shinobi</i> (king005)</li>
+<li><i>3-in-1: Boogerman, Adventure Island 3, Double Dragon 3</i> (Super 308)</li>
+<li><i>5-in-1 Golden Card: Aladdin, EarthWorm Jim 2, Garo Densetsu Special, Silkworm, Contra Force</i> (SPC005)</li>
+<li><i>6-in-1 Golden Card: EarthWorm Jim 2, Mortal Kombat 3, Double Dragon 3, Contra 3, The Jungle Book, Turtles Tournament Fighters</i> (SPC009)</li></ul></li>
+<li><b>Submapper 1</b>, UNIF board name <b>UNL-8237A</b>:
+<ul><li><i>9-in-1 High Standard Card: The Lion King, EarthWorm Jim 2, Aladdin, Boogerman, Somari, Turtles Tournament Fighters, Mortal Kombat 3, Captain Tsubasa 2, Taito Basketball</i> (king001)</li></ul></li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#NROM_Override/Mode_Register_(%245000)"><span class="tocnumber">1.1</span> <span class="toctext">NROM Override/Mode Register ($5000)</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Outer_Bank_Register_(%245001)_-_Submapper_0_(UNL-8237)"><span class="tocnumber">1.2</span> <span class="toctext">Outer Bank Register ($5001) - Submapper 0 (UNL-8237)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Outer_Bank_Register_(%245001)_-_Submapper_1_(UNL-8237A)"><span class="tocnumber">1.3</span> <span class="toctext">Outer Bank Register ($5001) - Submapper 1 (UNL-8237A)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Scrambling_Pattern_Register_(%245007)"><span class="tocnumber">1.4</span> <span class="toctext">Scrambling Pattern Register ($5007)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#MMC3-compatible_registers_(%248000-%24FFFF,_write-only)"><span class="tocnumber">1.5</span> <span class="toctext">MMC3-compatible registers ($8000-$FFFF, write-only)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-7"><a href="#Note"><span class="tocnumber">2</span> <span class="toctext">Note</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Similar_Mappers"><span class="tocnumber">3</span> <span class="toctext">Similar Mappers</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="NROM_Override.2FMode_Register_.28.245000.29"/><span class="mw-headline" id="NROM_Override/Mode_Register_($5000)">NROM Override/Mode Register ($5000)</span></h2>
+<pre>Mask: $F007
+
+D~7654 3210
+  ---------
+  MCS. BBBb
+  |||  ++++- Select 16 KiB PRG-ROM bank at CPU
+  |||        $8000-$BFFF and $C000-$FFFF
+  ||+------- 0: Do not replace bit 0 (NROM-128)
+  ||         1: Replace bit 0 with CPU A14 (NROM-256)
+  |+-------- 0: Do not replace PRG A17 and CHR A17 from the MMC3 (256 KiB outer bank)
+  |          1: Replace PRG A17 and CHR A17 with $5001 bits 4 and 5, respectively (128 KiB outer bank)
+  +--------- 0: Use PRG bank from MMC3; ignore bits 0-3/5
+             1: Ignore PRG bank from MMC3; apply bits 0-3/5
+
+Power-up value: $00
+</pre>
+<h2><span id="Outer_Bank_Register_.28.245001.29_-_Submapper_0_.28UNL-8237.29"/><span class="mw-headline" id="Outer_Bank_Register_($5001)_-_Submapper_0_(UNL-8237)">Outer Bank Register ($5001) - Submapper 0 (UNL-8237)</span></h2>
+<pre>Mask: $F007
+
+D~7654 3210
+  ---------
+  ..cp CCPP
+    || ||++- Select 256 KiB Outer PRG-ROM bank (PRG A18/A19)
+    || ++--- Select 256 KiB Outer CHR-ROM bank (CHR A18/A19)
+    |+------ Select 128 KiB Outer PRG-ROM bank (PRG A17) if $5000 bit 6=1
+    +------- Select 128 KiB Outer CHR-ROM bank (CHR A17) if $5000 bit 6=1
+
+Power-up value: $xF
+</pre>
+<h2><span id="Outer_Bank_Register_.28.245001.29_-_Submapper_1_.28UNL-8237A.29"/><span class="mw-headline" id="Outer_Bank_Register_($5001)_-_Submapper_1_(UNL-8237A)">Outer Bank Register ($5001) - Submapper 1 (UNL-8237A)</span></h2>
+<pre>Mask: $F007
+
+D~7654 3210
+  ---------
+  ..cp P.PP
+       CCC.
+    || +|++- Select 256 KiB Outer PRG-ROM bank (PRG A18-A20)
+    || +++-- Select 256 KiB Outer CHR-ROM bank (CHR A18-A20)
+    |+------ Select 128 KiB Outer PRG-ROM bank (PRG A17) if $5000 bit 6=1
+    +------- Select 128 KiB Outer CHR-ROM bank (CHR A17) if $5000 bit 6=1
+
+Power-up value: $xF
+</pre>
+<h2><span id="Scrambling_Pattern_Register_.28.245007.29"/><span class="mw-headline" id="Scrambling_Pattern_Register_($5007)">Scrambling Pattern Register ($5007)</span></h2>
+<pre>Mask: $F007
+
+D~7654 3210
+  ---------
+  .... .MMM
+        +++- Select MMC3 register address and index scrambling mode (0-7)
+
+Power-up value: $00
+</pre>
+<h2><span id="MMC3-compatible_registers_.28.248000-.24FFFF.2C_write-only.29"/><span class="mw-headline" id="MMC3-compatible_registers_($8000-$FFFF,_write-only)">MMC3-compatible registers ($8000-$FFFF, write-only)</span></h2>
+<p>The scrambled addresses correspond to the real address as follows:
+</p>
+<pre>$5007	-------------address written-----------
+value	8000 8001 A000 A001 C000 C001 E000 E001
+-----------------------------------------------	
+0	8000 8001 A000 A001 C000 C001 E000 E001
+1	A001 A000 8000 C000 8001 C001 E000 E001
+2	8000 8001 A000 A001 C000 C001 E000 E001
+3	C001 8000 8001 A000 A001 E001 E000 C000
+4	A001 8001 8000 C000 A000 C001 E000 E001
+5	8000 8001 A000 A001 C000 C001 E000 E001
+6	8000 8001 A000 A001 C000 C001 E000 E001
+7	8000 8001 A000 A001 C000 C001 E000 E001
+</pre>
+<p>The data that is written to the low three bits of register $8000 corresponds to the real data as follows:
+</p>
+<pre>$5007	-value written-
+value	0 1 2 3 4 5 6 7
+-----------------------
+0	0 1 2 3 4 5 6 7
+1	0 2 6 1 7 3 4 5
+2	0 5 4 1 7 2 6 3
+3	0 6 3 7 5 2 4 1
+4	0 2 5 3 6 1 7 4
+5	0 1 2 3 4 5 6 7
+6	0 1 2 3 4 5 6 7
+7	0 1 2 3 4 5 6 7 
+</pre>
+<p>Bits 6 and 7 of register $8000 are kept as they are. The data written to $8001 and $A000-$FFFF is never scrambled. After unscrambling the address and the data written, these registers function the same as the MMC3's
+</p>
+<h1><span class="mw-headline" id="Note">Note</span></h1>
+<ul><li>Several single-game cartridges that use this mapper are actually 2-in-1 multicarts that have PRG A18 forced to 0 or 1 via solder pad. A dump from these cartridges without changing the solder pad will therefore contain 256 KiB of PRG-ROM but 512 KiB of CHR-ROM, since CHR A18 is not forced in a similar fashion, with one 256 KiB half containing data from the other inaccessible game.</li>
+<li>The Outer Bank Register is reset to its power-up value if a Reset has been detected via an interruption of the M2 signal. This makes it difficult to dump these cartridges using a Kazzo device.</li>
+<li><i>Boogerman</i> (<a href="INES_Mapper_114.xhtml" title="INES Mapper 114">INES Mapper 114</a> Submapper 1) was originally assigned by CaH4e3 to Mapper 215; he later reassigned <b>UNL-8237</b> to Mapper 215 instead.</li>
+<li>Some multicarts may have alternative outer bank registers in the $6xxx range; since they all contain compatibility code that writes to the $5xxx range, they are assigned to Mapper 215 as well.</li></ul>
+<h1><span class="mw-headline" id="Similar_Mappers">Similar Mappers</span></h1>
+<ul><li><a href="NES_2_0_Mapper_258.xhtml" title="NES 2.0 Mapper 258">NES 2.0 Mapper 258</a> adds readable protection registers in the $5000-$5007 range.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123095441
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.016 seconds
+Real time usage: 0.020 seconds
+Preprocessor visited node count: 29/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:500-0!canonical and timestamp 20241123095441 and revision id 5704.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_using__4020__5FFF.xhtml">Mappers using $4020-$5FFF</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_NES_2_0_mappers_with_submappers.xhtml">NES 2.0 mappers with submappers</a>, <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a></p></div></body></html>

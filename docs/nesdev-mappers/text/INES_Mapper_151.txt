@@ -1,0 +1,13 @@
+INES Mapper 151
+
+INES Mapper 151
+
+iNES Mapper 151 represents the VRC1 on the Vs. System. Given that the iNES format has a bit to mark "For Vs. System", this assignment was erroneous and any games marked thus should be mapper 75 instead.
+
+Several emulators treat this as "mapper 75 with hardwired mirroring", rather than letting the "alternative nametables" or "Vs. System" flags override mapper 75's normal ASIC-controlled mirroring. Since Vs. System by definition has 4K of NTRAM, and no games have hardwired mirroring without 4K of NTRAM, this separation is artificial.
+
+FCEUX-2.1.5's and Nestopia-1.4.0's implementations of mapper 151 do not attach the 5th bit of CHR bank onto the lower 4 and instead emulate all registers as 8 bits wide because no Vs. System VRC1-using games have more than 64KiB of CHR.
+
+Pictures of relevant Vs. System modules (here or here; scroll down to "Vs. Gradius" or "Vs. The Goonies") show the same VRC1 as in NesCartDB
+
+Categories: Bad iNES Mappers, INES Mappers

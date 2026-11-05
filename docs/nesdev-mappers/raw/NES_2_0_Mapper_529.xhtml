@@ -1,0 +1,52 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 529</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_529"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 529</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_529">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_529">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 529</b> denotes the <b>YY0807</b>, <b>J-2148</b> and <b>T-230</b> PCBs, used for particular bootlegs version of <i>Datach Dragon Ball Z</i> (<b>T-230</b> PCB, with CHR-RAM) and <i>Dragon Ball Z Gaiden</i> (<b>YY0807</b>/<b>J-2148</b> PCBs, with CHR-ROM). It's a <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">VRC4</a> clone (A2/A3, VRC4e) connected such that the $800x register has no effect, and the $A00x register selects a 16 KiB PRG-ROM bank, similar to the games' original Bandai mappers. Its UNIF board name is <b>UNL-T-230</b>.
+</p><p>Similarly to the Bandai mappers, it also supports saving data to serial EEPROM. The presence of EEPROM is denoted via the NES 2.0 header's PRG-NVRAM field indicating 256 byte of non-volatile save data. Unlike the original Bandai FCG boards that used an I²C interface, the bootleg variants use a 93C56 EEPROM via a Microwire interface, operated using the following registers:
+</p>
+<h2><span id="Read_Microwire_Interface_.28.245000.2C_read.29"/><span class="mw-headline" id="Read_Microwire_Interface_($5000,_read)">Read Microwire Interface ($5000, read)</span></h2>
+<pre>Mask: $F000
+
+D~[.... ...D]
+           +- Serial Data Output from the 93C56 EEPROM
+</pre>
+<h2><span id="Write_Microwrite_Interface_.28.248800.2C_write.29"/><span class="mw-headline" id="Write_Microwrite_Interface_($8800,_write)">Write Microwrite Interface ($8800, write)</span></h2>
+<pre>Mask: $8800
+
+D~[.... .ECD]
+         ||+- Serial Data Input to 93C56 EEPROM
+         |+-- Serial Clock to 93C56 EEPROM
+         +--- Chip Select to 93C56 EEPROM
+</pre>
+<p>This register's address range overlaps with the VRC4's. The game writes to the $FFFx address range to operate this register. 
+</p><p>The 93C56's EEPROM's &quot;ORG&quot; pin is unconnected, indicating a 16-bit word length.
+</p><p>See also: <a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?p=243032">Board pictures and circuit diagrams</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123001650
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.012 seconds
+Preprocessor visited node count: 9/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:835-0!canonical and timestamp 20241123001650 and revision id 19170.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

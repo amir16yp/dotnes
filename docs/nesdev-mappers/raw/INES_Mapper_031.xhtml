@@ -1,0 +1,156 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 031</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_031"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 031</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_031">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_031">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><div class="infobox">
+<div style="text-align: center"><b>NSF subset</b>
+</div>
+<table class="oddf0">
+
+<tbody><tr>
+<td><b>Company</b>
+</td>
+<td>varies (homebrew)
+</td></tr>
+
+
+<tr>
+<td><b>Complexity</b>
+</td>
+<td>CPLD
+</td></tr>
+<tr>
+<td><b>Boards</b>
+</td>
+<td>unknown (homebrew)
+</td></tr>
+<tr>
+<td><b>PRG ROM capacity</b>
+</td>
+<td>1024K
+</td></tr>
+<tr>
+<td><b>PRG ROM window</b>
+</td>
+<td>4K
+</td></tr>
+<tr>
+<td><b>PRG RAM capacity</b>
+</td>
+<td>None
+</td></tr>
+<tr>
+<td><b>CHR capacity</b>
+</td>
+<td>8K
+</td></tr>
+<tr>
+<td><b>CHR window</b>
+</td>
+<td>n/a
+</td></tr>
+<tr>
+<td><b>Nametable <a href="Mirroring.xhtml" title="Mirroring">mirroring</a></b>
+</td>
+<td>Fixed H or V, controlled by solder pads
+</td></tr>
+<tr>
+<td><b><a href="Bus_conflict.xhtml" title="Bus conflict">Bus conflicts</a></b>
+</td>
+<td>Not applicable
+</td></tr>
+<tr>
+<td><b>IRQ</b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>Audio</b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>iNES <a href="Mapper.xhtml" title="Mapper">mappers</a></b>
+</td>
+<td><a class="mw-selflink selflink">031</a>
+</td></tr></tbody></table>
+</div>
+<p><b>iNES Mapper 031</b> represents a mapper created to facilitate cartridge compilations of <a href="NSF.xhtml" title="NSF">NSF</a> music. It implements a common subset of the features used by NSFs.
+</p><p>PRG-ROM is bankswitched in 8 x 4 kB banks from $8000-FFFF. These are controlled by registers at $5FF8-$5FFF like the NSF mapper. The high bank at $F000-FFFF is initialized to the last bank at power-on.
+</p><p>There is no CHR banking, so it is recommended to use 8 kB CHR-RAM with this mapper.
+</p><p>As with <a href="BNROM.xhtml" title="BNROM">BNROM</a> and <a href="UxROM.xhtml" title="UxROM">UxROM</a>, there is no mirroring, CHR bank, or IRQ control; this mapper has hardwired H or V mirroring.
+</p><p>Examples:
+</p>
+<ul><li><i>2A03 Puritans</i> (<a rel="nofollow" class="external text" href="http://rainwarrior.ca/projects/nes/2a03puritans.html">ROM</a>)</li>
+<li><i>Famicompo Pico</i> (<a rel="nofollow" class="external text" href="http://rainwarrior.ca/projects/nes/pico.html">ROMs</a>)</li>
+<li><i>RNDM</i> (<a rel="nofollow" class="external text" href="http://megaranmusic.com/album/rndm">info</a>)</li>
+<li><i>EZNSF</i> (<a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?t=15204">forum post</a>)</li>
+<li><i>ZENSF</i> (<a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?f=6&amp;t=17698">forum post</a>)</li>
+<li><i>Test ROMs</i> (<a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?f=3&amp;t=13120">forum post</a>)</li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#PRG_bank_select_%245000-%245FFF"><span class="tocnumber">1.1</span> <span class="toctext">PRG bank select $5000-$5FFF</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-3"><a href="#References"><span class="tocnumber">2</span> <span class="toctext">References</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Emulator_support"><span class="tocnumber">3</span> <span class="toctext">Emulator support</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<h3><span id="PRG_bank_select_.245000-.245FFF"/><span class="mw-headline" id="PRG_bank_select_$5000-$5FFF">PRG bank select $5000-$5FFF</span></h3>
+<pre>address              data
+15      bit       0  7  bit  0
+-------------------  ---------
+0101 .... .... .AAA  PPPP PPPP
+                |||  |||| ||||
+                |||  ++++-++++- Select 4 kB PRG ROM bank at slot specified by write address.
+                +++------------ Specify 4 kB bank slot at: $8000 + (AAA * $1000)
+</pre>
+<p>The canonical write position for these registers is $5FF8-$5FFF, as used in <a href="NSF.xhtml" title="NSF">NSFs</a>.
+</p><p>At power on, the register at $5FFF is set to $FF. Startup code should be placed in the last bank. There is no change to this register on reset.
+</p>
+<h2><span class="mw-headline" id="References">References</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?p=128137#p128137">Excerpt from readme.txt describing the mapper</a></li></ul>
+<h2><span class="mw-headline" id="Emulator_support">Emulator support</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="http://tasvideos.org/BizHawk.html">BizHawk</a> 1.11.2</li>
+<li><a rel="nofollow" class="external text" href="http://www.fceux.com">FCEUX</a> 2.2.3</li>
+<li><a rel="nofollow" class="external text" href="http://mamedev.org/">MAME</a> 0.162</li>
+<li><a rel="nofollow" class="external text" href="https://www.mesen.ca/">Mesen</a> 0.9.0</li>
+<li><a rel="nofollow" class="external text" href="https://www.qmtpro.com/~nes/nintendulator/">Nintendulator</a> 0.975</li>
+<li><a rel="nofollow" class="external text" href="https://openemu.org/">OpenEmu</a> (FCEUX core) 2.0.3</li>
+<li><a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?t=6928">puNES</a> 0.84</li></ul>
+<p>Cartridges:
+</p>
+<ul><li><a href="Everdrive_N8.xhtml" title="Everdrive N8">Everdrive N8</a> OS V14</li>
+<li><a rel="nofollow" class="external text" href="http://www.infiniteneslives.com/nessupplies.php">InfiniteNESLives</a> Mapper 31 board</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123090238
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.030 seconds
+Real time usage: 0.038 seconds
+Preprocessor visited node count: 97/1000000
+Post‐expand include size: 748/2097152 bytes
+Template argument size: 99/2097152 bytes
+Highest expansion depth: 4/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    9.358      1 Template:Infobox_iNES_mapper
+100.00%    9.358      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:316-0!canonical and timestamp 20241123090238 and revision id 19421.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_using__4020__5FFF.xhtml">Mappers using $4020-$5FFF</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_CPLD_mappers.xhtml">CPLD mappers</a></p></div></body></html>

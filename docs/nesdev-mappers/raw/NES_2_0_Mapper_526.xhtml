@@ -1,0 +1,71 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 526</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_526"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 526</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_526">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_526">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 526 is used for a bootleg version of Namco's 三国志: 中原の覇者 (<i>Sangokushi: Chūgen no Hasha</i>). Its <a href="UNIF.xhtml" title="UNIF">UNIF</a> board name is <b>UNL-BJ-56</b>. Mirroring seems to be hard-wired (to vertical).
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#CHR-ROM_bank_select_(%248000-%248007)"><span class="tocnumber">1.1</span> <span class="toctext">CHR-ROM bank select ($8000-$8007)</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#PRG-ROM_bank_select_(%248008-%24800B)"><span class="tocnumber">1.2</span> <span class="toctext">PRG-ROM bank select ($8008-$800B)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#IRQ_counter_(%24800D/%24800F)"><span class="tocnumber">1.3</span> <span class="toctext">IRQ counter ($800D/$800F)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#IRQ_Counter_Operation"><span class="tocnumber">2</span> <span class="toctext">IRQ Counter Operation</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="CHR-ROM_bank_select_.28.248000-.248007.29"/><span class="mw-headline" id="CHR-ROM_bank_select_($8000-$8007)">CHR-ROM bank select ($8000-$8007)</span></h2>
+<pre>Mask: unknown, probably $800F
+$8000: Set 1 KiB CHR-ROM bank at PPU $0000-$03FF
+$8001: Set 1 KiB CHR-ROM bank at PPU $0400-$07FF
+$8002: Set 1 KiB CHR-ROM bank at PPU $0800-$0BFF
+$8003: Set 1 KiB CHR-ROM bank at PPU $0C00-$0FFF
+$8004: Set 1 KiB CHR-ROM bank at PPU $1000-$13FF
+$8005: Set 1 KiB CHR-ROM bank at PPU $1400-$17FF
+$8006: Set 1 KiB CHR-ROM bank at PPU $1800-$1BFF
+$8007: Set 1 KiB CHR-ROM bank at PPU $1C00-$1FFF
+</pre>
+<h2><span id="PRG-ROM_bank_select_.28.248008-.24800B.29"/><span class="mw-headline" id="PRG-ROM_bank_select_($8008-$800B)">PRG-ROM bank select ($8008-$800B)</span></h2>
+<pre>Mask: unknown, probably $800F
+$8008: Set 8 KiB PRG-ROM bank at CPU $8000-$9FFF
+$8009: Set 8 KiB PRG-ROM bank at CPU $A000-$BFFF
+$800A: Set 8 KiB PRG-ROM bank at CPU $C000-$DFFF
+$800B: Set 8 KiB PRG-ROM bank at CPU $E000-$FFFF
+</pre>
+<h2><span id="IRQ_counter_.28.24800D.2F.24800F.29"/><span class="mw-headline" id="IRQ_counter_($800D/$800F)">IRQ counter ($800D/$800F)</span></h2>
+<p>Mask: unknown, probably $800F. One of these two acknowledges a pending IRQ, and the other resets to IRQ counter to zero. Because they are always written to one after the other, it's not clear which one does which.
+</p>
+<h1><span class="mw-headline" id="IRQ_Counter_Operation">IRQ Counter Operation</span></h1>
+<p>The IRQ counter is increased on every M2 cycle. The IRQ line is asserted when bit 12 is set and released when bit 12 is cleared. In other words, an IRQ is generated after 4096 M2 cycles and self-acknowledged after further 4096 M2 cycles.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123001034
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.012 seconds
+Real time usage: 0.015 seconds
+Preprocessor visited node count: 18/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:832-0!canonical and timestamp 20241123001034 and revision id 20369.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_fixed_timing_cycle_IRQs.xhtml">Mappers with fixed-timing cycle IRQs</a></p></div></body></html>

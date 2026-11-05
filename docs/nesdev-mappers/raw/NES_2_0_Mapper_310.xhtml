@@ -1,0 +1,65 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 310</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_310"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 310</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_310">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_310">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 310</b> denotes the <b>K-1053</b> circuit board, used for the <i>1200-in-1 New World Multi</i> multicart. It is an extension of <a href="INES_Mapper_015.xhtml" title="INES Mapper 015">INES Mapper 015</a> that supports more than 1 MiB of PRG ROM, and 32 KiB rather than 8 KiB of CHR RAM.
+</p>
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$FFFF: Switchable PRG-ROM banks (8/16/32 KiB)</li>
+<li>PPU $0000-$1FFF: Switchable 8 KiB (out of 32 KiB) of CHR-RAM that can be write-protected</li>
+<li>Nametable mirroring: Switchable horizontal/vertical settings</li></ul>
+<h1><span id="Data_Latch_.28.248000-.24BFFF.2C_write.29"/><span class="mw-headline" id="Data_Latch_($8000-$BFFF,_write)">Data Latch ($8000-$BFFF, write)</span></h1>
+<pre>Mask: $C000
+
+D~7654 3210
+---------
+pMPP PPPP
+||++-++++- PRG A19..A14
+|+-------- Nametable mirroring
++--------- PRG A13 if SS=2, ignored otherwise
+ Power-on and reset value: All bits clear
+</pre>
+<h1><span id="Address_and_Data_Latch_.28.24C000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Address_and_Data_Latch_($C000-$FFFF,_write)">Address and Data Latch ($C000-$FFFF, write)</span></h1>
+<pre>Mask: $C000
+
+A~FEDC BA98 7654 3210  D~7654 3210
+  -------------------    ---------
+  11.. .... .... PPSS    .... ..CC
+                 ||||           ++- CHR A14..A13
+                 ||++-------------- PRG banking mode
+                 ||                  0: NROM-256 (PRG A14=CPU A14)
+                 ||                  1: UNROM    (PRG A14..16=111 when CPU A14=1)
+                 ||                  2: NROM-64  (PRG A13=p)
+                 ||                  3: NROM-128
+                 ++---------------- PRG A21..20
+Power-on and reset value: All bits clear
+</pre>
+<p>CHR-RAM is write-protected in PRG banking modes 0 and 3, and write-enabled in modes 1 and 2.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164126
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.008 seconds
+Real time usage: 0.010 seconds
+Preprocessor visited node count: 13/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:695-0!canonical and timestamp 20241123164126 and revision id 19316.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

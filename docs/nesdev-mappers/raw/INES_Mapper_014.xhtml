@@ -1,0 +1,47 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 014</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_014"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 014</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_014">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_014">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 014</b> denotes the 哥德 (Gouder) <b>SL-1632</b> PCB, used on the 8-character version of <i>Samurai Spirits</i> by Rex Soft. Like <a href="INES_Mapper_116.xhtml" title="INES Mapper 116">INES Mapper 116</a>, it uses the <b>Huang-1</b> ASIC together with a PAL that provides a supervisor register for selecting CHR A18 and for switching between <a href="MMC3.xhtml" title="MMC3">MMC3</a> and <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC2">VRC2</a> modes (A0/A1, VRC2b), but moves the supervisor register address to $A131, overlapping the MMC3 and VRC2 registers there. Its UNIF board name is <b>UNL-SL1632</b>.
+</p><p>According to Nestopia's mapper source code, mirroring can only be controlled in VRC2 mode, and the VRC2 PRG and mirroring registers do not respond to address mirrors. These behaviors contradict other emulators and have not been verified on original hardware.
+</p>
+<h2><span id="Supervisor_Register_.28.24A131.2C_write.29"/><span class="mw-headline" id="Supervisor_Register_($A131,_write)">Supervisor Register ($A131, write)</span></h2>
+<pre>Mask: $FFFF?
+
+D~7654 3210
+  ---------
+  A.B. C.M.
+  | |  | +-- Mapper mode
+  | |  |      0: VRC2
+  | |  |      1: MMC3
+  | |  +---- CHR A18 for PPU $0000-$0FFF
+  | +------- CHR A18 for PPU $1000-$17FF
+  +--------- CHR A18 for PPU $1800-$1FFF
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123092456
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 11/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:296-0!canonical and timestamp 20241123092456 and revision id 19503.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_Multi_ASIC_mappers.xhtml">Multi-ASIC mappers</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

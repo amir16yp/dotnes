@@ -1,0 +1,29 @@
+NES 2.0 Mapper 386
+
+NES 2.0 Mapper 386
+
+NES 2.0 Mapper 386 denotes J.Y. Company's YY860729C circuit board, used for only one known multicart:
+
+1996 Super HiK 5-in-1 (JY-090)
+
+It uses the J.Y. Company ASIC, has 1 MiB of PRG-ROM and CHR-ROM each, and is similar to NES 2.0 Mapper 282 but has the Outer Bank register bits in a different order. NES 2.0 Mapper 387 is almost the same but changes the outer PRG bank size from 256 to 128 KiB.
+
+Outer Bank Register ($D003)
+
+Mask: $F003
+
+7654 3210
+---- ----
+..L? PCpc
+  || |||+- CHR A18, ignored if L=1
+  || ||+-- PRG A18
+  || |+--- CHR A19
+  || +---- PRG A19
+  |+------ Always 1
+  +------- Select outer CHR-ROM bank size
+            0: Mask $900x/$A00x to 256 KiB, use c
+            1: Mask $900x/$A00x to 512 KiB, ignore c
+
+For a description of all other registers, see J.Y. Company ASIC.
+
+Categories: INES Mappers, Multicart mappers, Mappers with cycle IRQs, Mappers with scanline IRQs, Mappers using J.Y. Company ASIC, Mappers with ROM nametables

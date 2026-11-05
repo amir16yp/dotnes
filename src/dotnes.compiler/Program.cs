@@ -14,6 +14,7 @@ return command switch
     "new" => Commands.New(rest),
     "build" => Commands.Build(rest),
     "run" => Commands.Run(rest),
+    "decompile" => Commands.Decompile(rest),
     "transpile" => Commands.Transpile(rest),
     "-h" or "--help" or "help" => Help(),
     // Legacy: `dotnes app.dll chr.s`

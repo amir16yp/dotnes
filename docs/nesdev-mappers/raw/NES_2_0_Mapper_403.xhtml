@@ -1,0 +1,66 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 403</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_403"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 403</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_403">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_403">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 403</b> denotes the <b>89433</b> circuit board with up to 1 MiB PRG-ROM and 32 KiB of CHR-RAM, bankable with 8 KiB granularity.
+</p>
+<ul><li><i>Tetris Family - 玩家 19-in-1 智瑟實典</i> (NO-1683)</li>
+<li><i>Sachen Superpack</i> (versions A-C)</li></ul>
+<h2><span id="PRG_bank_register_.28.244100.29"/><span class="mw-headline" id="PRG_bank_register_($4100)">PRG bank register ($4100)</span></h2>
+<pre>Mask: $E103
+
+D~[.PPP PPp.]
+    +++-+++--- PRG A19..A14
+
+Power-on value: $00
+</pre>
+<h2><span id="CHR_bank_register_.28.244101.2C_.248000-.24FFFF.29"/><span class="mw-headline" id="CHR_bank_register_($4101,_$8000-$FFFF)">CHR bank register ($4101, $8000-$FFFF)</span></h2>
+<pre>Mask: $E103, $8000
+
+D~[.... ..CC]
+          ++-- CHR A14..A13
+
+Power-on value: $00
+</pre>
+<p>The latch at $8000-$FFFF is enabled/disabled via the Mode register's C bit.
+</p>
+<h2><span id="Mode_register_.28.244102.29"/><span class="mw-headline" id="Mode_register_($4102)">Mode register ($4102)</span></h2>
+<pre>Mask: $E103
+
+D~[...H .C.N]
+      |  | +- 0: PRG A14=CPU A14 (NROM-256)
+      |  |    1: PRG A14=p (NROM-128)
+      |  +--- 0: Latch at $8000-$FFFF disabled
+      |       1: Latch at $8000-$FFFF enabled
+      +------ 0: Vertical mirroring
+              1: Horizontal mirroring
+
+Power-on value: $00
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123164336
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.005 seconds
+Real time usage: 0.005 seconds
+Preprocessor visited node count: 12/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:788-0!canonical and timestamp 20241123164336 and revision id 18960.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

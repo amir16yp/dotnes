@@ -1,0 +1,63 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 263</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_263"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 263</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_263">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_263">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 263 is used for an <a href="MMC3.xhtml" title="MMC3">MMC3</a> clone with scrambled mapper address and data bits. Its UNIF board name is <b>UNL-KOF97</b>. It is used for two games by Rex Soft:
+</p>
+<ul><li><i>Boogerman II: The Final Adventure</i></li>
+<li><i>The King of Fighters '97</i></li></ul>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>A12 is used for the MMC3's A0:
+</p><p>Mask: $F000
+</p>
+<pre>Mapper 263    Regular MMC3
+address       address
+----------    ------------
+8000          8000
+9000          8001
+A000          A000
+B000          A001
+C000          C000
+D000          C001
+E000          E000
+F000          E001
+</pre>
+<p>The data written to the MMC3 clone has the following bit order compared to a regular MMC3:
+</p>
+<pre>Written bit 76543210
+            --------
+Actual bit  76243051
+</pre>
+<p>Which means that to get from the written data to the actual data, the following operation must be performed:
+</p>
+<pre>Val =(Val &amp;0xD8) | ((Val &amp;0x20) &gt;&gt;4) | ((Val &amp;4) &lt;&lt;3) | ((Val &amp;2) &gt;&gt;1) | ((Val &amp;1) &lt;&lt;2);
+</pre>
+<h2><span class="mw-headline" id="Note">Note</span></h2>
+<ul><li>Most versions of <i>The King of Fighters '97</i> are hacked for <a href="MMC3.xhtml" class="mw-redirect" title="INES Mapper 004">Mapper 4</a>. Several of them also fail to disable the <a href="APU_Frame_Counter.xhtml" title="APU Frame Counter">frame IRQ</a>, freezing on emulators that accurately <a href="CPU_power_up_state.xhtml" title="CPU power up state">power-on with the frame IRQ enabled</a>.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123145456
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.011 seconds
+Real time usage: 0.015 seconds
+Preprocessor visited node count: 7/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:648-0!canonical and timestamp 20241123145456 and revision id 7642.
+ -->
+</div><p class="categories">Categories: <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

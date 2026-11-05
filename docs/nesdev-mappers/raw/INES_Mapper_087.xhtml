@@ -1,0 +1,150 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 087</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_087"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 087</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_087">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_087">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><div class="infobox">
+<div style="text-align: center"><b>J87</b>
+</div>
+<table class="oddf0">
+
+<tbody><tr>
+<td><b>Company</b>
+</td>
+<td>Konami, Jaleco, Taito
+</td></tr>
+
+
+
+
+<tr>
+<td><b>Boards</b>
+</td>
+<td>JF-0x, JF-10 (Jaleco), FC-009 (Taito), MF4034/30xxA (Konami)
+</td></tr>
+<tr>
+<td><b>PRG ROM capacity</b>
+</td>
+<td>32K
+</td></tr>
+<tr>
+<td><b>PRG ROM window</b>
+</td>
+<td>n/a
+</td></tr>
+<tr>
+<td><b>PRG RAM capacity</b>
+</td>
+<td>None
+</td></tr>
+<tr>
+<td><b>CHR capacity</b>
+</td>
+<td>16k (most games), 32K (JF-09/JF-10 only)
+</td></tr>
+<tr>
+<td><b>CHR window</b>
+</td>
+<td>8K
+</td></tr>
+<tr>
+<td><b>Nametable <a href="Mirroring.xhtml" title="Mirroring">mirroring</a></b>
+</td>
+<td>Fixed H or V, controlled by solder pads
+</td></tr>
+<tr>
+<td><b><a href="Bus_conflict.xhtml" title="Bus conflict">Bus conflicts</a></b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>IRQ</b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>Audio</b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>iNES <a href="Mapper.xhtml" title="Mapper">mappers</a></b>
+</td>
+<td><a class="mw-selflink selflink">087</a>, <a href="INES_Mapper_101.xhtml" title="INES Mapper 101">101</a>
+</td></tr></tbody></table>
+</div>
+<div class="infobox">
+<div style="text-align: center"><b>NESCartDB</b></div>
+<table class="oddf0">
+
+<tbody><tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/search/advanced?ines=87">iNES 087</a>
+</td></tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</tbody></table>
+</div>
+<p><br/>
+<b>J87</b> (Also known as Mapper 87) refers to the first &quot;mapper&quot; created for the Famicom. Despite this, no games with this mapper ever made it overseas to USA NES owners. <a href="INES_Mapper_101.xhtml" title="INES Mapper 101">iNES Mapper 101</a> is the same board, but for a dump that naïvely reversed the CHR bit-order. <a href="CNROM.xhtml" title="CNROM">CNROM</a> is a later cost-reduced version of this mapper, by cutting down on one logic chip, at the cost of having bus conflicts, and also has the CHR bank order reversed as well. Most games are capped at 16k CHR, however, the JF-09 and JF-10 boards contain an additional trace that allows the design to address 32k. All games with this mapper are emulated as the 32k variant.
+</p><p>The name &quot;J87&quot; was given to this mapper due to its historical significance, and creation by Jaleco. Otherwise, no &quot;canonical&quot; name was given to this mapper. Jaleco would later upgrade this mapper to become <a href="INES_Mapper_140.xhtml" title="INES Mapper 140">iNES Mapper 140</a>.
+</p>
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>CPU $8000-$FFFF: 16 KB PRG ROM, fixed (if 16 KB PRG ROM used, then this is the same as $C000-$FFFF)</li>
+<li>CPU $C000-$FFFF: 16 KB PRG ROM, fixed</li>
+<li>PPU $0000-$1FFF: 8 KB switchable CHR ROM bank</li></ul>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<h3><span id="Bank_Select_.28.246000-.247FFF.29"/><span class="mw-headline" id="Bank_Select_($6000-$7FFF)">Bank Select ($6000-$7FFF)</span></h3>
+<p>This will select an 8 KB CHR ROM bank for PPU $0000-$1FFF.
+</p>
+<pre>7  bit  0
+---- ----
+xxxx xxLH
+       ||
+       |+- High CHR bit
+       +-- Low CHR bit
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123103017
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.031 seconds
+Real time usage: 0.043 seconds
+Preprocessor visited node count: 198/1000000
+Post‐expand include size: 1109/2097152 bytes
+Template argument size: 297/2097152 bytes
+Highest expansion depth: 10/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%   26.203      1 -total
+ 75.79%   19.860      1 Template:Nesdbbox
+ 54.31%   14.232      1 Template:Nesdblink
+ 34.13%    8.942      3 Template:Strip_whitespace
+ 23.69%    6.207      1 Template:Infobox_iNES_mapper
+ 15.23%    3.990      3 Template:Strip_whitespace/1
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:372-0!canonical and timestamp 20241123103017 and revision id 21359.
+ -->
+</div><p class="categories">Categories: <a href="Category_CNROM_like_mappers.xhtml">CNROM-like mappers</a>, <a href="Category_In_NesCartDB.xhtml">In NesCartDB</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a></p></div></body></html>

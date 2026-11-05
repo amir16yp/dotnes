@@ -1,0 +1,45 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 448</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_448"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 448</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_448">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_448">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 448</b> denotes the <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">VRC4</a>-based <b>830768C</b> multicart circuit board used by a <i>Super 6-in-1</i> multicart. The VRC4 clone's A0/A1 inputs are connected to CPU A2/A3, and its PRG-RAM chip-enable signal drives an outer bank register. The VRC4 is otherwise mainly used for its IRQ and mirroring selection functionalities; discrete circuits implement UNROM/UOROM/AOROM-like PRG banking with 8 KiB of unbanked CHR-RAM.
+</p>
+<h2><span id="Outer_Bank_Register_.28.246000-.247FFF.2C_write.29"/><span class="mw-headline" id="Outer_Bank_Register_($6000-$7FFF,_write)">Outer Bank Register ($6000-$7FFF, write)</span></h2>
+<pre>A~[0110 .... .... BUPP]
+                  |+++- PRG A19..A17
+                  |+--- Fixed bank when B=0
+                  |      0: 7 (UNROM)
+                  |      1: 15 (UOROM)
+                  +---- PRG mode
+                         0: UNROM/UOROM
+                         1: AOROM
+</pre>
+<p>In UNROM/UOROM mode, the VRC4's PRG register at $8000 selects the 16 KiB PRG bank at $8000-$BFFF, and mirroring depends on the VRC4's normal mirroring register. In AOROM mode, the VRC4's PRG bank and mirroring is ignored, and the entire $8000-$FFFF address range functions like <a href="AxROM.xhtml" class="mw-redirect" title="INES Mapper 007">INES Mapper 007</a> with respect to PRG banking and single-screen mirroring, subject only to PRG A19 and A18 set via the outer bank register.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241122234133
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.007 seconds
+Real time usage: 0.011 seconds
+Preprocessor visited node count: 7/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:2301-0!canonical and timestamp 20241122234133 and revision id 19305.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

@@ -1,0 +1,64 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 540</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_540"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 540</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_540">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_540">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 540 is a variant of <a href="NES_2_0_Mapper_359.xhtml" title="NES 2.0 Mapper 359">NES 2.0 Mapper 359</a> that rewires the PPU/CHR address lines to select 2 KiB instead of 1 KiB banks in order to address 512 KiB of CHR-RAM with 8 bit CHR banking registers. It is used on a &quot;Super Boy&quot; mapper hack of <i>Master Fighter VI'</i>, originally for <a href="NES_2_0_Mapper_264.xhtml" title="NES 2.0 Mapper 264">NES 2.0 Mapper 264</a>. Its UNIF board name is <b>UNL-82112C</b>.
+</p>
+<pre>Pin            Connected to
+PPU A10        CHR-ROM A10
+PPU A11        ASIC PA10
+PPU A12        ASIC PA11+PA12
+ASIC CHR A10   CHR-ROM A11
+    :             :
+ASIC CHR A17   CHR-ROM A18
+</pre>
+<p>So that the ASIC sees the followings addresses:
+</p>
+<pre>Real PPU Addr  ASIC PPU Addr
+$0000          $0000 -&gt; reg $A000
+$0400          $0000 -&gt; reg $A000
+$0800          $0400 -&gt; reg $A001
+$0C00          $0400 -&gt; reg $A001
+$1000          $1800 -&gt; reg $B002
+$1400          $1800 -&gt; reg $B002
+$1800          $1C00 -&gt; reg $B003
+$1C00          $1C00 -&gt; reg $B003
+</pre>
+<h2><span id="CHR_Bank_Select_.28.24A000-.24B003.2C_write.29"/><span class="mw-headline" id="CHR_Bank_Select_($A000-$B003,_write)">CHR Bank Select ($A000-$B003, write)</span></h2>
+<p>Mask: $F003
+</p>
+<ul><li>$A000: Select 2 KiB CHR-ROM bank at PPU $0000-$07FF</li>
+<li>$A001: Select 2 KiB CHR-ROM bank at PPU $0800-$0FFF</li>
+<li>$A002: No function</li>
+<li>$A003: No function</li>
+<li>$B000: No function</li>
+<li>$B001: No function</li>
+<li>$B002: Select 2 KiB CHR-ROM bank at PPU $1000-$17FF</li>
+<li>$B003: Select 2 KiB CHR-ROM bank at PPU $1800-$1FFF</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123164556
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.013 seconds
+Preprocessor visited node count: 8/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:846-0!canonical and timestamp 20241123164556 and revision id 8158.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

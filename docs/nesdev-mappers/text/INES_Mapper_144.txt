@@ -1,0 +1,15 @@
+INES Mapper 144
+
+INES Mapper 144
+
+iNES Mapper 144, allocated for the game Death Race, describes a intentionally defective variant of the Color Dreams board (mapper 11).
+
+This game's PCB (labelled 50282) is almost identical to the revision B Color Dreams boards, but a 300Ω resistor was added between CPU D0 and the combination of mapper hardware and ROM. This addition means that only the ROM's least significant bit always wins bus conflicts.
+
+Nestopia-1.4.0 implements this as EffectiveData = (WrittenData & ROM[address]) | (ROM[address] & 1)
+
+FCEUX-2.1.5 works around this by ignoring writes to 0x8000
+
+The most succinct description is EffectiveData = (ROM[address] & (WrittenData|1))
+
+Categories: In NesCartDB, INES Mappers, GNROM-like mappers

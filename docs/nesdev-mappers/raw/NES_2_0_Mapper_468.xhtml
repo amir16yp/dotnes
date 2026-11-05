@@ -1,0 +1,215 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 468</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_468"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 468</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_468">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_468">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 468</b> denotes <b>BlazePro</b> multicarts based on the Altera MAX II CPLD. It can emulate sixteen mappers at once, selected via the MSB nibble at $5700. Different multicarts program the CPLD with different sets of mappers, denoted via the NES 2.0 submapper field. The LSB nibble of $5700 contains mapper-specific flags.
+</p>
+<table class="wikitable sortable">
+<tbody><tr>
+<th>Submapper</th>
+<th>$5700.4-7</th>
+<th>Mapper
+</th></tr>
+<tr>
+<td>0</td>
+<td>0</td>
+<td><a href="MMC1.xhtml" class="mw-redirect" title="SxROM">SxROM</a>
+</td></tr>
+<tr>
+<td>3</td>
+<td>2</td>
+<td><a href="MMC1.xhtml" class="mw-redirect" title="SxROM">SxROM</a>
+</td></tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td><a href="SxROM.xhtml" class="mw-redirect" title="SUROM">SUROM</a>
+</td></tr>
+<tr>
+<td>0</td>
+<td>4</td>
+<td><a href="AxROM.xhtml" class="mw-redirect" title="ANROM">ANROM</a>/<a href="BNROM.xhtml" title="BNROM">BNROM</a>
+</td></tr>
+<tr>
+<td>1</td>
+<td>4</td>
+<td><a href="AxROM.xhtml" class="mw-redirect" title="ANROM">ANROM</a>/<a href="BNROM.xhtml" title="BNROM">BNROM</a>
+</td></tr>
+<tr>
+<td>0</td>
+<td>6</td>
+<td><a href="AxROM.xhtml" class="mw-redirect" title="AOROM">AOROM</a>
+</td></tr>
+<tr>
+<td>1</td>
+<td>6</td>
+<td><a href="AxROM.xhtml" class="mw-redirect" title="AOROM">AOROM</a>
+</td></tr>
+<tr>
+<td>0</td>
+<td>10</td>
+<td><a href="MMC2.xhtml" class="mw-redirect" title="PNROM">PNROM</a>
+</td></tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td><a href="TxROM.xhtml" title="TxROM">TxROM</a>, 256 KiB CHR
+</td></tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td><a href="TxROM.xhtml" title="TxROM">TxROM</a>, 128 KiB CHR
+</td></tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td><a href="INES_Mapper_118.xhtml" class="mw-redirect" title="TxSROM">TxSROM</a>
+</td></tr>
+<tr>
+<td>0</td>
+<td>8</td>
+<td><a href="FxROM.xhtml" title="FxROM">FxROM</a>
+</td></tr>
+<tr>
+<td>0</td>
+<td>9</td>
+<td><a href="UxROM.xhtml" class="mw-redirect" title="UNROM">UNROM</a>, <a href="INES_Mapper_078.xhtml" title="INES Mapper 078">IF-12 (Holy Diver)</a>
+</td></tr>
+<tr>
+<td>0</td>
+<td>11</td>
+<td><a href="UxROM.xhtml" class="mw-redirect" title="UOROM">UOROM</a>
+</td></tr>
+<tr>
+<td>1</td>
+<td>7</td>
+<td><a href="UxROM.xhtml" title="UxROM">UxROM</a>
+</td></tr>
+<tr>
+<td>3</td>
+<td>7</td>
+<td><a href="UxROM.xhtml" title="UxROM">UxROM</a>
+</td></tr>
+<tr>
+<td>0</td>
+<td>5</td>
+<td>(C)NROM, <a href="INES_Mapper_071.xhtml#Mirroring_(%248000-%249FFF)" title="INES Mapper 071">BF9097</a>
+</td></tr>
+<tr>
+<td>1</td>
+<td>5</td>
+<td>(C)NROM, <a href="INES_Mapper_071.xhtml#Mirroring_(%248000-%249FFF)" title="INES Mapper 071">BF9097</a>
+</td></tr>
+<tr>
+<td>0</td>
+<td>12</td>
+<td><a href="GxROM.xhtml" class="mw-redirect" title="GNROM">GNROM</a>
+</td></tr>
+<tr>
+<td>0</td>
+<td>13</td>
+<td><a href="Color_Dreams.xhtml" title="Color Dreams">Color Dreams</a>
+</td></tr>
+<tr>
+<td>1</td>
+<td>12</td>
+<td><a href="GxROM.xhtml" class="mw-redirect" title="GNROM">GNROM</a>
+</td></tr>
+<tr>
+<td>1</td>
+<td>13</td>
+<td><a href="Color_Dreams.xhtml" title="Color Dreams">Color Dreams</a>
+</td></tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td><a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC2">VRC2</a> A0/A1
+</td></tr>
+<tr>
+<td>2</td>
+<td>1</td>
+<td><a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">VRC4</a> A0/A1
+</td></tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td><a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC2">VRC2</a> A1/A0
+</td></tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td><a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">VRC4</a> A1/A0
+</td></tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td><a href="VRC6.xhtml" title="VRC6">VRC6</a>, 256 KiB CHR
+</td></tr>
+<tr>
+<td>3</td>
+<td>1</td>
+<td><a href="VRC6.xhtml" title="VRC6">VRC6</a>, 128 KiB CHR
+</td></tr>
+<tr>
+<td>4</td>
+<td>0</td>
+<td><a href="VRC1.xhtml" title="VRC1">VRC1</a>
+</td></tr>
+<tr>
+<td>4</td>
+<td>1</td>
+<td><a href="VRC7.xhtml" title="VRC7">VRC7</a>
+</td></tr>
+<tr>
+<td>4</td>
+<td>4</td>
+<td><a href="VRC3.xhtml" title="VRC3">VRC3</a>
+</td></tr>
+<tr>
+<td>0</td>
+<td>14</td>
+<td><a href="INES_Mapper_163.xhtml" title="INES Mapper 163">Nanjing</a>
+</td></tr>
+<tr>
+<td>1</td>
+<td>14</td>
+<td><a href="INES_Mapper_163.xhtml" title="INES Mapper 163">Nanjing</a>
+</td></tr>
+<tr>
+<td>0</td>
+<td>7</td>
+<td><a href="INES_Mapper_040.xhtml" title="INES Mapper 040">SMB2J</a>
+</td></tr>
+<tr>
+<td>5</td>
+<td>0</td>
+<td><a href="Sunsoft_FME_7.xhtml" class="mw-redirect" title="FME-7">FME-7</a>
+</td></tr>
+</tbody></table>
+<!-- 
+NewPP limit report
+Cached time: 20241122193343
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.024 seconds
+Real time usage: 0.028 seconds
+Preprocessor visited node count: 2/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:2448-0!canonical and timestamp 20241122193343 and revision id 20144.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multi_ASIC_mappers.xhtml">Multi-ASIC mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

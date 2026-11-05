@@ -1,0 +1,565 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 019</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_019"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 019</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_019">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_019">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><div class="infobox">
+<div style="text-align: center"><b>Namco 129/163</b>
+</div>
+<table class="oddf0">
+
+<tbody><tr>
+<td><b>Company</b>
+</td>
+<td>Namco
+</td></tr>
+<tr>
+<td><b>Games</b>
+</td>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/search/advanced?ines=19">20 in NesCartDB</a>
+</td></tr>
+<tr>
+<td><b>Complexity</b>
+</td>
+<td>ASIC
+</td></tr>
+<tr>
+<td><b>Boards</b>
+</td>
+<td>11xF0, 111F0S
+</td></tr>
+<tr>
+<td><b>Pinout</b>
+</td>
+<td><a href="Namcot_163_family_pinout.xhtml" title="Namcot 163 family pinout">Namcot 163 family pinout</a>
+</td></tr>
+<tr>
+<td><b>PRG ROM capacity</b>
+</td>
+<td>512K
+</td></tr>
+<tr>
+<td><b>PRG ROM window</b>
+</td>
+<td>8Kx3 + 8K fixed
+</td></tr>
+<tr>
+<td><b>PRG RAM capacity</b>
+</td>
+<td>8K
+</td></tr>
+<tr>
+<td><b>PRG RAM window</b>
+</td>
+<td>8K
+</td></tr>
+<tr>
+<td><b>CHR capacity</b>
+</td>
+<td>256K
+</td></tr>
+<tr>
+<td><b>CHR window</b>
+</td>
+<td>1Kx8 (PT) + 1Kx4 (NT)
+</td></tr>
+<tr>
+<td><b>Nametable <a href="Mirroring.xhtml" title="Mirroring">mirroring</a></b>
+</td>
+<td>arbitrary, up to 226 source nametables
+</td></tr>
+<tr>
+<td><b><a href="Bus_conflict.xhtml" title="Bus conflict">Bus conflicts</a></b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>IRQ</b>
+</td>
+<td>CPU cycle counter
+</td></tr>
+<tr>
+<td><b>Audio</b>
+</td>
+<td><a href="Namco_163_audio.xhtml" title="Namco 163 audio">Yes</a>
+</td></tr>
+<tr>
+<td><b>iNES <a href="Mapper.xhtml" title="Mapper">mappers</a></b>
+</td>
+<td><a class="mw-selflink selflink">019</a>
+</td></tr></tbody></table>
+</div>
+<p><b>iNES Mapper 019</b> is used to denote Famicom boards bearing the <b>Namco 129</b> and <b>Namco 163</b> ASICs. These chips contain 128 bytes of internal RAM that can be used either for <a href="Namco_163_audio.xhtml" title="Namco 163 audio">expansion audio</a> or, together with a battery, for 128 bytes of save RAM. Games may also come with the regular 8 KiB of additional battery-backed WRAM mapped into CPU address space at $6000-$7FFF. 
+</p><p>In <a href="NES_2_0.xhtml" title="NES 2.0">NES 2.0</a>, the 128 bytes of internal chip RAM are not included in the PRG-RAM and PRG-NVRAM fields. NES 2.0 Mapper 19 ROM images therefore either have:
+</p>
+<ul><li>no battery and no WRAM: battery bit clear, PRG-RAM/PRG-NVRAM both set to zero.</li>
+<li>a battery but no WRAM: battery bit set, PRG-RAM/PRG-NVRAM both set to zero. The game writes its save data into the 128 byte internal RAM.</li>
+<li>a battery and WRAM: battery bit set, PRG-RAM set to zero and PRG-NVRAM set to 8192.</li></ul>
+<p>The NES 2.0 submapper is used to specify the mixing resistor that determines the relative volume of the expansion audio channels against the <a href="APU.xhtml" title="APU">APU</a>'s audio channels:
+</p>
+<table class="wikitable">
+<tbody><tr>
+<th colspan="3"><a href="INES_Mapper_019_Submapper_table.xhtml" title="INES Mapper 019/Submapper table">INES Mapper 019 submapper table</a>
+</th></tr>
+<tr>
+<th>Submapper #</th>
+<th>Meaning</th>
+<th>Note
+</th></tr>
+<tr>
+<td>0</td>
+<td>Default</td>
+<td>Expansion sound volume unspecified
+</td></tr>
+<tr>
+<td><i>1</i></td>
+<td><i>Deprecated</i></td>
+<td>Internal 128b RAM is battery backed, no external PRG-RAM is present.
+<p>No expansion sound.
+(Equivalent to submapper 2 with 0 in PRG-NVRAM field.)
+</p>
+</td></tr>
+<tr>
+<td>2</td>
+<td>No expansion sound</td>
+<td>
+</td></tr>
+<tr>
+<td>3</td>
+<td>N163 expansion sound: <b>11.0-13.0 dB</b> louder than NES APU</td>
+<td>
+</td></tr>
+<tr>
+<td>4</td>
+<td>N163 expansion sound: <b>16.0-17.0 dB</b> louder than NES APU</td>
+<td>
+</td></tr>
+<tr>
+<td>5</td>
+<td>N163 expansion sound: <b>18.0-19.5 dB</b> louder than NES APU</td>
+<td>
+</td></tr></tbody></table>
+<p><br/>
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Game_list"><span class="tocnumber">1</span> <span class="toctext">Game list</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Banks"><span class="tocnumber">2</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Registers"><span class="tocnumber">3</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Chip_RAM_Data_Port_(%244800-%244FFF)_r/w"><span class="tocnumber">3.1</span> <span class="toctext">Chip RAM Data Port ($4800-$4FFF) r/w</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#IRQ_Counter_(low)_(%245000-%2457FF)_r/w"><span class="tocnumber">3.2</span> <span class="toctext">IRQ Counter (low) ($5000-$57FF) r/w</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#IRQ_Counter_(high)_/_IRQ_Enable_(%245800-%245FFF)_r/w"><span class="tocnumber">3.3</span> <span class="toctext">IRQ Counter (high) / IRQ Enable ($5800-$5FFF) r/w</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#CHR_and_NT_Select_(%248000-%24DFFF)_w"><span class="tocnumber">3.4</span> <span class="toctext">CHR and NT Select ($8000-$DFFF) w</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#PRG_Select_1_(%24E000-%24E7FF)_w"><span class="tocnumber">3.5</span> <span class="toctext">PRG Select 1 ($E000-$E7FF) w</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#PRG_Select_2_/_CHR-RAM_Enable_(%24E800-%24EFFF)_w"><span class="tocnumber">3.6</span> <span class="toctext">PRG Select 2 / CHR-RAM Enable ($E800-$EFFF) w</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#PRG_Select_3_(%24F000-%24F7FF)_w"><span class="tocnumber">3.7</span> <span class="toctext">PRG Select 3 ($F000-$F7FF) w</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Write_Protect_for_External_RAM_AND_Chip_RAM_Address_Port_(%24F800-%24FFFF)_w"><span class="tocnumber">3.8</span> <span class="toctext">Write Protect for External RAM AND Chip RAM Address Port ($F800-$FFFF) w</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-12"><a href="#IRQ_Operation"><span class="tocnumber">4</span> <span class="toctext">IRQ Operation</span></a></li>
+<li class="toclevel-1 tocsection-13"><a href="#Notes"><span class="tocnumber">5</span> <span class="toctext">Notes</span></a></li>
+<li class="toclevel-1 tocsection-14"><a href="#See_also"><span class="tocnumber">6</span> <span class="toctext">See also</span></a></li>
+<li class="toclevel-1 tocsection-15"><a href="#References"><span class="tocnumber">7</span> <span class="toctext">References</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Game_list">Game list</span></h2>
+<table class="wikitable sortable">
+<tbody><tr>
+<th>Name</th>
+<th>Chip</th>
+<th>Battery</th>
+<th>WRAM</th>
+<th>Expansion Audio</th>
+<th>NES 2.0 Submapper
+</th></tr>
+<tr>
+<td><i>Battle Fleet</i></td>
+<td>163</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>2
+</td></tr>
+<tr>
+<td><i>Dragon Ninja</i></td>
+<td>163</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>2
+</td></tr>
+<tr>
+<td><i>Digital Devil Story: Megami Tensei II</i></td>
+<td>163</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>3
+</td></tr>
+<tr>
+<td><i>Dokuganryuu Masamune</i></td>
+<td>163</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>2
+</td></tr>
+<tr>
+<td><i>Erika to Satoru no Yume Bouken</i></td>
+<td>163</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+<td>5
+</td></tr>
+<tr>
+<td><i>Famista '90</i></td>
+<td>163</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>2
+</td></tr>
+<tr>
+<td><i>Final Lap</i></td>
+<td>163</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+<td>3
+</td></tr>
+<tr>
+<td><i>Hydlide 3: Yami kara no Houmonsha</i></td>
+<td>163</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>2
+</td></tr>
+<tr>
+<td><i>Juvei Quest</i></td>
+<td>163</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>2
+</td></tr>
+<tr>
+<td><i>Kaijuu Monogatari</i></td>
+<td>163</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>2
+</td></tr>
+<tr>
+<td><i>King of Kings</i></td>
+<td>163</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>5
+</td></tr>
+<tr>
+<td><i>Mappy Kids</i></td>
+<td>163</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+<td>5
+</td></tr>
+<tr>
+<td><i>Mindseeker</i></td>
+<td>163</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>2
+</td></tr>
+<tr>
+<td><i>Namco Classic</i></td>
+<td>163</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>2
+</td></tr>
+<tr>
+<td><i>Namco Classic II</i></td>
+<td>163</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+<td>3
+</td></tr>
+<tr>
+<td><i>Rolling Thunder</i></td>
+<td>163</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+<td>4
+</td></tr>
+<tr>
+<td><i>Sangokushi: Chuugen no Hasha</i></td>
+<td>163</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>5
+</td></tr>
+<tr>
+<td><i>Sangokushi II: Haou no Tairiku</i></td>
+<td>163</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>3
+</td></tr>
+<tr>
+<td><i>Star Wars</i></td>
+<td>129</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>2
+</td></tr>
+<tr>
+<td><i>Youkai Douchuuki</i></td>
+<td>163</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+<td>5
+</td></tr>
+</tbody></table>
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>CPU $6000-$7FFF: 8 KB PRG RAM bank, if WRAM is present</li>
+<li>CPU $8000-$9FFF: 8 KB switchable PRG ROM bank</li>
+<li>CPU $A000-$BFFF: 8 KB switchable PRG ROM bank</li>
+<li>CPU $C000-$DFFF: 8 KB switchable PRG ROM bank</li>
+<li>CPU $E000-$FFFF: 8 KB PRG ROM bank, fixed to the last bank</li>
+<li>PPU $0000-$03FF: 1 KB switchable CHR bank</li>
+<li>PPU $0400-$07FF: 1 KB switchable CHR bank</li>
+<li>PPU $0800-$0BFF: 1 KB switchable CHR bank</li>
+<li>PPU $0C00-$0FFF: 1 KB switchable CHR bank</li>
+<li>PPU $1000-$13FF: 1 KB switchable CHR bank</li>
+<li>PPU $1400-$17FF: 1 KB switchable CHR bank</li>
+<li>PPU $1800-$1BFF: 1 KB switchable CHR bank</li>
+<li>PPU $1C00-$1FFF: 1 KB switchable CHR bank</li>
+<li>PPU $2000-$23FF: 1 KB switchable CHR bank</li>
+<li>PPU $2400-$27FF: 1 KB switchable CHR bank</li>
+<li>PPU $2800-$2BFF: 1 KB switchable CHR bank</li>
+<li>PPU $2C00-$2FFF: 1 KB switchable CHR bank</li></ul>
+<p>These ASICs have the unusual ability to select the internal 2 KB nametable RAM as a CHR bank page, allowing it to be used as CHR RAM in combination with the existing CHR ROM.
+</p>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>The 163 has 19 registers within $4800-$5FFF and $8000-$FFFF. Each register occupies a range of $800 bytes, so $4800-$4FFF all refers to one register, $5000-$57FF all refers to another register, and so on.
+</p>
+<h3><span id="Chip_RAM_Data_Port_.28.244800-.244FFF.29_r.2Fw"/><span class="mw-headline" id="Chip_RAM_Data_Port_($4800-$4FFF)_r/w">Chip RAM Data Port ($4800-$4FFF) r/w</span></h3>
+<p>See <a href="Namco_163_audio.xhtml" title="Namco 163 audio">Namco 163 audio</a>.
+</p>
+<h3><span id="IRQ_Counter_.28low.29_.28.245000-.2457FF.29_r.2Fw"/><span class="mw-headline" id="IRQ_Counter_(low)_($5000-$57FF)_r/w">IRQ Counter (low) ($5000-$57FF) r/w</span></h3>
+<pre>7  bit  0
+---- ----
+IIII IIII
+|||| ||||
+++++-++++- Low 8 bits of IRQ counter
+</pre>
+<h3><span id="IRQ_Counter_.28high.29_.2F_IRQ_Enable_.28.245800-.245FFF.29_r.2Fw"/><span class="mw-headline" id="IRQ_Counter_(high)_/_IRQ_Enable_($5800-$5FFF)_r/w">IRQ Counter (high) / IRQ Enable ($5800-$5FFF) r/w</span></h3>
+<pre>7  bit  0
+---- ----
+EIII IIII
+|||| ||||
+|+++-++++- High 7 bits of IRQ counter
++--------- IRQ Enable: (0: disabled; 1: enabled)
+</pre>
+<h3><span id="CHR_and_NT_Select_.28.248000-.24DFFF.29_w"/><span class="mw-headline" id="CHR_and_NT_Select_($8000-$DFFF)_w">CHR and NT Select ($8000-$DFFF) w</span></h3>
+<table class="wikitable">
+<tbody><tr>
+<th>Value CPU writes</th>
+<th>Behavior
+</th></tr>
+<tr>
+<td>$00-$DF</td>
+<td>Always selects 1KB page of CHR-ROM
+</td></tr>
+<tr>
+<td>$E0-$FF</td>
+<td>If enabled by bit in $E800, use the NES's internal nametables (even values for A, odd values for B)
+</td></tr></tbody></table>
+<table class="wikitable">
+<tbody><tr>
+<th>Write to CPU address</th>
+<th>1KB CHR bank affected</th>
+<th>Values ≥ $E0 denote NES NTRAM if
+</th></tr>
+<tr>
+<td>$8000-$87FF</td>
+<td>$0000-$03FF</td>
+<td>$E800.6 = 0
+</td></tr>
+<tr>
+<td>$8800-$8FFF</td>
+<td>$0400-$07FF</td>
+<td>$E800.6 = 0
+</td></tr>
+<tr>
+<td>$9000-$97FF</td>
+<td>$0800-$0BFF</td>
+<td>$E800.6 = 0
+</td></tr>
+<tr>
+<td>$9800-$9FFF</td>
+<td>$0C00-$0FFF</td>
+<td>$E800.6 = 0
+</td></tr>
+<tr>
+<td>$A000-$A7FF</td>
+<td>$1000-$13FF</td>
+<td>$E800.7 = 0
+</td></tr>
+<tr>
+<td>$A800-$AFFF</td>
+<td>$1400-$17FF</td>
+<td>$E800.7 = 0
+</td></tr>
+<tr>
+<td>$B000-$B7FF</td>
+<td>$1800-$1BFF</td>
+<td>$E800.7 = 0
+</td></tr>
+<tr>
+<td>$B800-$BFFF</td>
+<td>$1C00-$1FFF</td>
+<td>$E800.7 = 0
+</td></tr>
+<tr>
+<td>$C000-$C7FF</td>
+<td>$2000-$23FF</td>
+<td>always
+</td></tr>
+<tr>
+<td>$C800-$CFFF</td>
+<td>$2400-$27FF</td>
+<td>always
+</td></tr>
+<tr>
+<td>$D000-$D7FF</td>
+<td>$2800-$2BFF</td>
+<td>always
+</td></tr>
+<tr>
+<td>$D800-$DFFF</td>
+<td>$2C00-$2FFF</td>
+<td>always
+</td></tr></tbody></table>
+<p>It is believed, but untested, that a game could add a normal SRAM and use it in lieu of the nametable RAM; if so, a game would be able to get 4-screen mirroring and many more pages of CHR-RAM.
+</p>
+<h3><span id="PRG_Select_1_.28.24E000-.24E7FF.29_w"/><span class="mw-headline" id="PRG_Select_1_($E000-$E7FF)_w">PRG Select 1 ($E000-$E7FF) w</span></h3>
+<pre>7  bit  0
+---- ----
+AMPP PPPP
+|||| ||||
+||++-++++- Select 8KB page of PRG-ROM at $8000
+|+-------- Disable sound if set
++--------- Pin 22 (open collector) reflects the inverse of this value, unchanged by the address bus inputs.
+</pre>
+<p>If not battery backed, the internal sound RAM powers on in a random state, and similarly the N163 may power on with sound enabled. A short burst of sound due to these random settings may be heard at first power-on, before the game software manages to disable it.
+</p>
+<h3><span id="PRG_Select_2_.2F_CHR-RAM_Enable_.28.24E800-.24EFFF.29_w"/><span class="mw-headline" id="PRG_Select_2_/_CHR-RAM_Enable_($E800-$EFFF)_w">PRG Select 2 / CHR-RAM Enable ($E800-$EFFF) w</span></h3>
+<pre>7  bit  0
+---- ----
+HLPP PPPP
+|||| ||||
+||++-++++- Select 8KB page of PRG-ROM at $A000
+|+-------- Disable CHR-RAM at $0000-$0FFF
+|            0: Pages $E0-$FF use NT RAM as CHR-RAM
+|            1: Pages $E0-$FF are the last $20 banks of CHR-ROM
++--------- Disable CHR-RAM at $1000-$1FFF
+             0: Pages $E0-$FF use NT RAM as CHR-RAM
+             1: Pages $E0-$FF are the last $20 banks of CHR-ROM
+</pre>
+<h3><span id="PRG_Select_3_.28.24F000-.24F7FF.29_w"/><span class="mw-headline" id="PRG_Select_3_($F000-$F7FF)_w">PRG Select 3 ($F000-$F7FF) w</span></h3>
+<pre>7  bit  0
+---- ----
+CDPP PPPP
+|||| ||||
+||++-++++- Select 8KB page of PRG-ROM at $C000
+++-------- PPU A12, A13 and these bits control pin 44
+</pre>
+<p>Pin 44 is high if:
+</p>
+<ul><li>PPU A13 is high and D is high</li>
+<li>PPU A13 is low and
+<ul><li>C or PPU A12 are high</li></ul></li></ul>
+<h3><span id="Write_Protect_for_External_RAM_AND_Chip_RAM_Address_Port_.28.24F800-.24FFFF.29_w"/><span class="mw-headline" id="Write_Protect_for_External_RAM_AND_Chip_RAM_Address_Port_($F800-$FFFF)_w">Write Protect for External RAM AND Chip RAM Address Port ($F800-$FFFF) w</span></h3>
+<pre>7  bit  0
+---- ----
+KKKK DCBA
+|||| ||||
+|||| |||+- 1: Write-protect 2kB window of external RAM from $6000-$67FF (0: write enable)
+|||| ||+-- 1: Write-protect 2kB window of external RAM from $6800-$6FFF (0: write enable)
+|||| |+--- 1: Write-protect 2kB window of external RAM from $7000-$77FF (0: write enable)
+|||| +---- 1: Write-protect 2kB window of external RAM from $7800-$7FFF (0: write enable)
+++++------ Additionally the upper nybble must be equal to b0100 to enable writes
+</pre>
+<p>Any value outside of the range $40-$4E will cause all PRG RAM to be read-only.
+</p><p>Also see <a href="Namco_163_audio.xhtml" title="Namco 163 audio">Namco 163 audio</a>.
+</p>
+<h2><span class="mw-headline" id="IRQ_Operation">IRQ Operation</span></h2>
+<p>The IRQ is a 15-bit CPU cycle up-counter. $5000 and $5800 provide <i>direct</i> access to the counter itself (i.e., this isn't a reload value). Games can read and write to these registers in realtime.
+</p><p>The IRQ counter increments on each CPU cycle. Upon reaching $7FFF, an IRQ is fired, and it stops counting. Writing to $5000 or $5800 will acknowledge any pending IRQs.
+</p>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li>Many older programs incorrectly identify this mapper by the name Namco 106. Some sources use the name Namcot instead of Namco, as some games and PCBs use this variation on the company name.</li>
+<li>The N163 supports 8k of PRG-RAM but also has 128 bytes of internal memory. If there is a battery, then both will be battery backed. The internal memory is battery backed for several games that have no additional PRG-RAM.</li>
+<li>If it is not battery backed, the internal RAM state will be undefined at power-on<sup id="cite_ref-1" class="reference"><a href="#cite_note-1">[1]</a></sup>.</li>
+<li>The only known difference between the Namco 129 and 163 is the 129's subtly different design of expansion audio. The only known game (Star Wars) using the Namco 129 can also be found in later runs with a Namco 163 ASIC.</li>
+<li>An IC labelled &quot;160&quot; has been found with a copy of <i>Dokuganryuu Masamune</i>: <a rel="nofollow" class="external autonumber" href="https://forums.nesdev.org/viewtopic.php?p=248291#p248291">[1]</a></li>
+<li>Many <a href="INES_Mapper_210.xhtml" title="INES Mapper 210">INES Mapper 210</a> games are incorrectly set to Mapper 019.</li>
+<li><i>Dokuganryuu Masamune</i> is often thought as having WRAM. Tests have indicated however that the fourth glob is not SRAM but a <a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?t=7727#p111097">protection circuit for the chip-internal RAM</a>.</li></ul>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="http://nesdev.org/namco106.txt">Namcot 106</a> by goroh, fix by ZW4 and nori, english translation by nori.</li>
+<li><a rel="nofollow" class="external text" href="http://nesdev.org/mappers.zip">Comprehensive NES Mapper Document</a> by \Firebug\, information about mapper's initial state is inaccurate.</li></ul>
+<p>All of the below are in Japanese:
+</p>
+<ul><li><a rel="nofollow" class="external text" href="http://nesdev.org/namco.txt">Namco mapper</a> by goroh</li>
+<li><a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?p=77795#77795">Naruko's post to the forum</a></li>
+<li><a rel="nofollow" class="external text" href="http://unagi.sourceforge.jp/cgi-bin/hiki/hiki.cgi?163_namco">Wiki on same</a></li>
+<li><a rel="nofollow" class="external text" href="http://d.hatena.ne.jp/na6ko/20110430/1304099059">Naruko's blog's post on the write protect register at $F800</a></li></ul>
+<h2><span class="mw-headline" id="References">References</span></h2>
+<div class="mw-references-wrap"><ol class="references">
+<li id="cite_note-1"><span class="mw-cite-backlink"><a href="#cite_ref-1">↑</a></span> <span class="reference-text"><a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?p=285135">N163 Sound RAM Initialisation Behaviour</a></span>
+</li>
+</ol></div>
+<!-- 
+NewPP limit report
+Cached time: 20241123142847
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.065 seconds
+Real time usage: 0.079 seconds
+Preprocessor visited node count: 185/1000000
+Post‐expand include size: 1850/2097152 bytes
+Template argument size: 277/2097152 bytes
+Highest expansion depth: 5/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 421/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%   16.763      1 -total
+ 55.87%    9.365      1 Template:Infobox_iNES_mapper
+ 42.98%    7.204      1 INES_Mapper_019/Submapper_table
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:302-0!canonical and timestamp 20241123142847 and revision id 22004.
+ -->
+</div><p class="categories">Categories: <a href="Category_In_NesCartDB.xhtml">In NesCartDB</a>, <a href="Category_Mappers_using__4020__5FFF.xhtml">Mappers using $4020-$5FFF</a>, <a href="Category_ASIC_mappers.xhtml">ASIC mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a>, <a href="Category_Mappers_with_CHR_ROM_and_CHR_RAM.xhtml">Mappers with CHR ROM and CHR RAM</a>, <a href="Category_Mappers_with_single_screen_mirroring.xhtml">Mappers with single-screen mirroring</a>, <a href="Category_Mappers_with_ROM_nametables.xhtml">Mappers with ROM nametables</a></p></div></body></html>

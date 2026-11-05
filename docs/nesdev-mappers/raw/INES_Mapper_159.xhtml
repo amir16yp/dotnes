@@ -1,0 +1,52 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 159</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_159"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 159</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_159">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_159">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 159 is used for <a href="Bandai_FCG_board.xhtml" class="mw-redirect" title="Bandai FCG">Bandai FCG</a> boards with an <a href="Bandai_LZ93D50_pinout.xhtml" title="Bandai LZ93D50 pinout">LZ93D50 ASIC</a> and a 128-byte serial EEPROM (X24C01). The 128 bytes must be denoted as PRG-NVRAM in the <a href="NES_2_0.xhtml" title="NES 2.0">NES 2.0</a> header using byte value $10.
+</p>
+<h1><span class="mw-headline" id="Game_List">Game List</span></h1>
+<ul><li><i>Dragon Ball Z: Kyoushuu! Saiya-jin</i></li>
+<li><i>Magical Taruruuto-kun: Fantastic World!!</i></li>
+<li><i>Magical Taruruuto-kun 2: Mahou Daibouken</i></li>
+<li><i>SD Gundam Gaiden - Knight Gundam Monogatari</i></li></ul>
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$BFFF: 16 KiB switchable PRG ROM bank</li>
+<li>CPU $C000-$FFFF: 16 KiB PRG ROM bank, fixed to the last bank</li>
+<li>PPU $0000-$03FF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $0400-$07FF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $0800-$0BFF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $0C00-$0FFF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $1000-$13FF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $1400-$17FF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $1800-$1BFF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $1C00-$1FFF: 1 KiB switchable CHR ROM bank</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<p>All registers function the same way as <a href="INES_Mapper_016.xhtml" title="INES Mapper 016">INES Mapper 016</a>, submapper 5, except that the serial EEPROM is not a 24C02 but Xicor's X24C01. This EEPROM has operational differences compared to both the larger 24C02 and other vendors' 24C01.  Bandai's developers consistently thought the X24C01 was a little-endian device, and their code clocks in address and data bytes assuming this. However, it's actually a big-endian device, and a multi-byte read or write from EEPROM will increment the address accordingly.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123163638
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.010 seconds
+Real time usage: 0.013 seconds
+Preprocessor visited node count: 13/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:443-0!canonical and timestamp 20241123163638 and revision id 5171.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

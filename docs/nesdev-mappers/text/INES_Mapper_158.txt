@@ -1,0 +1,11 @@
+INES Mapper 158
+
+INES Mapper 158
+
+iNES Mapper 158 represents Tengen's board 800037, used for Alien Syndrome.
+
+It modifies RAMBO-1 (mapper 64) in the exact same way that TLSROM (118) differs from MMC3 (4), by which we mean the RAMBO-1's CHR A17 output is connected to CIRAM A10.
+
+Nestopia-1.4.0's implementation looks incomplete; it seems to ignore bank registers 8 and 9, as well as the K bit.
+
+Categories: INES Mappers, In NesCartDB, MMC3-like mappers, Mappers with cycle IRQs, Mappers with scanline IRQs

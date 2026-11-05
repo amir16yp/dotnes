@@ -1,0 +1,113 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 269</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_269"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 269</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_269">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_269">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 269 is used for at least one plug-and-play console and two multicarts with an MMC3 clone and four additional outer bank registers:
+</p>
+<ul><li><i>Games Xplosion 121-in-1</i></li>
+<li><i>15000-in-1</i></li>
+<li><i>18000-in-1</i></li></ul>
+<p>PRG and CHR fetches are mapped to different areas of a single address space, similar to the <a href="VTxx.xhtml" title="VTxx">VTxx</a> consoles in OneBus mode. <a rel="nofollow" class="external text" href="https://youtu.be/CFZ9yeS6984?t=31s">As the plug-and-play console's square wave duty cycles are not reversed</a> however, the actual hardware cannot be VTxx.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#MMC3-compatible_registers"><span class="tocnumber">1.1</span> <span class="toctext">MMC3-compatible registers</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Outer_bank_registers_(%245000)"><span class="tocnumber">1.2</span> <span class="toctext">Outer bank registers ($5000)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-4"><a href="#CHR_Scrambling"><span class="tocnumber">2</span> <span class="toctext">CHR Scrambling</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Notes"><span class="tocnumber">3</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span class="mw-headline" id="MMC3-compatible_registers">MMC3-compatible registers</span></h2>
+<p>Mask: probably $E001
+</p>
+<pre>$8000, $8001, $A000, $A001, $C000, $C001, $E000, $E001: As normal MMC3.
+</pre>
+<h2><span id="Outer_bank_registers_.28.245000.29"/><span class="mw-headline" id="Outer_bank_registers_($5000)">Outer bank registers ($5000)</span></h2>
+<p>There are four outer bank registers, all of which are accessed at address $5000. The first write goes to the first register, the second write to the second, and so on; the fifth write goes to the first register again.
+</p><p>Mask: unknown, but probably $F008, as a few games' writes to $5008 must be ignored
+</p><p>Register 0:
+</p>
+<pre>7654 3210
+---------
+CCCC CCCC
+++++-++++- Bits 0-7 of the 1 KiB Outer CHR Bank number
+</pre>
+<p>Register 1:
+</p>
+<pre>7654 3210
+---------
+PPPP PPPP
+++++-++++- Bits 0-7 of the 8 KiB Outer PRG Bank number
+</pre>
+<p>Register 2:
+</p>
+<pre>7654 3210
+---------
+CCCC MMMM
+|||| ++++- Outer CHR Bank mask in number of most significant bits,
+||||       e.g. 0=0x00, 1=0x80, 2=0xC0, 3=0xE0, 4=0xF0
+++++------ Bits 8-11 of the 1 KiB Outer CHR Bank number
+</pre>
+<p>Register 3:
+</p>
+<pre>7654 3210
+---------
+OOMM MMMM
+||++-++++- Outer PRG Bank mask (bit mask, not number of bits)
+++-------- Bits 8/9 of the 8 KiB Outer PRG Bank number, also
+           Bits 12/13 of the 1 KiB Outer CHR Bank number
+</pre>
+<p>The final 8 KiB PRG and 1 KiB CHR bank number are therefore:
+</p>
+<pre>PRGBank := (MMC3PRGBank &amp;~OuterPRGBankMask) | (OuterPRGBank &amp;OuterPRGBankMask);
+CHRBank := (MMC3CHRBank &amp;~OuterCHRBankMask) | (OuterCHRBank &amp;OuterCHRBankMask);
+</pre>
+<h1><span class="mw-headline" id="CHR_Scrambling">CHR Scrambling</span></h1>
+<p>The CHR data is scrambled by changing the bit order.
+</p>
+<pre>Stored bit  76543210
+            --------
+Actual bit  70615243
+</pre>
+<p>Which means that to get from the stored data to the actual data, the following operation must be performed: 
+</p>
+<pre>Val =((Val &amp;1) &lt;&lt;6) | ((Val &amp;2) &lt;&lt;3) | ((Val &amp;4) &lt;&lt;0) | ((Val &amp;8) &gt;&gt;3) | ((Val &amp;16) &gt;&gt;3) | ((Val &amp;32) &gt;&gt;2) | ((Val &amp;64) &gt;&gt;1) | ((Val &amp;128) &lt;&lt;0);
+</pre>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>Initial register values must be 0x00 for registers 0, 1 and 3, and 0x0F for register 2.</li>
+<li>This mapper seems to be an enhanced version of <a href="INES_Mapper_045.xhtml" title="INES Mapper 045">Mapper 45</a>.</li>
+<li>This mapper supports WRAM at CPU $6000-$7FFF, which is necessary for <i>18000-in-1'</i>s <i>Super Mario Bros. 3</i>.</li>
+<li>On the <i>Games Xplosion 121-in-1</i> multicart, game #48 (First Defender) enables interrupts but fails to disable the <a href="APU_Frame_Counter.xhtml" title="APU Frame Counter">frame IRQ</a>, freezing on emulators that accurately <a href="CPU_power_up_state.xhtml" title="CPU power up state">power-on with the frame IRQ enabled</a>.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123164023
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.015 seconds
+Real time usage: 0.020 seconds
+Preprocessor visited node count: 19/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:654-0!canonical and timestamp 20241123164023 and revision id 7692.
+ -->
+</div><p class="categories">Categories: <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

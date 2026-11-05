@@ -1,0 +1,9 @@
+NES 2.0 Mapper 272
+
+NES 2.0 Mapper 272
+
+NES 2.0 Mapper 272 is used for a bootleg implementation of 悪魔城 Special: ぼくDracula君 (Akumajō Special: Boku Dracula-kun).
+
+See also
+
+PCB reverse-engineering and emulator implementation

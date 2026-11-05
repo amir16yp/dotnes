@@ -1,0 +1,5 @@
+NES 2.0 Mapper 408
+
+NES 2.0 Mapper 408
+
+NES 2.0 Mapper 408 is used for Konami Collector's Series Advance Arcade Plug & Play.  It works similarly to Mapper 256 but switches between CHR-ROM and CHR-RAM by repurposing higher address lines.

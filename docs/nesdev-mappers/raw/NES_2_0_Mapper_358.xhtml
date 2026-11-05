@@ -1,0 +1,52 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 358</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_358"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 358</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_358">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_358">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 358 denotes a variation of <a href="NES_2_0_Mapper_282.xhtml" title="NES 2.0 Mapper 282">NES 2.0 Mapper 282</a> with partially overlapping PRG/CHR outer banks:
+</p>
+<ul><li><i>1997 Super Game 7-in-1 (JY-016)</i> (PCB YY860606C, 512 kiB PRG-ROM)</li>
+<li><i>1998 Super HiK 5-in-1 (JY-113)</i> (PCB YY860606C, 512 kiB PRG-ROM)</li>
+<li><i>1998 Super HiK 6-in-1 (JY-117)</i> (unmarked PCB, 1024 KiB PRG-ROM)</li></ul>
+<h2><span id="Outer_Bank_Register_.28.24D003.29"/><span class="mw-headline" id="Outer_Bank_Register_($D003)">Outer Bank Register ($D003)</span></h2>
+<pre>Mask: $F803
+
+7654 3210
+---- ----
+..M. .ppC
+  |   ||+-- CHR-ROM A18 if M=0, ignored if M=1
+  |   ++--- PRG-ROM A18-A19
+  |   +---- CHR-ROM A19
+  +-------- Outer CHR bank size and selection
+             0: Mask to 256 KiB, use C
+             1: Mask to 512 KiB, ignore C
+</pre>
+<p>PRG ($8000-$8FFF) bank select register bits that select 256 KiB banks are masked off. Dumping the CHR-ROM does not work reliably in 1 KiB CHR-ROM banking mode.
+</p><p>For a description of all other registers, see <a href="J_Y__Company_ASIC.xhtml" title="J.Y. Company ASIC">J.Y. Company ASIC</a>.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123102021
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.010 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 5/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:743-0!canonical and timestamp 20241123102021 and revision id 18941.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a>, <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_Mappers_using_J_Y__Company_ASIC.xhtml">Mappers using J.Y. Company ASIC</a>, <a href="Category_Mappers_with_ROM_nametables.xhtml">Mappers with ROM nametables</a></p></div></body></html>

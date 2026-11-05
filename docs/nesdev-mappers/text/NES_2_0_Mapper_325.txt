@@ -1,0 +1,13 @@
+NES 2.0 Mapper 325
+
+NES 2.0 Mapper 325
+
+NES 2.0 Mapper 325 is used for Super Mali Splash Bomb, a bootleg hack of Keroppi to Keroriinu no Splash Bomb. Its UNIF board name is UNL-MALISB. It's an MMC3 clone with the address input and output lines connected in an unusual manner: The MMC3 clones' ...
+
+CPU A0 input is connected to CPU A3 and additionally to CPU A2 if CPU A14==1;
+
+PRG A15 (PRG bank number bit 2) is swapped with PRG A16 (PRG bank number bit 3);
+
+CHR A11 (CHR bank number bit 1) is swapped with CHR A15 (CHR bank number bit 5).
+
+Categories: Mappers with scanline IRQs, MMC3-like mappers

@@ -1,0 +1,68 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 354</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_354"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 354</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_354">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_354">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 354 denotes three different PCBs:
+</p>
+<ul><li><b>FAM250</b> for the <i>1992 巨作 250-in-1 劃面選關 鑽石巨王</i> multicart (submapper 0),</li>
+<li><b>810139C</b> for the <i>1992 劃面選關 400-in-1 創新版</i> as well as an undumped 650-in-1 multicart (also submapper 0),</li>
+<li><b>810331C/SCHI-24</b> for the <i><a href="1992______1050_in_1.xhtml" title="1992 劃面選關 1050-in-1">1992 劃面選關 1050-in-1</a></i> multicart (submapper 1).</li></ul>
+<p>It is very similar to <a href="INES_Mapper_015.xhtml" title="INES Mapper 015">INES Mapper 015</a> but has an additional PRG mode for the FDS conversion of <i>Bubble Bobble</i> as well as supporting larger PRG ROM sizes.
+</p>
+<h1><span id="Address_and_Data_Latch_.28.24E000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Address_and_Data_Latch_($E000-$FFFF,_write)">Address and Data Latch ($E000-$FFFF, write)</span></h1>
+<pre>Mask: $F000
+
+A~FEDC BA98 7654 3210  D~7654 3210
+  -------------------    ---------
+  111B .... ...A CSSS    pMPP PPPP
+     |         | ||||    ||++-++++- PRG A19..A14
+     |         | ||||    |+-------- Nametable mirroring
+     |         | ||||    |           0: Vertical
+     |         | ||||    |           1: Horizontal
+     |         | ||||    +--------- PRG A13 if SSS=2/5/6, ignored otherwise
+     |         | |+++-------------- PRG banking mode
+     |         | |                   0/4: NROM-256 (PRG A14=CPU A14)
+     |         | |                   1:   UNROM    (PRG A14..16=111 when CPU A14=1)
+     |         | |                   2/6: NROM-64  (PRG A13=p)
+     |         | |                   3/7: NROM-128
+     |         | |                   5:   FDS Conversion:
+     |         | |                        $6000-$7FFF selected as in NROM-64,
+     |         | |                        $8000-$FFFF selected as in NROM-256, but with
+     |         | |                                    PRG A15/A16 forced to 1
+     |         | +----------------- 1=Write-protect CHR-RAM
+     |         +------------------- PRG A20
+     +----------------------------- PRG A21 (submapper 1 only), must be 1 on submapper 0
+</pre>
+<ul><li>Power-on and reset value: All bits clear</li>
+<li>On <b>submapper 0</b>, the register only responds to $F000-$FFFF writes; $8000-$EFFF writes are ignored, which is necessary for some individual games.</li>
+<li>On <b>submapper 1</b>, the register responds to $E000-$FFFF writes; $8000-$DFFF writes are ignored.</li></ul>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<p>PCB images and analysis of <a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?f=9&amp;t=17612">FAM250</a>, <a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?t=24261">810331C/SCHI-24</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123110429
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.011 seconds
+Real time usage: 0.017 seconds
+Preprocessor visited node count: 13/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:739-0!canonical and timestamp 20241123110429 and revision id 20572.
+ -->
+</div><p class="categories">Categories: <a href="Category_FDS_conversion_mappers.xhtml">FDS conversion mappers</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

@@ -1,0 +1,55 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 353</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_353"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 353</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_353">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_353">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 353 is used for the <i>92 Super Mario Family</i> multicart, consisting of an <a href="MMC3.xhtml" title="MMC3">MMC3</a> clone ASIC together with a PAL. The PCB code is <b>81-03-05-C</b>.
+</p>
+<h1><span id="Outer_Bank_Register_.28.248080-.24E080.29"/><span class="mw-headline" id="Outer_Bank_Register_($8080-$E080)">Outer Bank Register ($8080-$E080)</span></h1>
+<pre>Mask: Unknown, but must be more than just $8080.
+
+A~FEDC BA98 7654 3210
+  -------------------
+  1OO. .... 1... ....
+   ++----------------- Select 256 KiB outer PRG-ROM bank (PRG A18-19)
+                       and 128 KiB outer CHR-ROM bank (CHR A17-18)
+
+Power-up value: $00
+</pre>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>In addition to the setting the outer PRG-ROM and CHR-ROM bank, the outer bank register also modifies other aspects:
+<ul><li>Outer bank 0: Uses CHR A17 instead of the MMC3's Mirroring register, similar to <a href="INES_Mapper_118.xhtml" title="INES Mapper 118">INES Mapper 118</a>.</li>
+<li>Outer bank 2: The outer PRG-ROM bank size is just 128 KiB, with CHR A17 serving as PRG A17 instead. Additionally, if CHR A17 is high, 8 KiB of unbanked CHR-RAM are used instead of CHR-ROM.</li>
+<li>Outer bank 3: If CHR A17 is low, PRG A17 is replaced with CPU A14, so that CPU $8000-$BFFF are taken from the first and CPU $C000-$FFF are taken from the second 128 KiB half.</li></ul></li>
+<li>The conversion of <i>Bio Miracle Bokutte Upa</i> on that multicart retains all writes to the FDS sound channel registers, so an emulator could provide the expansion sound channel even though the original multicart did not.</li>
+<li>The conversion of <i>Super Mario Bros. 2 (J)</i> is incomplete and will fail to work after World 4-4.</li>
+<li>Resetting the console always returns to the main menu (outer bank register reset to $0) due to a circuit detecting interruptions in the M2 signal.</li></ul>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<p><a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?f=9&amp;t=17524">PCB image and analysis</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164226
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.013 seconds
+Real time usage: 0.018 seconds
+Preprocessor visited node count: 14/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:738-0!canonical and timestamp 20241123164226 and revision id 7920.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_with_CHR_ROM_and_CHR_RAM.xhtml">MMC3 with CHR ROM and CHR RAM</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

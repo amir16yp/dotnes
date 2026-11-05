@@ -1,0 +1,133 @@
+Color Dreams
+
+Color Dreams
+
+Color Dreams
+
+Company
+
+Color Dreams/Wisdom Tree
+
+Boards
+
+COLORDREAMS
+
+PRG ROM capacity
+
+128K
+
+PRG ROM window
+
+32K
+
+PRG RAM capacity
+
+None
+
+CHR capacity
+
+128K
+
+CHR window
+
+8k
+
+Nametable mirroring
+
+Fixed H or V, controlled by solder pads
+
+Bus conflicts
+
+Yes
+
+IRQ
+
+No
+
+Audio
+
+No
+
+iNES mappers
+
+011
+
+NESCartDB
+
+iNES 011
+
+The Color Dreams Mapper was a mapper used by the Color Dreams company. The iNES format assigns mapper 11 to these boards.
+
+The mapper is a board with discrete logic that provides up to four 32 KB banks of PRG ROM, up to sixteen 8 KB banks of CHR ROM, and controls a charge pump to defeat the CIC lockout chip.
+
+Color Dreams was a company that developed and published unlicensed NES games. They also operated with the alternate labels Wisdom Tree which produced games with Christianity themes (primarily sold in Christian bookstores), and Bunch Games which produced lower budget games. American Game Cartridges also used the Color Dreams mapper for their port of Exidy's Chiller.
+
+Example games:
+
+Bible Adventures
+
+Chiller
+
+Crystal Mines
+
+Menace Beach
+
+Metal Fighter
+
+Contents
+
+1 Banks
+
+2 Registers
+
+2.1 Bank select ($8000-$FFFF)
+
+3 Hardware
+
+4 Variants
+
+5 References
+
+Banks
+
+CPU $8000-$FFFF: 32 KB switchable PRG ROM bank
+
+PPU $0000-$1FFF: 8 KB switchable CHR ROM bank
+
+Registers
+
+Bank select ($8000-$FFFF)
+
+7  bit  0
+---- ----
+CCCC LLPP
+|||| ||||
+|||| ||++- Select 32 KB PRG ROM bank for CPU $8000-$FFFF
+|||| ++--- Used for lockout defeat
+++++------ Select 8 KB CHR ROM bank for PPU $0000-$1FFF
+
+Hardware
+
+The Color Dreams board contains a 74LS377 octal D latch (8-bit register) to select the current PRG and CHR banks.
+
+The lockout defeat is not necessary for emulator implementation. See references below for more information.
+
+Variants
+
+Nintendo's own GxROM family of boards is nearly identical in function to the Color Dreams board.
+
+A multicart mapper based on this mapper is iNES Mapper 046, with an outer bank register at $6000-$7FFF.
+
+Some variations of this board/mapper (e.g the one used in the prototype game "Free Fall") appear to be free of bus conflicts and will not work properly if bus conflicts are emulated.
+
+References
+
+Color Dreams - documentation of mapper by Kevin Horton
+
+Lockout - documentation of lockout mechanisms by Kevtris
+
+Games - list of games using the Color Dreams mapper at NesCartDB
+
+Comprehensive NES Mapper Document by \Firebug\, information about mapper's initial state is inaccurate.
+
+Categories: In NesCartDB, Discrete logic mappers, GNROM-like mappers, Mappers with bus conflicts

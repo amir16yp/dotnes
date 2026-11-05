@@ -1,0 +1,92 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 133</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_133"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 133</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_133">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_133">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><a class="mw-selflink selflink">iNES Mapper 133</a> is used for two versions of the <a href="http://community.fandom.com/wiki/c:bootleggames:Sachen" class="extiw" title="wikia:c:bootleggames:Sachen">Sachen</a> unlicensed game <i>Jovial Race</i> and the 60-pin Joy Van release of <i>盜帥 (Master Chu and the Drunkard Hu)</i>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Original_60-pin_release"><span class="tocnumber">1</span> <span class="toctext">Original 60-pin release</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#72-pin_release"><span class="tocnumber">2</span> <span class="toctext">72-pin release</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Emulator_compatibility"><span class="tocnumber">3</span> <span class="toctext">Emulator compatibility</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#See_also"><span class="tocnumber">4</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Original_60-pin_release">Original 60-pin release</span></h2>
+<p>The 60-pin releases of both games use the Sachen 3009 board, which wires a <a href="INES_Mapper_206.xhtml" title="INES Mapper 206">Namco 108</a> (marked &quot;ASLIC AX-24G&quot;) clone in an inscrutably complex way. There is no UNIF mapper designated for the Sachen 3009 board.
+</p>
+<pre> Mask: $E001
+ $8000: [..B. .B.B] - Select register for writing
+ $8001: [...X XPCC] - Write value to register
+            | ||||
+            | ||++--- select 8 KiB CHR bank
+            | |+----- select 32 KiB PRG bank
+            +-+------ analog feedback path
+</pre>
+<p>Four of the registers produce an analog feedback path through the 108's CHR registers:
+</p>
+<table class="tabular">
+<tbody><tr>
+<th>XX bits</th>
+<th>if this register was selected by the XX bits, switch to using contents of register
+</th></tr>
+<tr>
+<td>$00</td>
+<td>$04
+</td></tr>
+<tr>
+<td>$08</td>
+<td>$24
+</td></tr>
+<tr>
+<td>$10</td>
+<td>$01
+</td></tr>
+<tr>
+<td>$18</td>
+<td>$21
+</td></tr></tbody></table>
+<p>If this feedback path doesn't settle on one specific register, then the selected banks will rapidly switch between all the registers specified by the feedback path, and the 108 clone will get hot.
+</p>
+<h2><span class="mw-headline" id="72-pin_release">72-pin release</span></h2>
+<p>The 72-pin release of <i>Jovial Race</i> uses the Sachen 72008 board, a much simpler board that is similar but not identical to <a href="NINA_003_006.xhtml" class="mw-redirect" title="INES Mapper 079">INES Mapper 079</a>. Its UNIF MAPR is <b>UNL-SA-72008</b>.
+</p>
+<pre> Mask: $E100
+ $4100: [.... .PCC] - Select 32 KiB PRG bank and 8 KiB CHR bank
+</pre>
+<p>The 72-pin releases of <i>Master Chu and the Drunkard Hu</i> on the other hand use <a href="Color_Dreams.xhtml" class="mw-redirect" title="INES Mapper 011">INES Mapper 011</a> for the Color Dreams release and <a href="NINA_003_006.xhtml" class="mw-redirect" title="INES Mapper 079">INES Mapper 079</a> for the Sachen release.
+</p>
+<h2><span class="mw-headline" id="Emulator_compatibility">Emulator compatibility</span></h2>
+<p>The 60-pin releases of <i>Jovial Race</i> and <i>盜帥</i> contain bankswitching code for both board variants, whereas the 72-pin release of <i>Jovial Race</i> only contains code for the $4100-based latch variant. For this reason, and because the 60-pin release of <i>Jovial Race</i> was analyzed much later, emulators only emulate, and only need to emulate, the 72-pin variant of the board.
+</p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li><a rel="nofollow" class="external free" href="http://cah4e3.shedevr.org.ru/%5Blst%5D-sachen-mappers.txt">http://cah4e3.shedevr.org.ru/%5Blst%5D-sachen-mappers.txt</a></li>
+<li><a rel="nofollow" class="external free" href="https://forums.nesdev.org/viewtopic.php?p=210246#p210246">https://forums.nesdev.org/viewtopic.php?p=210246#p210246</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123163608
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.021 seconds
+Real time usage: 0.026 seconds
+Preprocessor visited node count: 21/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:417-0!canonical and timestamp 20241123163608 and revision id 4977.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_GNROM_like_mappers.xhtml">GNROM-like mappers</a></p></div></body></html>

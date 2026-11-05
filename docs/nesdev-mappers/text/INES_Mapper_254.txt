@@ -1,0 +1,13 @@
+INES Mapper 254
+
+INES Mapper 254
+
+iNES Mapper 254 has been used in Pikachu Y2K of crypted ROMs which is one of the pirate hacks of Felix the Cat.
+
+See also:
+
+Nestopia implementation
+
+FCEUX implementation
+
+Categories: INES Mappers, MMC3-like mappers

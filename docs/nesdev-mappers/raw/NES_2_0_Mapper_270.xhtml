@@ -1,0 +1,99 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 270</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_270"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 270</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_270">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_270">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 270</b> denotes <a href="NES_2_0_Mapper_256.xhtml" title="NES 2.0 Mapper 256">OneBus</a> console multicarts that use the consoles' universal input/output (UIO) register $412C to bankswitch higher-order PRG address lines or several PRG chips, and select CHR-RAM via $4242.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Submapper_0:_Combination"><span class="tocnumber">1</span> <span class="toctext">Submapper 0: Combination</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Submapper_1:_Game_Prince_RS-16"><span class="tocnumber">2</span> <span class="toctext">Submapper 1: Game Prince RS-16</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Outer_PRG_Bank_(%24412C,_write)"><span class="tocnumber">2.1</span> <span class="toctext">Outer PRG Bank ($412C, write)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-4"><a href="#Submapper_2:_Family_Pocket_638-in-1"><span class="tocnumber">3</span> <span class="toctext">Submapper 2: Family Pocket 638-in-1</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#Outer_PRG_Bank_(%24412C,_write)_2"><span class="tocnumber">3.1</span> <span class="toctext">Outer PRG Bank ($412C, write)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Jumper_Cartridge_Detection_(%24412C,_read)"><span class="tocnumber">3.2</span> <span class="toctext">Jumper Cartridge Detection ($412C, read)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#CHR-RAM_enable_(%244242,_write)"><span class="tocnumber">3.3</span> <span class="toctext">CHR-RAM enable ($4242, write)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#Submapper_3:_Bittboy_300-in-1"><span class="tocnumber">4</span> <span class="toctext">Submapper 3: Bittboy 300-in-1</span></a>
+<ul>
+<li class="toclevel-2 tocsection-9"><a href="#Outer_PRG_Bank_(%24412C,_write)_3"><span class="tocnumber">4.1</span> <span class="toctext">Outer PRG Bank ($412C, write)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="#Notes"><span class="tocnumber">5</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Submapper_0:_Combination">Submapper 0: Combination</span></h1>
+<p>Responds to all bank bits of submappers 1-3 at the same time. This is permissible, since the only bit that is used by several submappers has the same function in each of them.
+</p>
+<h1><span class="mw-headline" id="Submapper_1:_Game_Prince_RS-16">Submapper 1: Game Prince RS-16</span></h1>
+<h2><span id="Outer_PRG_Bank_.28.24412C.2C_write.29"/><span class="mw-headline" id="Outer_PRG_Bank_($412C,_write)">Outer PRG Bank ($412C, write)</span></h2>
+<pre>D~7654 3210
+  ---------
+  .... ..A.
+         +-- PRG/CHR A24
+</pre>
+<h1><span class="mw-headline" id="Submapper_2:_Family_Pocket_638-in-1">Submapper 2: Family Pocket 638-in-1</span></h1>
+<h2><span id="Outer_PRG_Bank_.28.24412C.2C_write.29_2"/><span class="mw-headline" id="Outer_PRG_Bank_($412C,_write)_2">Outer PRG Bank ($412C, write)</span></h2>
+<pre>D~7654 3210
+  ---------
+  .... ..AB
+         |+- PRG/CHR A25
+         +-- PRG/CHR A24
+</pre>
+<h2><span id="Jumper_Cartridge_Detection_.28.24412C.2C_read.29"/><span class="mw-headline" id="Jumper_Cartridge_Detection_($412C,_read)">Jumper Cartridge Detection ($412C, read)</span></h2>
+<pre>D~7654 3210
+  ---------
+  .... B...
+       +---- 0: Jumper cartridge not inserted
+             1: Jumper cartridge inserted
+</pre>
+<h2><span id="CHR-RAM_enable_.28.244242.2C_write.29"/><span class="mw-headline" id="CHR-RAM_enable_($4242,_write)">CHR-RAM enable ($4242, write)</span></h2>
+<pre>D~7654 3210
+  ---------
+  .... ...C
+          +- 0: Use normal <a href="VT02__CHR_ROM_Bankswitching.xhtml" title="VT02+ CHR-ROM Bankswitching">OneBus CHR banking</a>
+             1: Use 8 KiB of unbanked CHR-RAM
+</pre>
+<h1><span class="mw-headline" id="Submapper_3:_Bittboy_300-in-1">Submapper 3: Bittboy 300-in-1</span></h1>
+<h2><span id="Outer_PRG_Bank_.28.24412C.2C_write.29_3"/><span class="mw-headline" id="Outer_PRG_Bank_($412C,_write)_3">Outer PRG Bank ($412C, write)</span></h2>
+<pre>D~7654 3210
+  ---------
+  .... .A..
+        +--- PRG/CHR A24
+</pre>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>Any $412C bit can only be read from if the corresponding bit in register $412B (UIO input/output selector) is set to &quot;0&quot; (input).</li>
+<li>Any $412C bit can only be written to if the corresponding bit in register $412B (UIO input/output selector) is set to &quot;1&quot; (output).</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241122202253
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.016 seconds
+Real time usage: 0.021 seconds
+Preprocessor visited node count: 37/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:655-0!canonical and timestamp 20241122202253 and revision id 7699.
+ -->
+</div><p class="categories">Categories: <a href="Category_NES_2_0_mappers_with_submappers.xhtml">NES 2.0 mappers with submappers</a>, <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

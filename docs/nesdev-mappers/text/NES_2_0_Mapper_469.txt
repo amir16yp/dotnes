@@ -1,0 +1,7 @@
+NES 2.0 Mapper 469
+
+NES 2.0 Mapper 469
+
+NES 2.0 Mapper 469 denotes BlazePro multicarts consisting of games originally released for the Famicom Disk System. The circuit board is physically identical to NES 2.0 Mapper 468, but the CPLD is programmed differently.
+
+Categories: FDS conversion mappers, Multicart mappers

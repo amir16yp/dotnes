@@ -1,0 +1,61 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 281</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_281"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 281</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_281">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_281">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 281</b> denotes a number of compatible circuit boards from J.Y. Company:
+</p>
+<ul><li>512 KiB PRG-ROM, 512 KiB CHR-ROM: <b>YY841144C</b>, <b>YY850771C</b>, <b>YY851115C</b>, <b>YY860416C</b>, <b>YY860417C</b>, <b>YY860731C</b></li>
+<li>1 MiB PRG-ROM, 1 MiB CHR-ROM: <b>YY850719C</b></li></ul>
+<p>and is used for the following multicarts:
+</p>
+<ul><li><i>1996 Super HiK 4-in-1 (JY-052)</i></li>
+<li><i>1997 Super HiK 4-in-1 (JY-052)</i></li>
+<li><i>1996 Super HiK 4-in-1 (JY-053)</i></li>
+<li><i>1996 Super HiK 4-in-1 (JY-054)</i></li>
+<li><i>1997 Super HiK 4-in-1 (JY-054)</i></li>
+<li><i>1996 Super HiK 4-in-1 (JY-055)</i></li>
+<li><i>1996 Power Rangers HiK 4-in-1 (JY-066)</i></li>
+<li><i>1997 Power Rangers HiK 4-in-1 (JY-066)</i></li>
+<li><i>1996 Super HiK 3-in-1 (JY-068)</i></li>
+<li><i>1996 Super HiK 3-in-1 (JY-080)</i></li>
+<li><i>1996 Super HiK 5-in-1 (JY-088)</i></li></ul>
+<p>It uses the <a href="J_Y__Company_ASIC.xhtml" title="J.Y. Company ASIC">J.Y. Company ASIC</a>.
+</p>
+<h2><span id="Outer_Bank_Register_.28.24D003.29"/><span class="mw-headline" id="Outer_Bank_Register_($D003)">Outer Bank Register ($D003)</span></h2>
+<p>Mask: $F003
+</p>
+<pre>7654 3210
+---- ----
+.... ..BB
+       ++- PRG/CHR A18/A19 (256 KiB outer PRG/CHR-ROM bank)
+</pre>
+<p>PRG ($8000-$8FFF) and CHR ($9000-$AFFF) bank select register bits that select 256 KiB banks are masked off. 
+</p><p>For a description of all other registers, see <a href="J_Y__Company_ASIC.xhtml" title="J.Y. Company ASIC">J.Y. Company ASIC</a>.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241122201157
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.011 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 10/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:666-0!canonical and timestamp 20241122201157 and revision id 18938.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a>, <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_Mappers_using_J_Y__Company_ASIC.xhtml">Mappers using J.Y. Company ASIC</a>, <a href="Category_Mappers_with_ROM_nametables.xhtml">Mappers with ROM nametables</a></p></div></body></html>

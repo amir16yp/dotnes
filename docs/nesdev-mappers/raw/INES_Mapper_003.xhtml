@@ -1,0 +1,186 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 003</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_003"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 003</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_003">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_003">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><div class="infobox">
+<div style="text-align: center"><b>CNROM and similar</b>
+</div>
+<table class="oddf0">
+
+<tbody><tr>
+<td><b>Company</b>
+</td>
+<td>Nintendo, others
+</td></tr>
+<tr>
+<td><b>Games</b>
+</td>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/search/advanced?ines=3">104 in NesCartDB</a>
+</td></tr>
+
+
+<tr>
+<td><b>Boards</b>
+</td>
+<td>CNROM &quot;and similar&quot;
+</td></tr>
+<tr>
+<td><b>PRG ROM capacity</b>
+</td>
+<td>16K or 32K
+</td></tr>
+<tr>
+<td><b>PRG ROM window</b>
+</td>
+<td>n/a
+</td></tr>
+<tr>
+<td><b>PRG RAM capacity</b>
+</td>
+<td>None
+</td></tr>
+<tr>
+<td><b>CHR capacity</b>
+</td>
+<td>32K (2M oversize version)
+</td></tr>
+<tr>
+<td><b>CHR window</b>
+</td>
+<td>8K
+</td></tr>
+<tr>
+<td><b>Nametable <a href="Mirroring.xhtml" title="Mirroring">mirroring</a></b>
+</td>
+<td>Fixed H or V
+</td></tr>
+<tr>
+<td><b><a href="Bus_conflict.xhtml" title="Bus conflict">Bus conflicts</a></b>
+</td>
+<td>Yes(CNROM, some others)
+</td></tr>
+<tr>
+<td><b>IRQ</b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>Audio</b>
+</td>
+<td><a rel="nofollow" class="external text" href="http://bootgod.dyndns.org:7777/profile.php?id=3953">One case</a>
+</td></tr>
+<tr>
+<td><b>iNES <a href="Mapper.xhtml" title="Mapper">mappers</a></b>
+</td>
+<td><a class="mw-selflink selflink">003</a>
+</td></tr></tbody></table>
+</div>
+<div class="infobox">
+<div style="text-align: center"><b>NESCartDB</b></div>
+<table class="oddf0">
+
+<tbody><tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/search/advanced?ines=3">iNES 003</a>
+</td></tr>
+<tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/search/advanced?unif_op=LIKE+%60%25%40%25%60&amp;unif=CNROM">CNROM</a>
+</td></tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</tbody></table>
+</div>
+<p><b>iNES Mapper 003</b> is used to designate the <a href="CNROM.xhtml" title="CNROM">CNROM</a> board, and similar boards used by Bandai, Panesian, Sachen and others, generalized to support up to 256 banks (2048 KiB) of CHR ROM.
+</p><p>The <a href="NROM_368.xhtml" title="NROM-368">CNROM-368</a> extension was proposed, allowing 46 KiB PRG ROM.
+</p><p>Example games:
+</p>
+<ul><li><i>Solomon's Key</i></li>
+<li><i>Arkanoid</i></li>
+<li><i>Arkista's Ring</i></li>
+<li><i>Bump 'n' Jump</i></li>
+<li><i>Cybernoid</i></li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Banks"><span class="tocnumber">2</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Registers"><span class="tocnumber">3</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Bank_select_(%248000-%24FFFF)"><span class="tocnumber">3.1</span> <span class="toctext">Bank select ($8000-$FFFF)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#Notes"><span class="tocnumber">4</span> <span class="toctext">Notes</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#References"><span class="tocnumber">5</span> <span class="toctext">References</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Overview">Overview</span></h2>
+<ul><li>PRG ROM size: 16 KiB or 32 KiB</li>
+<li>PRG ROM bank size: Not bankswitched</li>
+<li>PRG RAM: None</li>
+<li>CHR capacity: Up to 2048 KiB ROM</li>
+<li>CHR bank size: 8 KiB</li>
+<li>Nametable <a href="Mirroring.xhtml" title="Mirroring">mirroring</a>: Fixed vertical or horizontal mirroring</li>
+<li>Subject to <a href="Bus_conflict.xhtml" title="Bus conflict">bus conflicts</a>: Yes (CNROM), but not all compatible boards have bus conflicts.</li></ul>
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>PPU $0000-$1FFF: 8 KB switchable CHR ROM bank</li></ul>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<h3><span id="Bank_select_.28.248000-.24FFFF.29"/><span class="mw-headline" id="Bank_select_($8000-$FFFF)">Bank select ($8000-$FFFF)</span></h3>
+<pre>7  bit  0
+---- ----
+cccc ccCC
+|||| ||||
+++++-++++- Select 8 KB CHR ROM bank for PPU $0000-$1FFF
+</pre>
+<p>CNROM only implements the lowest 2 bits, capping it at 32 KiB CHR. Other boards may implement 4 or more bits for larger CHR.
+</p>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<p>Mapper 3 is normally subject to <a href="Bus_conflict.xhtml" title="Bus conflict">bus conflicts</a>, where the value seen by the mapper is actually the bitwise AND of the value written by the CPU and the ROM value at that address. Games normally work around this by ensuring the two values are identical. However, the game <i>Cybernoid</i> relies on bus conflicts. Without bus conflicts, the wrong CHR bank will be loaded when the player changes the audio from sound effects to music playback. <i>Cybernoid</i> also uses uninitialized RAM, which can be responsible for behavior differences between hardware and emulator.
+</p><p>While bus conflicts are standard, there exist hacks that rely on the absence of bus conflicts. These include Nintendo's updated version of <i>Donkey Kong</i> with the pie factory level and some mapper hacks, such as a common hack of <i>Colorful Dragon (Unl) (Sachen)</i> that changes it from <a href="NINA_003_006.xhtml" class="mw-redirect" title="INES Mapper 079">INES Mapper 079</a> to Mapper 3. Emulating these with bus conflicts will cause the wrong CHR bank to be loaded. Where necessary, NES 2.0 is capable of specifying that a game should be emulated without bus conflicts.
+</p><p>The <a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/3953/family-trainer-3-aerobics-studio">Japanese version of <i>Dance Aerobics</i></a> adds a <a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?p=102300#p102300">sound playback IC</a> to CNROM. It adds a <a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?t=9449">register mapped from $6000-$7FFF</a> that can play one of eight voice recordings. However, the specifics of the compression are not yet known, and there is no standardized way to bundle audio data with <a href="INES.xhtml" title="INES">iNES</a> images.
+</p>
+<h2><span class="mw-headline" id="References">References</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="http://www.romhacking.net/documents/362/">Disch's Mapper Notes</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123163338
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.052 seconds
+Real time usage: 0.075 seconds
+Preprocessor visited node count: 262/1000000
+Post‐expand include size: 1647/2097152 bytes
+Template argument size: 366/2097152 bytes
+Highest expansion depth: 12/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%   39.299      1 -total
+ 74.28%   29.190      1 Template:Nesdbbox
+ 51.71%   20.321      2 Template:Nesdblink
+ 34.21%   13.445      5 Template:Strip_whitespace
+ 25.17%    9.892      1 Template:Infobox_iNES_mapper
+ 15.64%    6.146      5 Template:Strip_whitespace/1
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:280-0!canonical and timestamp 20241123163338 and revision id 21319.
+ -->
+</div><p class="categories">Categories: <a href="Category_Nintendo_licensed_mappers.xhtml">Nintendo licensed mappers</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_bus_conflicts.xhtml">Mappers with bus conflicts</a>, <a href="Category_In_NesCartDB.xhtml">In NesCartDB</a>, <a href="Category_Expansion_audio.xhtml">Expansion audio</a>, <a href="Category_CNROM_like_mappers.xhtml">CNROM-like mappers</a>, <a href="Category_NES_2_0_mappers_with_submappers.xhtml">NES 2.0 mappers with submappers</a></p></div></body></html>

@@ -1,0 +1,173 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 359</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_359"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 359</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_359">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_359">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 359 is used for at least three multicarts using a PCB marked alternatively as <i>SB-5013</i>, <i>GCL8050</i> or <i>841242C</i>. Its UNIF board name is <b>BMC-SB-5013</b>.
+</p>
+<ul><li><i>Super Boy 6-in-1</i> (CHR-RAM)</li>
+<li><i>Super Boy Top 5-in-1 特輯</i> (CHR-RAM)</li>
+<li><i>96 卡聖 Supreme 3-in-1 (NT-646)</i> (CHR-ROM)</li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#PRG_Bank_Select_(%248000-%248003,_write)"><span class="tocnumber">2.1</span> <span class="toctext">PRG Bank Select ($8000-$8003, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#PRG_Base_Select_(%249000,_write)"><span class="tocnumber">2.2</span> <span class="toctext">PRG Base Select ($9000, write)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Outer_Bank_Size_Select_(%249001,_write)"><span class="tocnumber">2.3</span> <span class="toctext">Outer Bank Size Select ($9001, write)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Nametable_Mirroring_Type_Select_(%249002,_write)"><span class="tocnumber">2.4</span> <span class="toctext">Nametable Mirroring Type Select ($9002, write)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#CHR_Base_Select_(%249003,_write)"><span class="tocnumber">2.5</span> <span class="toctext">CHR Base Select ($9003, write)</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#CHR_Bank_Select_(%24A000-%24B003,_write)"><span class="tocnumber">2.6</span> <span class="toctext">CHR Bank Select ($A000-$B003, write)</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#IRQ_Counter_Low/Reload_(%24C000,_write)"><span class="tocnumber">2.7</span> <span class="toctext">IRQ Counter Low/Reload ($C000, write)</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#IRQ_Counter_High/Load_Latch_(%24C001,_write)"><span class="tocnumber">2.8</span> <span class="toctext">IRQ Counter High/Load Latch ($C001, write)</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#IRQ_Mode_(%24C002,_write)"><span class="tocnumber">2.9</span> <span class="toctext">IRQ Mode ($C002, write)</span></a></li>
+<li class="toclevel-2 tocsection-12"><a href="#IRQ_Disable/Enable_(%24C003,_write)"><span class="tocnumber">2.10</span> <span class="toctext">IRQ Disable/Enable ($C003, write)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-13"><a href="#IRQ_Operation"><span class="tocnumber">3</span> <span class="toctext">IRQ Operation</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: 8 KiB switchable inner PRG-ROM bank</li>
+<li>CPU $8000-$9FFF: 8 KiB switchable inner PRG-ROM bank</li>
+<li>CPU $A000-$BFFF: 8 KiB switchable inner PRG-ROM bank</li>
+<li>CPU $C000-$DFFF: 8 KiB switchable inner PRG-ROM bank</li>
+<li>CPU $E000-$FFFF: 8 KiB inner PRG-ROM bank, fixed to last bank (within outer bank)</li>
+<li>PPU $0000-$1FFF: 8 KiB unbanked CHR-RAM or 8x1 KiB banked CHR-ROM</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="PRG_Bank_Select_.28.248000-.248003.2C_write.29"/><span class="mw-headline" id="PRG_Bank_Select_($8000-$8003,_write)">PRG Bank Select ($8000-$8003, write)</span></h2>
+<p>Mask: $F003
+</p>
+<ul><li>$8000: Select 8 KiB PRG-ROM bank at CPU $8000-$9FFF</li>
+<li>$8001: Select 8 KiB PRG-ROM bank at CPU $A000-$BFFF</li>
+<li>$8002: Select 8 KiB PRG-ROM bank at CPU $C000-$DFFF</li>
+<li>$8003: Select 8 KiB PRG-ROM bank at CPU $6000-$7FFF</li></ul>
+<h2><span id="PRG_Base_Select_.28.249000.2C_write.29"/><span class="mw-headline" id="PRG_Base_Select_($9000,_write)">PRG Base Select ($9000, write)</span></h2>
+<pre>Mask: $F003
+
+D~7654 3210
+  ---------
+  ..PP P...
+    ++-+---- Select 128 KiB outer PRG-ROM bank
+</pre>
+<h2><span id="Outer_Bank_Size_Select_.28.249001.2C_write.29"/><span class="mw-headline" id="Outer_Bank_Size_Select_($9001,_write)">Outer Bank Size Select ($9001, write)</span></h2>
+<pre>Mask: $F003
+
+D~7654 3210
+  ---------
+  .C.. ..SS
+   |     ++- Select size of outer PRG-ROM bank
+   |          0: 512 KiB (8 KiB inner PRG-ROM bank ANDed with $3F)
+   |          1: 256 KiB (8 KiB inner PRG-ROM bank ANDed with $1F)
+   |          2: Unused (8 KiB inner PRG-ROM bank ANDed with $2F?)
+   |          3: 128 KiB (8 KiB inner PRG-ROM bank ANDed with $0F)
+   +-------- Select size of outer CHR-ROM bank
+              0: 128 KiB (1 KiB inner CHR-ROM bank ANDed with $7F)
+              1: 256 KiB (1 KiB inner CHR-ROM bank ANDed with $FF)
+</pre>
+<h2><span id="Nametable_Mirroring_Type_Select_.28.249002.2C_write.29"/><span class="mw-headline" id="Nametable_Mirroring_Type_Select_($9002,_write)">Nametable Mirroring Type Select ($9002, write)</span></h2>
+<pre>Mask: $F003
+
+D~7654 3210
+  ---------
+  .... ..MM
+         ++- Select nametable mirroring type
+              0: Vertical
+              1: Horizontal
+              2: One-screen, page 0
+              3: One-screen, page 1
+</pre>
+<h2><span id="CHR_Base_Select_.28.249003.2C_write.29"/><span class="mw-headline" id="CHR_Base_Select_($9003,_write)">CHR Base Select ($9003, write)</span></h2>
+<pre>Mask: $F003
+
+D~7654 3210
+  ---------
+  .... ..CC
+         ++- Select 128 KiB outer CHR-ROM bank
+</pre>
+<p>This register has no effect if CHR-RAM is used instead of CHR-ROM.
+</p>
+<h2><span id="CHR_Bank_Select_.28.24A000-.24B003.2C_write.29"/><span class="mw-headline" id="CHR_Bank_Select_($A000-$B003,_write)">CHR Bank Select ($A000-$B003, write)</span></h2>
+<p>Mask: $F003
+</p>
+<ul><li>$A000: Select 1 KiB CHR-ROM bank at PPU $0000-$03FF</li>
+<li>$A001: Select 1 KiB CHR-ROM bank at PPU $0400-$07FF</li>
+<li>$A002: Select 1 KiB CHR-ROM bank at PPU $0800-$0BFF</li>
+<li>$A003: Select 1 KiB CHR-ROM bank at PPU $0C00-$0FFF</li>
+<li>$B000: Select 1 KiB CHR-ROM bank at PPU $1000-$13FF</li>
+<li>$B001: Select 1 KiB CHR-ROM bank at PPU $1400-$17FF</li>
+<li>$B002: Select 1 KiB CHR-ROM bank at PPU $1800-$1BFF</li>
+<li>$B003: Select 1 KiB CHR-ROM bank at PPU $1C00-$1FFF</li></ul>
+<p>These registers have no effect if CHR-RAM is used instead of CHR-ROM, as the CHR-RAM is unbanked.
+</p>
+<h2><span id="IRQ_Counter_Low.2FReload_.28.24C000.2C_write.29"/><span class="mw-headline" id="IRQ_Counter_Low/Reload_($C000,_write)">IRQ Counter Low/Reload ($C000, write)</span></h2>
+<p>Mask: $F003
+</p>
+<ul><li>In M2 mode, directly sets the low eight bits of the 16-bit M2 cycle counter.</li>
+<li>In PA12 mode, writing sets the Reload flag, just as writing to register $C001 does on the <a href="MMC3.xhtml" title="MMC3">MMC3</a>.</li>
+<li>In either mode, if the Auto-Enable/Disable Flag is set, disables counting (M2) or just IRQ generation (PA12).</li></ul>
+<h2><span id="IRQ_Counter_High.2FLoad_Latch_.28.24C001.2C_write.29"/><span class="mw-headline" id="IRQ_Counter_High/Load_Latch_($C001,_write)">IRQ Counter High/Load Latch ($C001, write)</span></h2>
+<p>Mask: $F003
+</p>
+<ul><li>In M2 mode, directly sets the high eight bits of the 16-bit M2 cycle counter.</li>
+<li>In PA12 mode, reloads the latch, just as writing to register $C000 does on the <a href="MMC3.xhtml" title="MMC3">MMC3</a>.</li>
+<li>In either mode, if the Auto-Enable/Disable Flag is set, enables counting (M2) or just IRQ generation (PA12).</li></ul>
+<h2><span id="IRQ_Mode_.28.24C002.2C_write.29"/><span class="mw-headline" id="IRQ_Mode_($C002,_write)">IRQ Mode ($C002, write)</span></h2>
+<pre>Mask: $F003
+
+D~7654 3210
+  ---------
+  .... .AME
+        ||+- IRQ Disable/Enable
+        ||    0=M2 Mode: Disable counting, PA12 Mode: Disable IRQ generation
+        ||    1=M2 Mode: Enable counting, PA12 Mode: Enable IRQ generation
+        |+-- Select IRQ source
+        |     0=CPU Cycles (M2)
+        |     1=Filtered PPU A12 rises (PA12)
+        +--- Auto-Enable/Disable Flag
+              0=IRQ is not disabled/enabled by writing $C000/$C001, only by writing to $C002/$C003
+              1=IRQ is disabled by writing to $C000 and enabled by writing to $C001, $C003 has no effect
+</pre>
+<h2><span id="IRQ_Disable.2FEnable_.28.24C003.2C_write.29"/><span class="mw-headline" id="IRQ_Disable/Enable_($C003,_write)">IRQ Disable/Enable ($C003, write)</span></h2>
+<pre>Mask: $F003
+
+D~7654 3210
+  ---------
+  .... ...E
+          +- IRQ Disable/Enable
+              0=M2 Mode: Disable counting, PA12 Mode: Disable IRQ generation
+              1=M2 Mode: Enable counting, PA12 Mode: Enable IRQ generation
+</pre>
+<p>Writing to $C003 has no effect if Auto-Enable/Disable flag is set.
+</p>
+<h1><span class="mw-headline" id="IRQ_Operation">IRQ Operation</span></h1>
+<ul><li>In M2 mode: If IRQ is enabled, counts down on every M2 cycle until counter is zero, then generates an IRQ.</li>
+<li>In PA12 mode: Just like the <a href="MMC3.xhtml" title="MMC3">MMC3</a>'s scanline counter.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123164233
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.018 seconds
+Real time usage: 0.023 seconds
+Preprocessor visited node count: 47/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:744-0!canonical and timestamp 20241123164233 and revision id 7945.
+ -->
+</div><p class="categories">Categories: <a href="Category_FDS_conversion_mappers.xhtml">FDS conversion mappers</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a>, <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a></p></div></body></html>

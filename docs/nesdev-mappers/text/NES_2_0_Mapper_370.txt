@@ -1,0 +1,32 @@
+NES 2.0 Mapper 370
+
+NES 2.0 Mapper 370
+
+NES 2.0 Mapper 370 denotes the F600 circuit board, used for the Golden Mario Party II - Around the World 6-in-1 multicart. It uses an MMC3 clone with an outer bank register that also selects TKROM and TLSROM configurations (the latter for a Mario-themed Armadillo hack).
+
+Outer Bank register ($5000-$5FFF, write)
+
+Mask: $F000
+
+A~FEDC BA98 7654 3210
+  -------------------
+  0101 .... ..pP PcCC
+              || |+++- CHR A17-A19
+              || |+--- CHR Mask: 0=128K, 1=256 K
+              ++-+---- PRG A17-A19
+              +------- PRG Mask: 0=128K, 1=256 K
+
+TLSROM nametable mirroring is used when cCC is 001, otherwise normal MMC3 mirroring is used.
+
+Solder Pad register ($5000-5FFF, read)
+
+Mask: $F000
+
+D~7654 3210
+  ---------
+  V... ....
+  +--------- Solder pad setting
+
+The solder pad setting selects one of two different menus.
+
+Categories: Mappers with scanline IRQs, MMC3-like mappers, Multicart mappers

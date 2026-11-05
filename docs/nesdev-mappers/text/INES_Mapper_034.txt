@@ -1,0 +1,80 @@
+INES Mapper 034
+
+INES Mapper 034
+
+iNES Mapper 034 is used to designate both the BNROM and NINA-001 boards. These two boards are unrelated, but have unfortunately been grouped into the same mapper.
+
+Many emulators implement both sets of registers simultaneously, which is safe for the two existing commercial games.
+
+If the emulator wishes to separate the two implementations, they may check the number of CHR banks present: BNROM should be used when there is 0 to 8 KiB of CHR, and NINA-001 should be used otherwise. The NES 2.0 header with a submapper can be used to force use of specific board behavior.
+
+Developers wishing to use mapper 34 should strictly use only the BNROM or only the NINA-001 registers in a single ROM, and be careful not to accidentally write to the other set of registers.
+
+iNES Mapper 241 is a variation of BxROM with 8k PRG-RAM at $6000, which avoids having the conflicting NINA-001 registers in that location.
+
+BNROM
+
+See: BNROM
+
+PRG ROM size: 128 KB (mapper implementations may support up to 512 KB or 8 MB)
+
+PRG ROM bank size: 32 KB
+
+PRG RAM: None
+
+CHR capacity: 8 KB RAM
+
+CHR bank size: Not bankswitched
+
+Nametable mirroring: Solder pads select vertical or horizontal mirroring
+
+Subject to bus conflicts: Yes
+
+Games:
+
+Deadly Towers (Mashou)
+
+Registers:
+
+             7  bit  0
+             ---------
+ $8000-FFFF: .... ..PP - Select 32 KB PRG ROM bank
+
+Emulators commonly support either a 4-bit or 8-bit register, enabling up to 512 KB or 8 MB PRG ROM.
+This variant may be referred to as BxROM.
+
+NINA-001
+
+See: NINA-001
+
+PRG ROM size: 64 KB
+
+PRG ROM bank size: 32 KB
+
+PRG RAM: 8 KB, not battery backed
+
+CHR ROM capacity: 64 KB ROM
+
+CHR bank size: 4 KB
+
+Nametable mirroring: Hardwired to vertical mirroring
+
+Subject to bus conflicts: No
+
+Games:
+
+Impossible Mission 2
+
+Registers:
+
+        7  bit  0
+        ---------
+ $7FFD: .... ...P - Select 32 KB PRG ROM bank
+ $7FFE: .... CCCC - Select 4 KB CHR bank at $0000
+ $7FFF: .... CCCC - Select 4 KB CHR bank at $1000
+
+See also
+
+Comprehensive NES Mapper Document by \Firebug\, information about mapper's initial state is inaccurate.
+
+Categories: Nintendo licensed mappers, INES Mappers, Mappers with bus conflicts, Mappers with CHR RAM, NES 2.0 mappers with submappers

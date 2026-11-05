@@ -1,0 +1,149 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 157</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_157"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 157</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_157">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_157">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 157 is used for games using the <i>Datach Joint ROM system</i>. This belongs in the <a href="Bandai_FCG_board.xhtml" class="mw-redirect" title="Bandai FCG">Bandai FCG</a> family of mappers. The Datach main unit is a device for insertion into the Famicom's cartridge port that provides a barcode scanner, and that accepts its own custom game cartridges. It contains an <b>internal</b> 256-byte serial EEPROM (X24C02) that is shared among all Datach games. Graphics are stored in 8 KiB of unbanked CHR-RAM instead of bankswitched CHR-ROM.
+</p><p>One game, <i>Battle Rush: Build up Robot Tournament</i>,
+has an additional <b>external</b> 128-byte serial EEPROM (X24C01) on the game cartridge. As part of that game's functionality is to transfer save data between the Datach main unit's EEPROM and the game cartridge's EEPROM, emulators should save each EEPROM's data to separate files, one for the main unit's EEPROM, and one for the game cartridge's EEPROM.
+</p><p>The NES 2.0 header's PRG-NVRAM field will only denote whether the game cartridge has an additional 128-byte serial EEPROM (byte 10 value 0x10) or not (byte 10 value 0x00). The Datach main unit's serial EEPROM is not included in the NES 2.0 header's PRG-NVRAM field, as that EEPROM is not part of the game cartridge, but instead shared among all games using this mapper.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Game_List"><span class="tocnumber">1</span> <span class="toctext">Game List</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Banks"><span class="tocnumber">2</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Registers"><span class="tocnumber">3</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Read_Serial_EEPROM/Barcode_(%246000-%247FFF_read)"><span class="tocnumber">3.1</span> <span class="toctext">Read Serial EEPROM/Barcode ($6000-$7FFF read)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#External_EEPROM_Clock_(%248000-%248003_write)"><span class="tocnumber">3.2</span> <span class="toctext">External EEPROM Clock ($8000-$8003 write)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#PRG-ROM_Bank_Select_(%248008_write)"><span class="tocnumber">3.3</span> <span class="toctext">PRG-ROM Bank Select ($8008 write)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Nametable_Mirroring_Type_Select_(%248009_write)"><span class="tocnumber">3.4</span> <span class="toctext">Nametable Mirroring Type Select ($8009 write)</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#IRQ_Control_(%24800A_write)"><span class="tocnumber">3.5</span> <span class="toctext">IRQ Control ($800A write)</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#IRQ_Latch_(%24800B-%24800C_write)"><span class="tocnumber">3.6</span> <span class="toctext">IRQ Latch ($800B-$800C write)</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#EEPROM_Control_(%24800D_write)"><span class="tocnumber">3.7</span> <span class="toctext">EEPROM Control ($800D write)</span></a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Game_List">Game List</span></h1>
+<table class="wikitable sortable">
+<tbody><tr>
+<th>Name</th>
+<th>External EEPROM</th>
+<th><a href="NES_2_0.xhtml#Byte_10_.28RAM_size.29" title="NES 2.0">NES 2.0 Byte 10</a>
+</th></tr>
+<tr>
+<td><i>Battle Rush: Build up Robot Tournament</i></td>
+<td>X24C01</td>
+<td>0x10
+</td></tr>
+<tr>
+<td><i>Crayon Shin-chan: Ora to Poi Poi</i></td>
+<td>-</td>
+<td>0x00
+</td></tr>
+<tr>
+<td><i>Dragon Ball Z: Gekitou Tenkaichi Budoukai</i></td>
+<td>-</td>
+<td>0x00
+</td></tr>
+<tr>
+<td><i>J-League Super Top Players</i></td>
+<td>-</td>
+<td>0x00
+</td></tr>
+<tr>
+<td><i>SD Gundam Wars</i></td>
+<td>-</td>
+<td>0x00
+</td></tr>
+<tr>
+<td><i>Ultraman Club: Spokon Fight!!</i></td>
+<td>-</td>
+<td>0x00
+</td></tr>
+<tr>
+<td><i>Yuu Yuu Hakusho - Bakutou Ankoku Bujutsu-kai</i></td>
+<td>-</td>
+<td>0x00
+</td></tr>
+</tbody></table>
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$BFFF: 16 KiB switchable PRG ROM bank</li>
+<li>CPU $C000-$FFFF: 16 KiB PRG ROM bank, fixed to the last bank</li>
+<li>PPU $0000-$1FFF: 8 KiB unbanked CHR-RAM</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="Read_Serial_EEPROM.2FBarcode_.28.246000-.247FFF_read.29"/><span class="mw-headline" id="Read_Serial_EEPROM/Barcode_($6000-$7FFF_read)">Read Serial EEPROM/Barcode ($6000-$7FFF read)</span></h2>
+<pre>Mask: $E000
+
+7  bit  0
+---- ----
+xxxE Bxxx
+|||| ||||
++++|-|+++- Open bus
+   | +---- Serial data out from Barcode scanner
+   +------ Data out from I²C EEPROMs
+</pre>
+<ul><li>If there is both an internal and an external EEPROM, the Data out from both EEPROMs is ANDed (open drain circuit).</li></ul>
+<p>The barcode scanner just returns a sequence of light and dark periods from a one-dimesional barcode as the user moves it past the sensor. The game only expects <a href="https://en.wikipedia.org/wiki/Universal_Product_Code" class="extiw" title="wikipedia:Universal Product Code">UPCs</a> to be scanned, so an emulator may wish to provide an interface to convert a series of digits into a UPC, similar to <a rel="nofollow" class="external text" href="https://github.com/TASVideos/fceux/blob/master/src/boards/bandai.cpp#L303">FCEUX</a>.
+</p>
+<h2><span id="External_EEPROM_Clock_.28.248000-.248003_write.29"/><span class="mw-headline" id="External_EEPROM_Clock_($8000-$8003_write)">External EEPROM Clock ($8000-$8003 write)</span></h2>
+<pre>Mask: $800F
+
+7  bit  0
+---- ----
+xxxx Cxxx
+     |   
+     +----- External EEPROM's I²C SCL
+</pre>
+<ul><li>CHR A13 OUT is provided on the subcartridge header, and is used in <i>Battle Rush</i> as an external I²C clock.</li>
+<li>PPU rendering must either be disabled during traffic to the external EEPROM, or the same value must be written to all four registers.</li>
+<li>Because the ASIC's PA12 and PA13 inputs are grounded, only registers $8000-$8003 instead of $8000-$8007 are relevant.</li>
+<li>No CHR banking is available.</li></ul>
+<h2><span id="PRG-ROM_Bank_Select_.28.248008_write.29"/><span class="mw-headline" id="PRG-ROM_Bank_Select_($8008_write)">PRG-ROM Bank Select ($8008 write)</span></h2>
+<h2><span id="Nametable_Mirroring_Type_Select_.28.248009_write.29"/><span class="mw-headline" id="Nametable_Mirroring_Type_Select_($8009_write)">Nametable Mirroring Type Select ($8009 write)</span></h2>
+<h2><span id="IRQ_Control_.28.24800A_write.29"/><span class="mw-headline" id="IRQ_Control_($800A_write)">IRQ Control ($800A write)</span></h2>
+<h2><span id="IRQ_Latch_.28.24800B-.24800C_write.29"/><span class="mw-headline" id="IRQ_Latch_($800B-$800C_write)">IRQ Latch ($800B-$800C write)</span></h2>
+<p>These four registers function the same way as on <a href="INES_Mapper_016.xhtml" title="INES Mapper 016">INES Mapper 016</a>, submapper 5. 
+</p>
+<h2><span id="EEPROM_Control_.28.24800D_write.29"/><span class="mw-headline" id="EEPROM_Control_($800D_write)">EEPROM Control ($800D write)</span></h2>
+<pre>Mask: $800F
+
+7  bit  0
+---- ----
+RDC. ....
+|||
+||+-------- Internal EEPROM's I²C SCL
+|+--------- Both EEPROM's I²C SDA
++---------- Both EEPROM's Direction bit (1=Enable Read)
+</pre>
+<ul><li>Please refer to generic I²C tutorials and the X24C01/24C02 datasheets on how to operate or emulate this register correctly.</li>
+<li>The device address of the internal X24C02 EEPROM is set to 000b (with the highest &quot;device type&quot; bits being 1010b), whereas the external X24C01 EEPROM responds to <i>any</i> I²C start condition. It is for this reason that there are two clock lines to address each EEPROM separately.</li>
+<li>Note that while the 24C02 serializes data bits from MSB to LSB (i.e. first bit 7 of any byte, then 6..0), Bandai persisted in believing that the X24C01 serializes data bits from LSB to MSB instead. The X24C01 is actually still a big-endian device, and multi-byte reads and writes increment the address as MSB-first.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241122234304
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.022 seconds
+Real time usage: 0.028 seconds
+Preprocessor visited node count: 36/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:441-0!canonical and timestamp 20241122234304 and revision id 21310.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

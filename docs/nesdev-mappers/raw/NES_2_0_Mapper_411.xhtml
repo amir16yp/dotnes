@@ -1,0 +1,74 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 411</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_411"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 411</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_411">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_411">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 411</b> denotes the <b>A88S-1</b> multicart circuit board. It is yet another <a href="MMC3.xhtml" title="MMC3">MMC3</a>-compatible chipset with outer bank registers and an NROM mode.
+</p>
+<ul><li><i>1997 Super 7-in-1 (JY-201)</i></li>
+<li><i>1997 Super 6-in-1 (JY-202)</i></li>
+<li><i>1997 Super 7-in-1 (JY-203)</i></li>
+<li><i>1997 龍珠武鬥會 7-in-1 (JY-204)</i></li>
+<li><i>1997 Super 7-in-1 (JY-205)</i></li>
+<li><i>1997 Super 7-in-1 (JY-206)</i></li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="Register_1_.28.245FF0.2C_write.29"/><span class="mw-headline" id="Register_1_($5FF0,_write)">Register 1 ($5FF0, write)</span></h2>
+<pre>Mask: unknown, probably $F001
+
+D~7654 3210
+  ---------
+  1M.c BCnA
+   | | |||+- PRG A14 in NROM-128 mode
+   | | ||+-- NROM mode type
+   | | ||     0: PRG A14=A (NROM-128)
+   | | ||     1: PRG A14=CPU A14 (NROM-256)
+   | | |+--- PRG A16 in NROM mode
+   | | +---- PRG A15 in NROM mode
+   | +------ CHR A18
+   +-------- PRG banking mode (PRG A13-A16 source)
+              0: MMC3
+              1: NROM (bits A-C, CPU A13)
+Power-on value: $80
+</pre>
+<p>Yes, the PRG A15/A16 bits are really in that order.
+</p>
+<h2><span id="Register_2_.28.245FF1.2C_write.29"/><span class="mw-headline" id="Register_2_($5FF1,_write)">Register 2 ($5FF1, write)</span></h2>
+<pre>Mask: unknown, probably $F001
+
+D~7654 3210
+  ---------
+  1p.. PCM.
+   |   ||+-- PRG A17/CHR A17 source
+   |   ||     0: PRG A17=P, CHR A17=C (128 KiB inner PRG and CHR bank)
+   |   ||     1: from MMC3 (256 KiB inner PRG and CHR bank)
+   |   |+--- CHR A17 if M=0
+   |   +---- PRG A17 if M=0
+   +-------- PRG A18
+Power-on value: $82
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123164348
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.012 seconds
+Real time usage: 0.016 seconds
+Preprocessor visited node count: 15/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:795-0!canonical and timestamp 20241123164348 and revision id 8038.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_using__4020__5FFF.xhtml">Mappers using $4020-$5FFF</a>, <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

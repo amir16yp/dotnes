@@ -1,0 +1,13 @@
+INES Mapper 204
+
+INES Mapper 204
+
+iNES Mapper 204 is used by several pirate multicarts, including the following :
+
+4-in-1
+
+64-in-1
+
+80-in-1
+
+150-in-1

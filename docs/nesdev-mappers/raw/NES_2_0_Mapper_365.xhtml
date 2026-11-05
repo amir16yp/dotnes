@@ -1,0 +1,140 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 365</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_365"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 365</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_365">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_365">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 365 is used for the Polish version, and probably other language versions, of the Asder PC-95 educational computer.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#PRG-ROM_Bank_Select_(%248000-%249FFF,_write)"><span class="tocnumber">2.1</span> <span class="toctext">PRG-ROM Bank Select ($8000-$9FFF, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#CHR-RAM_Bank_Select_(%24A000-%24BFFF,_write)"><span class="tocnumber">2.2</span> <span class="toctext">CHR-RAM Bank Select ($A000-$BFFF, write)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Unknown_Registers_(%24C000-%24DFFF/%24E000-%24FFFF,_write)"><span class="tocnumber">2.3</span> <span class="toctext">Unknown Registers ($C000-$DFFF/$E000-$FFFF, write)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Unknown_Register_(%244903,_read)"><span class="tocnumber">2.4</span> <span class="toctext">Unknown Register ($4903, read)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Keyboard_Row_Select_(%244904,_write)"><span class="tocnumber">2.5</span> <span class="toctext">Keyboard Row Select ($4904, write)</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Unknown_register_(%244905,_write)"><span class="tocnumber">2.6</span> <span class="toctext">Unknown register ($4905, write)</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Keyboard_Button_State_(%244906,_read)"><span class="tocnumber">2.7</span> <span class="toctext">Keyboard Button State ($4906, read)</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Unknown_Registers_(%244910-%24491F,_read/write)"><span class="tocnumber">2.8</span> <span class="toctext">Unknown Registers ($4910-$491F, read/write)</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Unknown_Registers_(%244111,_write;_%245000-5003/%245080-%245083,_read)"><span class="tocnumber">2.9</span> <span class="toctext">Unknown Registers ($4111, write; $5000-5003/$5080-$5083, read)</span></a></li>
+<li class="toclevel-2 tocsection-12"><a href="#Printer_Port_Status_(%244902,_read)"><span class="tocnumber">2.10</span> <span class="toctext">Printer Port Status ($4902, read)</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#Printer_Port_Output_(%244900/%244901,_write)"><span class="tocnumber">2.11</span> <span class="toctext">Printer Port Output ($4900/$4901, write)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-14"><a href="#Note"><span class="tocnumber">3</span> <span class="toctext">Note</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: 8 KiB fixed PRG-RAM bank</li>
+<li>CPU $8000-$9FFF: 8 KiB switchable PRG-ROM bank</li>
+<li>CPU $A000-$BFFF: 8 KiB switchable PRG-ROM bank</li>
+<li>CPU $C000-$DFFF: 8 KiB switchable PRG-ROM bank</li>
+<li>CPU $E000-$FFFF: 8 KiB switchable PRG-ROM bank</li>
+<li>PPU $0000-$03FF: 1 KiB switchable CHR-RAM bank</li>
+<li>PPU $0400-$07FF: 1 KiB switchable CHR-RAM bank</li>
+<li>PPU $0800-$0BFF: 1 KiB switchable CHR-RAM bank</li>
+<li>PPU $0C00-$0FFF: 1 KiB switchable CHR-RAM bank</li>
+<li>PPU $1000-$13FF: 1 KiB switchable CHR-RAM bank</li>
+<li>PPU $1400-$17FF: 1 KiB switchable CHR-RAM bank</li>
+<li>PPU $1800-$1BFF: 1 KiB switchable CHR-RAM bank</li>
+<li>PPU $1C00-$1FFF: 1 KiB switchable CHR-RAM bank</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="PRG-ROM_Bank_Select_.28.248000-.249FFF.2C_write.29"/><span class="mw-headline" id="PRG-ROM_Bank_Select_($8000-$9FFF,_write)">PRG-ROM Bank Select ($8000-$9FFF, write)</span></h2>
+<pre>Mask: $E003
+
+$8000: Select 8 KiB PRG-ROM bank at CPU $8000-$9FFF
+$8001: Select 8 KiB PRG-ROM bank at CPU $A000-$BFFF
+$8002: Select 8 KiB PRG-ROM bank at CPU $C000-$DFFF
+$8003: Select 8 KiB PRG-ROM bank at CPU $E000-$FFFF. Written value is ORed with $01.
+</pre>
+<h2><span id="CHR-RAM_Bank_Select_.28.24A000-.24BFFF.2C_write.29"/><span class="mw-headline" id="CHR-RAM_Bank_Select_($A000-$BFFF,_write)">CHR-RAM Bank Select ($A000-$BFFF, write)</span></h2>
+<pre>Mask: $E007
+
+$A000: Select 1 KiB CHR-RAM bank at PPU $0000-$03FF
+$A001: Select 1 KiB CHR-RAM bank at PPU $0400-$07FF
+$A002: Select 1 KiB CHR-RAM bank at PPU $0800-$0BFF
+$A003: Select 1 KiB CHR-RAM bank at PPU $0C00-$0FFF
+$A004: Select 1 KiB CHR-RAM bank at PPU $1000-$13FF
+$A005: Select 1 KiB CHR-RAM bank at PPU $1400-$17FF
+$A006: Select 1 KiB CHR-RAM bank at PPU $1800-$1BFF
+$A007: Select 1 KiB CHR-RAM bank at PPU $1C00-$1FFF
+</pre>
+<h2><span id="Unknown_Registers_.28.24C000-.24DFFF.2F.24E000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Unknown_Registers_($C000-$DFFF/$E000-$FFFF,_write)">Unknown Registers ($C000-$DFFF/$E000-$FFFF, write)</span></h2>
+<p>Mask: $E001
+</p><p>One of them will select the nametable mirroring, but it is not known which one, and what the other register does.
+</p>
+<h2><span id="Unknown_Register_.28.244903.2C_read.29"/><span class="mw-headline" id="Unknown_Register_($4903,_read)">Unknown Register ($4903, read)</span></h2>
+<pre>Mask: unknown
+
+D~7654 3210
+  ---------
+  .... .S..
+        +--- Status bit of unknown meaning
+</pre>
+<p>$4903 seems to indicate the presence of a device of some kind and is only read when the computer's menu, or some of its individual applications, boot.
+</p>
+<h2><span id="Keyboard_Row_Select_.28.244904.2C_write.29"/><span class="mw-headline" id="Keyboard_Row_Select_($4904,_write)">Keyboard Row Select ($4904, write)</span></h2>
+<p>Mask: unknown
+</p><p>Selects the row of the keyboard from which the button state will be returned when reading from $4906.
+</p>
+<h2><span id="Unknown_register_.28.244905.2C_write.29"/><span class="mw-headline" id="Unknown_register_($4905,_write)">Unknown register ($4905, write)</span></h2>
+<p>Mask: unknown
+</p>
+<pre>D~7654 3210
+  ---------
+  ?... ..??
+</pre>
+<p>This register is written to by some of of the applications at the end of their NMI handler.
+</p>
+<h2><span id="Keyboard_Button_State_.28.244906.2C_read.29"/><span class="mw-headline" id="Keyboard_Button_State_($4906,_read)">Keyboard Button State ($4906, read)</span></h2>
+<p>Mask: unknown
+</p><p>Returns the button states of the keyboard row selected via $4904. The mapping of keys to bits and rows matches that of the Subor keyboard.
+</p>
+<h2><span id="Unknown_Registers_.28.244910-.24491F.2C_read.2Fwrite.29"/><span class="mw-headline" id="Unknown_Registers_($4910-$491F,_read/write)">Unknown Registers ($4910-$491F, read/write)</span></h2>
+<h2><span id="Unknown_Registers_.28.244111.2C_write.3B_.245000-5003.2F.245080-.245083.2C_read.29"/><span class="mw-headline" id="Unknown_Registers_($4111,_write;_$5000-5003/$5080-$5083,_read)">Unknown Registers ($4111, write; $5000-5003/$5080-$5083, read)</span></h2>
+<p>These registers are accessed when selecting &quot;save&quot; and &quot;load&quot; from the text editor (&quot;Edytor tekstu&quot;).
+</p>
+<h2><span id="Printer_Port_Status_.28.244902.2C_read.29"/><span class="mw-headline" id="Printer_Port_Status_($4902,_read)">Printer Port Status ($4902, read)</span></h2>
+<pre>Mask: unknown
+
+D~7654 3210
+  ---------
+  B... ....
+  +--------- 0=Ready, 1=Busy
+</pre>
+<h2><span id="Printer_Port_Output_.28.244900.2F.244901.2C_write.29"/><span class="mw-headline" id="Printer_Port_Output_($4900/$4901,_write)">Printer Port Output ($4900/$4901, write)</span></h2>
+<p>Mask: unknown
+</p><p>The text editor writes every byte to be printed both to $4900 and $4901.
+</p>
+<h1><span class="mw-headline" id="Note">Note</span></h1>
+<ul><li>The Arabic version of the Asder PC-95 Educational Computer most likely originally used this mapper as well. The publicly-available ROM image has obviously been hacked for <a href="INES_Mapper_241.xhtml" title="INES Mapper 241">iNES Mapper 241</a> and crashes at several points.</li>
+<li>The Korean version uses different hardware and adds a speech chip, which are described by <a href="NES_2_0_Mapper_531.xhtml" title="NES 2.0 Mapper 531">NES 2.0 Mapper 531</a>.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123042150
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.017 seconds
+Real time usage: 0.022 seconds
+Preprocessor visited node count: 42/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:750-0!canonical and timestamp 20241123042150 and revision id 7963.
+ -->
+</div></div></body></html>

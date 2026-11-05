@@ -1,0 +1,5 @@
+INES Mapper 160
+
+INES Mapper 160
+
+iNES Mapper 160 appeared to describe variant behavior of iNES Mapper 090, but Mapper 90 fully encompasses the behavior Mapper 160 was intended to emulate.

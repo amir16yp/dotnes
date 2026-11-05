@@ -13,7 +13,7 @@ namespace NES;
 /// Alternate: https://github.com/mhughson/attributes/blob/master/neslib.h
 /// Tables in: https://github.com/clbr/neslib/blob/master/neslib.sinc
 /// </summary>
-public static class NESLib
+public static partial class NESLib
 {
     /// <summary>
     /// set bg and spr palettes, data is 32 bytes array
@@ -804,14 +804,6 @@ public static class NESLib
     /// </summary>
     public static void vrambuf_flush() => throw null!;
 
-    // CNROM (Mapper 3) bank switching
-
-    /// <summary>
-    /// select a CHR ROM bank (CNROM mapper 3)
-    /// writes the bank number to $8000 to switch the 8 KB CHR bank
-    /// </summary>
-    public static void cnrom_set_chr_bank(byte bank) => throw null!;
-
     // These are from: https://github.com/mhughson/attributes/blob/master/neslib.h
 
     /// <summary>
@@ -1062,165 +1054,6 @@ public static class NESLib
     /// region.</remarks>
     public const ushort SRAM_END = 0x7FFF;
 
-    // MMC3 mapper register addresses for bank switching via poke()
-
-    /// <summary>
-    /// Address of the MMC3 bank select register used for bank switching via poke().
-    /// </summary>
-    /// <remarks>Write to this address to select which internal MMC3 bank register will be modified; a
-    /// subsequent write to the bank data register (0x8001) updates the selected bank mapping.</remarks>
-    public const ushort MMC3_BANK_SELECT = 0x8000;
-
-    /// <summary>
-    /// Address of the MMC3 mapper bank data register ($8001) used to update PRG and CHR bank mappings.
-    /// </summary>
-    /// <remarks>Used by MMC3 (mapper 4). Writes to this register set the bank data selected by the bank
-    /// select register at $8000 and affect either PRG or CHR mapping depending on the current bank select
-    /// value.</remarks>
-    public const ushort MMC3_BANK_DATA = 0x8001;
-
-    /// <summary>
-    /// Address of the MMC3 mapper's mirroring control register ($A000).
-    /// </summary>
-    /// <remarks>Writes to this address select the PPU nametable mirroring mode; bit 0 = 0 for horizontal
-    /// mirroring and 1 for vertical mirroring. Used by the MMC3 mapper to control nametable mapping.</remarks>
-    public const ushort MMC3_MIRRORING = 0xA000;
-
-    /// <summary>
-    /// CPU address for the MMC3 mapper register that controls PRG RAM (WRAM) enable and protection.
-    /// </summary>
-    /// <remarks>Writes to this address set PRG RAM write-enable/protect bits on MMC3-compatible mappers.
-    /// Behavior is mapper-specific and these registers are typically mirrored across the $8000–$FFFF CPU address
-    /// range.</remarks>
-    public const ushort MMC3_WRAM_ENABLE = 0xA001;
-
-    // MMC3 IRQ register addresses for scanline counting via poke()
-
-    /// <summary>
-    /// Memory-mapped address of the MMC3 IRQ latch register used for scanline counting.
-    /// </summary>
-    /// <remarks>Write a byte to this address (for example via poke()) to set the MMC3 IRQ latch. The latched
-    /// value is transferred to the IRQ counter on reload; use the MMC3 IRQ enable/disable registers to control IRQ
-    /// behavior.</remarks>
-    public const ushort MMC3_IRQ_LATCH = 0xC000;
-    /// <summary>
-    /// Memory-mapped CPU address of the MMC3 IRQ reload register.
-    /// </summary>
-    /// <remarks>Writing to this address reloads the MMC3 mapper's IRQ/scanline counter. Typically used by NES
-    /// cartridges and emulators to control scanline-timed IRQs for split-screen rendering and raster effects.</remarks>
-    public const ushort MMC3_IRQ_RELOAD = 0xC001;
-    /// <summary>
-    /// CPU memory address that disables MMC3 mapper IRQs when written.
-    /// </summary>
-    /// <remarks>Writing any value to this address clears the MMC3 IRQ enable flag and stops the IRQ counter.
-    /// Use the corresponding enable address (0xE001) to re-enable IRQs. Represents the CPU address $E000.</remarks>
-    public const ushort MMC3_IRQ_DISABLE = 0xE000;
-    /// <summary>
-    /// Address of the MMC3 IRQ enable register in the mapper's CPU memory-mapped I/O space.
-    /// </summary>
-    /// <remarks>Writing to this address enables the MMC3 scanline IRQ generator. Typically used together with
-    /// the IRQ disable register (0xE000) and the IRQ latch/counter registers.</remarks>
-    public const ushort MMC3_IRQ_ENABLE = 0xE001;
-
-    /// <summary>
-    /// Set an MMC3 CHR bank register to the specified bank number.
-    /// Writes reg to $8000 (MMC3_BANK_SELECT) and bank to $8001 (MMC3_BANK_DATA).
-    /// </summary>
-    /// <param name="reg">MMC3 bank-select value. Bits 0-2 select the register (R0-R7),
-    /// bits 6-7 control PRG/CHR banking mode. Must be a compile-time constant.
-    /// R0/R1 (reg 0-1): 2KB CHR banks at PPU $0000/$0800.
-    /// R2-R5 (reg 2-5): 1KB CHR banks at PPU $1000/$1400/$1800/$1C00.
-    /// R6-R7 (reg 6-7): PRG banks (not CHR).</param>
-    /// <param name="bank">Bank number to select. Can be a constant or local variable.</param>
-    public static void mmc3_set_chr_bank(byte reg, byte bank) => throw null!;
-
-    /// <summary>
-    /// Set an MMC3 PRG bank register (R6 or R7). <paramref name="reg"/> must be a compile-time constant
-    /// with bits 0–2 equal to 6 or 7 (optionally OR'd with mode bits 6–7).
-    /// </summary>
-    public static void mmc3_set_prg_bank(byte reg, byte bank) => throw null!;
-
-    /// <summary>
-    /// Enable or protect MMC3 PRG-RAM via $A001. Common values: 0x80 enable, 0xC0 enable+write-protect.
-    /// </summary>
-    public static void mmc3_wram_enable(byte value) => poke(MMC3_WRAM_ENABLE, value);
-
-    /// <summary>
-    /// UxROM / UNROM (mapper 2): switch the 16KB PRG bank at $8000 by writing to $8000.
-    /// </summary>
-    public static void uxrom_set_prg_bank(byte bank) => throw null!;
-
-    // MMC1 mapper register addresses for serial shift register writes via mmc1_write()
-
-    /// <summary>
-    /// Base address of the MMC1 mapper control register used for serial shift-register writes via mmc1_write().
-    /// </summary>
-    /// <remarks>Writes to this address follow the MMC1 serial write protocol: consecutive writes shift bits
-    /// into an internal 5-bit register; a write with bit 7 set resets the shift register. After five valid writes the
-    /// 5-bit value is latched and controls mirroring, PRG banking mode, and CHR banking. This constant represents the
-    /// control register region base (typically mapped to 0x8000–0x9FFF).</remarks>
-    public const ushort MMC1_CONTROL = 0x8000;
-
-    /// <summary>
-    /// Address of the MMC1 CHR bank 0 register in the NES CPU memory map.
-    /// </summary>
-    /// <remarks>Used to select the first CHR bank when the MMC1 mapper's CHR banking mode is active. Writing
-    /// to this address sets the lower 4 KB CHR bank; behavior depends on the MMC1 control register's CHR
-    /// mode.</remarks>
-    public const ushort MMC1_CHR_BANK0 = 0xA000;
-
-    /// <summary>
-    /// Address label for the MMC1 mapper's CHR bank 1 in the assembled NES ROM.
-    /// </summary>
-    /// <remarks>Used as a 16-bit ROM address when emitting or referencing the first CHR bank for MMC1-based
-    /// cartridges.</remarks>
-    public const ushort MMC1_CHR_BANK1 = 0xC000;
-
-    /// <summary>
-    /// Address of the MMC1 PRG bank register used to select the active PRG ROM bank.
-    /// </summary>
-    /// <remarks>Memory-mapped CPU address $E000 for the MMC1 mapper's PRG bank register; writes to this
-    /// address update the mapper's active program bank selection.</remarks>
-    public const ushort MMC1_PRG_BANK = 0xE000;
-
-    // MMC1 Control register PRG/CHR mode bits: use mirror | (MMC1Mirror)prg_chr_bits
-    // when combining mirroring with PRG/CHR modes in mmc1_set_mirroring().
-
-    // MMC1 Control register PRG/CHR mode bits (OR with mirroring constants)
-    /// <summary>PRG mode: fix last bank at $C000, switch 16KB bank at $8000 (bits 2-3 = 11).</summary>
-    public const byte MMC1_PRG_FIX_LAST = 0x0C;
-    /// <summary>CHR mode: two separate 4KB banks (bit 4 = 1).</summary>
-    public const byte MMC1_CHR_4K = 0x10;
-
-    /// <summary>
-    /// Write a 5-bit value to an MMC1 register using the serial shift register protocol.
-    /// MMC1 requires writing one bit at a time (5 writes total) to latch a value.
-    /// The addr must be one of the MMC1_* register constants.
-    /// </summary>
-    public static void mmc1_write(ushort addr, byte value) => throw null!;
-
-    /// <summary>
-    /// Switch the MMC1 PRG bank by writing to the PRG bank register ($E000).
-    /// </summary>
-    public static void mmc1_set_prg_bank(byte bank) => mmc1_write(MMC1_PRG_BANK, bank);
-
-    /// <summary>
-    /// Switch both MMC1 CHR banks by writing to CHR bank 0 ($A000) and CHR bank 1 ($C000).
-    /// </summary>
-    public static void mmc1_set_chr_bank(byte bank0, byte bank1)
-    {
-        mmc1_write(MMC1_CHR_BANK0, bank0);
-        mmc1_write(MMC1_CHR_BANK1, bank1);
-    }
-
-    /// <summary>
-    /// Write the full MMC1 Control register ($8000) via the serial shift register.
-    /// The value contains: mirroring mode (bits 0-1), PRG bank mode (bits 2-3),
-    /// and CHR bank mode (bit 4). Use <see cref="MMC1Mirror"/> values OR'd with PRG/CHR
-    /// mode bits. Writing only a mirror constant (e.g., <see cref="MMC1Mirror.Vertical"/>)
-    /// resets PRG/CHR modes to zero — combine with your desired mode bits.
-    /// </summary>
-    public static void mmc1_set_mirroring(byte mode) => mmc1_write(MMC1_CONTROL, mode);
 
     // TODO: Macros below should be computed at compile-time and methods removed
 

@@ -1,0 +1,70 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 331</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_331"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 331</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_331">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_331">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 mapper 331 is used for the <i>7-in-1 (NS03)</i> multicart. Its UNIF board name is <b>BMC-12-IN-1</b>.
+</p>
+<h2><span id="Inner_Bank_Register_A_.28.24A000-.24BFFF.29"/><span class="mw-headline" id="Inner_Bank_Register_A_($A000-$BFFF)">Inner Bank Register A ($A000-$BFFF)</span></h2>
+<pre>Mask: probably $E000
+
+D~7654 3210
+  ---------
+  CCCC CPPP
+  |||| |+++- Select 16 KiB inner PRG-ROM bank at CPU $8000-$BFFF and CPU $C000-$FFFF
+  |||| |     active when the PPU is rendering from $0000-$0FFF, subject to A14-A16 modification
+  ++++-+---- Select 4 KiB inner CHR-ROM bank at PPU $0000-$0FFF
+</pre>
+<h2><span id="Inner_Bank_Register_B_.28.24C000-.24DFFF.29"/><span class="mw-headline" id="Inner_Bank_Register_B_($C000-$DFFF)">Inner Bank Register B ($C000-$DFFF)</span></h2>
+<pre>Mask: probably $E000
+
+D~7654 3210
+  ---------
+  CCCC CPPP
+  |||| |+++- Select 16 KiB inner PRG-ROM bank at CPU $8000-$BFFF and CPU $C000-$FFFF
+  |||| |     active when the PPU is rendering from $1000-$1FFF, subject to A14-A16 modification
+  ++++-+---- Select 4 KiB inner CHR-ROM bank at PPU $1000-$1FFF
+</pre>
+<h2><span id="Outer_Bank_and_Mode_Register_.28.24E000-.24FFFF.29"/><span class="mw-headline" id="Outer_Bank_and_Mode_Register_($E000-$FFFF)">Outer Bank and Mode Register ($E000-$FFFF)</span></h2>
+<pre>Mask: probably $E000
+
+D~7654 3210
+  ---------
+  .... PMOO
+       ||++- Select 128 KiB outer PRG-ROM and CHR-ROM bank
+       |+--- Select nametable mirroring type
+       |      0: Vertical
+       |      1: Horizontal
+       +---- Select PRG A14-A16 mode
+              0: Force PRG A14-A16 to 111b if CPU A14=1 (UNROM-like)
+              1: PRG A14=CPU A14 (NROM-256)
+              
+</pre>
+<p>It's probably a good idea to initialize the PPP bits of both inner bank registers to the same value to prevent the PRG-ROM bank at $8000-$BFFF from changing back and forth as the PPU is rendering.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164154
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.012 seconds
+Preprocessor visited node count: 11/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:716-0!canonical and timestamp 20241123164154 and revision id 7849.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

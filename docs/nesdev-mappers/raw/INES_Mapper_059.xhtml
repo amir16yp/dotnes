@@ -1,0 +1,65 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 059</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_059"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 059</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_059">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_059">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 59 is used for a multicart with the UNIF board names <b>BMC-T3H53</b> and <b>BMC-D1038</b>.
+</p>
+<h2><span id="Address_Latch_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Address_Latch_($8000-$FFFF,_write)">Address Latch ($8000-$FFFF, write)</span></h2>
+<pre>Mask: $8000
+
+A~FEDC BA98 7654 3210
+---------------------
+  1... ..LD SPPp MCCC
+         || |||| |+++- Select 8 KiB CHR-ROM bank at PPU $0000-$1FFF
+         || |||| +---- Select nametable mirroring type
+         || ||||        0: Vertical
+         || ||||        1: Horizontal
+         || |+++------ Select 16 KiB PRG-ROM bank at CPU $8000-$BFFF/$C000-$FFFF
+         || +--------- Select PRG A14 behavior
+         ||             0: Substitute p with CPU A14 (NROM-256, 32 KiB PRG-ROM)
+         ||             1: Leave p unchanged (NROM-128, 16 KiB PRG-ROM)
+         |+----------- Jumper Read Control
+         |              0: CPU $8000-$FFFF returns PRG-ROM content
+         |              1: CPU $8000-$FFFF returns Jumper/DIP switch value
+         +------------ Lock bit
+                        1: Ignore further writes to the latch until reset
+</pre>
+<h2><span id="Jumper_Value_.28.248000-.24FFFF.2C_read.29"/><span class="mw-headline" id="Jumper_Value_($8000-$FFFF,_read)">Jumper Value ($8000-$FFFF, read)</span></h2>
+<pre>Mask: $8000
+
+D~7654 3210
+  ---------
+  OOOO OOJJ
+  |||| ||++- Current jumper value, selecting menu variants with different game counts
+  ++++-++--- Open bus
+</pre>
+<h2><span class="mw-headline" id="Errata">Errata</span></h2>
+<p>NESten's Mapper DLL v1.0 contained an incorrect implementation of T3H53 as iNES mapper 059 and UNIF mapper BMC-T3H53. The UNIF implementation was improved in NESten's Mapper DLL v1.2 while the iNES implementation was not, causing confusion about what kind of cartridge the unimproved mapper 59 was supposed to be. As Nintendulator's mapper DLL is based on NESten's mapper DLL, this was carried over to Nintendulator. Presumably as a result of this confusion, FCEUX and others put the correct implementation of T3H53 at <a href="INES_Mapper_060.xhtml" title="INES Mapper 060">INES Mapper 060</a>, displacing the &quot;Reset-based NROM-128 4-in-1&quot; in the process.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123051005
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 10/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:344-0!canonical and timestamp 20241123051005 and revision id 4344.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

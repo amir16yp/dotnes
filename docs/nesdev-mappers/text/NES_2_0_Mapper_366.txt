@@ -1,0 +1,48 @@
+NES 2.0 Mapper 366
+
+NES 2.0 Mapper 366
+
+NES 2.0 Mapper 366 is used for an MMC3-based multicart PCB (GN-45):
+
+4-in-1 (K-3131GS)
+
+4-in-1 (K-3131SS)
+
+Contents
+
+1 Outer Bank Register ($6800)
+
+2 MMC3-compatible registers
+
+3 Note
+
+4 See also
+
+Outer Bank Register ($6800)
+
+Mask: unknown, probably $E0F0
+
+A~FEDC BA98 7654 3210
+  -------------------
+  0110 1000 LOOO ....
+            |+++------ Select outer 128 KiB PRG-ROM and CHR-ROM bank
+            +--------- 1=Lock outer bank
+
+This register is accessible regardless of whether WRAM is enabled in the MMC3 clone's A001 register.
+It overlays the 8 KiB of WRAM that both multicarts have, making the Lock bit necessary to prevent the outer bank from changing once the game writes to WRAM.
+
+MMC3-compatible registers
+
+Mask: $E001
+
+See MMC3.
+
+Note
+
+FCEUX emulates this PCB under mapper number 205 together with "OK-411" (NES 2.0 Mapper 361), both of which are in turn different from the iNES Mapper 205 described in that mapper's wiki article.
+
+See also
+
+NES 2.0 Mapper 361 describes a simpler variant that latches the data bus instead of the address bus.
+
+Categories: Mappers with scanline IRQs, MMC3-like mappers, Multicart mappers

@@ -1,0 +1,35 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 406</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_406"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 406</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_406">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_406">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 406</b> is used for the homebrew game <i>Haradius Zero</i>. It is basically a homebrew <a href="TxROM.xhtml" class="mw-redirect" title="TLROM">TLROM</a> circuit board that connects the <a href="MMC3.xhtml" title="MMC3">MMC3</a>'s address lines differently, and saves the high score to flash ROM. The game executes the flash ROM chip's &quot;Software ID&quot; command; if the manufacturer and model ID do not match the expected values, or it detects that WRAM exists, the game replaces the first level with an unwinnable boss fight.
+</p><p><b>Submapper 0</b> denotes the 60-pin release of the game (saying &quot;AXR&quot; at the bottom of the title screen). The MMC3's A0 input is actually connected to CPU A1, so that $8000/$8002 rather than $8000/$8001 are differentiated. The Flash ROM chip is a Macronix MX29F040 (manufacturer ID=$C2, model ID=$A4).
+</p><p><b>Submapper 1</b> denotes the 72-pin release of the game (saying &quot;INL&quot; at the bottom of the title screen). The MMC3's $8xxx and $Exxx registers are swapped, so that $8000/$8001 enables/disable IRQ generation, and $E000/$E001 write to bank registers. The Flash ROM chip is an AMD AM29F040 (manufacturer ID=$01, model ID=$A4).
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123112232
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.017 seconds
+Preprocessor visited node count: 1/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 1/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:791-0!canonical and timestamp 20241123112232 and revision id 20288.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_Mappers_with_flash_save.xhtml">Mappers with flash save</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_NES_2_0_mappers_with_submappers.xhtml">NES 2.0 mappers with submappers</a></p></div></body></html>

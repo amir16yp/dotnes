@@ -1,0 +1,70 @@
+NES 2.0 Mapper 451
+
+NES 2.0 Mapper 451
+
+NES 2.0 Mapper 451 is used for the homebrew game Haratyler HP/MP. It is basically a homebrew TLROM-like circuit board that implements the MMC3 register's in an unusual fashion, and saves the high score to flash ROM. The game executes the AMIC A29040B flash ROM chip's "Software ID" command; if the manufacturer and model ID do not match the expected values ($37 and $86), or it detects that WRAM exists, the game replaces the first level with an unwinnable boss fight. Haratyler MP additionally provides MP3 playback from a built-in microSD card, similar to GTMP3.
+
+Contents
+
+1 Banks
+
+2 Registers
+
+2.1 MP3 Playback Controller ($6000-$7FFF)
+
+2.2 Mirroring Register ($A000-$BFFF)
+
+2.3 IRQ Register ($C000-$DFFF)
+
+2.4 Bank Register ($E000-$FFFF)
+
+Banks
+
+CPU $8000-$9FFF: 8 KiB fixed PRG ROM bank $00
+
+CPU $A000-$BFFF: 8 KiB switchable PRG ROM bank $10+x
+
+CPU $C000-$DFFF: 8 KiB switchable PRG ROM bank $20+x
+
+CPU $E000-$FFFF: 8 KiB fixed PRG ROM bank $30
+
+PPU $0000-$1FFF: 8 KiB switchable CHR RAM bank from 16 KiB total
+
+Registers
+
+MP3 Playback Controller ($6000-$7FFF)
+
+Mirroring Register ($A000-$BFFF)
+
+A~[101. .... .... ...M]
+                     +- 0: Vertical, 1: Horizontal
+
+IRQ Register ($C000-$DFFF)
+
+A~[110. .... VVVV VVVV]
+
+A write to this register amounts to the following writes on a normal MMC3:
+
+$C000=VVVVVVVV -1
+
+$C001=0
+
+If V=$FF: $E000, otherwise $E001
+
+Bank Register ($E000-$FFFF)
+
+A~[111. .... .... ..BA]
+                    |+- PRG/CHR A13
+                    +-- PRG A16
+
+This means effectively:
+
+BA    CPU $A000   CPU $C000   PPU $0000
+ 0        $10         $20        0
+ 1        $11         $21        1
+ 2        $18         $28        0
+ 3        $19         $29        1
+
+Together with the fixed banks, this means that only PRG ROM banks $00/$10/$11/$18/$19/$20/$21/$28/$29/$30 are accessible. The rest serve as padding for the flash ROM chip's 64 KiB sector size.
+
+Categories: Mappers with scanline IRQs, Mappers with flash save, Mappers with CHR RAM, MMC3-like mappers

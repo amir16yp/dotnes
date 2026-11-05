@@ -1,0 +1,50 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 333</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_333"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 333</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_333">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_333">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 mapper 333 is used for the <i>New Star Super 8-in-1</i> multicart. Its UNIF board name are <b>BMC-8-IN-1</b> and <b>BMC-NEWSTAR-GRM070-8IN1</b>.
+</p>
+<h2><span id="Outer_Bank_and_PRG_Banking_Mode_Register_.28.249000-.249FFF.2C_.24B000-.24BFFF.2C_.24D000-.24DFFF.2C_.24F000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Outer_Bank_and_PRG_Banking_Mode_Register_($9000-$9FFF,_$B000-$BFFF,_$D000-$DFFF,_$F000-$FFFF,_write)">Outer Bank and PRG Banking Mode Register ($9000-$9FFF, $B000-$BFFF, $D000-$DFFF, $F000-$FFFF, write)</span></h2>
+<pre>Mask: $9000
+
+D~7654 3210
+  ---------
+  ...P OOII
+     | ||++- Select inner 32 KiB PRG-ROM bank at CPU $8000-$FFFF if P=0
+     | ++--- Select 128 KiB outer PRG-ROM and CHR-ROM bank
+     +------ Select PRG Banking Mode
+              0: NROM-256
+              1: MMC3
+</pre>
+<h2><span id="MMC3-compatible_registers_.28.248000-.248FFF.2C_.24A000-.24AFFF.2C_.24C000-.24CFFF.2C_.24E000-.24EFFF.2C_write.29"/><span class="mw-headline" id="MMC3-compatible_registers_($8000-$8FFF,_$A000-$AFFF,_$C000-$CFFF,_$E000-$EFFF,_write)">MMC3-compatible registers ($8000-$8FFF, $A000-$AFFF, $C000-$CFFF, $E000-$EFFF, write)</span></h2>
+<pre>Mask: $F001
+
+See <a href="MMC3.xhtml" title="MMC3">MMC3</a>.
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123164157
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.007 seconds
+Real time usage: 0.007 seconds
+Preprocessor visited node count: 10/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:718-0!canonical and timestamp 20241123164157 and revision id 7855.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

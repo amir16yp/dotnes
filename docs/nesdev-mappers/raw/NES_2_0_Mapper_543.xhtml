@@ -1,0 +1,57 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 543</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_543"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 543</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_543">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_543">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 543 denotes the unmarked printed circuit board of the 1996 無敵智カ卡 5-in-1 (CH-501) multicart. It has 2 MiB of PRG-ROM, 2x32 KiB of battery-backed PRG-RAM, and 32 KiB (8 KiB used) of CHR-RAM. Bankswitching is provided by an AX5904 <a href="MMC1.xhtml" title="MMC1">MMC1</a> clone connected in <a href="SxROM.xhtml" class="mw-redirect" title="SOROM">SOROM</a> or <a href="SxROM.xhtml" class="mw-redirect" title="SNROM">SNROM</a> configurations, plus an additional PAL providing outer bank switching functionality. The circuit board has provisions for additional 2 MiB of PRG-ROM and a third battery-backed 32 KiB PRG-RAM chip.
+</p>
+<h2><span id="Outer_Bank_Register_.28.245000.2C_write.29"/><span class="mw-headline" id="Outer_Bank_Register_($5000,_write)">Outer Bank Register ($5000, write)</span></h2>
+<pre>Mask: $F000
+
+D~7654 3210
+  ---------
+  .... S...
+       +---- Serial data
+</pre>
+<p>The outer bank register is similar to the MMC1 registers in that it expects the four-bit bank number as serial data, with the lowest bit sent first. Unlike the MMC1's serial register, there does not seem to be a means of resetting the shift register, and its width is four bits instead of five. It selects the upper PRG-ROM address lines and SRAM chips as follows:
+</p>
+<pre>D~3210
+  ----
+  1PpP
+  |||+- PRG A18, SRAM #1 A14, SRAM #2 A13
+  ||+-- PRG A19, SRAM #1 (bit clear)/#2 (bit set) chip select
+  |+--- PRG A20, SRAM #2 A14
+  +---- 1 during game-play, 0 during menu
+
+</pre>
+<ul><li>MMC1 CHR A15 is connected to SRAM #1 A13.</li>
+<li>Because the two SRAM chips are connected differently, PRG A19 implicitly selects between SOROM (0) and SNROM (1) configurations.</li>
+<li>Since both SRAM chips are battery-backed, the original SOROM distinction between a volatile and non-volatile 8 KiB bank does not apply here.</li></ul>
+<p>This means that games $08 and $09 use the <a href="SxROM.xhtml" class="mw-redirect" title="SOROM">SOROM</a> configuration, with the MMC1's CHR A15 output selecting between two inner 8 KiB banks, and PRG A18 selecting between two outer 16 KiB banks in the first 32 KiB SRAM chip. Games $0A, $0B, $0E and $0F use the <a href="SxROM.xhtml" class="mw-redirect" title="SNROM">SNROM</a> configuration, with the MMC1's CHR A15 output ignored, and PRG A18 and A20 selecting four outer 8 KiB banks in the second 32 KiB SRAM chip. Games $0C and $0D would use the same save RAM space as games $08 and $09 and are therefore invalid and unused by the cartridge.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123011603
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.012 seconds
+Preprocessor visited node count: 10/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:849-0!canonical and timestamp 20241123011603 and revision id 8162.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_large_PRG_RAM.xhtml">Mappers with large PRG RAM</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

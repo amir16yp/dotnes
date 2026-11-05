@@ -1,0 +1,68 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 036</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_036"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 036</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_036">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_036">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><a class="mw-selflink selflink">iNES Mapper 036</a> is assigned to TXC's PCB <b>01-22000-400</b>, featuring a <a href="74138.xhtml" title="74138">74138</a>, a 74175, and usually a 24-pin ASIC labeled <a href="TXC_05_00002_010_pinout.xhtml" title="TXC 05-00002-010 pinout">05-00002-010</a>. <a rel="nofollow" class="external text" href="http://glukvideo.info/listado-juegos-gluk">Two games</a> are currently known to require this definition.
+</p>
+<ul><li>Strike Wolf (also released as <i>Comando de Lobos</i>)</li>
+<li>Policeman</li></ul>
+<p>Even though these games can evidently be emulated as a weird kind of GNROM, the hardware does something quite different:
+</p><p>The CHR banking is definitely implemented using the two 7400-series ICs:
+</p>
+<pre>Mask: $E200
+write $4200: [.... CCCC] - Select 8 KiB CHR bank
+</pre>
+<p>The PRG banking is part of the ASIC:
+</p>
+<pre>Mask: $E100
+ read $4100: [xxRR xxxx]
+              |||| ||||
+              ||++------ Copy internal register 'RR' to data bus.
+              ++---++++- open bus
+Mask: $E103
+ write $4100: If Increment is set, internal register 'RR' &lt;- 'RR'+1
+              Otherwise, if Invert is clear, copy internal register 'PP' to 'RR'
+                         if Invert is set, copy '~PP' to 'RR'
+ write $4101: [...V ....] - Invert Mode
+ write $4102: [..PP ....] - Copy data bus to internal register 'PP'. Value is not yet exposed anywhere.
+ write $4103: [...C ....] - Increment Mode
+Mask: $8000
+ write $8000: copy internal register 'RR' to PRG banking pins
+</pre>
+<p>Three additional games published by Gluk use the same PCB, with no ASIC. They were also released in other regions on different hardware, and <i>only</i> Gluk's editions are compatible with the above-mentioned CHR banking.
+</p>
+<ul><li>F-15 City War</li>
+<li>Volley ball</li>
+<li>Puzzle</li></ul>
+<p>Compatibility code left in means that Gluk's editions of these three games are also emulatable as <a href="NINA_003_006.xhtml" title="NINA-003-006">NINA-06</a>.
+</p><p>See also:
+</p>
+<ul><li><a rel="nofollow" class="external free" href="http://forums.nesdev.org/viewtopic.php?p=167180#p167180">http://forums.nesdev.org/viewtopic.php?p=167180#p167180</a> Thread about dumping Policeman starts here</li>
+<li>The same ASIC showed up in <a href="INES_Mapper_132.xhtml" title="INES Mapper 132">iNES Mapper 132</a> and <a href="INES_Mapper_173.xhtml" title="INES Mapper 173">iNES Mapper 173</a>, wired differently.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123163412
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.010 seconds
+Real time usage: 0.015 seconds
+Preprocessor visited node count: 1/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 1/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:321-0!canonical and timestamp 20241123163412 and revision id 4196.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_GNROM_like_mappers.xhtml">GNROM-like mappers</a></p></div></body></html>

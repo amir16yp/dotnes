@@ -1,0 +1,155 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 264</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_264"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 264</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_264">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_264">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 264 is used for two fighting games from <a rel="nofollow" class="external text" href="http://bootleggames.wikia.com/wiki/Cony_Soft">Yoko Soft (aka Cony)</a>:
+</p>
+<ul><li><i>Mortal Kombat II/V Pro</i></li>
+<li><i>Master Fighter VI'</i></li></ul>
+<p>It is similar but not quite identical to <a href="INES_Mapper_083.xhtml" title="INES Mapper 083">several other Cony mappers</a>. Its UNIF board name is <b>UNL-YOKO</b>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#DIP_switch(read)"><span class="tocnumber">1.1</span> <span class="toctext">DIP switch(read)</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Scratch_RAM_(read/write)"><span class="tocnumber">1.2</span> <span class="toctext">Scratch RAM (read/write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Outer_PRG-ROM_Bank_(%248000)"><span class="tocnumber">1.3</span> <span class="toctext">Outer PRG-ROM Bank ($8000)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Mode_(%248400)"><span class="tocnumber">1.4</span> <span class="toctext">Mode ($8400)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#IRQ_Acknowledge_and_Counter_Low_(%248800)"><span class="tocnumber">1.5</span> <span class="toctext">IRQ Acknowledge and Counter Low ($8800)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#IRQ_Enable_and_Counter_High_(%248801)"><span class="tocnumber">1.6</span> <span class="toctext">IRQ Enable and Counter High ($8801)</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Inner_PRG-ROM_Bank_(%248C0x)"><span class="tocnumber">1.7</span> <span class="toctext">Inner PRG-ROM Bank ($8C0x)</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#2_KiB_CHR-ROM_Banks_(%248C1x)"><span class="tocnumber">1.8</span> <span class="toctext">2 KiB CHR-ROM Banks ($8C1x)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="#IRQ_Operation"><span class="tocnumber">2</span> <span class="toctext">IRQ Operation</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#Notes"><span class="tocnumber">3</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<h3><span id="DIP_switch.28read.29"/><span class="mw-headline" id="DIP_switch(read)">DIP switch(read)</span></h3>
+<p>Mask: Probably $D400
+</p>
+<pre>$5000: Bit 7654 3210
+           ---------
+           .... ..DD
+                  ++- DIP switch value
+</pre>
+<h3><span id="Scratch_RAM_.28read.2Fwrite.29"/><span class="mw-headline" id="Scratch_RAM_(read/write)">Scratch RAM (read/write)</span></h3>
+<p>Mask: Probably $D403
+</p>
+<pre>$5400: Scratch RAM byte #0
+$5401: Scratch RAM byte #1
+$5402: Scratch RAM byte #2
+$5403: Scratch RAM byte #3
+</pre>
+<h3><span id="Outer_PRG-ROM_Bank_.28.248000.29"/><span class="mw-headline" id="Outer_PRG-ROM_Bank_($8000)">Outer PRG-ROM Bank ($8000)</span></h3>
+<p>Mask: Probably $8C17
+</p>
+<pre>7654 3210
+---------
+.... OPPp
+     |||+- Select 16 KiB PRG-ROM bank at CPU $8000-$FFFF in PRG banking mode 0
+     |++-- Select 32 KiB PRG-ROM bank at CPU $8000-$FFFF in PRG banking modes 0 and 1
+     +---- Select 128 KiB PRG-ROM bank at CPU $8000-$FFFF in all PRG banking modes
+</pre>
+<h3><span id="Mode_.28.248400.29"/><span class="mw-headline" id="Mode_($8400)">Mode ($8400)</span></h3>
+<p>Mask: Probably $8C17
+</p>
+<pre>7654 3210
+---------
+ID.B B.MM
+|| | | ++- Select nametable mirroring
+|| | |      0: Vertical
+|| | |      1: Horizontal
+|| | |      2: One screen, page 0
+|| | |      3: One screen, page 1
+|| +-+---- Select PRG banking mode
+||          0: 16 KiB UNROM-like:
+||             CPU $8000-$BFFF: 16 KiB PRG-ROM bank selected by Outer Bank register ($8000)
+||             CPU $C000-$FFFF: 16 KiB PRG-ROM bank fixed to last bank (UNROM-like)
+||          1: 32 KiB:
+||             CPU $8000-$FFFF: 32 KiB PRG-ROM bank selected by Outer Bank register ($8000) SHR 1
+||          2: 8 KiB:
+||             CPU $8000-$9FFF: 8 KiB PRG-ROM bank selected by Inner PRG-ROM Bank register 0 ($8C00)
+||                              and Outer Bank register bit 3 SHL 1
+||             CPU $A000-$BFFF: 8 KiB PRG-ROM bank selected by Inner PRG-ROM Bank register 1 ($8C01)
+||                              and Outer Bank register bit 3 SHL 1
+||             CPU $C000-$DFFF: 8 KiB PRG-ROM bank selected by Inner PRG-ROM Bank register 2 ($8C02)
+||                              and Outer Bank register bit 3 SHL 1
+||             CPU $E000-$FFFF: 8 KiB PRG-ROM bank selected by Inner PRG-ROM Bank register 3 ($8C03)
+||                              and Outer Bank register bit 3 SHL 1
+||          3: Same as 2.
+|+--------- IRQ counting mode
+|            0: Increase
+|            1: Decrease
++---------- IRQ Enable latch
+</pre>
+<h3><span id="IRQ_Acknowledge_and_Counter_Low_.28.248800.29"/><span class="mw-headline" id="IRQ_Acknowledge_and_Counter_Low_($8800)">IRQ Acknowledge and Counter Low ($8800)</span></h3>
+<p>A write directly changes the low eight bits of the 16-bit IRQ counter and acknowledges the IRQ.
+</p><p>Mask: Probably $8C17
+</p>
+<h3><span id="IRQ_Enable_and_Counter_High_.28.248801.29"/><span class="mw-headline" id="IRQ_Enable_and_Counter_High_($8801)">IRQ Enable and Counter High ($8801)</span></h3>
+<p>A write directly changes the high eight bits of the 16-bit IRQ counter, and copies bit 7 of the Mode register
+to the actual IRQ Enable register (which is not directly accessible).
+</p><p>Mask: Probably $8C17
+</p>
+<h3><span id="Inner_PRG-ROM_Bank_.28.248C0x.29"/><span class="mw-headline" id="Inner_PRG-ROM_Bank_($8C0x)">Inner PRG-ROM Bank ($8C0x)</span></h3>
+<p>These registers only have an effect in 8 KiB PRG-ROM banking mode (see $8400 bits 3 and 4). They are ORed with
+bit 8 SHL 1 of the Outer PRG-ROM bank register ($8000).
+</p><p>Mask: Probably $8C17
+</p>
+<pre>7654 3210
+---------
+.... PPPP
+     ++++- Set Inner 8 KiB PRG-ROM bank
+
+8C00: Set Inner 8 KiB PRG-ROM bank at CPU $8000-$9FFF
+8C01: Set Inner 8 KiB PRG-ROM bank at CPU $A000-$BFFF
+8C02: Set Inner 8 KiB PRG-ROM bank at CPU $C000-$DFFF
+8C03: Set Inner 8 KiB PRG-ROM bank at CPU $E000-$FFFF
+</pre>
+<h3><span id="2_KiB_CHR-ROM_Banks_.28.248C1x.29"/><span class="mw-headline" id="2_KiB_CHR-ROM_Banks_($8C1x)">2 KiB CHR-ROM Banks ($8C1x)</span></h3>
+<p>Mask: Probably $8C17
+</p>
+<pre>8C10: Set 2 KiB CHR-ROM bank at PPU $0000-$07FF
+8C11: Set 2 KiB CHR-ROM bank at PPU $0800-$0FFF
+8C16: Set 2 KiB CHR-ROM bank at PPU $1000-$17FF
+8C17: Set 2 KiB CHR-ROM bank at PPU $1800-$1FFF
+</pre>
+<h2><span class="mw-headline" id="IRQ_Operation">IRQ Operation</span></h2>
+<p>If the IRQ counter is enabled (by writing a value to $8801 after setting bit 7 in the Mode register), and the counter is not zero, the counter is increased (Mode register bit 6 clear)
+or decreased (Mode register bit 6 set) on every M2 cycle. If it reaches zero, an IRQ is raised, and the IRQ counter is automatically disabled.
+</p>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li>Although the DIP switch has two bits (the value read is ANDed with $03), both games only check whether it is zero/nonzero.</li>
+<li><i>Master Fighter VI'</i> used the value read from DIP switch ($5200) to determine if game should be run in NTSC/Dendy (lowest bit equals 1) or PAL (lowest bit equals 0) mode</li>
+<li>Power-up state is unknown, but game Master Fighter VI' executes from $E000 and first what it does is to change mode to 2 and continues to execute code from the same place. So either power-up mode is 0/2/3 plus $8C03 needs to be set to $0F (or maybe every bit of every register is initialized with ones)</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123005936
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.018 seconds
+Real time usage: 0.021 seconds
+Preprocessor visited node count: 36/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:649-0!canonical and timestamp 20241123005936 and revision id 18832.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

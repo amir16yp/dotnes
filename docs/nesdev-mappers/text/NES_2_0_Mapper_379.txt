@@ -1,0 +1,17 @@
+NES 2.0 Mapper 379
+
+NES 2.0 Mapper 379
+
+NES 2.0 Mapper 379 denotes a circuit board with unknown ID, used for a simple 35-in-1 NROM multicart. It's basically identical to INES Mapper 038 except that the bank register is in the $8000-$FFFF rather than the $7000-$7FFF range.
+
+Outer Bank register ($8000-$FFFF, write)
+
+Mask: $8000
+
+D~7654 3210
+  ---------
+  .... CCPP
+       ||++- Select 32 KiB PRG-ROM bank
+       ++--- Select 8 KiB CHR-ROM bank
+
+Categories: Multicart mappers

@@ -1,0 +1,46 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 369</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_369"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 369</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_369">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_369">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 mapper 369</b> denotes the <b>N49C-300</b> circuit board, used for the <i>Super Mario Bros. Party</i> multicart. Accordingly, it combines all the mappers used for the various Mario games (including SMB2J): <a href="NROM.xhtml" class="mw-redirect" title="INES Mapper 000">0</a>, <a href="MMC3.xhtml" class="mw-redirect" title="INES Mapper 004">4</a> and <a href="INES_Mapper_040.xhtml" title="INES Mapper 040">40</a> with an outer bank register. Its UNIF board name is <b>BMC-N49C-300</b>.
+</p>
+<h2><span id="Outer_Bank_register_.28.244100.2C_write.29"/><span class="mw-headline" id="Outer_Bank_register_($4100,_write)">Outer Bank register ($4100, write)</span></h2>
+<p>Mask: $C100
+</p><p>The meaning of the individual bits is not understood yet. The following values are used:
+</p>
+<pre>$4100  PRG offset  CHR offset  Mapper
+Value  (8K bank#)  (8K bank#)
+-------------------------------------
+$00    $00         $00         <a href="NROM.xhtml" class="mw-redirect" title="INES Mapper 000">000: NROM</a> (Mario Bros.)
+$01    $01         $01         <a href="NROM.xhtml" class="mw-redirect" title="INES Mapper 000">000: NROM</a> (Super Mario Bros.)
+$13    $08         $03         <a href="INES_Mapper_040.xhtml" title="INES Mapper 040">040: NTDEC 2722</a> (Super Mario Bros. 2J)
+$37    $10         $10         <a href="MMC3.xhtml" class="mw-redirect" title="INES Mapper 004">004: TLROM</a> (Super Mario Bros. 2), PRG-ROM bank limited to 128 KiB
+$FF    $20         $20         <a href="MMC3.xhtml" class="mw-redirect" title="INES Mapper 004">004: TKROM</a> (Super Mario Bros. 3), PRG-ROM bank limited to 256 KiB
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123164248
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.012 seconds
+Real time usage: 0.018 seconds
+Preprocessor visited node count: 12/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:754-0!canonical and timestamp 20241123164248 and revision id 7975.
+ -->
+</div><p class="categories">Categories: <a href="Category_FDS_conversion_mappers.xhtml">FDS conversion mappers</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a>, <a href="Category_Mappers_with_fixed_timing_cycle_IRQs.xhtml">Mappers with fixed-timing cycle IRQs</a>, <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a></p></div></body></html>

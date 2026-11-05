@@ -1,0 +1,45 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 457</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_457"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 457</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_457">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_457">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 457</b> denotes the <a href="MMC3.xhtml" title="MMC3">MMC3</a>-based <b>810431C</b> multicart PCB, used for the <i>92 年超高K 黄金卡 35-in-1 刺激大驚險旅風侠</i> multicart. It is basically an oversized version of <a href="INES_Mapper_047.xhtml" title="INES Mapper 047">INES Mapper 047</a> with a selectable outer PRG and CHR bank size. Alternatively, it can be thought of as a simplified version of <a href="INES_Mapper_052.xhtml" title="INES Mapper 052">INES Mapper 052</a> without independent PRG/CHR control.
+</p>
+<h2><span id="Extra_Register_.28.246000-.247FFF.2C_write.29"/><span class="mw-headline" id="Extra_Register_($6000-$7FFF,_write)">Extra Register ($6000-$7FFF, write)</span></h2>
+<pre>Mask: $E000
+
+D~[.... SBBB]
+        |+++- PRG/CHR A19..A17
+        +---- 0: 128 KiB outer PRG and CHR bank size
+              1: 256 KiB outer PRG and CHR bank size
+Value on reset: $00
+</pre>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li>WRAM must be enabled in $A001.7 before writing to the extra register.</li>
+<li>Nestopia Plus! has assigned mapper number <b>2786</b> for this circuit board.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123101217
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.005 seconds
+Real time usage: 0.007 seconds
+Preprocessor visited node count: 13/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:2555-0!canonical and timestamp 20241123101217 and revision id 21023.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

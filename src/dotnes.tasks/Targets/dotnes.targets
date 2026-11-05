@@ -21,7 +21,7 @@
   <Target Name="_WriteNESPropertiesStamp" Condition="'$(IsTestProject)' != 'true'">
     <WriteLinesToFile
         File="$(_NESPropertiesStampFile)"
-        Lines="NESMirroring=$(NESMirroring);NESMapper=$(NESMapper);NESPrgBanks=$(NESPrgBanks);NESChrBanks=$(NESChrBanks);NESBattery=$(NESBattery);NESMmc3BankedLayout=$(NESMmc3BankedLayout);NESOptimizeByteHelpers=$(NESOptimizeByteHelpers);NESOptimizeCode=$(NESOptimizeCode);NESMmc3ManagedHomeBank=$(NESMmc3ManagedHomeBank);NESMmc3ManagedInterruptContract=$(NESMmc3ManagedInterruptContract);@(NESPrgBank->'%(FullPath)|%(Bank)|%(CpuAddress)|%(Offset)');@(NESChrBank->'%(FullPath)|%(Bank)|%(Offset)');@(NESManagedCodeBank->'%(Identity)|%(Bank)|%(CpuAddress)|%(Offset)|%(Size)');@(NESNativeRamCode->'%(Identity)|%(Address)|%(Size)|%(Contract)')"
+        Lines="NESMirroring=$(NESMirroring);NESMapper=$(NESMapper);NESPrgBanks=$(NESPrgBanks);NESChrBanks=$(NESChrBanks);NESBattery=$(NESBattery);NESPackMode=$(NESPackMode);NESRawPrg=$(NESRawPrg);NESRawHeader=$(NESRawHeader);NESRawTrainer=$(NESRawTrainer);NESMmc3BankedLayout=$(NESMmc3BankedLayout);NESOptimizeByteHelpers=$(NESOptimizeByteHelpers);NESOptimizeCode=$(NESOptimizeCode);NESMmc3ManagedHomeBank=$(NESMmc3ManagedHomeBank);NESMmc3ManagedInterruptContract=$(NESMmc3ManagedInterruptContract);@(NESPrgBank->'%(FullPath)|%(Bank)|%(CpuAddress)|%(Offset)');@(NESChrBank->'%(FullPath)|%(Bank)|%(Offset)');@(NESManagedCodeBank->'%(Identity)|%(Bank)|%(CpuAddress)|%(Offset)|%(Size)');@(NESNativeRamCode->'%(Identity)|%(Address)|%(Size)|%(Contract)')"
         Overwrite="true"
         WriteOnlyWhenDifferent="true" />
     <ItemGroup>
@@ -31,7 +31,7 @@
   <Target Name="Transpile" AfterTargets="Build"
       Condition="'$(IsTestProject)' != 'true'"
       DependsOnTargets="$(TranspileDependsOn)"
-      Inputs="$(TargetPath);@(NESAssembly);@(NESPrgBank);@(NESChrBank);$(_NESPropertiesStampFile);$(_NESTasksAssembly)" Outputs="$(NESTargetPath)">
+      Inputs="$(TargetPath);@(NESAssembly);@(NESPrgBank);@(NESChrBank);$(NESRawPrg);$(NESRawHeader);$(NESRawTrainer);$(_NESPropertiesStampFile);$(_NESTasksAssembly)" Outputs="$(NESTargetPath)">
     <ItemGroup>
       <_NESAssembly Include="@(NESAssembly)" />
       <_NESAssembly Remove="@(NESPrgBank);@(NESChrBank)"
@@ -50,6 +50,10 @@
         NESPrgBanks="$(NESPrgBanks)"
         NESChrBanks="$(NESChrBanks)"
         NESBattery="$(NESBattery)"
+        NESPackMode="$(NESPackMode)"
+        NESRawPrg="$(NESRawPrg)"
+        NESRawHeader="$(NESRawHeader)"
+        NESRawTrainer="$(NESRawTrainer)"
         NESMmc3BankedLayout="$(NESMmc3BankedLayout)"
         NESPrgBank="@(NESPrgBank)"
         NESChrBank="@(NESChrBank)"

@@ -1,0 +1,76 @@
+INES Mapper 187
+
+INES Mapper 187
+
+iNES Mapper 187 is used for the 卡聖 (Kǎshèng) A98402 and similar boards, an MMC3-clone-bearing board with an NROM-like PRG-ROM register that can override the MMC3 clone's PRG-ROM bank, and supports 512 KiB of CHR-ROM. Used by:
+
+Street Fighter Zero 2 (Kǎshèng/Hummer Team, not Street Fighter Zero 2 '97)
+
+The King of Fighters '96 (Kǎshèng/Hummer Team)
+
+Contents
+
+1 Registers
+
+1.1 NROM Override Register ($5000)
+
+1.2 Protection Read ($5000-$5FFF)
+
+1.3 CHR A18 Control ($8000-$9FFF, even)
+
+1.4 MMC3-compatible registers ($8000-$FFFF)
+
+2 Errata
+
+3 Similar Mappers
+
+Registers
+
+NROM Override Register ($5000)
+
+Mask: $F001
+
+D~7654 3210
+  ---------
+  M.NB BBb.
+  | |+-+++-- Select 16 KiB PRG-ROM bank at CPU
+  | |        $8000-$BFFF and $C000-$FFFF
+  | +------- 0: Do not replace bit 1 (NROM-128)
+  |          1: Replace bit 1 with CPU A14 (NROM-256)
+  +--------- 0: Use PRG bank from MMC3; ignore $5000 bits 1-4/5
+             1: Ignore PRG bank from MMC3; apply $5000 bits 1-4/5
+
+Protection Read ($5000-$5FFF)
+
+Mask: Unknown
+
+The actual values that are returned are unknown; The King of Fighters '96 reads from here and only expects bit 7 of the value being returned to be set.
+
+CHR A18 Control ($8000-$9FFF, even)
+
+Mask: $E001
+
+D~7654 3210
+  ---------
+  M... ....
+  +--------- Select CHR A18 Mode
+              0: CHR A18=inverted PPU A12
+              1: CHR A18=PPU A12
+
+Basically, either sprites or background tiles will come from the second 256 KiB of CHR-ROM. Note that setting bit 7 will still also activate the MMC3 clone's CHR A12 inversion.
+
+MMC3-compatible registers ($8000-$FFFF)
+
+Mask: $E001, see MMC3.
+
+Errata
+
+GoodNES 3.23b has several INES Mapper 121 and INES Mapper 189 images erroneously set to 187.
+
+Similar Mappers
+
+iNES Mappers 115 and 123 have similar NROM override registers, with Mapper 123's bits arranged a bit differently.
+
+iNES Mapper 121 has the same CHR A18 behavior, drops the NROM override register, and adds more complex protection.
+
+Categories: Mappers using $4020-$5FFF, Mappers with scanline IRQs, MMC3-like mappers

@@ -1,0 +1,33 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 436</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_436"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 436</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_436">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_436">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 436</b> denotes the <b>ZLX-08</b> plug-and-play VT02 console PCB, used by the <i>Entertainment System 620-in-1</i> plug-and-play console. It is uses normal <a href="NES_2_0_Mapper_256.xhtml" title="NES 2.0 Mapper 256">OneBus banking</a>, with one exception: the VT02's PRG A23 output (register $4100 bit 6 for PRG and bit 2 for CHR accesses) is connected to PRG-ROM A24, and PRG A23 comes from the VT02's I/O port at $410F, bit 5 instead. Since the I/O port is high-impedance on reset, which is pulled-up to a logical &quot;1&quot;, the reset vectors are in the <i>second</i> 8 MiB part of ROM.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164424
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.003 seconds
+Real time usage: 0.004 seconds
+Preprocessor visited node count: 2/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:2285-0!canonical and timestamp 20241123164424 and revision id 19246.
+ -->
+</div></div></body></html>

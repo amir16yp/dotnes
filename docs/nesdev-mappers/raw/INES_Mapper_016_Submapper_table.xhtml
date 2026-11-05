@@ -1,0 +1,73 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 016/Submapper table</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_016/Submapper_table"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 016/Submapper table</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_016/Submapper_table">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_016_Submapper_table">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><table class="wikitable">
+<tbody><tr>
+<th colspan="3"><a class="mw-selflink selflink">INES Mapper 016 submapper table</a>
+</th></tr>
+<tr>
+<th>Submapper #</th>
+<th>Meaning</th>
+<th>Note
+</th></tr>
+<tr>
+<td>0</td>
+<td>Unspecified</td>
+<td>Emulate both FCG-1/2 and LZ93D50 chips in their respective CPU address ranges.
+</td></tr>
+<tr>
+<td><i>1</i></td>
+<td><i>LZ93D50 with 128 byte serial EEPROM (24C01)</i></td>
+<td><i>Deprecated, use <a href="INES_Mapper_159.xhtml" title="INES Mapper 159">INES Mapper 159</a> instead.</i>
+</td></tr>
+<tr>
+<td><i>2</i></td>
+<td><i>Datach Joint ROM System</i></td>
+<td><i>Deprecated, use <a href="INES_Mapper_157.xhtml" title="INES Mapper 157">INES Mapper 157</a> instead.</i>
+</td></tr>
+<tr>
+<td><i>3</i></td>
+<td><i>8 KiB of WRAM instead of serial EEPROM</i></td>
+<td><i>Deprecated, use <a href="INES_Mapper_153.xhtml" title="INES Mapper 153">INES Mapper 153</a> instead.</i>
+</td></tr>
+<tr>
+<td>4</td>
+<td>FCG-1/2</td>
+<td>Responds only in the CPU $6000-$7FFF address range; IRQ counter is not latched.
+</td></tr>
+<tr>
+<td>5</td>
+<td>LZ93D50 with no or 256-byte serial EEPROM (24C02)</td>
+<td>Responds only in the CPU $8000-$FFFF address range; IRQ counter is latched.
+</td></tr>
+</tbody></table>
+<p>If there are 256 bytes of serial EEPROM, they will be denoted as PRG-NVRAM in the <a href="NES_2_0.xhtml" title="NES 2.0">NES 2.0</a> header (byte value $20). See: <a href="INES_Mapper_016.xhtml" title="INES Mapper 016">INES Mapper 016</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123024256
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.007 seconds
+Real time usage: 0.008 seconds
+Preprocessor visited node count: 1/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 1/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:299-0!canonical and timestamp 20241123024256 and revision id 3877.
+ -->
+</div></div></body></html>

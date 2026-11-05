@@ -1,0 +1,37 @@
+NES 2.0 Mapper 376
+
+NES 2.0 Mapper 376
+
+NES 2.0 Mapper 376 denotes J.Y. Company's YY841155C circuit board, used for one one known multicart:
+
+1996 大金鋼專輯 8-in-1 (JY-041)
+
+Similarly to NES 2.0 Mapper 361, it uses an MMC3 clone with two outer bank registers at $7000/$7001. This variant adds an NROM PRG mode.
+
+Outer Bank register #0 ($7000, write)
+
+Mask: $F001
+
+D~7654 3210
+  ---------
+  UaV. .bbb
+  |||   +++- In NROM mode: PRG A14..16
+  |+|------- PRG/CHR A17
+  +-+------- UV  PRG banking mode
+             --------------------
+             10  NROM-128
+             11  NROM-256
+             0x  MMC3
+
+Regardless of the PRG banking mode, CHR-ROM A10..A16 will come from the MMC3.
+
+Outer Bank register #1 ($7001, write)
+
+Mask: $F001
+
+D~7654 3210
+  ---------
+  .... ...B
+          +- PRG/CHR A18
+
+Categories: Mappers with scanline IRQs, MMC3-like mappers, Multicart mappers

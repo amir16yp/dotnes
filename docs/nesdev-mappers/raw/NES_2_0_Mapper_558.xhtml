@@ -1,0 +1,132 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 558</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_558"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 558</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_558">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_558">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 558</b> denotes the 燕城 (Yànchéng) <b>YC-03-09</b> circuit board, used for the following games:
+</p>
+<ul><li><i>口袋精靈: 水晶</i> (Pokémon: Crystal Edition)</li>
+<li><i>大話三國</i> (Dàhuà Sānguó)</li></ul>
+<p>A compatible circuit board with an unknown PCB code is used for the original editions of a few games from 外星 (Wàixīng):
+</p>
+<ul><li><i>Pet Family - 宠物大家族: 部落纷争</i> (ES-1081)</li>
+<li><i>Pet Evolve - 宠物进化史</i> (ES-1085)</li>
+<li><i>口袋妖怪꞉ 鑽石版</i> (Pokémon: Diamond Edition, ES-1090)</li>
+<li><i>口袋精靈: 紅</i> and its title screen hack <i>宠物: 红</i> (Pokémon: Red Edition, ES-1088)</li>
+<li><i>数码暴龙 4: 水晶版</i> and its title screen hack <i> 数码宝贝</i> (Digimon 4: Crystal Edition)</li>
+<li><i>盟军敢死队 - Commandos</i></li></ul>
+<p>The Yànchéng games save the game state to a 93C66 512-byte serial EEPROM, its &quot;ORG&quot; pin tied to GND, selecting a word size of 8 bits. The Wàixīng games save to 8 KiB battery-backed WRAM. The NES 2.0 Header's PRG-NVRAM field distinguishes between the two board variants.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#PRG-ROM_Bank_Low_(%245000,_write)"><span class="tocnumber">2.1</span> <span class="toctext">PRG-ROM Bank Low ($5000, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#PRG-ROM_Bank_High_(%245100,_write)"><span class="tocnumber">2.2</span> <span class="toctext">PRG-ROM Bank High ($5100, write)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Microwire_Interface_(%245200,_write)"><span class="tocnumber">2.3</span> <span class="toctext">Microwire Interface ($5200, write)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Mode_(%245300,_write)"><span class="tocnumber">2.4</span> <span class="toctext">Mode ($5300, write)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Microwire_Interface_(%245500,_read)"><span class="tocnumber">2.5</span> <span class="toctext">Microwire Interface ($5500, read)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#Notes"><span class="tocnumber">3</span> <span class="toctext">Notes</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#See_also"><span class="tocnumber">4</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: up to 8 KiB unbanked PRG-RAM, can be battery-backed</li>
+<li>CPU $8000-$FFFF: 32 KiB switchable PRG-ROM bank</li>
+<li>PPU $0000-$1FFF: 8 KiB unbanked CHR-RAM bank</li>
+<li>Nametable mirroring: hard-wired</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<p>All registers are initialized to $00 on reset.
+</p>
+<h2><span id="PRG-ROM_Bank_Low_.28.245000.2C_write.29"/><span class="mw-headline" id="PRG-ROM_Bank_Low_($5000,_write)">PRG-ROM Bank Low ($5000, write)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  .... PPPP
+       ++++- PRG A18..A15
+  
+</pre>
+<ul><li>Note that if $5300.0 is 0, the two lowest bits are swapped during writing.</li></ul>
+<h2><span id="PRG-ROM_Bank_High_.28.245100.2C_write.29"/><span class="mw-headline" id="PRG-ROM_Bank_High_($5100,_write)">PRG-ROM Bank High ($5100, write)</span></h2>
+<pre>Mask: $FB00
+
+D~7654 3210
+  ---------
+  .... ..PP
+         ++- PRG A20..A19
+</pre>
+<ul><li>Note that if $5300.0 is 0, the two lowest bits are swapped during writing.</li></ul>
+<h2><span id="Microwire_Interface_.28.245200.2C_write.29"/><span class="mw-headline" id="Microwire_Interface_($5200,_write)">Microwire Interface ($5200, write)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  .... .SDC
+        ||+- 93C66 EEPROM CLK ($5300.0=0)/DAT ($5300.0=1) output
+        |+-- 93C66 EEPROM DAT ($5300.0=0)/CLK ($5300.0=1) output
+        +--- 93C66 EEPROM CS output
+</pre>
+<h2><span id="Mode_.28.245300.2C_write.29"/><span class="mw-headline" id="Mode_($5300,_write)">Mode ($5300, write)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  .... .AB.
+        |+-  0: Swap D0,D1 on all register writes to $5000-$5200.
+        |    1: Leave D0,D1 unmodified on register writes to $5000-$5200.
+        +--- 0: PRG A15/A16=1
+             1: PRG A15/A16 from $5000
+</pre>
+<ul><li>Writes to this register are <i>not</i> subject to D0/D1 bit-swapping, i.e. the register is not affected by its own bit 0.</li>
+<li>Because this register is initialized to $00 on reset, thus clearing bit 2 which causes PRG A15/A16 to be held high, the game will boot in 32 KiB PRG-ROM bank #3.</li>
+<li>Changing the value of $5300.0 without writing to $5000-$5200 afterwards does not change the latched bits.</li></ul>
+<h2><span id="Microwire_Interface_.28.245500.2C_read.29"/><span class="mw-headline" id="Microwire_Interface_($5500,_read)">Microwire Interface ($5500, read)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  .... .A..
+        |
+        |
+        +--- 93C66 EEPROM DAT input
+</pre>
+<p>Unlike <a href="INES_Mapper_164.xhtml" title="INES Mapper 164">INES Mapper 164</a>, the EEPROM input is <i>not</i> inverted.
+</p>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>CPU D0 and D1 are connected in reverse to the mapper blob compared to other circuit boards using this ASIC. This means that setting $5300.0 to 0, not to 1, will effectively swap PRG A15/A16 and PRG A19/A20. Cartridges using this mapper must be dumped with $5300=$07 during dumping to obtain a readout that matches that of a desoldered ROM chip.</li>
+<li>The Wàixīng games using this mapper were previously set to 162/163 or 164, resulting in incompatibility either because of the different address of the PRG-ROM Bank High register (mapper 162/163) or the different startup bank (164).</li></ul>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<ul><li><a href="INES_Mapper_162.xhtml" title="INES Mapper 162">INES Mapper 162</a>/163 swap the effective meaning of registers $5100 and $5200, the meaning of the D0/D1 bit swap, and use the microwire interface only for protection purposes.</li>
+<li><a href="INES_Mapper_164.xhtml" title="INES Mapper 164">INES Mapper 164</a> is an earlier implementation without D0/D1 swapping, optional UNROM-like bankswitching, and a 1 bpp CHR mode.</li>
+<li><a rel="nofollow" class="external text" href="">PCB images and analysis</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123153016
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.014 seconds
+Real time usage: 0.018 seconds
+Preprocessor visited node count: 32/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:864-0!canonical and timestamp 20241123153016 and revision id 19164.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_using__4020__5FFF.xhtml">Mappers using $4020-$5FFF</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a></p></div></body></html>

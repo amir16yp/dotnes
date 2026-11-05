@@ -1,0 +1,151 @@
+NES 2.0 Mapper 468
+
+NES 2.0 Mapper 468
+
+NES 2.0 Mapper 468 denotes BlazePro multicarts based on the Altera MAX II CPLD. It can emulate sixteen mappers at once, selected via the MSB nibble at $5700. Different multicarts program the CPLD with different sets of mappers, denoted via the NES 2.0 submapper field. The LSB nibble of $5700 contains mapper-specific flags.
+
+Submapper
+$5700.4-7
+Mapper
+
+0
+0
+SxROM
+
+3
+2
+SxROM
+
+0
+1
+SUROM
+
+0
+4
+ANROM/BNROM
+
+1
+4
+ANROM/BNROM
+
+0
+6
+AOROM
+
+1
+6
+AOROM
+
+0
+10
+PNROM
+
+1
+0
+TxROM, 256 KiB CHR
+
+1
+1
+TxROM, 128 KiB CHR
+
+1
+2
+TxSROM
+
+0
+8
+FxROM
+
+0
+9
+UNROM, IF-12 (Holy Diver)
+
+0
+11
+UOROM
+
+1
+7
+UxROM
+
+3
+7
+UxROM
+
+0
+5
+(C)NROM, BF9097
+
+1
+5
+(C)NROM, BF9097
+
+0
+12
+GNROM
+
+0
+13
+Color Dreams
+
+1
+12
+GNROM
+
+1
+13
+Color Dreams
+
+2
+0
+VRC2 A0/A1
+
+2
+1
+VRC4 A0/A1
+
+2
+2
+VRC2 A1/A0
+
+2
+3
+VRC4 A1/A0
+
+3
+0
+VRC6, 256 KiB CHR
+
+3
+1
+VRC6, 128 KiB CHR
+
+4
+0
+VRC1
+
+4
+1
+VRC7
+
+4
+4
+VRC3
+
+0
+14
+Nanjing
+
+1
+14
+Nanjing
+
+0
+7
+SMB2J
+
+5
+0
+FME-7
+
+Categories: Multi-ASIC mappers, Multicart mappers

@@ -1,0 +1,5 @@
+INES Mapper 131
+
+INES Mapper 131
+
+iNES Mapper 131 was an alternative assignment to the mapper behavior later implemented by iNES Mapper 205.

@@ -1,0 +1,157 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 106</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_106"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 106</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_106">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_106">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><br/>
+This board, made entirely from discrete chips, is used by Super Mario Bros 3 bootleg. The game was modified (with copyright information cut out) and ported from MMC3.
+</p>
+<div class="thumb tright"><div class="thumbinner" style="width:302px;"><a href="File_SMB3_m106_components_jpg.xhtml" class="image"><img alt="SMB3 m106 components.jpg" src="../wiki-images/SMB3_m106_components.jpg" decoding="async" width="300" height="272" class="thumbimage" srcset="/w/images/default/thumb/0/05/SMB3_m106_components.jpg/450px-SMB3_m106_components.jpg 1.5x, /w/images/default/thumb/0/05/SMB3_m106_components.jpg/600px-SMB3_m106_components.jpg 2x"/></a>  <div class="thumbcaption"><div class="magnify"><a href="File_SMB3_m106_components_jpg.xhtml" class="internal" title="Enlarge"/></div></div></div></div> <div class="thumb tright"><div class="thumbinner" style="width:302px;"><a href="File_SMB3_m106_top_jpg.xhtml" class="image"><img alt="SMB3 m106 top.jpg" src="../wiki-images/SMB3_m106_top.jpg" decoding="async" width="300" height="268" class="thumbimage" srcset="/w/images/default/thumb/c/c4/SMB3_m106_top.jpg/450px-SMB3_m106_top.jpg 1.5x, /w/images/default/thumb/c/c4/SMB3_m106_top.jpg/600px-SMB3_m106_top.jpg 2x"/></a>  <div class="thumbcaption"><div class="magnify"><a href="File_SMB3_m106_top_jpg.xhtml" class="internal" title="Enlarge"/></div></div></div></div> <div class="thumb tright"><div class="thumbinner" style="width:302px;"><a href="File_SMB3_m106_bottom_jpg.xhtml" class="image"><img alt="SMB3 m106 bottom.jpg" src="../wiki-images/SMB3_m106_bottom.jpg" decoding="async" width="300" height="272" class="thumbimage" srcset="/w/images/default/thumb/2/2f/SMB3_m106_bottom.jpg/450px-SMB3_m106_bottom.jpg 1.5x, /w/images/default/thumb/2/2f/SMB3_m106_bottom.jpg/600px-SMB3_m106_bottom.jpg 2x"/></a>  <div class="thumbcaption"><div class="magnify"><a href="File_SMB3_m106_bottom_jpg.xhtml" class="internal" title="Enlarge"/></div></div></div></div> <div class="thumb tright"><div class="thumbinner" style="width:302px;"><a href="File_SMB3_m106_schematics_png.xhtml" class="image"><img alt="SMB3 m106 schematics.png" src="../wiki-images/SMB3_m106_schematics.png" decoding="async" width="300" height="142" class="thumbimage" srcset="/w/images/default/thumb/a/a9/SMB3_m106_schematics.png/450px-SMB3_m106_schematics.png 1.5x, /w/images/default/thumb/a/a9/SMB3_m106_schematics.png/600px-SMB3_m106_schematics.png 2x"/></a>  <div class="thumbcaption"><div class="magnify"><a href="File_SMB3_m106_schematics_png.xhtml" class="internal" title="Enlarge"/></div></div></div></div> 
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Memory_map"><span class="tocnumber">1</span> <span class="toctext">Memory map</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#CHR_banking_(%248000-%248007)"><span class="tocnumber">2.1</span> <span class="toctext">CHR banking ($8000-$8007)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#PRG_banking_(%248008-%24800b)"><span class="tocnumber">2.2</span> <span class="toctext">PRG banking ($8008-$800b)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Mirroring_(%24800c)"><span class="tocnumber">2.3</span> <span class="toctext">Mirroring ($800c)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Counter_and_interrupts_(%24800d-%24800f)"><span class="tocnumber">2.4</span> <span class="toctext">Counter and interrupts ($800d-$800f)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-7"><a href="#Trivia"><span class="tocnumber">3</span> <span class="toctext">Trivia</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Memory_map">Memory map</span></h2>
+<ul><li>PRG-ROM: 2x128 KiB</li>
+<li>CHR-ROM: 128 KiB</li>
+<li>PRG-RAM: 8 KiB</li></ul>
+<p><br/>
+</p>
+<ul><li>CPU $6000-$7FFF: 8 KB PRG RAM bank</li>
+<li>CPU $8000-$9FFF: 8 KB switchable PRG ROM bank0</li>
+<li>CPU $A000-$BFFF: 8 KB switchable PRG ROM bank1</li>
+<li>CPU $C000-$DFFF: 8 KB switchable PRG ROM bank2</li>
+<li>CPU $E000-$FFFF: 8 KB switchable PRG ROM bank3</li></ul>
+<p><br/>
+</p>
+<ul><li>PPU $0000-$03FF  1 KB switchable CHR bank</li>
+<li>PPU $0400-$07FF  1 KB switchable CHR bank</li>
+<li>PPU $0800-$0BFF  1 KB switchable CHR bank</li>
+<li>PPU $0C00-$0FFF  1 KB switchable CHR bank</li>
+<li>PPU $1000-$13FF  1 KB switchable CHR bank</li>
+<li>PPU $1400-$17FF  1 KB switchable CHR bank</li>
+<li>PPU $1800-$1BFF  1 KB switchable CHR bank</li>
+<li>PPU $1C00-$1FFF  1 KB switchable CHR bank</li></ul>
+<p>Subject to bus conflicts: no
+</p>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>There are 16 registers at $8000-$800f. Only A3-A0 is taken into account (mask $800F)
+</p>
+<h3><span id="CHR_banking_.28.248000-.248007.29"/><span class="mw-headline" id="CHR_banking_($8000-$8007)">CHR banking ($8000-$8007)</span></h3>
+<pre>[.CCC CCC0] $8000
+  ||| ||||
+  +++-++++- 1 kB CHR ROM bank at $0000-$03ff
+</pre>
+<pre>[.CCC CCC1] $8001
+  ||| ||||
+  +++-++++- 1 kB CHR ROM bank at $0400-$07ff
+</pre>
+<pre>[.CCC CCC0] $8002
+  ||| ||||
+  +++-++++- 1 kB CHR ROM bank at $0800-$0bff
+</pre>
+<pre>[.CCC CCC1] $8003
+  ||| ||||
+  +++-++++- 1 kB CHR ROM bank at $0c00-$0fff
+</pre>
+<pre>[.CCC CCCC] $8004
+  ||| ||||
+  +++-++++- 1 kB CHR ROM bank at $1000-$13ff
+</pre>
+<pre>[.CCC CCCC] $8005
+  ||| ||||
+  +++-++++- 1 kB CHR ROM bank at $1400-$17ff
+</pre>
+<pre>[.CCC CCCC] $8006
+  ||| ||||
+  +++-++++- 1 kB CHR ROM bank at $1800-$1bff
+</pre>
+<pre>[.CCC CCCC] $8007
+  ||| ||||
+  +++-++++- 1 kB CHR ROM bank at $1c00-$1fff
+</pre>
+<h3><span id="PRG_banking_.28.248008-.24800b.29"/><span class="mw-headline" id="PRG_banking_($8008-$800b)">PRG banking ($8008-$800b)</span></h3>
+<pre>[.... PPPP] $8008
+      ||||
+      ++++- 8 kB PRG ROM bank at $8000-$9fff (from ROM 5602)
+</pre>
+<pre>[...R PPPP] $8009
+    | ||||
+    | ++++- 8 kB PRG ROM bank at $a000-$bfff
+    +------ ROM select at $a000-$bfff (0: 5601, 1: 5602)
+</pre>
+<pre>[...R PPPP] $800a
+    | ||||
+    | ++++- 8 kB PRG ROM bank at $c000-$dfff
+    +------ ROM select at $c000-$dfff (0: 5601, 1: 5602)
+</pre>
+<pre>[.... PPPP] $800b
+      ||||
+      ++++- 8 kB PRG ROM bank at $e000-$ffff (from ROM 5602)
+</pre>
+<p>Note: if you combine 128K ROM 5601 with 128K ROM 5602 into one 256K ROM, add 16 to $8008/$800b and treat RPPPP from $8009/$800a as 5-bit bank number.
+</p>
+<h3><span id="Mirroring_.28.24800c.29"/><span class="mw-headline" id="Mirroring_($800c)">Mirroring ($800c)</span></h3>
+<pre>[.... ...M] $800c
+         |
+         +- mirroring (0: V, 1: H)
+</pre>
+<h3><span id="Counter_and_interrupts_.28.24800d-.24800f.29"/><span class="mw-headline" id="Counter_and_interrupts_($800d-$800f)">Counter and interrupts ($800d-$800f)</span></h3>
+<p>There is one 16 bit counter, which increments at end of each CPU cycle (on falling edges of M2). The counter will count every cycle that it's not equal to $FFFF: it cannot be stopped otherwise. While the counter is $FFFF, if the IRQ is enabled, /IRQ is asserted.
+</p>
+<pre>[.... ....] $800d - writing any value resets counter to 0 and disables interrupts.
+                    This necessarily acknowledges a pending interrupt.
+</pre>
+<pre>[DDDD DDDD] $800e
+ |||| ||||
+ ++++-++++- set low byte of counter to this value
+</pre>
+<pre>[DDDD DDDD] $800f
+ |||| ||||
+ ++++-++++- set high byte of counter to this value and enable interrupts.
+</pre>
+<h2><span class="mw-headline" id="Trivia">Trivia</span></h2>
+<ul><li>FCEUX implementation is not 100% accurate with hardware. Here are differences:
+<ul><li>none of the registers are cleared or initialized to a known value at startup,
+<ul><li>The 74LS670, used in this mapper and <a href="INES_Mapper_246.xhtml" title="INES Mapper 246">iNES Mapper 246</a>, seems to reliably power up containing all &quot;$F&quot;. m<a href="INES_Mapper_246.xhtml" title="INES Mapper 246">246</a> relies on this; this game does not expect registers to be at any known state (tested on FCEUX).</li></ul></li>
+<li>CHR registers does not take into account bit 7,</li>
+<li>writing to $800d does not stop counter, but starts it and interrupt firing is disabled.</li></ul></li>
+<li>This bootleg was created for NTSC console. FCEUX implementation of this mapper causes the game to crash immediatelly on title screen in PAL mode (where interrupt comes too early). Improving mapper in the way that real hardware works makes the game work in NTSC/PAL mode, but the game in PAL is almost unplayable, because second nametable, containing status bar, is switched too early, causing half of screen to display garbage.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123163536
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.044 seconds
+Real time usage: 0.061 seconds
+Preprocessor visited node count: 39/1000000
+Post‐expand include size: 29/2097152 bytes
+Template argument size: 6/2097152 bytes
+Highest expansion depth: 4/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    9.135      1 Template:Mapper
+100.00%    9.135      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:390-0!canonical and timestamp 20241123163536 and revision id 4815.
+ -->
+</div><p class="categories">Categories: <a href="Category_Discrete_logic_mappers.xhtml">Discrete logic mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

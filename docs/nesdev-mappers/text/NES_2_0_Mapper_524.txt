@@ -1,0 +1,9 @@
+NES 2.0 Mapper 524
+
+NES 2.0 Mapper 524
+
+NES 2.0 Mapper 524 is used for a bootleg version of Jaleco's The Lord of King. Its UNIF board name is BTL-900218.
+
+See UNIF/900218.
+
+Categories: Mappers with fixed-timing cycle IRQs

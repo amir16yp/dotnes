@@ -1,0 +1,11 @@
+INES Mapper 196
+
+INES Mapper 196
+
+iNES Mapper 196 is a pirate variant of MMC3, most often used for games where the protagonist has been replaced with Mario. A common characteristic of these hacks is referring to Mario as "Mali" or "Mari" (e.g. Super Bros. 17: Fighting of the Mali Lugi, Mali Boss, etc.), a result of the way the name "Mario" is represented in Chinese (玛莉/瑪莉, 马利/馬利, or 玛琍/瑪琍, all of which are pronounced "ma li").
+
+Nestopia's source indicates that it is identical to an "ordinary" MMC3, except that it distinguishes between registers based on A2 instead of A0, and corresponds to the two games Super Mario Bros. 11 (Unl) [!] and Super Mario Bros Jurassk Park (Unl) [!].
+
+FCEUX's source further implies that there're far too many different variants that have been assigned to this mapper, using A1, A2, or A3; and additionally that writing to $6000-$7FFF switches the board into a BNROM-like PRG layout.
+
+Categories: INES Mappers, MMC3-like mappers

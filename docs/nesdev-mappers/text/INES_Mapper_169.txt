@@ -1,0 +1,8 @@
+INES Mapper 169
+
+INES Mapper 169
+
+This mapper is used in Yuxing's ROMs. PRG ROM=1024KB,CHR ROM=0KB.
+see yxleimeng.net(chinese)
+
+For some reason, GoodNES used this mapper for the singleton multicart Contra 168-in-1, but that seems to be identical to iNES Mapper 015.

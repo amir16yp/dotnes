@@ -1,0 +1,89 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 230</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_230"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 230</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_230">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_230">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><pre> Here are Disch's original notes:  
+ ========================
+ =  Mapper 230          =
+ ========================
+ 
+ Example Game:
+ --------------------------
+ 22-in-1
+ 
+ 
+ Reset Driven:
+ ---------------------------
+ The mapper has 2 main modes:  Contra mode, and multicart mode.  Performing a Soft Reset switches between
+ them.
+ 
+ 
+ Notes:
+ ---------------------------
+ 
+ This multicart has an odd PRG size (not power of 2).  This is because there are 2 PRG chips.
+ The first is 128k and contains Contra, the other is 512k and contains the multicart.
+ 
+ A soft reset changes which chip is used as well as other stuff relating to the mode
+ 
+ 
+ Registers:
+ ---------------------------
+ 
+ 
+  Contra Mode $8000-FFFF:     [.... .PPP]
+ 
+  Multicart Mode $8000-FFFF:  [.MOP PPPP]
+ 
+     M = Mirroring (0=Horz, 1=Vert)
+     O = PRG Mode
+     P = PRG Page
+ 
+ Note:
+   Mirroring is always Vert in Contra Mode.
+ 
+ 
+ 
+ PRG Setup:
+ ---------------------------
+ 
+                 $8000   $A000   $C000   $E000  
+               +---------------+---------------+
+ Contra Mode:  |     $8000     |     { 7 }     |  &lt;---  use chip 0
+               +-------------------------------+
+ Multi Mode 0: |             &lt;Reg&gt;             |  &lt;---  use chip 1
+               +-------------------------------+
+ Multi Mode 1: |      Reg      |      Reg      |  &lt;---  use chip 1
+               +---------------+---------------+
+ 
+ 
+ chip 0 = 128k PRG  (offset 0x00010-0x2000F)
+ chip 1 = 512k PRG  (offset 0x20010-0xA000F)
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123163817
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.005 seconds
+Real time usage: 0.008 seconds
+Preprocessor visited node count: 1/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 1/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:515-0!canonical and timestamp 20241123163817 and revision id 5788.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

@@ -1,0 +1,65 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 191</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_191"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 191</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_191">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_191">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 191</b> designates a board containing an MMC3 clone. It operates identically to <a href="INES_Mapper_119.xhtml" title="INES Mapper 119">iNES Mapper 119</a> with two differences:
+</p>
+<ul><li>CHR RAM is 2 KiB, instead of 8 KiB like on 119. (This can be overridden with <a href="NES_2_0.xhtml" title="NES 2.0">NES 2.0</a>.)</li>
+<li>Bit 7 of the CHR bank number (A17) switches between CHR ROM and CHR RAM, instead of bit 6 (A16) like on 119.</li></ul>
+<pre> Here are Disch's original notes:  
+ ========================
+ =  Mapper 191          =
+ ========================
+ 
+ 
+ aka:
+ --------------------------
+ Pirate MMC3 variant
+ 
+ 
+ Example Game:
+ --------------------------
+ Sugoro Quest - Dice no Senshitachi (As)
+ 
+ 
+ Notes:
+ --------------------------
+ This mapper is a modified <a href="MMC3.xhtml" title="MMC3">MMC3</a> (or is based on MMC3?).
+ 
+ In addition to any CHR-ROM present, there is also an additional 2k of CHR-RAM which is selectable.  Bit 7 of
+ each CHR reg selects RAM or ROM (1=RAM, 0=ROM)
+ 
+ Apart from that, this mapper behaves exactly like your typical MMC3.  See <a href="MMC3.xhtml" class="mw-redirect" title="INES Mapper 004">mapper 004</a> for details.
+</pre>
+<p>See also:
+</p>
+<ul><li>Waixing's other MMC3-based mappers with both CHR RAM and CHR ROM- <a href="INES_Mapper_074.xhtml" title="INES Mapper 074">074</a>, <a href="INES_Mapper_192.xhtml" title="INES Mapper 192">192</a>, <a href="INES_Mapper_194.xhtml" title="INES Mapper 194">194</a>, <a href="INES_Mapper_195.xhtml" title="INES Mapper 195">195</a></li>
+<li>Waixing's VRC4-based mappers with both CHR RAM and CHR ROM- <a href="INES_Mapper_252.xhtml" title="INES Mapper 252">252</a>, <a href="INES_Mapper_253.xhtml" title="INES Mapper 253">253</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123163720
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.018 seconds
+Real time usage: 0.055 seconds
+Preprocessor visited node count: 68/1000000
+Post‐expand include size: 174/2097152 bytes
+Template argument size: 34/2097152 bytes
+Highest expansion depth: 4/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%   33.341      1 -total
+ 97.73%   32.584      6 Template:Mapper
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:475-0!canonical and timestamp 20241123163720 and revision id 5465.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_MMC3_with_CHR_ROM_and_CHR_RAM.xhtml">MMC3 with CHR ROM and CHR RAM</a></p></div></body></html>

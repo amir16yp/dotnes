@@ -1,0 +1,103 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 357</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_357"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 357</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_357">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_357">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 357</b> is used for a <i>4-in-1</i> multicart (cartridge ID <i>4602</i>) from Bit Corp. The first game is Bit Corp's hack of the <a href="NES_2_0_Mapper_368.xhtml" title="NES 2.0 Mapper 368">YUNG-08</a> conversion of <i>Super Mario Brothers 2 (J)</i> named <i>Mr. Mary 2</i>, the other three games are <a href="UxROM.xhtml" class="mw-redirect" title="UNROM">UNROM</a> games.
+</p><p>Unlike most multicarts, there is no menu; instead, the desired game is selected via two DIP Switches that protrude through the cartridge shell. The DIP switches directly select the outer 128 KiB PRG-ROM bank, game-specific nametable mirroring and mapper mode --- outer bank 0 selects SMB2J mode, all others select <a href="UxROM.xhtml" class="mw-redirect" title="UNROM">UNROM</a> mode. All four games use 8 KiB of unbanked CHR-RAM. Mirroring is Vertical for banks 0-2 and Horizontal for bank 3.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks_in_SMB2J_mode"><span class="tocnumber">1</span> <span class="toctext">Banks in SMB2J mode</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers_in_SMB2J_mode"><span class="tocnumber">2</span> <span class="toctext">Registers in SMB2J mode</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#PRG_Bank_Select_1_(%244022,_write)"><span class="tocnumber">2.1</span> <span class="toctext">PRG Bank Select 1 ($4022, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#PRG_Bank_Select_2_(%244120,_write)"><span class="tocnumber">2.2</span> <span class="toctext">PRG Bank Select 2 ($4120, write)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#IRQ_Control_(%244122)"><span class="tocnumber">2.3</span> <span class="toctext">IRQ Control ($4122)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#See_also"><span class="tocnumber">3</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks_in_SMB2J_mode">Banks in SMB2J mode</span></h1>
+<ul><li>CPU $5000-$5FFF: 4 KiB PRG-ROM bank, fixed to #16</li>
+<li>CPU $6000-$7FFF: 8 KiB PRG-ROM bank, <a href="#PRG_Bank_Select_2_.28.244120.2C_write.29">switchable to #2 or #0</a></li>
+<li>CPU $8000-$9FFF: 8 KiB PRG-ROM bank, fixed to #1</li>
+<li>CPU $A000-$BFFF: 8 KiB PRG-ROM bank, fixed to #0</li>
+<li>CPU $C000-$DFFF: 8 KiB PRG-ROM bank, switchable</li>
+<li>CPU $E000-$FFFF: 8 KiB PRG-ROM bank, <a href="#PRG_Bank_Select_2_.28.244120.2C_write.29">switchable to #10 or #8</a></li>
+<li>PPU $0000-$1FFF: unbanked 8 KiB CHR-RAM</li></ul>
+<h1><span class="mw-headline" id="Registers_in_SMB2J_mode">Registers in SMB2J mode</span></h1>
+<h2><span id="PRG_Bank_Select_1_.28.244022.2C_write.29"/><span class="mw-headline" id="PRG_Bank_Select_1_($4022,_write)">PRG Bank Select 1 ($4022, write)</span></h2>
+<pre>Mask: probably $71FF
+
+Bit 7654 3210
+    ---------
+    .... .CCC
+          +++- Select 8 KiB PRG-ROM bank at CPU $C000-$DFFF.
+</pre>
+<p>The actual bank number is:
+</p>
+<pre>Value  Bank#
+------------
+0      4
+1      3
+2      5
+3      3
+4      6
+5      3
+6      7
+7      3
+</pre>
+<h2><span id="PRG_Bank_Select_2_.28.244120.2C_write.29"/><span class="mw-headline" id="PRG_Bank_Select_2_($4120,_write)">PRG Bank Select 2 ($4120, write)</span></h2>
+<pre>Mask: probably $71FF
+
+Bit 7654 3210
+    ---------
+    .... ...I
+            +- 0: CPU $6000-$7FFF to bank 2,
+                  CPU $E000-$FFFF to bank 10
+               1: CPU $6000-$7FFF to bank 0,
+                  CPU $E000-$FFFF to bank 8
+</pre>
+<h2><span id="IRQ_Control_.28.244122.29"/><span class="mw-headline" id="IRQ_Control_($4122)">IRQ Control ($4122)</span></h2>
+<pre>Mask: probably $F1FF
+
+Bit 7654 3210
+    ---------
+    .... ...I
+            +- 0: Acknowledge and disable IRQ, reset counter
+               1: Enable IRQ
+</pre>
+<p>When enabled, the 12-bit IRQ counter increases on every M2 cycle until it overflows, upon which an IRQ is fired.
+</p>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<p><a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?f=9&amp;t=17399">PCB image analysis</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164232
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.013 seconds
+Real time usage: 0.017 seconds
+Preprocessor visited node count: 28/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:742-0!canonical and timestamp 20241123164232 and revision id 7940.
+ -->
+</div><p class="categories">Categories: <a href="Category_FDS_conversion_mappers.xhtml">FDS conversion mappers</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

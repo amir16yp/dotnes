@@ -1,0 +1,13 @@
+INES Mapper 213
+
+INES Mapper 213
+
+iNES Mapper 213 is a duplicate of INES Mapper 058, assigned to by:
+
+9999999-in-1 (Can You Feel the Love Tonight menu music)
+
+168-in-1 (My Way menu music)
+
+Pre-2018 versions of FCEUX as well as current versions of Mesen emulate only the NROM-256 setting with hard-wired mirroring, while current versions of FCEUX implement a duplicate of mapper 58 with some logic for determining nametable mirroring that only works for one ROM (said 168-in-1). Both ROM files run well as mapper 58.
+
+Categories: INES Mappers, Multicart mappers

@@ -1,0 +1,5 @@
+INES Mapper 179
+
+INES Mapper 179
+
+iNES Mapper 179 appears to be a Nestopia assignment which duplicates iNES Mapper 176.  Mapper 176 should be used.

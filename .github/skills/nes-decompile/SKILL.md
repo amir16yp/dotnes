@@ -21,152 +21,82 @@ The decompiler lives at `src/dotnes.decompiler/` and is a .NET CLI tool.
 ### Running the Decompiler
 
 ```bash
-dotnet run --project src/dotnes.decompiler -- <input.nes> [output-directory]
+dotnet run --project src/dotnes.decompiler -- <input.nes> [output-directory] [--mode auto|transpile|raw] [--exact]
+# or
+dotnes decompile <input.nes> [output-directory] [--mode auto|transpile|raw] [--exact]
 ```
 
 - **`<input.nes>`** — Path to the NES ROM file (required)
 - **`[output-directory]`** — Where to write the C# project (optional; defaults to the ROM filename without extension)
-
-**Examples:**
-
-```bash
-# Decompile a sample ROM (build it first if needed)
-cd samples/hello && dotnet build && cd ../..
-dotnet run --project src/dotnes.decompiler -- samples/hello/bin/Debug/net10.0/hello.nes hello-decompiled
-
-# Decompile any .nes ROM
-dotnet run --project src/dotnes.decompiler -- path/to/game.nes game-decompiled
-
-# Decompile with default output directory (uses ROM filename)
-dotnet run --project src/dotnes.decompiler -- myrom.nes
-```
+- **`--mode`** — `auto` (default): Transpile for detected dotnes ROMs, RawPrg otherwise; `transpile` forces NESLib C# recovery; `raw` forces byte-identical `prg.bin` packing
+- **`--exact`** / **`--no-optimize`** — Opt out of soft-CPU structuring (more literal goto/labels). Default is optimized readability. Never removes discovered routines (no dead-code elimination).
 
 ### Output Files
 
-The decompiler generates a complete, buildable C# project:
-
 | File | Description |
 |------|-------------|
-| `Program.cs` | Decompiled C# source with recovered NESLib API calls |
-| `{name}.csproj` | MSBuild project with NES configuration from ROM metadata |
-| `chr_generic.s` | CHR ROM data as ca65 assembly (only if ROM has CHR banks) |
+| `Program.cs` | Recovered C# — NESLib for dotnes ROMs; soft-CPU game logic for arbitrary ROMs |
+| `{name}.csproj` | MSBuild project with NES header props (`NESMirroring`, `NESBattery`, mapper/banks, optional `NESPackMode`) |
+| `chr_generic.s` / `chr_generic_N.s` | CHR ROM as ca65 assembly |
+| `prg.bin` / `header.bin` | Exact PRG + iNES header (RawPrg mode only; rebuild authority) |
+| `RomImage.cs` | C# mirror of the exact header (RawPrg mode only) |
+| `disasm.s` | Best-effort listing (RawPrg mode only) |
 
-### What Gets Recovered
+### What Gets Recovered (dotnes / NESLib)
 
-The decompiler recognizes these NESLib API calls:
+The recoverer formats **most NESLib APIs** when their labels/signatures are found, including:
 
 | Category | Functions |
 |----------|-----------|
-| **Palette** | `pal_col(palette, color)` |
-| **VRAM** | `vram_adr(NTADR_A(x, y))`, `vram_write("string")` |
-| **PPU control** | `ppu_on_all()`, `ppu_on_bg()`, `ppu_on_spr()`, `ppu_off()` |
-| **Sprites/OAM** | `oam_clear()`, `oam_size()`, `oam_hide_rest()` |
-| **CHR banking** | `bank_spr()`, `bank_bg()` |
-| **Input** | `pad_poll(0)` |
-| **Timing** | `delay(frames)`, `waitvsync()` |
-| **Random** | `rand8()`, `set_rand()` |
+| **Palette** | `pal_col`, `pal_bg`, `pal_spr`, `pal_all`, `pal_clear`, `pal_*_bright` |
+| **VRAM** | `vram_adr(NTADR_*)`, `vram_write`, `vram_fill`, `vram_put`, `vram_inc`, `vram_unrle`, `vram_read`, `set_vram_update`, `flush_vram_update`, vrambuf_* |
+| **PPU** | `ppu_on_*`, `ppu_off`, `ppu_mask`, `ppu_wait_*`, `waitvsync`, `scroll`/`split`, `fade_in`/`fade_out` |
+| **Sprites/OAM** | `oam_clear`, `oam_size`, `oam_spr`, `oam_spr_2x2`, `oam_meta_spr*`, `oam_hide_rest` |
+| **Input** | `pad_poll`, `pad_trigger`, `pad_state` |
+| **RNG / misc** | `rand8`, `rand16`, `set_rand`, `srand`, `delay`, `nesclock`, `bcd_add`, `rect_overlap`, `sprite_overlap` |
+| **Audio** | `apu_init`, `start_music`, `music_tick`, `music_play`/`stop`/`pause`, `sfx_play` |
+| **Mapper** | `bank_spr`/`bank_bg`, `cnrom_set_chr_bank` |
+| **Memory** | `poke`/`peek`, `memfill` |
 
-String literals in `vram_write()` are recovered from ROM data when the bytes are printable ASCII.
-VRAM addresses passed to `vram_adr()` are decompiled back to `NTADR_A(x, y)` macro form when they match the nametable pattern `0x2000 + y*32 + x`.
+String literals in `vram_write()` are recovered when bytes are printable ASCII.
+Final-built-in detection uses byte signatures extracted from `BuiltInSubroutines` plus hand-tuned patterns.
 
-### What Is NOT Recovered
+### Arbitrary (non-dotnes) ROMs
 
-- Original variable names, control flow structures, or algorithm intent
-- User-defined functions (inlined into main)
-- Local variables and complex expressions
-- Non-NESLib subroutine calls (appear as comments)
-- Classes, objects, or BCL usage (NES doesn't support these)
+Auto mode emits `NESPackMode=RawPrg` with `prg.bin`/`header.bin` so rebuilds are **byte-identical**. `Program.cs` gets soft-CPU recovered game logic (optimized for reading by default — structured loops, folded imm+poke; pass `--exact` for literal recovery). All discovered routines are kept (no DCE). Packing still uses the raw PRG until transpile can match commercial banks.
 
 ## Common Workflows
 
-### Decompile a dotnes sample ROM
-
-Build the sample, then decompile its ROM output:
-
 ```bash
-# Build the sample
 cd samples/hello && dotnet build && cd ../..
-
-# Decompile the ROM
 dotnet run --project src/dotnes.decompiler -- samples/hello/bin/Debug/net10.0/hello.nes hello-decompiled
-
-# Inspect the output
-cat hello-decompiled/Program.cs
 ```
 
-### Round-trip test (transpile → decompile → retranspile)
-
-Verify the decompiler produces code that builds back to an equivalent ROM:
+Round-trip (dotnes ROM):
 
 ```bash
-# 1. Build original sample
-cd samples/hello && dotnet build && cd ../..
-
-# 2. Decompile the ROM
 dotnet run --project src/dotnes.decompiler -- samples/hello/bin/Debug/net10.0/hello.nes hello-roundtrip
-
-# 3. Build the decompiled project
 cd hello-roundtrip && dotnet build && cd ..
-
-# 4. Compare the two ROMs
 python scripts/compare_rom.py samples/hello/bin/Debug/net10.0/hello.nes hello-roundtrip/bin/Debug/net10.0/hello.nes
 ```
 
-If the round-trip produces an identical ROM, the decompiler recovered all observable behavior.
+## Architecture
 
-### Decompile an external .nes ROM
-
-Any iNES-format ROM can be parsed, but the decompiler only recognizes dotnes/neslib patterns:
-
-```bash
-dotnet run --project src/dotnes.decompiler -- external-game.nes game-output
-cat game-output/Program.cs
-```
-
-For ROMs not built with dotnes, the output will contain fewer recognized API calls and more comments for unrecognized subroutines.
-
-### Inspect ROM metadata without full decompilation
-
-Use the decompiler's console output to quickly check ROM properties:
-
-```powershell
-dotnet run --project src/dotnes.decompiler -- myrom.nes 2>&1 | Select-Object -First 6
-```
-
-This shows PRG/CHR bank counts, mapper number, mirroring mode, and interrupt vectors.
-
-## How the Decompiler Works
-
-The decompiler uses a three-phase algorithm:
-
-### Phase 1: Build Symbol Table
-- Assembles the known neslib built-in subroutines to determine their addresses
-- Finds `main()` by scanning the `initlib` block for the first JSR to an address past the built-ins
-- Pattern-matches final built-ins (pusha, pushax, popa, vram_write, etc.) using byte signatures
-
-### Phase 2: Decompile Main
-- Collects all 6502 instructions from main until the infinite loop (`JMP` to self)
-- Uses look-ahead pattern matching to recognize multi-instruction sequences:
-  - `LDA #imm / JSR pusha` → 8-bit argument push
-  - `LDA #lo / LDX #hi / JSR pushax` → 16-bit pointer push
-  - `LDX #hi / LDA #lo / JSR <sub>` → call with 16-bit register argument
-  - `LDA #imm / JSR <sub>` → call with immediate argument
-
-### Phase 3: Generate C#
-- Converts the recognized patterns into NESLib API calls with recovered arguments
-- Reconstructs string literals and NTADR_A macro addresses
-- Wraps everything in the standard dotnes program structure
+1. **Disassemble** — recursive descent from RESET/NMI/IRQ
+2. **Detect** — stock CRT prefix → Transpile vs RawPrg
+3. **Recover** — symbol table from `CreateWithBuiltIns` + signature DB; lift NESLib calls / control flow
+4. **Emit** — project tree via `ProjectEmitter`
 
 ## MSBuild Properties in Generated .csproj
-
-The decompiler reads ROM metadata and sets appropriate MSBuild properties:
 
 | Property | Condition | Example |
 |----------|-----------|---------|
 | `NESMapper` | Mapper ≠ 0 | `<NESMapper>1</NESMapper>` |
 | `NESPrgBanks` | PRG banks ≠ 2 | `<NESPrgBanks>4</NESPrgBanks>` |
 | `NESChrBanks` | CHR banks ≠ 1 | `<NESChrBanks>2</NESChrBanks>` |
-| `NESVerticalMirroring` | Mirroring is vertical | `<NESVerticalMirroring>true</NESVerticalMirroring>` |
+| `NESMirroring` | Vertical mirroring | `<NESMirroring>Vertical</NESMirroring>` |
+| `NESBattery` | Battery-backed SRAM | `<NESBattery>true</NESBattery>` |
+| `NESPackMode` / `NESRawPrg` | Non-dotnes / `--mode raw` | `RawPrg` + `prg.bin` |
 
 ## Related Skills
 

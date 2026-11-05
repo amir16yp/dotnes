@@ -1,0 +1,62 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 395</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_395"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 395</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_395">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_395">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 395</b> denotes the <a href="MMC3.xhtml" title="MMC3">MMC3</a>-compatible <b>Realtec 8210</b> multicart PCB. Both outer bank registers are selected through the MMC3's WRAM interface and overlay any actual WRAM.
+</p>
+<ul><li><i>Super Card 12-in-1</i> (SPC002)</li>
+<li><i>Super Card 13-in-1</i> (SPC003)</li>
+<li><i>Super Card 14-in-1</i> (King006)</li>
+<li><i>Super Card 14-in-1</i> (King007)</li></ul>
+<h2><span id="Outer_Bank_Register_1_.28.246000.29"/><span class="mw-headline" id="Outer_Bank_Register_1_($6000)">Outer Bank Register 1 ($6000)</span></h2>
+<pre>Mask: $E010
+
+D~7654 3210
+  ---------
+  ..BA C...
+    || +---- PRG A20
+    ++------ PRG/CHR A19..18
+    
+</pre>
+<h2><span id="Outer_Bank_Register_2_.28.246010.29"/><span class="mw-headline" id="Outer_Bank_Register_2_($6010)">Outer Bank Register 2 ($6010)</span></h2>
+<pre>Mask: $E010
+
+D~7654 3210
+  ---------
+  LcCA p..B
+  |||| |  +- PRG A17 if p=1
+  |||| +---- 0=PRG A17 from MMC3 (256 KiB inner PRG bank)
+  ||||       1=PRG A17 from B (128 KiB inner PRG bank)
+  |||+------ CHR A17 if c=1
+  ||+------- CHR A20
+  |+-------- 0=CHR A17 from MMC3 (256 KiB inner CHR bank)
+  |          1=CHR A17 from A (128 KiB inner CHR bank)
+  +--------- 1=Lock outer bank
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123000038
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.010 seconds
+Real time usage: 0.016 seconds
+Preprocessor visited node count: 11/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:780-0!canonical and timestamp 20241123000038 and revision id 8017.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

@@ -1,0 +1,310 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 016</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_016"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 016</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_016">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_016">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 016 is used for some of the <a href="Bandai_FCG_board.xhtml" title="Bandai FCG board">Bandai FCG boards</a>, namely, boards with the <a href="Bandai_FCG_pinout.xhtml" title="Bandai FCG pinout">FCG-1 ASIC</a> that supports no EEPROM, and the <a href="Bandai_LZ93D50_pinout.xhtml" title="Bandai LZ93D50 pinout">LZ93D50 ASIC</a> with no or 256 bytes of EEPROM.
+</p>
+<table class="wikitable">
+<tbody><tr>
+<th colspan="3"><a href="INES_Mapper_016_Submapper_table.xhtml" title="INES Mapper 016/Submapper table">INES Mapper 016 submapper table</a>
+</th></tr>
+<tr>
+<th>Submapper #</th>
+<th>Meaning</th>
+<th>Note
+</th></tr>
+<tr>
+<td>0</td>
+<td>Unspecified</td>
+<td>Emulate both FCG-1/2 and LZ93D50 chips in their respective CPU address ranges.
+</td></tr>
+<tr>
+<td><i>1</i></td>
+<td><i>LZ93D50 with 128 byte serial EEPROM (24C01)</i></td>
+<td><i>Deprecated, use <a href="INES_Mapper_159.xhtml" title="INES Mapper 159">INES Mapper 159</a> instead.</i>
+</td></tr>
+<tr>
+<td><i>2</i></td>
+<td><i>Datach Joint ROM System</i></td>
+<td><i>Deprecated, use <a href="INES_Mapper_157.xhtml" title="INES Mapper 157">INES Mapper 157</a> instead.</i>
+</td></tr>
+<tr>
+<td><i>3</i></td>
+<td><i>8 KiB of WRAM instead of serial EEPROM</i></td>
+<td><i>Deprecated, use <a href="INES_Mapper_153.xhtml" title="INES Mapper 153">INES Mapper 153</a> instead.</i>
+</td></tr>
+<tr>
+<td>4</td>
+<td>FCG-1/2</td>
+<td>Responds only in the CPU $6000-$7FFF address range; IRQ counter is not latched.
+</td></tr>
+<tr>
+<td>5</td>
+<td>LZ93D50 with no or 256-byte serial EEPROM (24C02)</td>
+<td>Responds only in the CPU $8000-$FFFF address range; IRQ counter is latched.
+</td></tr>
+</tbody></table>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Game_List"><span class="tocnumber">1</span> <span class="toctext">Game List</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Banks"><span class="tocnumber">2</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Registers"><span class="tocnumber">3</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Read_Serial_EEPROM_(%246000-%247FFF_read,_Submapper_5_only)"><span class="tocnumber">3.1</span> <span class="toctext">Read Serial EEPROM ($6000-$7FFF read, <b>Submapper 5</b> only)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#CHR-ROM_Bank_Select_(%246000-%246007_write,_Submapper_4;_%248000-%248007_write,_Submapper_5)"><span class="tocnumber">3.2</span> <span class="toctext">CHR-ROM Bank Select ($6000-$6007 write, <b>Submapper 4</b>; $8000-$8007 write, <b>Submapper 5</b>)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#PRG-ROM_Bank_Select_(%246008_write,_Submapper_4;_%248008_write,_Submapper_5)"><span class="tocnumber">3.3</span> <span class="toctext">PRG-ROM Bank Select ($6008 write, <b>Submapper 4</b>; $8008 write, <b>Submapper 5</b>)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Nametable_Mirroring_Type_Select_(%246009_write,_Submapper_4;_%248009_write,_Submapper_5)"><span class="tocnumber">3.4</span> <span class="toctext">Nametable Mirroring Type Select ($6009 write, <b>Submapper 4</b>; $8009 write, <b>Submapper 5</b>)</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#IRQ_Control_(%24600A_write,_Submapper_4;_%24800A_write,_Submapper_5)"><span class="tocnumber">3.5</span> <span class="toctext">IRQ Control ($600A write, <b>Submapper 4</b>; $800A write, <b>Submapper 5</b>)</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#IRQ_Latch/Counter_(%24600B-%24600C_write,_Submapper_4;_%24800B-%24800C_write,_Submapper_5)"><span class="tocnumber">3.6</span> <span class="toctext">IRQ Latch/Counter ($600B-$600C write, <b>Submapper 4</b>; $800B-$800C write, <b>Submapper 5</b>)</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#EEPROM_Control_(%24800D_write,_Submapper_5_only)"><span class="tocnumber">3.7</span> <span class="toctext">EEPROM Control ($800D write, <b>Submapper 5</b> only)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-11"><a href="#Similar_Mappers"><span class="tocnumber">4</span> <span class="toctext">Similar Mappers</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#See_Also"><span class="tocnumber">5</span> <span class="toctext">See Also</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Game_List">Game List</span></h1>
+<table class="wikitable sortable">
+<tbody><tr>
+<th>Name</th>
+<th>Chip</th>
+<th>EEPROM</th>
+<th>NES 2.0 Submapper</th>
+<th><a href="NES_2_0.xhtml#Byte_10_.28RAM_size.29" title="NES 2.0">NES 2.0 Byte 10</a>
+</th></tr>
+<tr>
+<td><i>Akuma-kun: Makai no Wana</i></td>
+<td>FCG-2</td>
+<td>-</td>
+<td>4</td>
+<td>$00
+</td></tr>
+<tr>
+<td><i>Crayon Shin-chan: Ora to Poi Poi</i></td>
+<td>LZ93D50</td>
+<td>-</td>
+<td>5</td>
+<td>$00
+</td></tr>
+<tr>
+<td><i>Dragon Ball: Daimaou Fukkatsu</i></td>
+<td>FCG-1</td>
+<td>-</td>
+<td>4</td>
+<td>$00
+</td></tr>
+<tr>
+<td><i>Dragon Ball 3: Gokuu Den</i></td>
+<td>FCG-2</td>
+<td>-</td>
+<td>4</td>
+<td>$00
+</td></tr>
+<tr>
+<td><i>Dragon Ball Z II: Gekishin Freezer!!</i></td>
+<td>LZ93D50</td>
+<td>24C02</td>
+<td>5</td>
+<td>$20
+</td></tr>
+<tr>
+<td><i>Dragon Ball Z III: Ressen Jinzou Ningen</i></td>
+<td>LZ93D50</td>
+<td>24C02</td>
+<td>5</td>
+<td>$20
+</td></tr>
+<tr>
+<td><i>Dragon Ball Z Gaiden: Saiya-jin Zetsumetsu Keikaku</i></td>
+<td>LZ93D50</td>
+<td>24C02</td>
+<td>5</td>
+<td>$20
+</td></tr>
+<tr>
+<td><i>Famicom Jump: Hero Retsuden</i></td>
+<td>FCG-2</td>
+<td>-</td>
+<td>4</td>
+<td>$00
+</td></tr>
+<tr>
+<td><i>Meimon! Dai-3 Yakyuu-bu</i></td>
+<td>FCG-1</td>
+<td>-</td>
+<td>4</td>
+<td>$00
+</td></tr>
+<tr>
+<td><i>Nishimura Kyoutarou Mystery: Blue Train Satsujin Jiken </i></td>
+<td>FCG-1</td>
+<td>-</td>
+<td>4</td>
+<td>$00
+</td></tr>
+<tr>
+<td><i>Rokudenashi Blues</i></td>
+<td>LZ93D50</td>
+<td>24C02</td>
+<td>5</td>
+<td>$20
+</td></tr>
+<tr>
+<td><i>Sakigake!! Otoko Juku: Shippu 1-gou Sei</i></td>
+<td>FCG-1</td>
+<td>-</td>
+<td>4</td>
+<td>$00
+</td></tr>
+<tr>
+<td><i>SD Gundam Gaiden - Knight Gundam Monogatari 2: Hikari no Kishi</i></td>
+<td>LZ93D50</td>
+<td>24C02</td>
+<td>5</td>
+<td>$20
+</td></tr>
+<tr>
+<td><i>SD Gundam Gaiden - Knight Gundam Monogatari 3: Densetsu no Kishidan</i></td>
+<td>LZ93D50</td>
+<td>24C02</td>
+<td>5</td>
+<td>$20
+</td></tr>
+</tbody></table>
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$BFFF: 16 KiB switchable PRG ROM bank</li>
+<li>CPU $C000-$FFFF: 16 KiB PRG ROM bank, fixed to the last bank</li>
+<li>PPU $0000-$03FF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $0400-$07FF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $0800-$0BFF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $0C00-$0FFF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $1000-$13FF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $1400-$17FF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $1800-$1BFF: 1 KiB switchable CHR ROM bank</li>
+<li>PPU $1C00-$1FFF: 1 KiB switchable CHR ROM bank</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="Read_Serial_EEPROM_.28.246000-.247FFF_read.2C_Submapper_5_only.29"/><span class="mw-headline" id="Read_Serial_EEPROM_($6000-$7FFF_read,_Submapper_5_only)">Read Serial EEPROM ($6000-$7FFF read, <b>Submapper 5</b> only)</span></h2>
+<pre>Mask: $E000
+
+7  bit  0
+---- ----
+xxxE xxxx
+|||| ||||
++++|-++++- Open bus
+   +------ Data out from I²C EEPROM
+</pre>
+<h2><span id="CHR-ROM_Bank_Select_.28.246000-.246007_write.2C_Submapper_4.3B_.248000-.248007_write.2C_Submapper_5.29"/><span class="mw-headline" id="CHR-ROM_Bank_Select_($6000-$6007_write,_Submapper_4;_$8000-$8007_write,_Submapper_5)">CHR-ROM Bank Select ($6000-$6007 write, <b>Submapper 4</b>; $8000-$8007 write, <b>Submapper 5</b>)</span></h2>
+<pre>Mask: $E00F (<b>Submapper 4</b>), $800F (<b>Submapper 5</b>)
+
+7  bit  0
+---- ----
+CCCC CCCC
+|||| ||||
+++++-++++-- 1 KiB CHR-ROM bank number
+</pre>
+<ul><li>$xxx0: Select 1 KiB CHR-ROM bank at PPU $0000-$03FF</li>
+<li>$xxx1: Select 1 KiB CHR-ROM bank at PPU $0400-$07FF</li>
+<li>$xxx2: Select 1 KiB CHR-ROM bank at PPU $0800-$0BFF</li>
+<li>$xxx3: Select 1 KiB CHR-ROM bank at PPU $0C00-$0FFF</li>
+<li>$xxx4: Select 1 KiB CHR-ROM bank at PPU $1000-$13FF</li>
+<li>$xxx5: Select 1 KiB CHR-ROM bank at PPU $1400-$17FF</li>
+<li>$xxx6: Select 1 KiB CHR-ROM bank at PPU $1800-$1BFF</li>
+<li>$xxx7: Select 1 KiB CHR-ROM bank at PPU $1C00-$1FFF</li></ul>
+<h2><span id="PRG-ROM_Bank_Select_.28.246008_write.2C_Submapper_4.3B_.248008_write.2C_Submapper_5.29"/><span class="mw-headline" id="PRG-ROM_Bank_Select_($6008_write,_Submapper_4;_$8008_write,_Submapper_5)">PRG-ROM Bank Select ($6008 write, <b>Submapper 4</b>; $8008 write, <b>Submapper 5</b>)</span></h2>
+<pre>Mask: $E00F (<b>Submapper 4</b>), $800F (<b>Submapper 5</b>)
+
+7  bit  0
+---- ----
+.... PPPP
+     ||||
+     ++++-- Select 16 KiB PRG-ROM bank at CPU $8000-$BFFF   
+</pre>
+<h2><span id="Nametable_Mirroring_Type_Select_.28.246009_write.2C_Submapper_4.3B_.248009_write.2C_Submapper_5.29"/><span class="mw-headline" id="Nametable_Mirroring_Type_Select_($6009_write,_Submapper_4;_$8009_write,_Submapper_5)">Nametable Mirroring Type Select ($6009 write, <b>Submapper 4</b>; $8009 write, <b>Submapper 5</b>)</span></h2>
+<pre>Mask: $E00F (<b>Submapper 4</b>), $800F (<b>Submapper 5</b>)
+
+7  bit  0
+---- ----
+.... ..MM
+       ||
+       ++-- Select nametable mirroring type
+             0: Vertical
+             1: Horizontal
+             2: One-screen, page 0
+             3: One-screen, page 1
+</pre>
+<h2><span id="IRQ_Control_.28.24600A_write.2C_Submapper_4.3B_.24800A_write.2C_Submapper_5.29"/><span class="mw-headline" id="IRQ_Control_($600A_write,_Submapper_4;_$800A_write,_Submapper_5)">IRQ Control ($600A write, <b>Submapper 4</b>; $800A write, <b>Submapper 5</b>)</span></h2>
+<pre>Mask: $E00F (<b>Submapper 4</b>), $800F (<b>Submapper 5</b>)
+
+7  bit  0
+---- ----
+.... ...C
+        |
+        +-- IRQ counter control
+             0: Counting disabled
+             1: Counting enabled
+</pre>
+<ul><li>Writing to this register acknowledges a pending IRQ.</li>
+<li>On the LZ93D50 (<b>Submapper 5</b>), writing to this register also copies the latch to the actual counter.</li>
+<li>If a write to this register enables counting while the counter is holding a value of zero, an IRQ is generated immediately.</li></ul>
+<h2><span id="IRQ_Latch.2FCounter_.28.24600B-.24600C_write.2C_Submapper_4.3B_.24800B-.24800C_write.2C_Submapper_5.29"/><span class="mw-headline" id="IRQ_Latch/Counter_($600B-$600C_write,_Submapper_4;_$800B-$800C_write,_Submapper_5)">IRQ Latch/Counter ($600B-$600C write, <b>Submapper 4</b>; $800B-$800C write, <b>Submapper 5</b>)</span></h2>
+<pre>Mask: $E00F (<b>Submapper 4</b>), $800F (<b>Submapper 5</b>)
+
+   $C         $B
+7  bit  0  7  bit  0
+---- ----  ---- ----
+CCCC CCCC  CCCC CCCC
+|||| ||||  |||| ||||
+++++-++++--++++-++++-- Counter value (little-endian)
+</pre>
+<ul><li>If counting is enabled, the counter decreases on every M2 cycle. When it holds a value of zero, an IRQ is generated.</li>
+<li>On the FCG-1/2 (<b>Submapper 4</b>), writing to these two registers directly modifies the counter itself; all such games therefore disable counting before changing the counter value.</li>
+<li>On the LZ93D50 (<b>Submapper 5</b>), these registers instead modify a latch that will only be copied to the actual counter when register $800A is written to.</li></ul>
+<h2><span id="EEPROM_Control_.28.24800D_write.2C_Submapper_5_only.29"/><span class="mw-headline" id="EEPROM_Control_($800D_write,_Submapper_5_only)">EEPROM Control ($800D write, <b>Submapper 5</b> only)</span></h2>
+<pre>Mask: $800F
+
+7  bit  0
+---- ----
+RDC. ....
+|||
+||+-------- I²C SCL
+|+--------- I²C SDA
++---------- Direction bit (1=Enable Read)
+</pre>
+<ul><li>This register only exists on the LZ93D50 (Submapper 5), and only has an effect if a 24C02 EEPROM is present.</li>
+<li>Please refer to generic I²C tutorials and the 24C02 datasheet on how to operate or emulate this register correctly.</li></ul>
+<h1><span class="mw-headline" id="Similar_Mappers">Similar Mappers</span></h1>
+<ul><li><a href="INES_Mapper_153.xhtml" title="INES Mapper 153">INES Mapper 153</a> replaces the serial EEPROM with 8 KiB of battery-backed WRAM, and uses CHR-RAM instead of CHR-ROM.</li>
+<li><a href="INES_Mapper_157.xhtml" title="INES Mapper 157">INES Mapper 157</a> adds a barcode reader, support for a second EEPROM, and  uses CHR-RAM instead of CHR-ROM.</li>
+<li><a href="INES_Mapper_159.xhtml" title="INES Mapper 159">INES Mapper 159</a> replaces the 256 byte with an 128 byte serial EEPROM.</li></ul>
+<h1><span class="mw-headline" id="See_Also">See Also</span></h1>
+<p>A discrete logic clone of the FCG-2 has been found and <a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?p=243449#p243449">reverse-engineered by Krzysiobal</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123060640
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.034 seconds
+Real time usage: 0.042 seconds
+Preprocessor visited node count: 51/1000000
+Post‐expand include size: 808/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    5.990      1 INES_Mapper_016/Submapper_table
+100.00%    5.990      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:298-0!canonical and timestamp 20241123060640 and revision id 3876.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a>, <a href="Category_NES_2_0_mappers_with_submappers.xhtml">NES 2.0 mappers with submappers</a></p></div></body></html>

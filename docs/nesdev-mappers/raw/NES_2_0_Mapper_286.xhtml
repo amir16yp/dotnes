@@ -1,0 +1,92 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 286</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_286"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 286</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_286">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_286">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 286 is used for Benshieng multicarts. Its UNIF mapper is <b>BMC-BS-5</b>. The hardware latches the address rather than the data bus bits.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#CHR-ROM_Select_(%248000-%249FFF)"><span class="tocnumber">2.1</span> <span class="toctext">CHR-ROM Select ($8000-$9FFF)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#PRG-ROM_Select_(%24A000-%24BFFF)"><span class="tocnumber">2.2</span> <span class="toctext">PRG-ROM Select ($A000-$BFFF)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#Notes"><span class="tocnumber">3</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$9FFF: 8 KiB switchable PRG-ROM bank</li>
+<li>CPU $A000-$BFFF: 8 KiB switchable PRG-ROM bank</li>
+<li>CPU $C000-$DFFF: 8 KiB switchable PRG-ROM bank</li>
+<li>CPU $E000-$FFFF: 8 KiB switchable PRG-ROM bank</li>
+<li>PPU $0000-$07FF: 2 KiB switchable CHR-ROM bank</li>
+<li>PPU $0800-$0FFF: 2 KiB switchable CHR-ROM bank</li>
+<li>PPU $1000-$17FF: 2 KiB switchable CHR-ROM bank</li>
+<li>PPU $1800-$1FFF: 2 KiB switchable CHR-ROM bank</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="CHR-ROM_Select_.28.248000-.249FFF.29"/><span class="mw-headline" id="CHR-ROM_Select_($8000-$9FFF)">CHR-ROM Select ($8000-$9FFF)</span></h2>
+<pre>FEDC BA98 7654 3210
+-------------------
+100. RR.. .... BBBB
+     ||        ++++- Select 8 KiB CHR-ROM bank number
+     ||              in range selected by address bits 8-9
+     ++------------- Select 8 KiB CHR-ROM bank
+                     00: PPU $0000-$07FF
+                     01: PPU $0800-$0FFF
+                     10: PPU $1000-$17FF
+                     11: PPU $1800-$1FFF
+</pre>
+<h2><span id="PRG-ROM_Select_.28.24A000-.24BFFF.29"/><span class="mw-headline" id="PRG-ROM_Select_($A000-$BFFF)">PRG-ROM Select ($A000-$BFFF)</span></h2>
+<p>The AND mask to which the PRG-ROM select responds is
+determined in bits 4-7 by a DIP switch.
+</p>
+<pre>FEDC BA98 7654 3210
+-------------------
+101. RR.. DDDD BBBB
+     ||   |||| ++++- Select 8 KiB PRG-ROM bank number
+     ||   ||||       in range selected by address bits 8-9
+     ||   ++++------ AND mask from DIP switch
+     ||              01: Setting #1
+     ||              02: Setting #2
+     ||              04: Setting #3
+     ||              08: Setting #4
+     ++------------- Select 8 KiB PRG-ROM bank
+                     00: CPU $8000-$9FFF
+                     01: CPU $A000-$BFFF
+                     10: CPU $C000-$DFFF
+                     11: CPU $E000-$FFFF
+</pre>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>The initial PRG bank values are 0xF.</li>
+<li>Mirroring is fixed to vertical.</li>
+<li>The multicart menu code has a programming error: when pressing Up from the first position to move the selection to the last game, subsequent game selections launch the wrong game.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123164048
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.012 seconds
+Real time usage: 0.015 seconds
+Preprocessor visited node count: 15/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:671-0!canonical and timestamp 20241123164048 and revision id 7729.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

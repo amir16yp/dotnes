@@ -1,0 +1,101 @@
+INES Mapper 038
+
+INES Mapper 038
+
+iNES Mapper 038
+
+Company
+
+Bit Corp.
+
+Games
+
+1 in NesCartDB
+
+Boards
+
+UNL-PCI556
+
+PRG ROM capacity
+
+128K
+
+PRG ROM window
+
+32K
+
+PRG RAM capacity
+
+None
+
+CHR capacity
+
+32K
+
+CHR window
+
+8k
+
+Nametable mirroring
+
+V(hardwired)
+
+Bus conflicts
+
+No
+
+IRQ
+
+No
+
+Audio
+
+No
+
+iNES mappers
+
+038
+
+NESCartDB
+
+iNES 038
+
+iNES Mapper 038 represents the board used for Bit Corp.'s Crime Busters. It is another mapper almost identical to GNROM (66) except the bits and writeable port moved around.
+
+Contents
+
+1 Registers
+
+1.1 Bank Select ($7000-$7FFF)
+
+2 Hardware
+
+3 Emulator oversize support
+
+Registers
+
+Bank Select ($7000-$7FFF)
+
+7  bit  0
+---- ----
+xxxx CCPP
+     ||||
+     ||++- Select 32 KB PRG ROM bank for CPU $8000-$FFFF
+     ++--- Select 8 KB CHR ROM bank for PPU $0000-$1FFF
+
+Hardware
+
+Writes to $F000-$FFFF are very likely to also trigger a bankswitch, but well behaved code has no reason to. The 74138 used by this board uses /ROMSEL and R/W on its enable inputs, but /ROMSEL is 1 while M2 is low, not just while M2 is high and and A15 is low. As a result, before M2 is high, if the 2A03's A14, A13, and A12 lines are 1 and R/W is 0, the 74161's /LOAD line will still load from the data bus.
+
+Emulator oversize support
+
+ FCEUX (2.1.5):
+  $7000-$7FFF: [CCCC CCPP]
+
+ Nestopia (1.4.0h):
+  $6000-$7FFF: [CCCC CC..]
+               [PPPP PPPP]
+
+See also: Oversize
+
+Categories: In NesCartDB, INES Mappers, GNROM-like mappers

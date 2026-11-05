@@ -1,0 +1,5 @@
+NES 2.0 Mapper 258
+
+NES 2.0 Mapper 258
+
+NES 2.0 Mapper 258 has been tentatively reserved by the FCEUX developers to mean the same hardware as UNIF MAPR 158B.

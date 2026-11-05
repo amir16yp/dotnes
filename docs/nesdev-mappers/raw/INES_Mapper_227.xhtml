@@ -1,0 +1,78 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 227</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_227"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 227</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_227">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_227">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 227</b> denotes an address-latch-based multicart circuit board (PCB code <b>810449-C-A1</b> among others) mounting 1 MiB of PRG-ROM plus 8 KiB of unbanked CHR-RAM.
+</p><p>A variant used by Chinese RPGs from Nanjing, Waixing (PCB code <b>FW-01</b>) and Yancheng adds 8 KiB battery-backed WRAM and does not implement the UNROM-like bankswitching modes.
+</p><p>Other PCB that use this mapper :
+</p>
+<ul><li><b>N120-72</b> : <i><a href="1992_Contra_120_in_1.xhtml" title="1992 Contra 120 in 1">1992 Contra 120 in 1</a></i> multicart.</li></ul>
+<p>Nestopia Plus! has defined submappers 0 and 1:
+</p>
+<ul><li><b>submapper 0</b> denoting that CHR-RAM is <i>not</i> write-protected in NROM modes (for use with Chinese RPGs),</li>
+<li><b>submapper 1</b> denoting that CHR-RAM <i>is</i> write-protected in NROM modes (for use with multicarts), and a solder pad read mode is available.</li>
+<li><b>submapper 2</b> denoting that CHR-RAM <i>is</i> write-protected in NROM modes (for use with multicarts), and &quot;inner bank #0&quot; also means &quot;outer bank #0&quot;.</li></ul>
+<h2><span id="Address_Latch_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Address_Latch_($8000-$FFFF,_write)">Address Latch ($8000-$FFFF, write)</span></h2>
+<pre>[A~1... .mLQ OQQP PpMS]
+         ||| |||| |||+-0: PRG A14=p
+         ||| |||| |||  1: PRG A14=CPU A14
+         ||| |||| ||+- 0: Vertical mirroring
+         ||| |||| ||   1: Horizontal mirroring
+         ||| |||+-++-- PRG A16..A14 (inner bank)
+         ||+-|++------ PRG A19..A17 (outer bank)
+         ||  +-------- 0: When CPU A14=1: PRG A16..14=LLL
+         ||            1: When CPU A14=1: PRG A16..14=PPp
+         |+----------- Value for PRG A16..14 when CPU A14=1 and O=0
+         +------------ 0: PRG A3..A0=CPU A3..A0
+                       1: PRG A3..A0=Solder pad 3-0 (submapper 1 only)
+Power-on value: 0
+</pre>
+<p>Effective meaning:
+</p>
+<pre>Bit 9   Bit 7   Bit 0   Meaning
+$200s   $080s   $001s
+ (L)     (O)     (S)
+  0       0       0     Switchable inner 16 KiB bank PPp at CPU $8000-$BFFF, fixed inner bank #0 at CPU $C000-$FFFF (UNROM-like with fixed bank 0)
+  0       0       1     Switchable inner 16 KIB bank PP0 at CPU $8000-$BFFF, fixed inner bank #0 at CPU $C000-$FFFF (UNROM-like with only even banks reachable, pointless)
+  1       0       0     Switchable inner 16 KiB bank PPp at CPU $8000-$BFFF, fixed inner bank #7 at CPU $C000-$FFFF (UNROM)
+  1       0       1     Switchable inner 16 KIB bank PP0 at CPU $8000-$BFFF, fixed inner bank #7 at CPU $C000-$FFFF (UNROM with only even banks reachable, pointless)
+  ?       1       0     Switchable 16 KiB inner bank PPp at CPU $8000-$BFFF, mirrored at CPU $C000-$FFFF (NROM-128)
+  ?       1       1     Switchable 32 KiB inner bank PP at CPU $8000-$FFFF (NROM-256)
+</pre>
+<ul><li>On multicart PCBs (no battery or <b>submapper 1</b>), CHR-RAM is write-protected when O=1 and write-enabled when O=0, i.e. write-protected in the NROM-128 and NROM-256 modes.</li>
+<li>When the <i>m</i> bit is set, PRG A3-A0 are replaced with the values of four solder pads, which when the menu code reads particular ROM locations effectively selects one of up to sixteen menus with different game counts.</li>
+<li>Because all bits are cleared on reset, both CPU $8000-$BFFF and $C000-$FFFF are set to 16 KiB bank #0 on reset.</li></ul>
+<h2><span class="mw-headline" id="Similar_mappers">Similar mappers</span></h2>
+<ul><li><a href="INES_Mapper_242.xhtml" title="INES Mapper 242">INES Mapper 242</a> is a variant with only up to 512 KiB PRG-ROM that moves the <i>m</i> bit to a different bit location. A variant with two PRG-ROM chips exists as well.</li>
+<li><a href="NES_2_0_Mapper_375.xhtml" title="NES 2.0 Mapper 375">NES 2.0 Mapper 375</a> is a variant with up to 2 MiB PRG-ROM that allows the UNROM-like switchable bank to be changed via a data latch.</li>
+<li><a href="NES_2_0_Mapper_380.xhtml" title="NES 2.0 Mapper 380">NES 2.0 Mapper 380</a> is an incompatible variant with similar functionality.</li>
+<li><a href="NES_2_0_Mapper_449.xhtml" title="NES 2.0 Mapper 449">NES 2.0 Mapper 449</a> is an incompatible variant that adds 32 KiB CHR-RAM bankswitching functionality.</li></ul>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li>Dumping thread: <a rel="nofollow" class="external free" href="https://forums.nesdev.org/viewtopic.php?f=9&amp;t=15271">https://forums.nesdev.org/viewtopic.php?f=9&amp;t=15271</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123115414
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.013 seconds
+Real time usage: 0.016 seconds
+Preprocessor visited node count: 18/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:512-0!canonical and timestamp 20241123115414 and revision id 21853.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

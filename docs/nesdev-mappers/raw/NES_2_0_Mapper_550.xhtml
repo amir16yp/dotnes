@@ -1,0 +1,62 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 550</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_550"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 550</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_550">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_550">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 550</b> denotes the <b>JY820845C</b> circuit board, used by the <i>7-in-1 1993 Chess Series (JY-015)</i> multicart. It combines an <a href="MMC1.xhtml" title="MMC1">MMC1</a> clone with a PAL for outer bank and optional MHROM inner bank switching.
+</p>
+<h2><span id="Outer_Bank_Register_.28.247000-.247FFF.2C_write.29"/><span class="mw-headline" id="Outer_Bank_Register_($7000-$7FFF,_write)">Outer Bank Register ($7000-$7FFF, write)</span></h2>
+<pre>Mask: $F000
+
+A~FEDC BA98 7654 3210
+  -------------------
+  0111 .... .... LBBb
+                 |+++- PRG A18..16 (MHROM mode)
+                 |++-- PRG A18..17 (MMC1 mode)
+                 |++-- CHR A16..15
+                 |++-- 0-2: MHROM mode
+                 |     3:   MMC1 mode
+                 +---- 1: Lock outer bank register
+</pre>
+<p>In GNROM mode, the latch register selects the inner 2x32 KiB PRG and 4x8 CHR banks.
+In MMC1 mode, the MMC1 selects the inner 4x32/8x16 KiB PRG and 4x8/8x4 KiB CHR banks.
+The Outer Bank Register overlaps 8 KiB of WRAM in the $6000-$7FFF address range.
+</p>
+<h2><span id="MHROM_Latch_Register_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="MHROM_Latch_Register_($8000-$FFFF,_write)">MHROM Latch Register ($8000-$FFFF, write)</span></h2>
+<pre>Mask: $8000
+
+D~7654 3210
+  ---------
+  ...P ..CC
+     |   ++- CHR A14..13
+     +------ PRG A15     
+</pre>
+<p>The MMC1 still sees the writes to the latch register in MHROM; as a result, the menu writes to the latch register five times to keep the MMC1's serial shift register in a consistent state, at least until the Outer Bank Register's Lock bit is set. It is not known whether the MHROM Latch Register suffers from bus conflicts.
+</p><p>Nametable mirroring is decided the by MMC1 even in MHROM mode.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123033831
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.011 seconds
+Real time usage: 0.017 seconds
+Preprocessor visited node count: 10/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:856-0!canonical and timestamp 20241123033831 and revision id 8188.
+ -->
+</div><p class="categories">Categories: <a href="Category_GNROM_like_mappers.xhtml">GNROM-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

@@ -1,0 +1,71 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 515</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_515"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 515</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_515">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_515">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES 2.0 Mapper 515 is used for 패밀리 노래방 <i>Family Noraebang</i>, a Korean karaoke cartridge that uses UNROM-style PRG banking, has provisions for an expansion cartridge, an ADC for Microphone input, and a clone of the Yamaha <a rel="nofollow" class="external text" href="https://en.wikipedia.org/wiki/Yamaha_YM2413">YM2413</a> chip for expansion audio: the K-663A.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#PRG-ROM_bankswitching"><span class="tocnumber">2</span> <span class="toctext">PRG-ROM bankswitching</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Expansion_sound"><span class="tocnumber">3</span> <span class="toctext">Expansion sound</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Microphone_input"><span class="tocnumber">4</span> <span class="toctext">Microphone input</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#See_also"><span class="tocnumber">5</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>CPU $8000-$BFFF: 16 KB switchable PRG ROM bank</li>
+<li>CPU $C000-$FFFF: 16 KB PRG ROM bank, fixed to the last bank</li></ul>
+<h2><span class="mw-headline" id="PRG-ROM_bankswitching">PRG-ROM bankswitching</span></h2>
+<pre>Mask $E00F:
+  W 8000: [RBBB BBBB] - R:0-select external ROM; 1-select internal ROM; B-select bank at $8000-$BFFF
+                        $C000-$FFFF is always last bank of internal ROM
+</pre>
+<p>The board does not seem to suffer from bus conflicts. The existing ROM images are arranged similarly to <a href="INES_Mapper_188.xhtml" title="INES Mapper 188">INES Mapper 188</a>: The last 1 MiB of PRG-ROM are the main cartridge, the first (total PRG-ROM size minus 1 MiB) are the expansion cartridge.
+</p>
+<h2><span class="mw-headline" id="Expansion_sound">Expansion sound</span></h2>
+<pre>Mask: $E003:
+  W 6000: YM2413 index
+  W 6001: YM2413 data
+  R 6000: YM2413 read back test register contents
+</pre>
+<p>Note that the board does not allow the 2A03 audio to be mixed with the YM2413 output.
+</p>
+<h2><span class="mw-headline" id="Microphone_input">Microphone input</span></h2>
+<pre>Mask: $E003:
+   R 6003: [D... ....] - SPI (ADC) data
+Mask not yet known:
+   W C002: [S... ....] - SPI (ADC) chip select
+   W C003: [K... ....] - SPI clock / ADC conversion clock
+</pre>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<p><a rel="nofollow" class="external free" href="http://forums.nesdev.org/viewtopic.php?f=9&amp;t=16124">http://forums.nesdev.org/viewtopic.php?f=9&amp;t=16124</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241122222606
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.008 seconds
+Real time usage: 0.010 seconds
+Preprocessor visited node count: 16/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:821-0!canonical and timestamp 20241122222606 and revision id 8086.
+ -->
+</div></div></body></html>

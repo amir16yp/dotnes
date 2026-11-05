@@ -1,0 +1,63 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 355</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_355"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 355</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_355">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_355">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 355</b> denotes the <b>黃信維 3D-BLOCK</b> circuit board, used for two unlicensed games:
+</p>
+<ul><li><i>3D Block</i> (1989 version, copyright &quot;Hwang Shinwei&quot;)</li>
+<li><i>Block Force</i> (original version, with credits and contact information on the options screen)</li></ul>
+<p>Its UNIF board name is <b>3D-BLOCK</b> without prefix.
+</p><p>It is basically NROM-256 with 8 KiB of CHR-RAM rather than CHR-ROM, but with an unusual protection mechanism: a PIC16C54 microcontroller with an embedded internal program ROM watches A4..A14 of the 6502 CPU address bus and raises IRQs based on what it sees. 
+</p><p>To emulate this mapper, the embedded ROM's data (512 words, stored as 1024 bytes of little-endian data), included as a <a href="NES_2_0.xhtml#Byte_14_.28Misc._ROMs.29" title="NES 2.0">Misc. ROM</a> in the <a href="NES_2_0.xhtml" title="NES 2.0">NES 2.0</a> specification, must be executed by a <a rel="nofollow" class="external text" href="https://github.com/mamedev/mame/tree/master/src/devices/cpu/pic16c5x">PIC16C54 emulator</a> (running at one fourth of the 6502 clock/M2 switching rate), with the emulated microcontrollers' input/output ports being connected to the cartridge's IRQ and CPU A4..A14 signals in the following way:
+</p>
+<pre>PIC16C54 pin#  Meaning
+----------------------
+RA0 (17)       /IRQ
+RA1 (18)       CPU A6
+RA2 (1)        CPU A5
+RA3 (2)        CPU A4
+RB0 (6)        CPU A12
+RB1 (7)        CPU A7
+RB2 (8)        CPU A10
+RB3 (9)        CPU A11
+RB4 (10)       CPU A9
+RB5 (11)       CPU A8
+RB6 (12)       CPU A13
+RB7 (13)       CPU A14  
+</pre>
+<p>Note that even though <i>3D Block</i> seems to write specific values to addresses in the $4xxx range, since the CPU D0..D7 signals are not connected to the microcontroller, their values cannot affect IRQ generation, though their addresses could.
+</p>
+<h2><span class="mw-headline" id="Errata">Errata</span></h2>
+<ul><li>The status bar in <i>Block Force</i> during gameplay will jump slightly on some CPU/PPU alignments.</li>
+<li>GoodNES 3.23b contains the correct dump of <i>3D Block</i> as &quot;3D Block (Hwang Shinwei) [!].nes&quot; (sans embedded PIC ROM data) and a Bung Game Master hack as &quot;3D Block (RCM Group) [p1].nes&quot; which on its original floppy disk came with a custom fusemap for the Game Master's FPGA.</li>
+<li>GoodNES 3.23b contains the correct dump of <i>Block Force</i> as &quot;Square Force (Unl) [!].nes&quot; (sans embedded PIC ROM data) and a multicart extract, without full credits or contact information, that no longer requires the PIC, as &quot;Block Force (Hwang Shinwei).nes&quot;, incorrectly set to mapper 219 instead of the correct 0.</li></ul>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<p><a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?f=3&amp;t=16267#p222579">PCB image and analysis</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164229
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.014 seconds
+Real time usage: 0.018 seconds
+Preprocessor visited node count: 10/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:740-0!canonical and timestamp 20241123164229 and revision id 7933.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_triggering_on_reads.xhtml">Mappers triggering on reads</a></p></div></body></html>

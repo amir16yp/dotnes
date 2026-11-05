@@ -80,44 +80,74 @@ public class TranspileToNES : Task
     /// </summary>
     public string NESMmc3ManagedInterruptContract { get; set; } = "";
 
+    /// <summary>
+    /// ROM packaging mode: "Transpile" (default) or "RawPrg".
+    /// RawPrg writes header + NESRawPrg bytes + CHR without IL→6502.
+    /// </summary>
+    public string NESPackMode { get; set; } = "Transpile";
+
+    /// <summary>
+    /// Path to a raw PRG ROM image used when NESPackMode=RawPrg.
+    /// </summary>
+    public string NESRawPrg { get; set; } = "";
+
+    /// <summary>
+    /// Optional path to an exact 16-byte iNES header used when NESPackMode=RawPrg.
+    /// When set, the header is written verbatim (preserves NES 2.0 / trailer bytes).
+    /// </summary>
+    public string NESRawHeader { get; set; } = "";
+
+    /// <summary>
+    /// Optional path to a 512-byte trainer used with NESRawHeader when Flags6 bit 2 is set.
+    /// </summary>
+    public string NESRawTrainer { get; set; } = "";
+
     public ILogger? Logger { get; set; }
 
     public override bool Execute()
     {
         Logger ??= DiagnosticLogging ? new MSBuildLogger(Log) : null;
-        var prgBankAssets = NESPrgBank.Select(ParsePrgBankAsset).ToArray();
-        var chrBankAssets = NESChrBank.Select(ParseChrBankAsset).ToArray();
-        var managedCodeBanks = NESManagedCodeBank.Select(ParseManagedCodeBank).ToArray();
-        var nativeRamCode = NESNativeRamCode.Select(ParseNativeRamCode).ToArray();
-        int? managedHomeBank = string.IsNullOrWhiteSpace(NESMmc3ManagedHomeBank)
-            ? null
-            : ParseInteger(NESMmc3ManagedHomeBank,
-                $"NESMmc3ManagedHomeBank has invalid value '{NESMmc3ManagedHomeBank}'.");
-        var managedInterruptContract = ParseManagedInterruptContract(NESMmc3ManagedInterruptContract);
         var assemblies = AssemblyFiles.Select(a => new AssemblyReader(a)).ToList();
-        using var input = File.OpenRead(TargetPath);
         using var output = new MemoryStream();
-        using var transpiler = new Transpiler(
-            input,
-            assemblies,
-            Logger,
-            NESMirroring,
-            NESMapper,
-            NESPrgBanks,
-            NESChrBanks,
-            NESBattery,
-            NESMmc3BankedLayout,
-            prgBankAssets,
-            chrBankAssets,
-            managedCodeBanks,
-            managedHomeBank,
-            managedInterruptContract,
-            nativeRamCode: nativeRamCode)
+
+        if (IsRawPrgMode())
         {
-            OptimizeByteHelpers = NESOptimizeByteHelpers,
-            OptimizeCode = NESOptimizeCode,
-        };
-        transpiler.Write(output);
+            ExecuteRawPrg(assemblies, output);
+        }
+        else
+        {
+            var prgBankAssets = NESPrgBank.Select(ParsePrgBankAsset).ToArray();
+            var chrBankAssets = NESChrBank.Select(ParseChrBankAsset).ToArray();
+            var managedCodeBanks = NESManagedCodeBank.Select(ParseManagedCodeBank).ToArray();
+            var nativeRamCode = NESNativeRamCode.Select(ParseNativeRamCode).ToArray();
+            int? managedHomeBank = string.IsNullOrWhiteSpace(NESMmc3ManagedHomeBank)
+                ? null
+                : ParseInteger(NESMmc3ManagedHomeBank,
+                    $"NESMmc3ManagedHomeBank has invalid value '{NESMmc3ManagedHomeBank}'.");
+            var managedInterruptContract = ParseManagedInterruptContract(NESMmc3ManagedInterruptContract);
+            using var input = File.OpenRead(TargetPath);
+            using var transpiler = new Transpiler(
+                input,
+                assemblies,
+                Logger,
+                NESMirroring,
+                NESMapper,
+                NESPrgBanks,
+                NESChrBanks,
+                NESBattery,
+                NESMmc3BankedLayout,
+                prgBankAssets,
+                chrBankAssets,
+                managedCodeBanks,
+                managedHomeBank,
+                managedInterruptContract,
+                nativeRamCode: nativeRamCode)
+            {
+                OptimizeByteHelpers = NESOptimizeByteHelpers,
+                OptimizeCode = NESOptimizeCode,
+            };
+            transpiler.Write(output);
+        }
 
         if (Log.HasLoggedErrors)
             return false;
@@ -125,6 +155,61 @@ public class TranspileToNES : Task
         output.Position = 0;
         output.CopyTo(destination);
         return true;
+    }
+
+    bool IsRawPrgMode() =>
+        string.Equals(NESPackMode?.Trim(), "RawPrg", StringComparison.OrdinalIgnoreCase);
+
+    void ExecuteRawPrg(IList<AssemblyReader> assemblies, Stream output)
+    {
+        if (string.IsNullOrWhiteSpace(NESRawPrg))
+            throw new InvalidOperationException("NESPackMode=RawPrg requires NESRawPrg to point at a PRG image.");
+        if (!File.Exists(NESRawPrg))
+            throw new InvalidOperationException($"NESRawPrg file '{NESRawPrg}' was not found.");
+        if (NESMmc3BankedLayout)
+            throw new InvalidOperationException("NESPackMode=RawPrg cannot be combined with NESMmc3BankedLayout.");
+        if (NESPrgBank.Length > 0 || NESChrBank.Length > 0 || NESManagedCodeBank.Length > 0)
+            throw new InvalidOperationException("NESPackMode=RawPrg does not support NESPrgBank, NESChrBank, or NESManagedCodeBank items.");
+
+        byte[] prgRom = File.ReadAllBytes(NESRawPrg);
+        byte[]? chrRom = null;
+        if (NESChrBanks > 0)
+        {
+            chrRom = NesRomPacker.GatherChrData(assemblies);
+            if (chrRom.Length == 0)
+                throw new InvalidOperationException("NESPackMode=RawPrg with CHR ROM requires at least one CHARS segment.");
+        }
+
+        byte[]? exactHeader = null;
+        byte[]? trainer = null;
+        if (!string.IsNullOrWhiteSpace(NESRawHeader))
+        {
+            if (!File.Exists(NESRawHeader))
+                throw new InvalidOperationException($"NESRawHeader file '{NESRawHeader}' was not found.");
+            exactHeader = File.ReadAllBytes(NESRawHeader);
+            if (exactHeader.Length != 16)
+                throw new InvalidOperationException($"NESRawHeader must be exactly 16 bytes (got {exactHeader.Length}).");
+        }
+
+        if (!string.IsNullOrWhiteSpace(NESRawTrainer))
+        {
+            if (!File.Exists(NESRawTrainer))
+                throw new InvalidOperationException($"NESRawTrainer file '{NESRawTrainer}' was not found.");
+            trainer = File.ReadAllBytes(NESRawTrainer);
+        }
+
+        NesRomPacker.Write(
+            output,
+            prgRom,
+            chrRom,
+            NESPrgBanks,
+            NESChrBanks,
+            NESMapper,
+            NESMirroring,
+            NESBattery,
+            Logger,
+            exactHeader,
+            trainer);
     }
 
     static BankedRomAsset ParsePrgBankAsset(ITaskItem item)

@@ -1,0 +1,83 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 293</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_293"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 293</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_293">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_293">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 293 is used for the <i>NewStar 12-in-1</i> and <i>76-in-1</i> multicarts. Both use 8 KiB of unbanked CHR-RAM rather than CHR-ROM.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#First_Banking_Register_(%248000-%249FFF,_%24C000-%24DFFF)"><span class="tocnumber">1.1</span> <span class="toctext">First Banking Register ($8000-$9FFF, $C000-$DFFF)</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Second_Banking_Register_(%248000-%24BFFF)"><span class="tocnumber">1.2</span> <span class="toctext">Second Banking Register ($8000-$BFFF)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-4"><a href="#PRG_banking_modes"><span class="tocnumber">2</span> <span class="toctext">PRG banking modes</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Notes"><span class="tocnumber">3</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="First_Banking_Register_.28.248000-.249FFF.2C_.24C000-.24DFFF.29"/><span class="mw-headline" id="First_Banking_Register_($8000-$9FFF,_$C000-$DFFF)">First Banking Register ($8000-$9FFF, $C000-$DFFF)</span></h2>
+<pre>Mask: $A000
+
+7654 3210
+---------
+.... PIII
+     |+++- Select inner 16 KiB PRG-ROM bank
+     +---- Bit 1 of the PRG banking mode number
+</pre>
+<h2><span id="Second_Banking_Register_.28.248000-.24BFFF.29"/><span class="mw-headline" id="Second_Banking_Register_($8000-$BFFF)">Second Banking Register ($8000-$BFFF)</span></h2>
+<pre>Mask: $C000
+
+7654 3210
+---------
+MP10 ...2
+||++----+- Select outer 128 KiB PRG-ROM bank (note the bit distribution)
+|+-------- Bit 0 of the PRG banking mode number
++--------- Select nametable mirroring type
+            0: Vertical
+            1: Horizontal
+</pre>
+<h1><span class="mw-headline" id="PRG_banking_modes">PRG banking modes</span></h1>
+<ul><li>0 (UNROM)</li></ul>
+<dl><dd>$8000-$BFFF: Switchable 16 KiB Inner PRG-ROM bank</dd>
+<dd>$C000-$FFFF: Fixed 16 KiB Inner PRG-ROM bank #7</dd></dl>
+<ul><li>1</li></ul>
+<dl><dd>$8000-$BFFF: Switchable 16 KiB Inner PRG-ROM bank AND $FE</dd>
+<dd>$C000-$FFFF: Fixed 16 KiB Inner PRG-ROM bank #7</dd></dl>
+<ul><li>2 (NROM-128)</li></ul>
+<dl><dd>$8000-$BFFF: Switchable 16 KiB Inner PRG-ROM bank</dd>
+<dd>$C000-$FFFF: Mirror of $8000-$BFFF</dd></dl>
+<ul><li>3 (NROM-256)</li></ul>
+<dl><dd>$8000-$FFFF: Switchable 32 KiB Inner PRG-ROM bank (bit 0 of inner bank number ignored)</dd></dl>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>The address ranges of the two banking registers do indeed partially overlap.</li>
+<li>Nestopia Plus! assigns this board to Mapper 281 instead.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123144712
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.012 seconds
+Real time usage: 0.015 seconds
+Preprocessor visited node count: 17/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:678-0!canonical and timestamp 20241123144712 and revision id 7751.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

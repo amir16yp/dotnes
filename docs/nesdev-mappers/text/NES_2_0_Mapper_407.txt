@@ -1,0 +1,5 @@
+NES 2.0 Mapper 407
+
+NES 2.0 Mapper 407
+
+NES 2.0 Mapper 407 is used by the Win, Lose or Draw Plug-n-Play which came built into a tablet. The game uses the VT03 enhanced NOAC. The submapper field is set to 15 to denote that the same CPU opcode encryption method as Mapper 256's, submapper 15. The NOAC's PRG A24 selects between PRG-ROM (0) and 64 KiB of PRG-RAM (1), which the OneBus hardware can map to both CPU and PPU address space.

@@ -1,0 +1,139 @@
+INES Mapper 003
+
+INES Mapper 003
+
+CNROM and similar
+
+Company
+
+Nintendo, others
+
+Games
+
+104 in NesCartDB
+
+Boards
+
+CNROM "and similar"
+
+PRG ROM capacity
+
+16K or 32K
+
+PRG ROM window
+
+n/a
+
+PRG RAM capacity
+
+None
+
+CHR capacity
+
+32K (2M oversize version)
+
+CHR window
+
+8K
+
+Nametable mirroring
+
+Fixed H or V
+
+Bus conflicts
+
+Yes(CNROM, some others)
+
+IRQ
+
+No
+
+Audio
+
+One case
+
+iNES mappers
+
+003
+
+NESCartDB
+
+iNES 003
+
+CNROM
+
+iNES Mapper 003 is used to designate the CNROM board, and similar boards used by Bandai, Panesian, Sachen and others, generalized to support up to 256 banks (2048 KiB) of CHR ROM.
+
+The CNROM-368 extension was proposed, allowing 46 KiB PRG ROM.
+
+Example games:
+
+Solomon's Key
+
+Arkanoid
+
+Arkista's Ring
+
+Bump 'n' Jump
+
+Cybernoid
+
+Contents
+
+1 Overview
+
+2 Banks
+
+3 Registers
+
+3.1 Bank select ($8000-$FFFF)
+
+4 Notes
+
+5 References
+
+Overview
+
+PRG ROM size: 16 KiB or 32 KiB
+
+PRG ROM bank size: Not bankswitched
+
+PRG RAM: None
+
+CHR capacity: Up to 2048 KiB ROM
+
+CHR bank size: 8 KiB
+
+Nametable mirroring: Fixed vertical or horizontal mirroring
+
+Subject to bus conflicts: Yes (CNROM), but not all compatible boards have bus conflicts.
+
+Banks
+
+PPU $0000-$1FFF: 8 KB switchable CHR ROM bank
+
+Registers
+
+Bank select ($8000-$FFFF)
+
+7  bit  0
+---- ----
+cccc ccCC
+|||| ||||
+++++-++++- Select 8 KB CHR ROM bank for PPU $0000-$1FFF
+
+CNROM only implements the lowest 2 bits, capping it at 32 KiB CHR. Other boards may implement 4 or more bits for larger CHR.
+
+Notes
+
+Mapper 3 is normally subject to bus conflicts, where the value seen by the mapper is actually the bitwise AND of the value written by the CPU and the ROM value at that address. Games normally work around this by ensuring the two values are identical. However, the game Cybernoid relies on bus conflicts. Without bus conflicts, the wrong CHR bank will be loaded when the player changes the audio from sound effects to music playback. Cybernoid also uses uninitialized RAM, which can be responsible for behavior differences between hardware and emulator.
+
+While bus conflicts are standard, there exist hacks that rely on the absence of bus conflicts. These include Nintendo's updated version of Donkey Kong with the pie factory level and some mapper hacks, such as a common hack of Colorful Dragon (Unl) (Sachen) that changes it from INES Mapper 079 to Mapper 3. Emulating these with bus conflicts will cause the wrong CHR bank to be loaded. Where necessary, NES 2.0 is capable of specifying that a game should be emulated without bus conflicts.
+
+The Japanese version of Dance Aerobics adds a sound playback IC to CNROM. It adds a register mapped from $6000-$7FFF that can play one of eight voice recordings. However, the specifics of the compression are not yet known, and there is no standardized way to bundle audio data with iNES images.
+
+References
+
+Disch's Mapper Notes
+
+Categories: Nintendo licensed mappers, INES Mappers, Mappers with bus conflicts, In NesCartDB, Expansion audio, CNROM-like mappers, NES 2.0 mappers with submappers

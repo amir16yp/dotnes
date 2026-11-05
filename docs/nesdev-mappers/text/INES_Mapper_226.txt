@@ -1,0 +1,51 @@
+INES Mapper 226
+
+INES Mapper 226
+
+ Here are Disch's original notes:
+ ========================
+ =  Mapper 226          =
+ ========================
+
+ Example Games:
+ --------------------------
+ 76-in-1
+ Super 42-in-1
+
+
+ Registers:
+ ---------------------------
+
+ Range, Mask:  $8000-FFFF, $8001
+
+   $8000:  [PMOP PPPP]
+      P = Low 6 bits of PRG Reg
+      M = Mirroring (0=Horz, 1=Vert)
+      O = PRG Mode
+
+   $8001:  [.... ...H]
+      H = high bit of PRG
+
+
+ PRG Setup:
+ ---------------------------
+
+ Low 6 bits of the PRG Reg come from $8000, high bit comes from $8001
+
+
+                $8000   $A000   $C000   $E000
+              +-------------------------------+
+ PRG Mode 0:  |             <Reg>             |
+              +-------------------------------+
+ PRG Mode 1:  |      Reg      |      Reg      |
+              +---------------+---------------+
+
+The original describing document states the 2s bit of the register at $8001 disables CHRRAM writes. No games seem to rely on it, though. It also says that the mapper hardware is made of a 74LS74A, 74LS273, 74LS139, 74LS02, and 74LS153.
+
+The multicart reportedly relies on the value of uninitialized memory to determine exactly how many games are available.
+
+The multicart clears both registers on soft reset.
+
+See also: Repair of one such cartridge
+
+Categories: Discrete logic mappers, INES Mappers, Multicart mappers

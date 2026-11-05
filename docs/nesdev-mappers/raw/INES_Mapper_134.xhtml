@@ -1,0 +1,102 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 134</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_134"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 134</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_134">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_134">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 134</b> denotes an <a href="MMC3.xhtml" title="MMC3">MMC3</a>-clone-based multicart PCB referred to alternatively as <b>T4A54A</b>, <b>WX-KB4K</b>, or <b>BS-5652</b>.
+</p>
+<ul><li><i>2-in-1 Family Kid &amp; Aladdin 4</i></li>
+<li><i>Super Cool Boy 4-in-1 (CB-4034)</i> (commonly-available ROM file has been hacked to run as <a href="INES_Mapper_044.xhtml" title="INES Mapper 044">INES Mapper 044</a>)</li>
+<li><i>Super Cool Boy 4-in-1 (CB-4035)</i></li>
+<li><i>Super 4-in-1 1998 (JH-274)</i></li>
+<li><i>1998 HIGH 4-in-1 (YH-463)</i></li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Mode_Register_(%246000,_write)"><span class="tocnumber">1</span> <span class="toctext">Mode Register ($6000, write)</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Outer_Bank_Register_(%246001,_write)"><span class="tocnumber">2</span> <span class="toctext">Outer Bank Register ($6001, write)</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#CNROM_register_(%246002,_write)"><span class="tocnumber">3</span> <span class="toctext">CNROM register ($6002, write)</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Unknown_Register_(%246003,_write)"><span class="tocnumber">4</span> <span class="toctext">Unknown Register ($6003, write)</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#MMC3-compatible_registers_(%248000-%24FFFF)"><span class="tocnumber">5</span> <span class="toctext">MMC3-compatible registers ($8000-$FFFF)</span></a></li>
+</ul>
+</div>
+
+<h2><span id="Mode_Register_.28.246000.2C_write.29"/><span class="mw-headline" id="Mode_Register_($6000,_write)">Mode Register ($6000, write)</span></h2>
+<pre>Mask: $E003
+
+D~7654 3210
+  ---------
+  LDcp C...
+  |||| +---- CHR-ROM banking mode
+  ||||        0: MMC3 (inner banks from $8000.0-$8000.5)
+  ||||        1: CNROM (8 KiB inner bank from $6002)
+  |||+------ PRG A19
+  ||+------- CHR A19
+  |+-------- CPU $8000-$FFFF mode
+  |           0: PRG-ROM
+  |           1: Read solder pad setting
+  +--------- $6xxx Register Lock (except $6002.0-1)
+              0: unlocked
+              1: locked, further writes ignored until reset
+</pre>
+<h2><span id="Outer_Bank_Register_.28.246001.2C_write.29"/><span class="mw-headline" id="Outer_Bank_Register_($6001,_write)">Outer Bank Register ($6001, write)</span></h2>
+<pre>Mask: $E003
+
+D~7654 3210
+  ---------
+  NcCC npPP
+  |||| ||++- PRG A18..17
+  |||| |+--- Outer PRG Bank Size
+  |||| |      0: 256 KiB, PRG A17 from MMC3
+  |||| |      1: 128 KiB, PRG A17 from $6001 bit 0
+  |||| +---- PRG A14 mode in NROM mode ($6001 bit 7=1)
+  ||||        0: PRG A14=CPU A14 (NROM-256)
+  ||||        1: PRG A14=MMC3 PRG A14 (NROM-128)
+  ||++------ CHR A18..17
+  |+-------- Outer CHR Bank Size
+  |           0: 256 KiB, CHR A17 from MMC3
+  |           1: 128 KiB, CHR A17 from $6001 bit 4
+  +--------- PRG-ROM banking mode
+              0: MMC3
+              1: NROM
+</pre>
+<p>In NROM mode, the MMC3 clone's CPU A13 and A14 inputs are held low, so that MMC3 register 6 applies to the entire CPU $8000-$FFFF range, with PRG A13 substituted by CPU A13 and PRG A14 subject to $6001.3.
+</p>
+<h2><span id="CNROM_register_.28.246002.2C_write.29"/><span class="mw-headline" id="CNROM_register_($6002,_write)">CNROM register ($6002, write)</span></h2>
+<pre>Mask: $E003
+</pre>
+<p>Contains the 8 KiB CHR-ROM bank if $6000.3=1, masked to 128 or 256 KiB according to $6000.6. Bits 0-1 respond even if the &quot;Lock&quot; bit is set, while changes to bits 2-7 will be ignored if the &quot;Lock&quot; bit has been set.
+</p>
+<h2><span id="Unknown_Register_.28.246003.2C_write.29"/><span class="mw-headline" id="Unknown_Register_($6003,_write)">Unknown Register ($6003, write)</span></h2>
+<pre>Mask: $E003
+</pre>
+<h2><span id="MMC3-compatible_registers_.28.248000-.24FFFF.29"/><span class="mw-headline" id="MMC3-compatible_registers_($8000-$FFFF)">MMC3-compatible registers ($8000-$FFFF)</span></h2>
+<pre>Mask: $E001
+
+See <a href="MMC3.xhtml" title="MMC3">MMC3</a>.
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123163609
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.014 seconds
+Real time usage: 0.020 seconds
+Preprocessor visited node count: 22/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:418-0!canonical and timestamp 20241123163609 and revision id 20085.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

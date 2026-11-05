@@ -1,0 +1,46 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 461</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_461"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 461</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_461">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_461">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 461</b> denotes the <b>CM-9309</b> PCB, used for the <i>6-in-1 Wuzi Gun</i> <a href="MMC1.xhtml" title="MMC1">MMC1</a>-based multicart, consisting of the two MMC1 games <i>Operation Wolf</i> and <i>Mechanized Attack</i> plus four NROM-128 games. There is one 256 KiB CHR ROM chip and one 32 KiB CHR ROM chip, with the 256 KiB one being stored first in the .NES file.
+</p>
+<h2><span id="Outer_Bank_Register_.28.246000-.247FFF.2C_write.29"/><span class="mw-headline" id="Outer_Bank_Register_($6000-$7FFF,_write)">Outer Bank Register ($6000-$7FFF, write)</span></h2>
+<pre>A~[011. .... .... pMPP]
+                  ||++-- PRG A15..A14 in NROM-128 mode
+                  |+---- PRG Mode and CHR ROM chip select
+                  ||      0: NROM-128 mode PRG, second (32 KiB) CHR chip
+                  ||      1: MMC1 mode PRG mode, first (256 KiB) CHR chip
+                  ++---- PRG A17..A16
+                  +----- CHR A17
+                  +----- 0: 128 KiB inner PRG bank in MMC1 mode (for Operation Wolf)
+                         1: 64 KiB inner PRG bank in MMC1 mode (for Mechanized Attack)
+</pre>
+<p>This register connects to the MMC1's WRAM interface. The MMC1 clone mimics an MMC1A, so the WRAM interface cannot be disabled. The MMC1's registers select mirroring as well as 128 KiB PRG and 128 KiB CHR banks
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123000513
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.007 seconds
+Real time usage: 0.009 seconds
+Preprocessor visited node count: 6/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:2575-0!canonical and timestamp 20241123000513 and revision id 21169.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

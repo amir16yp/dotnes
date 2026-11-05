@@ -1,0 +1,5 @@
+NES 2.0 Mapper 352
+
+NES 2.0 Mapper 352
+
+NES 2.0 Mapper 352 is used for a Kaiser 4-in-1 using a KS106C-marked PCB, which is reset based and changes mirroring based on the game.

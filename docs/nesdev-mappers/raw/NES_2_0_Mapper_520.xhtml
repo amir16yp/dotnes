@@ -1,0 +1,45 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 520</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_520"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 520</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_520">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_520">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 520 is used for the <i>2-in-1 Datach Dragon Ball Z/Datach Yu Yu Hakusho</i> multicart. It uses a <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">VRC4</a> clone (in the VRC4e configuration, i.e. address 0x004s to A0 and address 0x008s to A1) using 8 KiB of banked CHR-RAM rather than CHR-ROM:
+</p>
+<h3><span id="CHR_Select_0_low_.28.24B000.29"/><span class="mw-headline" id="CHR_Select_0_low_($B000)">CHR Select 0 low ($B000)</span></h3>
+<pre>7  bit  0
+---------
+.... OLLL
+     |+++- Select 1 KiB CHR-RAM bank at PPU $0000-$03FF
+     +---- Select outer 256 KiB PRG-ROM bank when PPU $0000-$03FF is accessed
+</pre>
+<ul><li>The high CHR Select register ($B004) is ignored.</li>
+<li>The other seven low CHR bank select registers continue the pattern for the other seven 1 KiB PPU banks.</li></ul>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li>The ROM image in GoodNES 3.23b is set to Mapper 23, even as the outer bank register is not part of that mapper's specification.</li>
+<li>As with <a href="MMC1.xhtml#SOROM.2C_SUROM_and_SXROM" title="MMC1">SOROM, SUROM and SXROM</a>, if the several CHR bank registers do not specify the same outer PRG ROM bank, then PRG ROM presumably would be bankswitched as the PPU renders.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123164530
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.017 seconds
+Real time usage: 0.024 seconds
+Preprocessor visited node count: 9/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:826-0!canonical and timestamp 20241123164530 and revision id 8107.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

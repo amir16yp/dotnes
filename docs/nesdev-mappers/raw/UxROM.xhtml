@@ -1,0 +1,235 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>UxROM</title><link rel="canonical" href="https://www.nesdev.org/wiki/UxROM"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>UxROM</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/UxROM">current version</a> | View <a href="Special_AllPages.xhtml#UxROM">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><div class="infobox">
+<div style="text-align: center"><b>UxROM</b>
+</div>
+<table class="oddf0">
+
+<tbody><tr>
+<td><b>Company</b>
+</td>
+<td>Nintendo, others
+</td></tr>
+<tr>
+<td><b>Games</b>
+</td>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/search/advanced?ines=2">155 in NesCartDB</a>
+</td></tr>
+<tr>
+<td><b>Complexity</b>
+</td>
+<td>Discrete logic
+</td></tr>
+<tr>
+<td><b>Boards</b>
+</td>
+<td>UNROM, UOROM
+</td></tr>
+<tr>
+<td><b>PRG ROM capacity</b>
+</td>
+<td>256K/4096K
+</td></tr>
+<tr>
+<td><b>PRG ROM window</b>
+</td>
+<td>16K + 16K fixed
+</td></tr>
+<tr>
+<td><b>PRG RAM capacity</b>
+</td>
+<td>None
+</td></tr>
+<tr>
+<td><b>CHR capacity</b>
+</td>
+<td>8K
+</td></tr>
+<tr>
+<td><b>CHR window</b>
+</td>
+<td>n/a
+</td></tr>
+<tr>
+<td><b>Nametable <a href="Mirroring.xhtml" title="Mirroring">mirroring</a></b>
+</td>
+<td>Fixed H or V, controlled by solder pads
+</td></tr>
+<tr>
+<td><b><a href="Bus_conflict.xhtml" title="Bus conflict">Bus conflicts</a></b>
+</td>
+<td>Yes/No
+</td></tr>
+<tr>
+<td><b>IRQ</b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>Audio</b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>iNES <a href="Mapper.xhtml" title="Mapper">mappers</a></b>
+</td>
+<td><a href="UxROM.xhtml" class="mw-redirect" title="INES Mapper 002">002</a>, <a href="INES_Mapper_094.xhtml" title="INES Mapper 094">094</a>, <a href="INES_Mapper_180.xhtml" title="INES Mapper 180">180</a>
+</td></tr></tbody></table>
+</div>
+<div class="infobox">
+<div style="text-align: center"><b>NESCartDB</b></div>
+<table class="oddf0">
+
+<tbody><tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/search/advanced?ines=2">iNES 002</a>
+</td></tr>
+<tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/search/advanced?unif_op=LIKE+%60%25%40%25%60&amp;unif=-U%25ROM">UxROM</a>
+</td></tr>
+<tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/search/advanced?unif_op=LIKE+%60%25%40%25%60&amp;unif=UNROM">UNROM</a>
+</td></tr>
+<tr>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/search/advanced?unif_op=LIKE+%60%25%40%25%60&amp;unif=UOROM">UOROM</a>
+</td></tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</tbody></table>
+</div>
+<p>The generic designation <i>UxROM</i> refers to the Nintendo cartridge boards <i>NES-UNROM</i>, <i>NES-UOROM</i>, <a href="INES_Mapper_094.xhtml" title="INES Mapper 094">HVC-UN1ROM</a> their <a href="Famicom.xhtml" title="Famicom">HVC</a> counterparts, and clone boards.
+</p>
+<ul><li><b><a href="INES.xhtml" title="INES">iNES</a> Mapper 002</b> is the implementation of the most common usage of UxROM compatible boards, described in this article.</li>
+<li><a href="INES_Mapper_094.xhtml" title="INES Mapper 094">iNES Mapper 094</a> describes UN1ROM, used only in <i>Senjou no Ookami</i>.</li>
+<li><a href="INES_Mapper_180.xhtml" title="INES Mapper 180">iNES Mapper 180</a> describes a reconfiguration of UNROM used only in <i>Crazy Climber</i>.</li></ul>
+<p>Example games:
+</p>
+<ul><li><i>Mega Man</i></li>
+<li><i>Castlevania</i></li>
+<li><i>Contra</i></li>
+<li><i>Duck Tales</i></li>
+<li><i>Metal Gear</i></li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Solder_pad_config"><span class="tocnumber">2</span> <span class="toctext">Solder pad config</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Registers"><span class="tocnumber">3</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Bank_select_(%248000-%24FFFF)"><span class="tocnumber">3.1</span> <span class="toctext">Bank select ($8000-$FFFF)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#Hardware"><span class="tocnumber">4</span> <span class="toctext">Hardware</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Variants"><span class="tocnumber">5</span> <span class="toctext">Variants</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#See_also"><span class="tocnumber">6</span> <span class="toctext">See also</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#External_links"><span class="tocnumber">7</span> <span class="toctext">External links</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>CPU $8000-$BFFF: 16 KB switchable PRG ROM bank</li>
+<li>CPU $C000-$FFFF: 16 KB PRG ROM bank, fixed to the last bank</li></ul>
+<h2><span class="mw-headline" id="Solder_pad_config">Solder pad config</span></h2>
+<ul><li>Horizontal mirroring : 'H' disconnected, 'V' connected.</li>
+<li>Vertical mirroring : 'H' connected, 'V' disconnected.</li></ul>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<h3><span id="Bank_select_.28.248000-.24FFFF.29"/><span class="mw-headline" id="Bank_select_($8000-$FFFF)">Bank select ($8000-$FFFF)</span></h3>
+<pre>7  bit  0
+---- ----
+xxxx pPPP
+     ||||
+     ++++- Select 16 KB PRG ROM bank for CPU $8000-$BFFF
+          (UNROM uses bits 2-0; UOROM uses bits 3-0)
+</pre>
+<p>Emulator implementations of <b>iNES mapper 2</b> treat this as a full 8-bit bank select register, without bus conflicts. This allows the mapper to be used for similar boards that are compatible.
+</p><p>To make use of all 8-bits for a 4 MB PRG ROM, an <a href="NES_2_0.xhtml" title="NES 2.0">NES 2.0</a> header must be used (<a href="INES.xhtml" title="INES">iNES</a> can only effectively go to 2 MB).
+</p><p>The original UxROM boards used by Nintendo were subject to bus conflicts, and the relevant games all work around this in software.
+Some emulators (notably FCEUX) will have bus conflicts by default, but others have none.
+<a href="NES_2_0_submappers.xhtml#002.2C_003.2C_007:_UxROM.2C_CNROM.2C_AxROM" title="NES 2.0 submappers">NES 2.0 submappers</a> were assigned to accurately specify whether the game should be emulated with bus conflicts.
+</p>
+<h2><span class="mw-headline" id="Hardware">Hardware</span></h2>
+<p>The UNROM, UN1ROM, and UOROM boards contain a <a href="74161.xhtml" title="74161">74HC161</a> binary counter used as a quad D latch (4-bit register) and a <a href="7432.xhtml" title="7432">74HC32</a> quad 2-input OR gate to make one bank always visible.
+</p><p>The circuit behaves as if it were as follows:
+</p>
+<pre>      /PRGSEL               A14  A13-A0
+       |                      |      |
+       |                      |      |
+       | D2-D0-.       ,------'      |
+       |       |     . |             |
+       | ,-----+--.  |`+.            |
+       | |Register+--+0  `.          |
+       | `--------'  |    |__.       |
+       |       |     |    |  |       |
+       | R/W --'   7-+1  ,'  |       |
+       |             | ,'    |       |
+       |             |'      |       |
+       |                     |       |
+      ,+---------------------+-------+-----.
+      |/CE              A16-A14  A13-A0    |
+      |         128K by 8 bit ROM     D7-D0+-- to 2A03 data bus
+      |                                    |
+      `------------------------------------'
+</pre>
+<p>(This diagram is for UNROM. UOROM has one more bit in the register, multiplexer output, and address input A17, and the multiplexer's other input is $F. Homebrew boards capable of 512 KiB have one more of each, and the multiplexer's input is $1F.)
+</p><p>The quad OR gate here acts as a multiplexer.
+A <a href="7402.xhtml" title="7402">74HC02</a> quad NOR gate can be used instead if the banks are stored in reverse order in the ROM. If the program is 128 KiB or smaller, the 7402 way leaves one NOR gate free to invert R/W into /OE to avoid <a href="Bus_conflict.xhtml" title="Bus conflict">bus conflicts</a>.<a rel="nofollow" class="external autonumber" href="http://forums.nesdev.org/viewtopic.php?p=111686#p111686">[1]</a>
+</p><p>If an actual multiplexer (<a href="74157.xhtml" title="74157">74HC157</a> quad 2:1) is cheaper than an OR gate, a third-party UxROM-compatible board can use that instead of the 74HC32, as <a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?p=93516#p93516">kyuusaku suggested</a>.
+</p>
+<h2><span class="mw-headline" id="Variants">Variants</span></h2>
+<p>The <a href="INES_Mapper_071.xhtml" title="INES Mapper 071">mapper</a> used in Codemasters games published by Camerica extends UxROM with <a href="CIC_lockout_chip.xhtml" class="mw-redirect" title="CIC">CIC</a> defeat circuitry.
+</p><p>Nintendo's <a href="INES_Mapper_094.xhtml" title="INES Mapper 094">HVC-UN1ROM</a> board moves the bankswitching bits within the byte.
+</p><p><i>Crazy Climber</i> replaces the <a href="7432.xhtml" title="7432">74HC32</a> quad-OR gate by a <a href="7408.xhtml" title="7408">74HC08</a> quad-AND gate, so that the first bank is fixed at $8000-$bfff and the switchable bank is present at $c000-$ffff. This configuration is assigned to <a href="INES_Mapper_180.xhtml" title="INES Mapper 180">iNES Mapper 180</a>, which uses the same UNROM PCB.
+</p><p>With an 8-bit latch (<a href="74377.xhtml" title="74377">74HC377</a> or an additional 74HC161) and an additional 74HC32 to control A18-A21, a third-party board implementing this mapper can switch 4 MiB of PRG ROM.
+</p><p><a href="User_Sivak_Battle_Kid_2__Mountain_of_Torment.xhtml" title="User:Sivak/Battle Kid 2: Mountain of Torment">Battle Kid 2: Mountain of Torment</a> implements a 512kB UxROM mapper.
+</p><p><a href="UNROM_512.xhtml" title="UNROM 512">UNROM 512</a> implements a superset of 512kB UxROM, with additional CHR-RAM banking and the possibility of flash save.
+</p><p>The homebrew game <i>Alwa's Awakening</i> adds 8 KiB of battery-backed PRG-RAM in the usual $6000-$7FFF address range. A few Subor educational cartridges have non-battery-backed PRG-RAM in the same range as well. Emulators should support this PRG-RAM at least in the presence of a NES 2.0 header that explicitly specifies it.
+</p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li><a href="Programming_UNROM.xhtml" title="Programming UNROM">Programming UNROM</a></li></ul>
+<h2><span class="mw-headline" id="External_links">External links</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="http://nesdev.org/mappers.zip">Comprehensive NES Mapper Document</a> by \Firebug\, information about mapper's initial state is inaccurate.</li>
+<li>NES mapper list by Disch <a rel="nofollow" class="external autonumber" href="http://www.romhacking.net/documents/362/">[2]</a></li>
+<li><a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?p=179581#p179581">Converting UNROM to UOROM</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123135439
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.048 seconds
+Real time usage: 0.065 seconds
+Preprocessor visited node count: 371/1000000
+Post‐expand include size: 2581/2097152 bytes
+Template argument size: 519/2097152 bytes
+Highest expansion depth: 12/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 764/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%   28.749      1 -total
+ 77.86%   22.384      1 Template:Nesdbbox
+ 55.21%   15.872      4 Template:Nesdblink
+ 36.37%   10.456      9 Template:Strip_whitespace
+ 21.65%    6.224      1 Template:Infobox_iNES_mapper
+ 13.91%    3.998      9 Template:Strip_whitespace/1
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:1150-0!canonical and timestamp 20241123135439 and revision id 22135.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_bus_conflicts.xhtml">Mappers with bus conflicts</a>, <a href="Category_In_NesCartDB.xhtml">In NesCartDB</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_NES_2_0_mappers_with_submappers.xhtml">NES 2.0 mappers with submappers</a>, <a href="Category_Discrete_logic_mappers.xhtml">Discrete logic mappers</a></p></div></body></html>

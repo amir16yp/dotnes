@@ -1,0 +1,202 @@
+UxROM
+
+UxROM
+
+UxROM
+
+Company
+
+Nintendo, others
+
+Games
+
+155 in NesCartDB
+
+Complexity
+
+Discrete logic
+
+Boards
+
+UNROM, UOROM
+
+PRG ROM capacity
+
+256K/4096K
+
+PRG ROM window
+
+16K + 16K fixed
+
+PRG RAM capacity
+
+None
+
+CHR capacity
+
+8K
+
+CHR window
+
+n/a
+
+Nametable mirroring
+
+Fixed H or V, controlled by solder pads
+
+Bus conflicts
+
+Yes/No
+
+IRQ
+
+No
+
+Audio
+
+No
+
+iNES mappers
+
+002, 094, 180
+
+NESCartDB
+
+iNES 002
+
+UxROM
+
+UNROM
+
+UOROM
+
+The generic designation UxROM refers to the Nintendo cartridge boards NES-UNROM, NES-UOROM, HVC-UN1ROM their HVC counterparts, and clone boards.
+
+iNES Mapper 002 is the implementation of the most common usage of UxROM compatible boards, described in this article.
+
+iNES Mapper 094 describes UN1ROM, used only in Senjou no Ookami.
+
+iNES Mapper 180 describes a reconfiguration of UNROM used only in Crazy Climber.
+
+Example games:
+
+Mega Man
+
+Castlevania
+
+Contra
+
+Duck Tales
+
+Metal Gear
+
+Contents
+
+1 Banks
+
+2 Solder pad config
+
+3 Registers
+
+3.1 Bank select ($8000-$FFFF)
+
+4 Hardware
+
+5 Variants
+
+6 See also
+
+7 External links
+
+Banks
+
+CPU $8000-$BFFF: 16 KB switchable PRG ROM bank
+
+CPU $C000-$FFFF: 16 KB PRG ROM bank, fixed to the last bank
+
+Solder pad config
+
+Horizontal mirroring : 'H' disconnected, 'V' connected.
+
+Vertical mirroring : 'H' connected, 'V' disconnected.
+
+Registers
+
+Bank select ($8000-$FFFF)
+
+7  bit  0
+---- ----
+xxxx pPPP
+     ||||
+     ++++- Select 16 KB PRG ROM bank for CPU $8000-$BFFF
+          (UNROM uses bits 2-0; UOROM uses bits 3-0)
+
+Emulator implementations of iNES mapper 2 treat this as a full 8-bit bank select register, without bus conflicts. This allows the mapper to be used for similar boards that are compatible.
+
+To make use of all 8-bits for a 4 MB PRG ROM, an NES 2.0 header must be used (iNES can only effectively go to 2 MB).
+
+The original UxROM boards used by Nintendo were subject to bus conflicts, and the relevant games all work around this in software.
+Some emulators (notably FCEUX) will have bus conflicts by default, but others have none.
+NES 2.0 submappers were assigned to accurately specify whether the game should be emulated with bus conflicts.
+
+Hardware
+
+The UNROM, UN1ROM, and UOROM boards contain a 74HC161 binary counter used as a quad D latch (4-bit register) and a 74HC32 quad 2-input OR gate to make one bank always visible.
+
+The circuit behaves as if it were as follows:
+
+      /PRGSEL               A14  A13-A0
+       |                      |      |
+       |                      |      |
+       | D2-D0-.       ,------'      |
+       |       |     . |             |
+       | ,-----+--.  |`+.            |
+       | |Register+--+0  `.          |
+       | `--------'  |    |__.       |
+       |       |     |    |  |       |
+       | R/W --'   7-+1  ,'  |       |
+       |             | ,'    |       |
+       |             |'      |       |
+       |                     |       |
+      ,+---------------------+-------+-----.
+      |/CE              A16-A14  A13-A0    |
+      |         128K by 8 bit ROM     D7-D0+-- to 2A03 data bus
+      |                                    |
+      `------------------------------------'
+
+(This diagram is for UNROM. UOROM has one more bit in the register, multiplexer output, and address input A17, and the multiplexer's other input is $F. Homebrew boards capable of 512 KiB have one more of each, and the multiplexer's input is $1F.)
+
+The quad OR gate here acts as a multiplexer.
+A 74HC02 quad NOR gate can be used instead if the banks are stored in reverse order in the ROM. If the program is 128 KiB or smaller, the 7402 way leaves one NOR gate free to invert R/W into /OE to avoid bus conflicts.[1]
+
+If an actual multiplexer (74HC157 quad 2:1) is cheaper than an OR gate, a third-party UxROM-compatible board can use that instead of the 74HC32, as kyuusaku suggested.
+
+Variants
+
+The mapper used in Codemasters games published by Camerica extends UxROM with CIC defeat circuitry.
+
+Nintendo's HVC-UN1ROM board moves the bankswitching bits within the byte.
+
+Crazy Climber replaces the 74HC32 quad-OR gate by a 74HC08 quad-AND gate, so that the first bank is fixed at $8000-$bfff and the switchable bank is present at $c000-$ffff. This configuration is assigned to iNES Mapper 180, which uses the same UNROM PCB.
+
+With an 8-bit latch (74HC377 or an additional 74HC161) and an additional 74HC32 to control A18-A21, a third-party board implementing this mapper can switch 4 MiB of PRG ROM.
+
+Battle Kid 2: Mountain of Torment implements a 512kB UxROM mapper.
+
+UNROM 512 implements a superset of 512kB UxROM, with additional CHR-RAM banking and the possibility of flash save.
+
+The homebrew game Alwa's Awakening adds 8 KiB of battery-backed PRG-RAM in the usual $6000-$7FFF address range. A few Subor educational cartridges have non-battery-backed PRG-RAM in the same range as well. Emulators should support this PRG-RAM at least in the presence of a NES 2.0 header that explicitly specifies it.
+
+See also
+
+Programming UNROM
+
+External links
+
+Comprehensive NES Mapper Document by \Firebug\, information about mapper's initial state is inaccurate.
+
+NES mapper list by Disch [2]
+
+Converting UNROM to UOROM
+
+Categories: Mappers with bus conflicts, In NesCartDB, Mappers with CHR RAM, NES 2.0 mappers with submappers, Discrete logic mappers

@@ -1,0 +1,42 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 061</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_061"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 061</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_061">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_061">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 61</b>, when using CHR ROM, denotes the NTDEC <b>0324</b> PCB, used for two <i>HQ 高品質合卡 15-in-1</i> multicarts. A compatible PCB with ID <b>GS-2017</b> mounts 8 KiB of unbanked CHR RAM instead, used for the <i>方塊外傳 9合1 - Tetris Family 9-in-1</i> and <i>RCM 20-in-1</i> multicarts.
+</p>
+<h2><span id="Address_Latch_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Address_Latch_($8000-$FFFF,_write)">Address Latch ($8000-$FFFF, write)</span></h2>
+<pre>A~[1... CCCC M.pN PPPP]
+        |||| | || ++++- PRG A18..A15
+        |||| | |+------ 0: PRG A14=CPU A14 (NROM-256)
+        |||| | |        1: PRG A14=p (NROM-128)
+        |||| | +------- PRG A14 if M=1
+        |||| +--------- Mirroring, 0=Vertical, 1=Horizontal
+        ++++----------- CHR A16..A13 (when using CHR ROM)
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123163450
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.004 seconds
+Real time usage: 0.004 seconds
+Preprocessor visited node count: 5/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:346-0!canonical and timestamp 20241123163450 and revision id 21167.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

@@ -1,0 +1,55 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 255</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_255"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 255</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_255">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_255">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><a class="mw-selflink selflink">iNES Mapper 255</a> is apparently assigned to the <i>110-in-1</i> multicart.
+</p>
+<pre> A~[1BMZ PPPP  PpCC CCCC]
+     ||| ||||  |||| ||||
+     +-----------++-++++ - Select 8 KiB CHR at PPU $0000
+     ||| ||||  ||
+     +---++++--++------- - Select 16 KiB PRG at CPU $8000 and $C000 if Z=1
+     +---++++--+-------- - Select 32 KiB PRG at CPU $8000 if Z=0
+      |+---------------- - Select PRG bank size: 0-32K 1-16K
+      +----------------- - Nametable mirroring: 0-PPUA10 (&quot;vertical&quot;) 1-PPUA11 (&quot;horizontal&quot;)
+</pre>
+<p>Hardware on the board includes
+</p>
+<ul><li>four 512 KiB ROMs for PRG</li>
+<li>two 512 KiB ROMs for CHR</li>
+<li>two 74'273 8-bit latches</li>
+<li><a href="74139.xhtml" title="74139">74139</a></li>
+<li>PAL16L8 emulating a <a href="74153.xhtml" title="74153">74153</a></li>
+<li>an unpopulated footprint for a 74'670</li></ul>
+<p>The two latches' reset inputs are tied to 5V, so the banking register boots with random contents.
+</p><p><br/>
+This looks like a duplicate of <a href="INES_Mapper_225.xhtml" title="INES Mapper 225">iNES Mapper 225</a>. It's not clear why Nestopia implemented it twice.
+</p><p>See also: <a rel="nofollow" class="external free" href="https://forums.nesdev.org/viewtopic.php?p=209732#p209732">https://forums.nesdev.org/viewtopic.php?p=209732#p209732</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123163850
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.010 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 2/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:538-0!canonical and timestamp 20241123163850 and revision id 20429.
+ -->
+</div><p class="categories">Categories: <a href="Category_Discrete_logic_mappers.xhtml">Discrete logic mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

@@ -1,0 +1,379 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 268</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_268"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 268</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_268">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_268">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 268</b> denotes cartridges using the <b>AA6023</b> ASICs, labelled <b>SMD132</b>/<b>SMD133</b> when packaged, <a href="MMC3.xhtml" title="MMC3">MMC3</a> clones that can address up to 32 MiB of PRG-ROM, 256 KiB of CHR-ROM or -RAM, and 8 KiB of WRAM. The ASIC provides six outer bank registers. Their address is selected by a solder pad labelled &quot;5/6K&quot;, whose setting is denoted by NES 2.0 Submapper bit 0. One variant can even address 64 MiB of PRG-ROM.
+</p>
+<table class="wikitable sortable">
+<tbody><tr>
+<th>Setting</th>
+<th>Address Range</th>
+<th>NES 2.0 Submapper bit 0</th>
+<th>UNIF MAPR
+</th></tr>
+<tr>
+<td>right</td>
+<td>$6000-$6FFF (submappers except 2/3)/$7000-$7FFF (submappers 2/3)</td>
+<td>0</td>
+<td><b>COOLBOY</b> (without prefix)
+</td></tr>
+<tr>
+<td>left</td>
+<td>$5000-$5FFF</td>
+<td>1</td>
+<td><b>MINDKIDS</b> (without prefix)
+</td></tr>
+</tbody></table>
+<p>NES 2.0 Submapper bits 1-3 distinguish between incompatible revisions and wiring variants:
+</p>
+<table class="wikitable sortable">
+<tbody><tr>
+<th>NES 2.0 Submappers</th>
+<th>PCB Name</th>
+<th>Notes
+</th></tr>
+<tr>
+<td rowspan="4">0/1</td>
+<td><b>COOLBOY</b>/<b>MINDKIDS</b>/<b>KT-008</b></td>
+<td>CHR-RAM only, max. 32 MiB PRG-ROM
+</td></tr>
+<tr>
+<td><b>YH2018A</b></td>
+<td>CHR-RAM only, max. 64 MiB PRG-ROM
+</td></tr>
+<tr>
+<td><b>JTH-813</b></td>
+<td>CHR-ROM only, max. 8 MiB PRG-ROM, max. 1 MiB CHR-ROM
+</td></tr>
+<tr>
+<td><b>KT-???</b></td>
+<td>CHR-ROM+CHR-RAM; uses the ASIC's mixed CHR-ROM/RAM functionality selected by register <a href="#%24xxx4">$xxx4</a>
+</td></tr>
+<tr>
+<td>2/3</td>
+<td><b>GH2009_V01</b>/<b>SMD173C_60</b>/<b>SMD173C_L1</b></td>
+<td>Later revision of 0/1. Die version <b>AA6023B</b>, chip still labelled as <b>SMD133</b>
+</td></tr>
+<tr>
+<td>4/5</td>
+<td><b>KP-6022</b>,<b>LD622D</b></td>
+<td>Max. 4 MiB PRG-ROM
+</td></tr>
+<tr>
+<td>6/7</td>
+<td><b>J-852C</b></td>
+<td>Max. 128 KiB of CHR-RAM, as CHR A17 selects between two PRG-ROM chips
+</td></tr>
+<tr>
+<td>8/9</td>
+<td><b>SMD72A_V5S_V01</b></td>
+<td>Max. 2 MiB PRG-ROM, Max. 256 KiB CHR-RAM that can be write-protected
+</td></tr>
+<tr>
+<td>10/11</td>
+<td><b>SMD172C-L1</b></td>
+<td>Max. 8 MiB PRG-ROM, with single-screen mirroring
+</td></tr>
+</tbody></table>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#%24xxx0"><span class="tocnumber">1.1</span> <span class="toctext">$xxx0</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#%24xxx1"><span class="tocnumber">1.2</span> <span class="toctext">$xxx1</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#%24xxx2"><span class="tocnumber">1.3</span> <span class="toctext">$xxx2</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#%24xxx3"><span class="tocnumber">1.4</span> <span class="toctext">$xxx3</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#%24xxx4"><span class="tocnumber">1.5</span> <span class="toctext">$xxx4</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#%24xxx5"><span class="tocnumber">1.6</span> <span class="toctext">$xxx5</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#Register_interpretation"><span class="tocnumber">2</span> <span class="toctext">Register interpretation</span></a>
+<ul>
+<li class="toclevel-2 tocsection-9"><a href="#Banking_mode_=_%2400"><span class="tocnumber">2.1</span> <span class="toctext">Banking mode = $00</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Banking_mode_=_%2410"><span class="tocnumber">2.2</span> <span class="toctext">Banking mode = $10</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Banking_mode_=_%2440"><span class="tocnumber">2.3</span> <span class="toctext">Banking mode = $40</span></a></li>
+<li class="toclevel-2 tocsection-12"><a href="#Banking_mode_=_%2450"><span class="tocnumber">2.4</span> <span class="toctext">Banking mode = $50</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-13"><a href="#64_MiB_mapping"><span class="tocnumber">3</span> <span class="toctext">64 MiB mapping</span></a></li>
+<li class="toclevel-1 tocsection-14"><a href="#WRAM_usage"><span class="tocnumber">4</span> <span class="toctext">WRAM usage</span></a></li>
+<li class="toclevel-1 tocsection-15"><a href="#Game_List"><span class="tocnumber">5</span> <span class="toctext">Game List</span></a></li>
+<li class="toclevel-1 tocsection-16"><a href="#Official_documentation"><span class="tocnumber">6</span> <span class="toctext">Official documentation</span></a></li>
+<li class="toclevel-1 tocsection-17"><a href="#Notes"><span class="tocnumber">7</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>In the $6000-$6FFF/$7000-$7FFF setting, the ASIC's registers registers overlay, but are functionally independent from, any PRG-RAM present.
+</p><p>Masks: $F007
+</p>
+<h3><span id=".24xxx0"/><span class="mw-headline" id="$xxx0">$xxx0</span></h3>
+<p>Submappers 0/1/2/3:
+</p>
+<pre> 7  bit  0
+ ---- ----
+ ABCC DEEE
+ |||| ||||
+ |||| |+++-- PRG offset (PRG A19, A18, A17)
+ |||| +----- Alternate CHR A17
+ ||++------- PRG offset (PRG A24, A23)
+ ||++------- CHR offset (CHR A19, A18) on CHR-ROM-having boards
+ |+--------- PRG mask (PRG A17 from 0: MMC3; 1: offset)
+ +---------- CHR mask (CHR A17 from 0: MMC3; 1: alternate)
+</pre>
+<p>Submappers 4/5:
+</p>
+<pre> 7  bit  0
+ ---- ----
+ ABCC DEEE
+ |||| ||||
+ |||| |+++-- PRG offset (PRG A19, A18, A17)
+ |||| |++--- CHR offset (A21, A20)
+ |||| +----- Alternate CHR A17
+ ||++------- PRG offset (PRG A21, A20)
+ ||++------- CHR offset (CHR A19, A18) on CHR-ROM-having boards
+ |+--------- PRG mask (PRG A17 from 0: MMC3; 1: offset)
+ +---------- CHR mask (CHR A17 from 0: MMC3; 1: alternate)
+</pre>
+<p>Submappers 6/7:
+</p>
+<pre> 7  bit  0
+ ---- ----
+ ABCC DEEE
+ |||| ||||
+ |||| |+++-- PRG offset (PRG A19, A18, A17)
+ |||| +----- PRG chip select
+ ||++------- PRG offset (PRG A24, A23), CHR offset (CHR A19, A18)
+ |+--------- PRG mask (PRG A17 from 0: MMC3; 1: offset)
+ +---------- PRG chip select source (0: from MMC3 CHR A17; 1: from D bit)
+</pre>
+<p>Both PRG chips always have the same size, so that the first half of a submapper 6/7 ROM file represents the content of the first, and the second half of the second chip.
+</p><p>Submappers 8/9:
+</p>
+<pre> 7  bit  0
+ ---- ----
+ AB.C DEEE
+ || | ||||
+ || | |+++-- PRG offset (PRG A19, A18, A17)
+ || | +----- Alternate CHR A17
+ || +------- 1=Write-protect CHR-RAM
+ |+--------- PRG mask (PRG A17 from 0: MMC3; 1: offset)
+ +---------- CHR mask (CHR A17 from 0: MMC3; 1: alternate)
+</pre>
+<p>Submappers 10/11:
+</p>
+<pre> 7  bit  0
+ ---- ----
+ ABSC DEEE
+ |||| ||||
+ |||| |+++-- PRG offset (PRG A19, A18, A17)
+ |||| +----- Alternate CHR A17
+ |||+------- CIRAM A10 if S=0
+ ||+-------- 0=1-Screen mirroring via bit C
+ ||          1=Normal mirroring via MMC3 register A000
+ |+--------- PRG mask (PRG A17 from 0: MMC3; 1: offset)
+ +---------- CHR mask (CHR A17 from 0: MMC3; 1: alternate)
+</pre>
+<h3><span id=".24xxx1"/><span class="mw-headline" id="$xxx1">$xxx1</span></h3>
+<p>Submappers 0/1/6/7/10/11:
+</p>
+<pre> 7  bit  0
+ ---- ----
+ GHIJ KKLS
+ |||| |||+-- SC0 bit (see below)
+ |||| ||+--- GNROM mode bank PRG size (1: 32 KiB bank, PRG A14=CPU A14; 0: 16 KiB bank, PRG A14=offset A14)
+ |||+-++---- PRG offset (in order: PRG A20, A22, A21)
+ ||+-------- PRG mask (PRG A20 from 0: offset; 1: MMC3)
+ |+--------- PRG mask (PRG A19 from 0: offset; 1: MMC3)
+ +---------- PRG mask (PRG A18 from 0: MMC3; 1: offset)
+</pre>
+<p>Submappers 2/3:
+</p>
+<pre> 7  bit  0
+ ---- ----
+ GHIL JKKx
+ |||| |||
+ |||| +++--- PRG offset (in order: A20, A21, A22)
+ |||+------- GNROM mode bank PRG size (0: 32 KiB bank, PRG A14=CPU A14; 1: 16 KiB bank, PRG A14=offset A14)
+ ||+-------- PRG mask (PRG A20 from 0: offset; 1: MMC3)
+ |+--------- PRG mask (PRG A19 from 0: offset; 1: MMC3)
+ +---------- PRG mask (PRG A18 from 0: MMC3; 1: offset)
+</pre>
+<p>Note that both meaning and position of the L bit is flipped between submappers 0/1 and 2/3, and the order of bits A20-A22.
+</p><p>Submappers 4/5/8/9:
+</p>
+<pre> 7  bit  0
+ ---- ----
+ GHIx xxLx
+ |||    |
+ |||    +--- GNROM mode bank PRG size (1: 32 KiB bank, PRG A14=CPU A14; 0: 16 KiB bank, PRG A14=offset A14)
+ ||+-------- PRG mask (PRG A20 from 0: offset; 1: MMC3)
+ |+--------- PRG mask (PRG A19 from 0: offset; 1: MMC3)
+ +---------- PRG mask (PRG A18 from 0: MMC3; 1: offset)
+</pre>
+<h3><span id=".24xxx2"/><span class="mw-headline" id="$xxx2">$xxx2</span></h3>
+<pre> 7  bit  0
+ ---- ----
+ STTT MMMM
+ |||| ||||
+ |||| ++++-- CHR offset for GNROM mode (CHR A16, A15, A14, A13)
+ |+++------- GNROM CHR bitmask (ANDed with CHR A16, A15, A14 in MMMM)
+ +---------- GNROM CHR bitmask lock (1: prevents subsequent updates to S or T bits)
+</pre>
+<h3><span id=".24xxx3"/><span class="mw-headline" id="$xxx3">$xxx3</span></h3>
+<pre> 7  bit  0
+ ---- ----
+ NPZP QQRS
+ |||| |||+-- SC1 bit (see below)
+ |||| +++--- PRG offset for GNROM mode (PRG A16, A15, A14)
+ |||+------- 1: GNROM mode; 0: MMC3 mode
+ ||||         (1: PRG A16...13 from QQ, L, R, CPU A14, A13 + CHR A16...10 from MMMM, PPU A12...10;
+ ||||          0: PRG A16...13 from MMC3 + CHR A16...A10 from MMC3 )
+ ||+-------- 1: Also enable PRG RAM in $5000-$5FFF
+ |+-+------- Banking mode
+ |+--------- &quot;Weird MMC3 mode&quot;
+ +---------- Lockout (prevent further writes to all registers but the one at $xxx2, only works in MMC3 mode)
+</pre>
+<h3><span id=".24xxx4"/><span class="mw-headline" id="$xxx4">$xxx4</span></h3>
+<pre> 7  bit  0
+ ---- ----
+ UUUU UUUV
+ |||| ||||
+ |||| |||+--- 0: Select CHR-ROM only, 1: Select mixed CHR-RAM/CHR-ROM mode
+ ++++-+++---- MMC3 bank register value D1-D7 that select CHR-RAM rather than CHR-ROM
+</pre>
+<p>This register is only meaningful on cartridges that mount both CHR-ROM and CHR-RAM. By writing the appropriate value to D1-D7, the functionality of <a href="INES_Mapper_074.xhtml" title="INES Mapper 074">INES Mapper 074</a> and <a href="INES_Mapper_194.xhtml" title="INES Mapper 194">INES Mapper 194</a> is replicated.
+</p>
+<h3><span id=".24xxx5"/><span class="mw-headline" id="$xxx5">$xxx5</span></h3>
+<pre> 7  bit  0
+ ---- ----
+ xxxW XXYY
+    | ||||
+    | ||++--- Functionality unclear without extra hardware on PCB
+    | ++----- Functionality unclear without extra hardware on PCB (CHR)
+    +-------- 0: Normal MMC3 oversize mode
+              1: mega-UNROM mode; uses CHR A16 and A17 bits as PRG A18 and A19
+</pre>
+<h2><span class="mw-headline" id="Register_interpretation">Register interpretation</span></h2>
+<p>The following things are always true, regardless of mode:
+</p>
+<ul><li>The CCKK bits are always connected to PRG A24..A21.</li>
+<li>The PRG and CHR mask controls (I, H, G, B, &amp; A) always control whether PRG A20..A17 and CHR A17 are connected to the internal MMC3 registers, or the literal values in other controls (J, EEE, &amp; D).</li></ul>
+<h3><span id="Banking_mode_.3D_.2400"/><span class="mw-headline" id="Banking_mode_=_$00">Banking mode = $00</span></h3>
+<p>“Normal” oversize MMC3 mode.
+</p><p>Supports MMC3 anywhere between 128 KiB and 2 MiB, otherwise identical to ordinary <a href="MMC3.xhtml" title="MMC3">MMC3</a>. Goofy mask values will produce goofy memory layouts.
+</p><p>The combined register of CCKKJEEE could be thought of as a way to select one of 256 different 128 KiB PRG MMC3 games, or CCKK selecting one of 16 different 2 MiB MMC3 games.
+</p><p>Lockout works in this mode.
+</p>
+<h3><span id="Banking_mode_.3D_.2410"/><span class="mw-headline" id="Banking_mode_=_$10">Banking mode = $10</span></h3>
+<p>“Normal” GNROM mode.
+</p><p>PRG A16 and A15 come from the QQ controls.
+</p><p>When in 16 KiB PRG mode (L control), PRG A14 comes from the R control. Otherwise, it comes from CPU A14.
+</p><p>CHR A16, A15, A14, and A13 come from MMMM controls. CHR A12, A11, and A10 come from PPU A12, A11, and A10.
+</p><p>The combined register of CCKKJEEEQQR could be thought of as a way to select one of 2048 different 16 KiB NROM games.
+</p><p>Note: The CHR and PRG mask registers STILL AFFECT THIS MODE, allowing weird splicing of MMC3 banking (with 128 KiB granularity) overlaying GNROM-style banking.
+</p><p>Lockout DOES NOT work in this mode.
+</p>
+<h3><span id="Banking_mode_.3D_.2440"/><span class="mw-headline" id="Banking_mode_=_$40">Banking mode = $40</span></h3>
+<p>“Weird” MMC3 mode.
+</p><p>If <a href="MMC3.xhtml#Bank_select_.28.248000-.249FFE.2C_even.29" title="MMC3">MMC3 PRG ROM bank mode</a> is &quot;normal&quot; (8+8+16F), then the PRG banks at 0xC000 and 0xE000 are fixed to 8 KiB bank 0, instead of 0xFE and 0xFF. Supposedly this effect is completely ignored when MMC3 PRG ROM bank mode is inverted (8F+8+8+8F).
+</p><p>The second half of each of the 2 KiB CHR banks is replaced with bank 0, and the LSB of MMC3 registers 0 and 1 work (instead of being replaced by PPU A10).
+</p><p>Otherwise, behaves as “normal” MMC3 mode above.
+</p><p>Supposedly this was intended be used with extra hardware to enable an MMC4-like mode, perhaps similar to <a href="INES_Mapper_165.xhtml" title="INES Mapper 165">iNES Mapper 165</a>.
+</p>
+<h3><span id="Banking_mode_.3D_.2450"/><span class="mw-headline" id="Banking_mode_=_$50">Banking mode = $50</span></h3>
+<p>“Weird” GNROM-ish mode.
+</p><p>Combine the rules mentioned above for “Normal” GNROM mode with “Weird” MMC3 mode. (These descriptions should not be contradictory.)
+</p><p>Lockout DOES NOT work in this mode.
+</p>
+<h1><span class="mw-headline" id="64_MiB_mapping">64 MiB mapping</span></h1>
+<p>The <b>YH2018A</b> PCB uses the SC0 ($6001 bit 0) and SC1 ($6001 bit 1) bits (see above) to address two halves of 32 MiB for a total of 64 MiB. To do so, the ASIC's SL0 input pin is connected to GND, and the ASIC's OA0 output is connected to the ROM chip's PRG A25 input. This results in the following behaviors:
+</p>
+<pre>$xxx1.0  $xxx3.0  Meaning
+0        0        PRG A25=PRG A0, i.e. bytes at even addresses come from the first 32 MiB and bytes at odd addresses come from the second 32 MiB half.
+0        1        PRG A25=1, i.e. second 32 MiB half
+1        x        PRG A25=0, i.e. first 32 MiB half
+</pre>
+<p>After reset, both bits are cleared, so either the code at the reset vector must be carefully placed with bytes alternating between the two 32 MiB halves, or (as the existing multicarts do) must be duplicated in both 32 MiB halves.
+</p>
+<h1><span class="mw-headline" id="WRAM_usage">WRAM usage</span></h1>
+<p>MMC3-mode operation with WRAM in the $6000-$6FFF (submapper 0) setting involves setting up the extra registers with the MMC3's WRAM disabled, setting the Lockout bit, then enabling WRAM again:
+</p>
+<pre>LDA #$00
+STA $A001   ; Disable WRAM
+; initialize PRG/CHR offsets and masks
+; ...
+LDA #$80
+STA $6003   ; Enable Lockout
+STA $A001   ; Enable WRAM
+</pre>
+<p>Because Lockout does not work in GNROM mode, it is impossible to have GNROM game use WRAM in the $6000-$6FFF (submapper 0) setting, as any WRAM write would inadvertently change the outer bank registers. The one known Chinese RPG (楚留香新传) running in GNROM mode with WRAM uses the $5000-$5FFF (submapper 1) setting.
+</p>
+<h1><span class="mw-headline" id="Game_List">Game List</span></h1>
+<p>Multicarts, mostly using the &quot;Coolboy&quot; or &quot;Mindkids&quot; circuit board:
+</p>
+<ul><li><i>218-in-1 Real Game</i></li>
+<li><i>MegaMan 8-in-1 (PL-0006)</i></li>
+<li><i>Data East All-Star Collection</i></li>
+<li><i>PocketGames 150-in-1</i></li>
+<li><i>Super 208-in-1</i></li>
+<li><i>Super 340-in-1</i></li>
+<li><i>Super 360-in-1</i></li>
+<li><i>Super 402-in-1</i></li>
+<li><i>Super Game 143-in-1</i>, a.k.a. <i>The Best Games of NES</i></li>
+<li><i>深圳市仁顺科技 400-in-1 Real Game</i></li>
+<li><i>霸王小子 500-in-1</i></li></ul>
+<p>Chinese RPGs with more than 512 KiB of PRG-ROM:
+</p>
+<ul><li><i>大话水浒</i> (Dàhuà Shuǐhǔ)</li>
+<li><i>楚留香新传</i> (Chǔliúxiāng xīn Zhuàn)</li>
+<li><i>魔道劫</i> (Módào Jié)</li>
+<li><i>口袋妖怪: 叶绿 (vol. 1-3)</i> (Kǒudài Yāoguài: Yè Lǜ), a.k.a. <i>Pokémon Leaf-Green</i></li>
+<li><i>最终幻想 1 - 黑暗篇</i> (Zuìzhōng Huànxiǎng 1 - Hēi'àn Piān), a.k.a. <i>Final Fantasy X, Part 1</i></li>
+<li><i>最终幻想 2 - 光明篇</i> (Zuìzhōng Huànxiǎng 2 - Guāngmíng Piān), a.k.a. <i>Final Fantasy X, Part 2</i>, original release only</li>
+<li><i>最终幻想 3 - 黑暗篇</i> (Zuìzhōng Huànxiǎng 3 - Zhōngjié Piān), a.k.a. <i>Final Fantasy X, Part 3</i></li>
+<li><i>神奇宝贝</i> (Shénqí Bǎobèi), a.k.a. <i>Pokémon Diamond</i></li></ul>
+<p>Other games that do not merely use the ASIC as a simple MMC3 clone:
+</p>
+<ul><li><i>Gravity Trooper Metal Storm</i> (Retro-Bit release)</li>
+<li><i>Holy Diver</i> (Retro-Bit release)</li>
+<li><i>Quest Forge</i> (Piko Interactive release), although the underlying game is simply NROM</li></ul>
+<p>A great number of Chinese cartridges use the ASIC as a simple MMC3 clone and thus are usually found set to <a href="MMC3.xhtml" class="mw-redirect" title="INES Mapper 004">INES Mapper 004</a>. They can be recognized by writing $80 to $6003 in their initialization code.
+</p>
+<h1><span class="mw-headline" id="Official_documentation">Official documentation</span></h1>
+<ul><li><a href="File_AA6023Av1_1_2_OK_pdf.xhtml" title="File:AA6023Av1 1 2-OK.pdf">File:AA6023Av1 1 2-OK.pdf</a> - datasheet for AA6023A</li>
+<li><a href="File_AA6023Bv1_0_ok_pdf.xhtml" title="File:AA6023Bv1.0-ok.pdf">File:AA6023Bv1.0-ok.pdf</a> - datasheet for AA6023B</li>
+<li><a href="File_YBB52LQF064006_SMD132_AA6023A_pdf.xhtml" title="File:YBB52LQF064006 SMD132 AA6023A.pdf">File:YBB52LQF064006 SMD132 AA6023A.pdf</a> - pinout for SMD132</li>
+<li><a href="SMD133__AA6023__pinout.xhtml" title="SMD133 (AA6023) pinout">SMD133 (AA6023) pinout</a></li>
+<li><a href="File_SMD129_pcb.xhtml" title="File:SMD129.pcb">File:SMD129.pcb</a> - PCB layout of one of &quot;COOLBOY&quot; cartridges (for Altium Designer)</li></ul>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>No cart has been discovered so far that makes use of the &quot;weird&quot; mode.</li>
+<li>Some new cartridges from MINDKIDS have /WE and /OE pins connected to mapper, which allows you to rewrite flash memory without soldering. This also allows console to write data to the cartridge. No cart has been discovered so far that makes use of this feature, but this can be used for homebrew.</li>
+<li>See also: <a href="NES_2_0_Mapper_342.xhtml" class="mw-redirect" title="COOLGIRL">COOLGIRL</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123001638
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.054 seconds
+Real time usage: 0.069 seconds
+Preprocessor visited node count: 66/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:653-0!canonical and timestamp 20241123001638 and revision id 22051.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_ASIC_mappers.xhtml">ASIC mappers</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

@@ -1,0 +1,5 @@
+INES Mapper 171
+
+INES Mapper 171
+
+iNES Mapper 171 is used for Kaiser's KS-7058 board. It's identical to INES Mapper 001 except that Mirroring is hard-wired.

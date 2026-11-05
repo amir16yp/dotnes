@@ -1,0 +1,82 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 451</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_451"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 451</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_451">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_451">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 451</b> is used for the homebrew game <i>Haratyler HP/MP</i>. It is basically a homebrew TLROM-like circuit board that implements the MMC3 register's in an unusual fashion, and saves the high score to flash ROM. The game executes the AMIC A29040B flash ROM chip's &quot;Software ID&quot; command; if the manufacturer and model ID do not match the expected values ($37 and $86), or it detects that WRAM exists, the game replaces the first level with an unwinnable boss fight. <i>Haratyler MP</i> additionally provides MP3 playback from a built-in microSD card, similar to <a href="GTROM.xhtml#GTMP3" title="GTROM">GTMP3</a>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#MP3_Playback_Controller_(%246000-%247FFF)"><span class="tocnumber">2.1</span> <span class="toctext">MP3 Playback Controller ($6000-$7FFF)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Mirroring_Register_(%24A000-%24BFFF)"><span class="tocnumber">2.2</span> <span class="toctext">Mirroring Register ($A000-$BFFF)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#IRQ_Register_(%24C000-%24DFFF)"><span class="tocnumber">2.3</span> <span class="toctext">IRQ Register ($C000-$DFFF)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Bank_Register_(%24E000-%24FFFF)"><span class="tocnumber">2.4</span> <span class="toctext">Bank Register ($E000-$FFFF)</span></a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$9FFF: 8 KiB fixed PRG ROM bank $00</li>
+<li>CPU $A000-$BFFF: 8 KiB switchable PRG ROM bank $10+x</li>
+<li>CPU $C000-$DFFF: 8 KiB switchable PRG ROM bank $20+x</li>
+<li>CPU $E000-$FFFF: 8 KiB fixed PRG ROM bank $30</li>
+<li>PPU $0000-$1FFF: 8 KiB switchable CHR RAM bank from 16 KiB total</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="MP3_Playback_Controller_.28.246000-.247FFF.29"/><span class="mw-headline" id="MP3_Playback_Controller_($6000-$7FFF)">MP3 Playback Controller ($6000-$7FFF)</span></h2>
+<h2><span id="Mirroring_Register_.28.24A000-.24BFFF.29"/><span class="mw-headline" id="Mirroring_Register_($A000-$BFFF)">Mirroring Register ($A000-$BFFF)</span></h2>
+<pre>A~[101. .... .... ...M]
+                     +- 0: Vertical, 1: Horizontal
+</pre>
+<h2><span id="IRQ_Register_.28.24C000-.24DFFF.29"/><span class="mw-headline" id="IRQ_Register_($C000-$DFFF)">IRQ Register ($C000-$DFFF)</span></h2>
+<pre>A~[110. .... VVVV VVVV]
+</pre>
+<p>A write to this register amounts to the following writes on a normal MMC3:
+</p>
+<ul><li>$C000=VVVVVVVV -1</li>
+<li>$C001=0</li>
+<li>If V=$FF: $E000, otherwise $E001</li></ul>
+<h2><span id="Bank_Register_.28.24E000-.24FFFF.29"/><span class="mw-headline" id="Bank_Register_($E000-$FFFF)">Bank Register ($E000-$FFFF)</span></h2>
+<pre>A~[111. .... .... ..BA]
+                    |+- PRG/CHR A13
+                    +-- PRG A16
+</pre>
+<p>This means effectively:
+</p>
+<pre>BA    CPU $A000   CPU $C000   PPU $0000
+ 0        $10         $20        0
+ 1        $11         $21        1
+ 2        $18         $28        0
+ 3        $19         $29        1
+</pre>
+<p>Together with the fixed banks, this means that only PRG ROM banks $00/$10/$11/$18/$19/$20/$21/$28/$29/$30 are accessible. The rest serve as padding for the flash ROM chip's 64 KiB sector size.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241122191050
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.010 seconds
+Real time usage: 0.017 seconds
+Preprocessor visited node count: 24/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:2304-0!canonical and timestamp 20241122191050 and revision id 20289.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_Mappers_with_flash_save.xhtml">Mappers with flash save</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

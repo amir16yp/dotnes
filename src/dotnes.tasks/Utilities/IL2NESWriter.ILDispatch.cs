@@ -2832,16 +2832,842 @@ partial class IL2NESWriter
                         }
                         break;
                     case nameof(NESLib.uxrom_set_prg_bank):
+                    case nameof(NESLib.axrom_set_prg_bank):
+                    case nameof(NESLib.bnrom_set_prg_bank):
+                    case nameof(NESLib.gxrom_set):
+                    case nameof(NESLib.colordreams_set):
+                    case nameof(NESLib.cprom_set_chr_bank):
+                    case nameof(NESLib.unrom512_set_prg_bank):
+                    case nameof(NESLib.camerica_set_prg_bank):
+                    case nameof(NESLib.holydiver_set):
+                    case nameof(NESLib.mapper15_set):
+                    case nameof(NESLib.bandai_set_prg_bank):
+                    case nameof(NESLib.cnrom185_set_chr_bank):
+                    case nameof(NESLib.action53_set):
+                    case nameof(NESLib.bandai152_set):
+                    case nameof(NESLib.jaleco72_set):
+                    case nameof(NESLib.namcot76_set_prg_bank):
+                    case nameof(NESLib.sunsoft3_set_prg_bank):
+                    case nameof(NESLib.sunsoft4_set_prg_bank):
+                    case nameof(NESLib.sunsoft89_set):
+                    case nameof(NESLib.sunsoft93_set_prg_bank):
+                    case nameof(NESLib.irem97_set):
+                    case nameof(NESLib.txc189_set_prg_bank):
+                    case nameof(NESLib.mapper226_set):
+                    case nameof(NESLib.bf9096_set):
+                    case nameof(NESLib.mapper241_set_prg_bank):
+                    case nameof(NESLib.txc36_set_prg_bank):
+                    case nameof(NESLib.irem77_set):
+                    case nameof(NESLib.cony83_set_prg_bank):
+                    case nameof(NESLib.mapper91_set_prg_bank):
+                    case nameof(NESLib.jaleco92_set):
+                    case nameof(NESLib.oeka96_set):
+                    case nameof(NESLib.asder112_set_prg_bank):
+                    case nameof(NESLib.mapper176_set_prg_bank):
+                    case nameof(NESLib.mapper177_set_prg_bank):
+                    case nameof(NESLib.mapper178_set_prg_bank):
+                    case nameof(NESLib.mapper229_set):
+                    case nameof(NESLib.mapper230_set):
+                    case nameof(NESLib.mapper231_set):
+                    case nameof(NESLib.mapper235_set):
+                    case nameof(NESLib.mapper242_set):
+                    case nameof(NESLib.mapper40_set_prg_bank):
+                    case nameof(NESLib.mapper42_set_prg_bank):
+                    case nameof(NESLib.mapper57_set):
+                    case nameof(NESLib.mapper58_set):
+                    case nameof(NESLib.mapper60_set):
+                    case nameof(NESLib.mapper_bus_set):
+                    case nameof(NESLib.ffe6_set_prg_bank):
+                    case nameof(NESLib.ffe8_set):
+                    case nameof(NESLib.mapper35_set_prg_bank):
+                    case nameof(NESLib.mapper39_set_prg_bank):
+                    case nameof(NESLib.mapper43_set_prg_bank):
+                    case nameof(NESLib.mapper54_set):
+                    case nameof(NESLib.mapper56_set_prg_bank):
+                    case nameof(NESLib.mapper81_set_prg_bank):
+                    case nameof(NESLib.mapper84_set_prg_bank):
+                    case nameof(NESLib.mapper98_set_prg_bank):
+                    case nameof(NESLib.mapper101_set_chr_bank):
+                    case nameof(NESLib.mapper107_set):
+                    case nameof(NESLib.mapper117_set_prg_bank):
+                    case nameof(NESLib.mapper142_set_prg_bank):
+                    case nameof(NESLib.mapper144_set):
+                    case nameof(NESLib.sachen149_set_chr_bank):
+                    case nameof(NESLib.bandai154_set):
+                    case nameof(NESLib.mapper166_set_prg_bank):
+                    case nameof(NESLib.mapper167_set_prg_bank):
+                    case nameof(NESLib.mapper203_set):
+                    case nameof(NESLib.mapper222_set_prg_bank):
+                    case nameof(NESLib.mapper224_set_prg_bank):
+                    case nameof(NESLib.mapper233_set):
+                    case nameof(NESLib.mapper236_set):
+                    case nameof(NESLib.mapper237_set):
+                    case nameof(NESLib.mapper244_set):
+                    case nameof(NESLib.mapper180_set_prg_bank):
+                    case nameof(NESLib.retcufrom29_set):
+                    case nameof(NESLib.racermate168_set):
+                    case nameof(NESLib.mapper220_set):
+                    case nameof(NESLib.mapper223_set_prg_bank):
+                    case nameof(NESLib.mapper103_set_prg_bank):
+                    case nameof(NESLib.mapper171_set):
+                    case nameof(NESLib.mapper174_set):
+                    case nameof(NESLib.mapper175_set):
+                    case nameof(NESLib.mapper179_set):
+                    case nameof(NESLib.mapper181_set):
+                    case nameof(NESLib.mapper239_set):
+                    case nameof(NESLib.mapper59_set):
+                    case nameof(NESLib.mapper108_set_prg_bank):
+                    case nameof(NESLib.mapper169_set):
+                    case nameof(NESLib.cnrom_set_chr_bank):
+                        // Bus-conflict / simple mappers: bank (or packed value) already in A → STA $8000
                         Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x8000);
                         _immediateInA = null;
                         _pokeLastValue = null;
                         break;
-                    case nameof(NESLib.cnrom_set_chr_bank):
-                        // CNROM (mapper 3) bank switch: write bank number to $8000
-                        // The bank number is already in A from the argument load
-                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x8000);
+                    case nameof(NESLib.nina_set):
+                    case nameof(NESLib.nina113_set):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.NINA_BANK_SELECT);
                         _immediateInA = null;
                         _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.jaleco86_set):
+                    case nameof(NESLib.jaleco140_set):
+                    case nameof(NESLib.sunsoft184_set_chr_bank):
+                    case nameof(NESLib.mapper46_set):
+                    case nameof(NESLib.mapper47_set_outer):
+                    case nameof(NESLib.mapper49_set):
+                    case nameof(NESLib.mapper246_set_prg_bank):
+                    case nameof(NESLib.mapper37_set_outer):
+                    case nameof(NESLib.mapper41_set):
+                    case nameof(NESLib.mapper52_set_outer):
+                    case nameof(NESLib.mapper_outer_set):
+                    case nameof(NESLib.mapper44_set_outer):
+                    case nameof(NESLib.mapper45_set_outer):
+                    case nameof(NESLib.mapper51_set):
+                    case nameof(NESLib.mapper53_set):
+                    case nameof(NESLib.mapper115_set_outer):
+                    case nameof(NESLib.mapper205_set_outer):
+                    case nameof(NESLib.mapper254_set_outer):
+                    case nameof(NESLib.mapper251_set_outer):
+                    case nameof(NESLib.mapper134_set):
+                    case nameof(NESLib.mapper125_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x6000);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.sachen133_set):
+                    case nameof(NESLib.sachen243_set):
+                    case nameof(NESLib.mapper132_set):
+                    case nameof(NESLib.sachen136_set):
+                    case nameof(NESLib.sachen137_set):
+                    case nameof(NESLib.sachen138_set):
+                    case nameof(NESLib.sachen139_set):
+                    case nameof(NESLib.sachen141_set):
+                    case nameof(NESLib.sachen143_set):
+                    case nameof(NESLib.sachen145_set_chr_bank):
+                    case nameof(NESLib.sachen146_set):
+                    case nameof(NESLib.sachen147_set):
+                    case nameof(NESLib.sachen148_set):
+                    case nameof(NESLib.sachen150_set):
+                    case nameof(NESLib.mapper135_set):
+                    case nameof(NESLib.mapper172_set):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.NINA_BANK_SELECT);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper38_set):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x7000);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.ffe17_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x4504);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper31_set_prg_bank):
+                    case nameof(NESLib.mapper111_set):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5000);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper50_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x4020);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper120_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x41FF);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.bandai153_set_prg_bank):
+                    case nameof(NESLib.bandai159_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.BANDAI_PRG_BANK);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper188_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x7FF0);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper207_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.TAITO80_PRG_BANK0);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.taito82_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x7EF0);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.vs99_set_chr_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x4016);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.bandai157_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.BANDAI_PRG_BANK);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper163_set_prg_bank):
+                    case nameof(NESLib.mapper164_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5000);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper156_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0xC000);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper240_set):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5FFF);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.bandai16_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.BANDAI_PRG_BANK);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.bandai16_set_mirroring):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.BANDAI_MIRRORING);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.vrc3_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.VRC3_PRG_BANK);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.vrc6_set_prg16):
+                    case nameof(NESLib.mapper24_set_prg16):
+                    case nameof(NESLib.mapper26_set_prg16):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.VRC6_PRG_BANK16);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.vrc6_set_prg8):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.VRC6_PRG_BANK8);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.vrc1_set_mirroring):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.VRC1_MIRRORING);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.vrc24_set_mirroring):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.VRC24_MIRRORING);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.jaleco_set_chr_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x6000);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.un1rom_set_prg_bank):
+                        {
+                            // UN1ROM (94): bank in bits 2–4 → LDA #(bank<<2), STA $8000
+                            if (Stack.Count >= 1)
+                            {
+                                int bank = Stack.Pop();
+                                Local? bankLocal = null;
+                                bool bankIsLocal = _lastLoadedLocalIndex.HasValue &&
+                                    Locals.TryGetValue(_lastLoadedLocalIndex.Value, out bankLocal) &&
+                                    bankLocal.Address.HasValue;
+                                RemoveLastInstructions(1);
+                                if (bankIsLocal)
+                                {
+                                    Emit(Opcode.LDA, AddressMode.Absolute, (ushort)bankLocal!.Address!.Value);
+                                    Emit(Opcode.ASL, AddressMode.Accumulator);
+                                    Emit(Opcode.ASL, AddressMode.Accumulator);
+                                }
+                                else
+                                    Emit(Opcode.LDA, AddressMode.Immediate, (byte)((bank << 2) & 0xFF));
+                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x8000);
+                            }
+                            _lastLoadedLocalIndex = null;
+                            _lastStaticFieldAddress = null;
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.gxrom_set_banks):
+                        {
+                            // GxROM xxPP xxCC: (prg<<4)|(chr&3)
+                            if (Stack.Count >= 2)
+                            {
+                                int chrBank = Stack.Pop();
+                                int prgBank = Stack.Pop();
+                                RemoveLastInstructions(3);
+                                byte packed = (byte)((prgBank << 4) | (chrBank & 0x03));
+                                Emit(Opcode.LDA, AddressMode.Immediate, packed);
+                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x8000);
+                            }
+                            _lastLoadedLocalIndex = null;
+                            _lastStaticFieldAddress = null;
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.colordreams_set_banks):
+                        {
+                            // Color Dreams CCCC LLPP: (chr<<4)|(prg&3)
+                            if (Stack.Count >= 2)
+                            {
+                                int chrBank = Stack.Pop();
+                                int prgBank = Stack.Pop();
+                                RemoveLastInstructions(3);
+                                byte packed = (byte)((chrBank << 4) | (prgBank & 0x03));
+                                Emit(Opcode.LDA, AddressMode.Immediate, packed);
+                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x8000);
+                            }
+                            _lastLoadedLocalIndex = null;
+                            _lastStaticFieldAddress = null;
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.holydiver_set_banks):
+                        {
+                            // Holy Diver CCCC MPPP: (chr<<4)|((mirror&1)<<3)|(prg&7)
+                            if (Stack.Count >= 3)
+                            {
+                                int mirror = Stack.Pop();
+                                int chrBank = Stack.Pop();
+                                int prgBank = Stack.Pop();
+                                RemoveLastInstructions(5);
+                                byte packed = (byte)((chrBank << 4) | ((mirror & 1) << 3) | (prgBank & 0x07));
+                                Emit(Opcode.LDA, AddressMode.Immediate, packed);
+                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x8000);
+                            }
+                            _lastLoadedLocalIndex = null;
+                            _lastStaticFieldAddress = null;
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.retcufrom29_set_banks):
+                        {
+                            // RET-CUFROM ...P PPCC: (prg<<2)|(chr&3)
+                            if (Stack.Count >= 2)
+                            {
+                                int chrBank = Stack.Pop();
+                                int prgBank = Stack.Pop();
+                                RemoveLastInstructions(3);
+                                byte packed = (byte)((prgBank << 2) | (chrBank & 0x03));
+                                Emit(Opcode.LDA, AddressMode.Immediate, packed);
+                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x8000);
+                            }
+                            _lastLoadedLocalIndex = null;
+                            _lastStaticFieldAddress = null;
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.nina_set_banks):
+                        {
+                            // NINA-03/06 .... .PCC: (prg<<3)|(chr&7)
+                            if (Stack.Count >= 2)
+                            {
+                                int chrBank = Stack.Pop();
+                                int prgBank = Stack.Pop();
+                                RemoveLastInstructions(3);
+                                byte packed = (byte)((prgBank << 3) | (chrBank & 0x07));
+                                Emit(Opcode.LDA, AddressMode.Immediate, packed);
+                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.NINA_BANK_SELECT);
+                            }
+                            _lastLoadedLocalIndex = null;
+                            _lastStaticFieldAddress = null;
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.nina113_set_banks):
+                        {
+                            // HES 113 MCPP PCCC: PRG bits 3–5; CHR bits 0–2 + bit 6
+                            if (Stack.Count >= 2)
+                            {
+                                int chrBank = Stack.Pop();
+                                int prgBank = Stack.Pop();
+                                RemoveLastInstructions(3);
+                                byte packed = (byte)(((prgBank & 0x07) << 3) | (chrBank & 0x07) | ((chrBank & 0x08) << 3));
+                                Emit(Opcode.LDA, AddressMode.Immediate, packed);
+                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.NINA_BANK_SELECT);
+                            }
+                            _lastLoadedLocalIndex = null;
+                            _lastStaticFieldAddress = null;
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.vrc1_set_prg_bank):
+                    case nameof(NESLib.vrc1_set_chr_bank):
+                    case nameof(NESLib.vrc24_set_prg_bank):
+                    case nameof(NESLib.mapper21_set_prg_bank):
+                    case nameof(NESLib.mapper22_set_prg_bank):
+                    case nameof(NESLib.mapper23_set_prg_bank):
+                    case nameof(NESLib.mapper25_set_prg_bank):
+                    case nameof(NESLib.mapper27_set_prg_bank):
+                    case nameof(NESLib.mapper151_set_prg_bank):
+                    case nameof(NESLib.mapper183_set_prg_bank):
+                    case nameof(NESLib.mapper252_set_prg_bank):
+                    case nameof(NESLib.mapper253_set_prg_bank):
+                    case nameof(NESLib.vrc7_set_prg_bank):
+                    case nameof(NESLib.namco163_set_prg_bank):
+                    case nameof(NESLib.namco210_set_prg_bank):
+                    case nameof(NESLib.irem32_set_prg_bank):
+                    case nameof(NESLib.irem65_set_prg_bank):
+                    case nameof(NESLib.taito33_set_prg_bank):
+                    case nameof(NESLib.taito48_set_prg_bank):
+                    case nameof(NESLib.taito80_set_prg_bank):
+                        {
+                            if (Stack.Count >= 2)
+                            {
+                                int bank = Stack.Pop();
+                                int which = Stack.Pop();
+                                var block = CurrentBlock!;
+                                if (block.Count < 3
+                                    || block[block.Count - 3].Opcode != Opcode.LDA
+                                    || block[block.Count - 3].Mode != AddressMode.Immediate)
+                                {
+                                    throw new TranspileException(
+                                        $"{operand}: first argument (which) must be a compile-time constant.",
+                                        MethodName);
+                                }
+
+                                ushort addr = operand switch
+                                {
+                                    nameof(NESLib.vrc1_set_prg_bank) or nameof(NESLib.mapper151_set_prg_bank) => which switch
+                                    {
+                                        0 => NESLib.VRC1_PRG_BANK0,
+                                        1 => NESLib.VRC1_PRG_BANK1,
+                                        _ => throw new TranspileException($"{operand}: which must be 0 or 1.", MethodName),
+                                    },
+                                    nameof(NESLib.vrc1_set_chr_bank) => which switch
+                                    {
+                                        0 => NESLib.VRC1_CHR_BANK0,
+                                        1 => NESLib.VRC1_CHR_BANK1,
+                                        _ => throw new TranspileException("vrc1_set_chr_bank: which must be 0 or 1.", MethodName),
+                                    },
+                                    nameof(NESLib.vrc24_set_prg_bank)
+                                        or nameof(NESLib.mapper21_set_prg_bank)
+                                        or nameof(NESLib.mapper22_set_prg_bank)
+                                        or nameof(NESLib.mapper23_set_prg_bank)
+                                        or nameof(NESLib.mapper25_set_prg_bank)
+                                        or nameof(NESLib.mapper27_set_prg_bank)
+                                        or nameof(NESLib.mapper183_set_prg_bank)
+                                        or nameof(NESLib.mapper252_set_prg_bank)
+                                        or nameof(NESLib.mapper253_set_prg_bank) => which switch
+                                    {
+                                        0 => NESLib.VRC24_PRG_BANK0,
+                                        1 => NESLib.VRC24_PRG_BANK1,
+                                        _ => throw new TranspileException($"{operand}: which must be 0 or 1.", MethodName),
+                                    },
+                                    nameof(NESLib.vrc7_set_prg_bank) => which switch
+                                    {
+                                        0 => NESLib.VRC7_PRG_BANK0,
+                                        1 => NESLib.VRC7_PRG_BANK1,
+                                        _ => throw new TranspileException("vrc7_set_prg_bank: which must be 0 or 1.", MethodName),
+                                    },
+                                    nameof(NESLib.irem32_set_prg_bank) => which switch
+                                    {
+                                        0 => NESLib.IREM32_PRG_BANK0,
+                                        1 => NESLib.IREM32_PRG_BANK1,
+                                        _ => throw new TranspileException("irem32_set_prg_bank: which must be 0 or 1.", MethodName),
+                                    },
+                                    nameof(NESLib.irem65_set_prg_bank) => which switch
+                                    {
+                                        0 => NESLib.IREM65_PRG_BANK0,
+                                        1 => NESLib.IREM65_PRG_BANK1,
+                                        _ => throw new TranspileException("irem65_set_prg_bank: which must be 0 or 1.", MethodName),
+                                    },
+                                    nameof(NESLib.taito33_set_prg_bank) or nameof(NESLib.taito48_set_prg_bank) => which switch
+                                    {
+                                        0 => NESLib.TAITO33_PRG_BANK0,
+                                        1 => NESLib.TAITO33_PRG_BANK1,
+                                        _ => throw new TranspileException($"{operand}: which must be 0 or 1.", MethodName),
+                                    },
+                                    nameof(NESLib.taito80_set_prg_bank) => which switch
+                                    {
+                                        0 => NESLib.TAITO80_PRG_BANK0,
+                                        1 => NESLib.TAITO80_PRG_BANK1,
+                                        _ => throw new TranspileException("taito80_set_prg_bank: which must be 0 or 1.", MethodName),
+                                    },
+                                    _ => which switch // namco163 / namco210
+                                    {
+                                        0 => NESLib.NAMCO163_PRG_BANK0,
+                                        1 => NESLib.NAMCO163_PRG_BANK1,
+                                        2 => NESLib.NAMCO163_PRG_BANK2,
+                                        _ => throw new TranspileException($"{operand}: which must be 0–2.", MethodName),
+                                    },
+                                };
+
+                                Local? bankLocal = null;
+                                bool bankIsLocal = _lastLoadedLocalIndex.HasValue &&
+                                    Locals.TryGetValue(_lastLoadedLocalIndex.Value, out bankLocal) &&
+                                    bankLocal.Address.HasValue;
+
+                                RemoveLastInstructions(3);
+                                if (bankIsLocal)
+                                    Emit(Opcode.LDA, AddressMode.Absolute, (ushort)bankLocal!.Address!.Value);
+                                else
+                                    Emit(Opcode.LDA, AddressMode.Immediate, (byte)bank);
+                                Emit(Opcode.STA, AddressMode.Absolute, addr);
+                            }
+                            _lastLoadedLocalIndex = null;
+                            _lastStaticFieldAddress = null;
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.jaleco18_set_prg0):
+                        {
+                            // Write low nibble to $8000, high nibble to $8001
+                            if (Stack.Count >= 1)
+                            {
+                                int bank = Stack.Pop();
+                                RemoveLastInstructions(1);
+                                Emit(Opcode.LDA, AddressMode.Immediate, (byte)(bank & 0x0F));
+                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.JALECO18_PRG0_LO);
+                                Emit(Opcode.LDA, AddressMode.Immediate, (byte)((bank >> 4) & 0x0F));
+                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.JALECO18_PRG0_HI);
+                            }
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.namco88_set_bank):
+                    case nameof(NESLib.namcot95_set_bank):
+                    case nameof(NESLib.mapper74_set_prg_bank):
+                    case nameof(NESLib.jy90_set_prg_bank):
+                    case nameof(NESLib.mapper160_set_prg_bank):
+                    case nameof(NESLib.mapper134_set_bank):
+                    case nameof(NESLib.tengen158_set_bank):
+                    case nameof(NESLib.mapper182_set_bank):
+                    case nameof(NESLib.jy209_set_prg_bank):
+                    case nameof(NESLib.mapper245_set_bank):
+                    case nameof(NESLib.mapper12_set_bank):
+                    case nameof(NESLib.mapper14_set_bank):
+                    case nameof(NESLib.mapper114_set_bank):
+                    case nameof(NESLib.mapper116_set_bank):
+                    case nameof(NESLib.mapper165_set_bank):
+                    case nameof(NESLib.mapper191_set_bank):
+                    case nameof(NESLib.rambo64_set_bank):
+                    case nameof(NESLib.txsrom118_set_bank):
+                    case nameof(NESLib.tqrom119_set_bank):
+                    case nameof(NESLib.mapper192_set_bank):
+                    case nameof(NESLib.mapper193_set_bank):
+                    case nameof(NESLib.mapper194_set_bank):
+                    case nameof(NESLib.mapper195_set_bank):
+                    case nameof(NESLib.mapper196_set_bank):
+                    case nameof(NESLib.mapper197_set_bank):
+                    case nameof(NESLib.mapper198_set_bank):
+                    case nameof(NESLib.mapper199_set_bank):
+                    case nameof(NESLib.dxrom206_set_bank):
+                    case nameof(NESLib.mapper208_set_bank):
+                    case nameof(NESLib.mapper215_set_bank):
+                    case nameof(NESLib.mapper219_set_bank):
+                    case nameof(NESLib.mapper247_set_bank):
+                    case nameof(NESLib.mapper249_set_bank):
+                    case nameof(NESLib.mapper187_set_bank):
+                    case nameof(NESLib.jy211_set_prg_bank):
+                    case nameof(NESLib.mapper214_set_bank):
+                    case nameof(NESLib.mapper217_set_bank):
+                    case nameof(NESLib.mapper238_set_bank):
+                    case nameof(NESLib.mapper248_set_bank):
+                    case nameof(NESLib.mapper100_set_bank):
+                    case nameof(NESLib.mapper121_set_bank):
+                    case nameof(NESLib.mapper123_set_bank):
+                        {
+                            // Same shape as mmc3_set_*_bank: STA $8000 (reg), STA $8001 (bank)
+                            if (Stack.Count >= 2)
+                            {
+                                int bank = Stack.Pop();
+                                int reg = Stack.Pop();
+                                var block = CurrentBlock!;
+                                if (block.Count < 3
+                                    || block[block.Count - 3].Opcode != Opcode.LDA
+                                    || block[block.Count - 3].Mode != AddressMode.Immediate)
+                                {
+                                    throw new TranspileException(
+                                        $"{operand}: first argument (reg) must be a compile-time constant.",
+                                        MethodName);
+                                }
+                                RemoveLastInstructions(3);
+                                Emit(Opcode.LDA, AddressMode.Immediate, (byte)reg);
+                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC3_BANK_SELECT);
+                                Emit(Opcode.LDA, AddressMode.Immediate, (byte)bank);
+                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC3_BANK_DATA);
+                            }
+                            _lastLoadedLocalIndex = null;
+                            _lastStaticFieldAddress = null;
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.action52_write):
+                    case nameof(NESLib.mapper225_write):
+                    case nameof(NESLib.mapper227_write):
+                    case nameof(NESLib.mapper234_write):
+                    case nameof(NESLib.mapper62_write):
+                    case nameof(NESLib.mapper61_write):
+                    case nameof(NESLib.mapper63_write):
+                    case nameof(NESLib.mapper200_write):
+                    case nameof(NESLib.mapper201_write):
+                    case nameof(NESLib.mapper202_write):
+                    case nameof(NESLib.mapper212_write):
+                    case nameof(NESLib.mapper221_write):
+                    case nameof(NESLib.mapper250_write):
+                    case nameof(NESLib.mapper190_write):
+                    case nameof(NESLib.mapper204_write):
+                    case nameof(NESLib.mapper213_write):
+                    case nameof(NESLib.mapper219_set_outer):
+                    case nameof(NESLib.mapper106_write):
+                    case nameof(NESLib.mapper173_write):
+                    case nameof(NESLib.mapper216_write):
+                    case nameof(NESLib.mapper255_write):
+                        {
+                            // write(ushort register, byte value) → LDA #value, STA register
+                            if (Stack.Count >= 2)
+                            {
+                                int value = Stack.Pop();
+                                int register = Stack.Pop();
+                                RemoveLastInstructions(4); // LDX#hi, LDA#lo, JSR push*, LDA #value
+                                Emit(Opcode.LDA, AddressMode.Immediate, (byte)value);
+                                Emit(Opcode.STA, AddressMode.Absolute, (ushort)register);
+                            }
+                            _lastLoadedLocalIndex = null;
+                            _lastStaticFieldAddress = null;
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.mapper208_set_prg):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x4800);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper121_set_outer):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5180);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper123_set_outer):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5800);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper162_set_prg_low):
+                    case nameof(NESLib.mapper187_set_outer):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5000);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper162_set_prg_high):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5200);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper162_set_mode):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5300);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.fme7_write):
+                    case nameof(NESLib.fme7_set_prg_bank):
+                    case nameof(NESLib.fme7_set_chr_bank):
+                        {
+                            // command to $8000, parameter to $A000 (both compile-time constants)
+                            if (Stack.Count >= 2)
+                            {
+                                int parameter = Stack.Pop();
+                                int command = Stack.Pop();
+                                var block = CurrentBlock!;
+                                if (block.Count < 3
+                                    || block[block.Count - 3].Opcode != Opcode.LDA
+                                    || block[block.Count - 3].Mode != AddressMode.Immediate)
+                                {
+                                    throw new TranspileException(
+                                        $"{operand}: arguments must be compile-time constants.",
+                                        MethodName);
+                                }
+
+                                if (operand == nameof(NESLib.fme7_set_prg_bank))
+                                {
+                                    if (command is < 8 or > 11)
+                                        throw new TranspileException(
+                                            "fme7_set_prg_bank: reg must be 8–11.", MethodName);
+                                }
+                                else if (operand == nameof(NESLib.fme7_set_chr_bank))
+                                {
+                                    if ((uint)command > 7)
+                                        throw new TranspileException(
+                                            "fme7_set_chr_bank: reg must be 0–7.", MethodName);
+                                }
+
+                                RemoveLastInstructions(3);
+                                Emit(Opcode.LDA, AddressMode.Immediate, (byte)command);
+                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.FME7_COMMAND);
+                                Emit(Opcode.LDA, AddressMode.Immediate, (byte)parameter);
+                                Emit(Opcode.STA, AddressMode.Absolute, NESLib.FME7_PARAMETER);
+                            }
+                            _lastLoadedLocalIndex = null;
+                            _lastStaticFieldAddress = null;
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.mmc2_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC2_PRG_BANK);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mmc4_set_prg_bank):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC4_PRG_BANK);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mmc2_set_mirroring):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC2_MIRRORING);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mmc4_set_mirroring):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC4_MIRRORING);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mmc5_set_prg_mode):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC5_PRG_MODE);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mmc5_set_chr_mode):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.MMC5_CHR_MODE);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mmc2_set_chr_bank0):
+                    case nameof(NESLib.mmc2_set_chr_bank1):
+                    case nameof(NESLib.mmc4_set_chr_bank0):
+                    case nameof(NESLib.mmc4_set_chr_bank1):
+                        {
+                            // (fdBank, feBank) → STA FD_reg, STA FE_reg
+                            if (Stack.Count >= 2)
+                            {
+                                int feBank = Stack.Pop();
+                                int fdBank = Stack.Pop();
+                                ushort fdAddr = operand switch
+                                {
+                                    nameof(NESLib.mmc2_set_chr_bank0) or nameof(NESLib.mmc4_set_chr_bank0)
+                                        => NESLib.MMC2_CHR_BANK0_FD,
+                                    _ => NESLib.MMC2_CHR_BANK1_FD,
+                                };
+                                ushort feAddr = (ushort)(fdAddr + 0x1000);
+
+                                Local? feLocal = null;
+                                bool feIsLocal = _lastLoadedLocalIndex.HasValue &&
+                                    Locals.TryGetValue(_lastLoadedLocalIndex.Value, out feLocal) &&
+                                    feLocal.Address.HasValue;
+
+                                // Typical: LDA #fd, JSR pusha, LDA #fe (or LDA $fe)
+                                RemoveLastInstructions(3);
+                                Emit(Opcode.LDA, AddressMode.Immediate, (byte)fdBank);
+                                Emit(Opcode.STA, AddressMode.Absolute, fdAddr);
+                                if (feIsLocal)
+                                    Emit(Opcode.LDA, AddressMode.Absolute, (ushort)feLocal!.Address!.Value);
+                                else
+                                    Emit(Opcode.LDA, AddressMode.Immediate, (byte)feBank);
+                                Emit(Opcode.STA, AddressMode.Absolute, feAddr);
+                            }
+                            _lastLoadedLocalIndex = null;
+                            _lastStaticFieldAddress = null;
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
+                        break;
+                    case nameof(NESLib.mmc5_set_prg_bank):
+                    case nameof(NESLib.mmc5_set_chr_bank):
+                        {
+                            // mmc5_set_*_bank(byte reg, byte bank) → STA $5114+reg or $5120+reg
+                            if (Stack.Count >= 2)
+                            {
+                                int bank = Stack.Pop();
+                                int reg = Stack.Pop();
+                                var block = CurrentBlock!;
+                                if (block.Count < 3
+                                    || block[block.Count - 3].Opcode != Opcode.LDA
+                                    || block[block.Count - 3].Mode != AddressMode.Immediate)
+                                {
+                                    throw new TranspileException(
+                                        $"{operand}: first argument (reg) must be a compile-time constant.",
+                                        MethodName);
+                                }
+
+                                bool isPrg = operand == nameof(NESLib.mmc5_set_prg_bank);
+                                if (isPrg && (uint)reg > 3)
+                                    throw new TranspileException("mmc5_set_prg_bank: reg must be 0–3.", MethodName);
+                                if (!isPrg && (uint)reg > 7)
+                                    throw new TranspileException("mmc5_set_chr_bank: reg must be 0–7.", MethodName);
+
+                                Local? bankLocal = null;
+                                bool bankIsLocal = _lastLoadedLocalIndex.HasValue &&
+                                    Locals.TryGetValue(_lastLoadedLocalIndex.Value, out bankLocal) &&
+                                    bankLocal.Address.HasValue;
+
+                                RemoveLastInstructions(3);
+                                ushort addr = (ushort)((isPrg ? NESLib.MMC5_PRG_BANK0 : NESLib.MMC5_CHR_BANK0) + reg);
+                                if (bankIsLocal)
+                                    Emit(Opcode.LDA, AddressMode.Absolute, (ushort)bankLocal!.Address!.Value);
+                                else
+                                    Emit(Opcode.LDA, AddressMode.Immediate, (byte)bank);
+                                Emit(Opcode.STA, AddressMode.Absolute, addr);
+                            }
+                            _lastLoadedLocalIndex = null;
+                            _lastStaticFieldAddress = null;
+                            _immediateInA = null;
+                            _pokeLastValue = null;
+                            argsAlreadyPopped = true;
+                        }
                         break;
                     case nameof(NESLib.mmc3_set_prg_bank):
                     case nameof(NESLib.mmc3_set_chr_bank):
@@ -3084,6 +3910,9 @@ partial class IL2NESWriter
                         }
                         break;
                     case nameof(NESLib.mmc1_write):
+                    case nameof(NESLib.mapper105_write):
+                    case nameof(NESLib.mapper155_write):
+                    case nameof(NESLib.mapper161_write):
                         {
                             // mmc1_write(ushort addr, byte value) -> serial shift register write
                             // MMC1 requires writing 5 bits one at a time via STA to the register address.

@@ -1,0 +1,23 @@
+INES Mapper 101
+
+INES Mapper 101
+
+This mapper was allocated for a naïve misdumping of the JF-10 board that contains Urusei Yatsura - Lum no Wedding Bell, which assumed the bank bits were reversed. Otherwise, it is entirely identical to J87.
+
+Registers
+
+Bank Select ($6000-$7FFF)
+
+This will select an 8 KB CHR ROM bank for PPU $0000-$1FFF.
+
+7  bit  0
+---- ----
+CCCC CCHL
+|||| ||||
+|||| |||+- (Normal) Low CHR bit
+|||| ||+-- (Normal) High CHR bit
+++++-++--- (Oversize only) Extra CHR bits
+
+This is the same as J87 but with the bits in order, and so has a better defined oversize extension; or the same as CNROM without bus conflicts.
+
+Categories: CNROM-like mappers, Bad iNES Mappers, INES Mappers

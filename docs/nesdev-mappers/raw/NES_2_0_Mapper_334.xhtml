@@ -1,0 +1,78 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 334</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_334"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 334</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_334">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_334">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 mapper 334 is used for the <i>5/20-in-1 1993 Copyright</i> multicart.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#PRG-ROM_Bank_Register_(%246000,_write)"><span class="tocnumber">1</span> <span class="toctext">PRG-ROM Bank Register ($6000, write)</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Unknown_Register_(%246001,_write)"><span class="tocnumber">2</span> <span class="toctext">Unknown Register ($6001, write)</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Jumper_Register_(%246002,_read)"><span class="tocnumber">3</span> <span class="toctext">Jumper Register ($6002, read)</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#MMC3-compatible_registers"><span class="tocnumber">4</span> <span class="toctext">MMC3-compatible registers</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Notes"><span class="tocnumber">5</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</div>
+
+<h2><span id="PRG-ROM_Bank_Register_.28.246000.2C_write.29"/><span class="mw-headline" id="PRG-ROM_Bank_Register_($6000,_write)">PRG-ROM Bank Register ($6000, write)</span></h2>
+<pre>Mask: probably $6003
+
+D~7654 3210
+  ---------
+  .... .PP.
+        ++- Select 32 KiB PRG-ROM bank at CPU $8000-$FFFF
+</pre>
+<p><br/>
+</p>
+<h2><span id="Unknown_Register_.28.246001.2C_write.29"/><span class="mw-headline" id="Unknown_Register_($6001,_write)">Unknown Register ($6001, write)</span></h2>
+<p>Mask: probably $6003
+</p><p>Unknown meaning; the menu writes $01 to it.
+</p>
+<h2><span id="Jumper_Register_.28.246002.2C_read.29"/><span class="mw-headline" id="Jumper_Register_($6002,_read)">Jumper Register ($6002, read)</span></h2>
+<pre>Mask: probably $6003
+
+D~7654 3210
+  ---------
+  OOOO OOOJ
+  |||| |||+- Jumper setting
+  |||| |||    0: Show 20-in-1 menu (i.e. with repeats)
+  |||| |||    1: Show 5-in-1 menu (i.e. without repeats)
+  ++++-+++-- Open bus
+  
+</pre>
+<p>The &quot;hardware test&quot; menu (seen when pressing SELECT+A+B during the menu) expects the jumper at zero.
+</p>
+<h2><span class="mw-headline" id="MMC3-compatible_registers">MMC3-compatible registers</span></h2>
+<p>Mask: $E001
+</p><p>See <a href="MMC3.xhtml" title="MMC3">MMC3</a>.
+</p>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<p>The MMC3 clone is only used for Mirroring and CHR-ROM banking; the PRG-ROM bank comes entirely from an additional register. As they use the MMC3 clones's WRAM interface, accessing the $600x registers requires enabling and not write-protecting WRAM in the MMC's $A001 register.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241122215232
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.008 seconds
+Real time usage: 0.012 seconds
+Preprocessor visited node count: 19/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:719-0!canonical and timestamp 20241122215231 and revision id 7857.
+ -->
+</div><p class="categories">Categories: <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

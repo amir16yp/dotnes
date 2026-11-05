@@ -1,0 +1,53 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 340</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_340"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 340</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_340">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_340">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 mapper 340 is used for a <i>35-in-1</i> multicart. Its UNIF board name is <b>BMC-K-3036</b>.
+</p>
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$BFFF: Switchable 16 KiB inner PRG-ROM bank and switchable 128 KiB outer PRG-ROM bank</li>
+<li>CPU $C000-$FFFF: Fixed 16 KiB inner PRG-ROM bank #7/Mirror of $8000-$BFFF and switchable 128 KiB outer PRG-ROM bank</li>
+<li>PPU $0000-$1FFF: Unbanked 8 KiB CHR-RAM</li></ul>
+<h2><span id="Address.2FData_Latch_.28.248000-.24FFFF.29"/><span class="mw-headline" id="Address/Data_Latch_($8000-$FFFF)">Address/Data Latch ($8000-$FFFF)</span></h2>
+<pre>Mask: $8000
+
+A~FEDC BA98 7654 3210   D~7654 3210
+  -------------------     ---- ----
+  .... .... ..MO OIII     .... .III
+              || ||||           +++- Select 16 KiB inner PRG-ROM bank at CPU $8000-$BFFF in UNROM mode
+              || |+++- Select 16 KiB inner PRG-ROM bank at CPU $8000-$BFFF/$C000-$FFFF in NROM-128 mode
+              |+-+|-|- Select 128 KiB outer PRG-ROM bank at CPU $8000-$FFFF
+              +---|-|- Select $C000-$FFFF behavior
+              |   | |   0: UNROM (Inner Bank forced to #7 at CPU $C000-$FFFF)
+              |   | |   1: NROM-128 (CPU $C000-$FFFF mirror of $8000-$BFFF)
+              +---+-+- Select nametable mirroring type
+                        0x25: Horizontal
+                        all others: Vertical
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123120855
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.007 seconds
+Real time usage: 0.011 seconds
+Preprocessor visited node count: 9/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:725-0!canonical and timestamp 20241123120855 and revision id 7874.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

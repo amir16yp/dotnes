@@ -1,0 +1,81 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 147</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_147"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 147</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_147">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_147">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>INES Mapper 147 is used to denote the Sachen 3018 board, used by one game: <i>Chinese Kungfu: 少林武者</i> (TC-011) and its Western localization <i>Challenge of the Dragon</i> (not to be confused with the Color Dreams game of the same name). The original 60-pin Chinese version has 128 KiB of PRG-ROM and 128 KiB of CHR-ROM, while the 72-pin Western localization only has 64 KiB of PRG-ROM and 128 KiB of CHR-ROM.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers_(60-pin_release)"><span class="tocnumber">2</span> <span class="toctext">Registers (60-pin release)</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Registers_(72-pin_release)"><span class="tocnumber">3</span> <span class="toctext">Registers (72-pin release)</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Notes"><span class="tocnumber">4</span> <span class="toctext">Notes</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#See_also"><span class="tocnumber">5</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>CPU $8000-$FFFF: 32 KiB switchable PRG ROM bank</li>
+<li>PPU $0000-$1FFF: 8 KiB switchable CHR ROM bank</li></ul>
+<h2><span id="Registers_.2860-pin_release.29"/><span class="mw-headline" id="Registers_(60-pin_release)">Registers (60-pin release)</span></h2>
+<p>The original 60-pin release uses a custom IC (marked &quot;JV001&quot;) serving as a latch, adder and inverter. There are five registers: Input (6 bits), Output (6 bits), Register (6 bits), Mode (1 bit) and Invert (1 bit).
+</p>
+<pre>Mask: $E103
+Read $4100-$4103: [RRRR RR..]: Read Register (with its bits 0-5), connected to the CPU data bus bits 2-7. Register bits 4-5 (CPU bits 6-7) are inverted if Invert==1. CPU bits 0-1 are open bus.
+Write $4100: When Mode==0: Bits 0-5 of Register := Input, bits 0-3 being inverted if Invert==1.
+             When Mode==1: Bits 0-3 of Register incremented by one, bits 4-5 unaffected.
+Write $4101: Invert := Written value bit 2.
+Write $4102: Input := Written value bits 2-7.
+Write $4103: Mode := Written value bit 2.
+Write $8000-$FFFF: Output := Register; written value is ignored.
+</pre>
+<p>The six Output bits have the following functions:
+</p>
+<pre>Written CPU bit:       76543210
+Internal Register bit: 543210..
+                       --------
+                       ||||||
+                       +----+-- Select 32 KiB PRG-ROM bank at CPU $8000-$FFFF (PRG A15-A16)
+                        ++++--- Select 8 KiB CHR-ROM bank at PPU $0000-$1FFF (CHR A13-A16)
+</pre>
+<p>The two PRG-ROM bits are split up in this way due to board topology: the lower bit goes directly to the A15 pin of the two 64 KiB PRG-ROM chips, while the higher bit selects which 64 KiB PRG-ROM chip is enabled.
+</p>
+<h2><span id="Registers_.2872-pin_release.29"/><span class="mw-headline" id="Registers_(72-pin_release)">Registers (72-pin release)</span></h2>
+<p>The 72-pin release of the game has only 64 KiB instead of 128 KiB of PRG-ROM, and uses a simple data latch instead of the JV001 ASIC, with the data bits having compatible functions as the original value written to $4102 on the JV001 IC:
+</p>
+<pre> Mask: $4103
+ Bus conflicts in the mirror at $C102-$FFFE
+ $4102: [PCCC CP..] - Select 32 KiB PRG bank and 8 KiB CHR bank
+</pre>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li>Despite the hardware differences between the 60- and 72-pin versions of the game, both a more complex emulation of the JV001 chip as well as a simple emulation of the data latch will work with both versions' ROM images, as the 60-pin version neither uses the adder or inverter functionalities of the JV001 chip nor checks the result available from reading $4100, and the 72-pin version retains the complete $4101/$4102/$4103 write sequence that would be necessary to operate the JV001 IC.</li>
+<li>The GoodNES 3.23b ROM image of <i>Chinese Kungfu: 少林武者</i> is defective despite being tagged with [!]: the wrong CHR banks are selected during attract mode and in the second area of gameplay. A good redump is available.</li></ul>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?f=3&amp;t=15961&amp;p=213357#p213357">PCB images</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123144130
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.010 seconds
+Real time usage: 0.019 seconds
+Preprocessor visited node count: 15/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:431-0!canonical and timestamp 20241123144130 and revision id 5057.
+ -->
+</div></div></body></html>

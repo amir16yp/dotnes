@@ -1,0 +1,185 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 206</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_206"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 206</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_206">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_206">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><div class="infobox">
+<div style="text-align: center"><b>Namco 118, Tengen MIMIC-1</b>
+<br/><b>DxROM</b></div>
+<table class="oddf0">
+
+<tbody><tr>
+<td><b>Company</b>
+</td>
+<td>Namco, Tengen, others
+</td></tr>
+<tr>
+<td><b>Games</b>
+</td>
+<td><a rel="nofollow" class="external text" href="https://nescartdb.com/search/advanced?ines=206">39 in NesCartDB</a>
+</td></tr>
+<tr>
+<td><b>Complexity</b>
+</td>
+<td>ASIC
+</td></tr>
+<tr>
+<td><b>Boards</b>
+</td>
+<td>34xx, DxROM
+</td></tr>
+<tr>
+<td><b>PRG ROM capacity</b>
+</td>
+<td>128K
+</td></tr>
+<tr>
+<td><b>PRG ROM window</b>
+</td>
+<td>8K + 8K + 16K fixed
+</td></tr>
+<tr>
+<td><b>PRG RAM capacity</b>
+</td>
+<td>None
+</td></tr>
+<tr>
+<td><b>CHR capacity</b>
+</td>
+<td>64K
+</td></tr>
+<tr>
+<td><b>CHR window</b>
+</td>
+<td>2Kx2 + 1Kx4
+</td></tr>
+<tr>
+<td><b>Nametable <a href="Mirroring.xhtml" title="Mirroring">mirroring</a></b>
+</td>
+<td>Fixed H/V, or 4
+</td></tr>
+<tr>
+<td><b><a href="Bus_conflict.xhtml" title="Bus conflict">Bus conflicts</a></b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>IRQ</b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>Audio</b>
+</td>
+<td>No
+</td></tr>
+<tr>
+<td><b>iNES <a href="Mapper.xhtml" title="Mapper">mappers</a></b>
+</td>
+<td><a class="mw-selflink selflink">206</a>, <a href="INES_Mapper_076.xhtml" title="INES Mapper 076">76</a>, <a href="INES_Mapper_088.xhtml" title="INES Mapper 088">88</a>, <a href="INES_Mapper_154.xhtml" title="INES Mapper 154">154</a>, <a href="INES_Mapper_095.xhtml" title="INES Mapper 095">95</a>
+</td></tr></tbody></table>
+</div>
+<p><a class="mw-selflink selflink">iNES Mapper 206</a> is the simpler predecessor of the <a href="MMC3.xhtml" title="MMC3">MMC3</a>, and was used by Tengen and Namco.
+Chips used include &quot;Tengen MIMIC-1&quot; and &quot;<a href="Namcot_108_family_pinout.xhtml" title="Namcot 108 family pinout">Namcot 118</a>&quot;, and the boards made by Nintendo of America that used this mapper are NES-<a href="DxROM.xhtml" title="DxROM">DxROM</a>.
+Many ROMS using this mapper are incorrectly listed as using MMC3, but will usually work if emulated with MMC3, and the mirroring is correct, as if they were on a <a href="TxROM.xhtml" title="TxROM">TEROM or TFROM board</a>.
+</p><p>Compared to MMC3:
+</p>
+<ul><li>There are no IRQs</li>
+<li>There is no WRAM support</li>
+<li>PRG always has the last two 8KiB banks fixed to the end.</li>
+<li>CHR always gives the left pattern table (0000-0FFF) the two 2KiB banks, and the right pattern table (1000-1FFF) the four 1KiB banks.</li>
+<li>Mirroring is hardwired, one game uses 4-screen mirroring (Gauntlet, DRROM).</li>
+<li>CHR size limit is 64KiB, PRG size limit is 128KiB.</li>
+<li>There are no control registers in the $A000-$FFFF range.
+<ul><li>Writing to RAM while executing from $8000-9FFF can cause erratic mapper writes. See <a href="INES_Mapper_206.xhtml#Errata" title="INES Mapper 206">Errata</a> below.</li></ul></li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Bank_select_(%248000-%249FFE,_even)"><span class="tocnumber">1.1</span> <span class="toctext">Bank select ($8000-$9FFE, even)</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Bank_data_(%248001-%249FFF,_odd)"><span class="tocnumber">1.2</span> <span class="toctext">Bank data ($8001-$9FFF, odd)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-4"><a href="#Errata"><span class="tocnumber">2</span> <span class="toctext">Errata</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Submappers"><span class="tocnumber">3</span> <span class="toctext">Submappers</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Variants"><span class="tocnumber">4</span> <span class="toctext">Variants</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#References"><span class="tocnumber">5</span> <span class="toctext">References</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>Register mask: $E001
+</p>
+<h3><span id="Bank_select_.28.248000-.249FFE.2C_even.29"/><span class="mw-headline" id="Bank_select_($8000-$9FFE,_even)">Bank select ($8000-$9FFE, even)</span></h3>
+<pre>7  bit  0
+---- ----
+xxxx xRRR
+      |||
+      +++- Specify which bank register to update on next write to Bank Data register
+           0: Select 2 KB CHR bank at PPU $0000-$07FF
+           1: Select 2 KB CHR bank at PPU $0800-$0FFF
+           2: Select 1 KB CHR bank at PPU $1000-$13FF
+           3: Select 1 KB CHR bank at PPU $1400-$17FF
+           4: Select 1 KB CHR bank at PPU $1800-$1BFF
+           5: Select 1 KB CHR bank at PPU $1C00-$1FFF
+           6: Select 8 KB PRG ROM bank at $8000-$9FFF
+           7: Select 8 KB PRG ROM bank at $A000-$BFFF
+</pre>
+<p>See <a href="MMC3.xhtml" title="MMC3">MMC3</a> and note the absence of any control bits in the upper five bits of this register.
+</p>
+<h3><span id="Bank_data_.28.248001-.249FFF.2C_odd.29"/><span class="mw-headline" id="Bank_data_($8001-$9FFF,_odd)">Bank data ($8001-$9FFF, odd)</span></h3>
+<pre>7  bit  0
+---- ----
+xxdd DDDd
+  || ||||
+  ++-++++- New bank value, based on last value written to bank select register (mentioned above)
+</pre>
+<p>Only bits 5-1 exist for the two 2 KiB CHR banks, only bits 5-0 exist for the four 1 KiB CHR banks, and only bits 3-0 exist for the two 8 KiB PRG banks. These eight bank registers are identical to those of <a href="MMC3.xhtml" title="MMC3">MMC3</a>, except that only 128 KiB PRG and 64 KiB CHR are supported.
+</p>
+<h2><span class="mw-headline" id="Errata">Errata</span></h2>
+<p>On Namco 108, writing to $0000-1FFF while executing from $8000-9FFF may be seen by the mapper as a write to $8000-9FFF, causing spurious bankswitches.<sup id="cite_ref-1" class="reference"><a href="#cite_note-1">[1]</a></sup> Contemporary software avoids this problem by never executing code from this region. This is presumably why <i>Babel no Tou</i>, despite having only 32 KiB PRG, uses bankswapping and only executes bank 0 and 1 code when mapped into $A000-BFFF. Namco 109 and MIMIC-1 are not affected by this bug. It is not known if Namco 118 and 119 are affected, but if the ten's digit indicates manufacturer, then it may be that 118 is affected and 119 is not.
+</p>
+<h2><span class="mw-headline" id="Submappers">Submappers</span></h2>
+<p><i>Babel no Tou</i>, on the PCB <b>3401</b>, is the only game with 32 KiB PRG that allows—and uses!—PRG banking. All other games with 32 KiB PRG connect CPU A13 and CPU A14 directly to the PRG ROM, but fortunately they initialize their PRG registers to work on a normal board. Submapper 0 indicates the normal PCB that allows PRG banking, while submapper 1 indicate the <b>3407</b>, <b>3417</b> and <b>3451</b> PCBs with unbanked 32 KiB PRG-ROM.
+</p>
+<h2><span class="mw-headline" id="Variants">Variants</span></h2>
+<p><a href="INES_Mapper_076.xhtml" title="INES Mapper 076">Mapper 76</a> increases CHR to 128KiB by inflating the 1KiB CHR banks to 2KiB and making the originally-2KiB banks inaccessible.
+</p><p>Mapper <a href="INES_Mapper_088.xhtml" title="INES Mapper 088">88</a> increases CHR to 128KiB by connecting PPU's A12 line to the CHR ROM's A16 line, making tiles in $0000 and $1000 come from disjoint sections of ROM.
+Because an undersize ROM on a mapper 88 board behaves identically to mapper 206, emulators may treat these mapper numbers as synonymous.
+</p><p><a href="INES_Mapper_154.xhtml" title="INES Mapper 154">Mapper 154</a> starts with mapper 88, then adds mapper-controlled one-screen mirroring.
+</p><p><a href="INES_Mapper_095.xhtml" title="INES Mapper 095">Mapper 95</a> uses the MSB to control mirroring by connecting CHR A15 to CIRAM A10, much as CHR A17 controls CIRAM A10 in <a href="INES_Mapper_118.xhtml" title="INES Mapper 118">TxSROM</a>.
+</p>
+<h2><span class="mw-headline" id="References">References</span></h2>
+<dl><dd><ul><li><a rel="nofollow" class="external text" href="https://sourceforge.net/p/fceultra/code/HEAD/tree/fceu/trunk/src/boards/206.cpp">FCEUX's implementation</a></li>
+<li><a rel="nofollow" class="external text" href="http://cmpslv2.starfree.jp/">Enri</a>'s reverse-engineered schematic of PCBs 3407 and 3416: <a rel="nofollow" class="external free" href="http://cmpslv2.starfree.jp/Famic/Fcmp206.htm">http://cmpslv2.starfree.jp/Famic/Fcmp206.htm</a></li></ul></dd></dl>
+<div class="mw-references-wrap"><ol class="references">
+<li id="cite_note-1"><span class="mw-cite-backlink"><a href="#cite_ref-1">↑</a></span> <span class="reference-text"><a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?t=13297">Forum thread:</a> Naruko's report on Namco 108 banking problems when executing from $8000-9FFF</span>
+</li>
+</ol></div>
+<!-- 
+NewPP limit report
+Cached time: 20241123000706
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.038 seconds
+Real time usage: 0.048 seconds
+Preprocessor visited node count: 149/1000000
+Post‐expand include size: 1212/2097152 bytes
+Template argument size: 373/2097152 bytes
+Highest expansion depth: 4/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 83/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    9.157      1 Template:Infobox_iNES_mapper
+100.00%    9.157      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:490-0!canonical and timestamp 20241123000706 and revision id 21380.
+ -->
+</div><p class="categories">Categories: <a href="Category_Nintendo_licensed_mappers.xhtml">Nintendo licensed mappers</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_In_NesCartDB.xhtml">In NesCartDB</a>, <a href="Category_ASIC_mappers.xhtml">ASIC mappers</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

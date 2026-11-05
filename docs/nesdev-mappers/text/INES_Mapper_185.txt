@@ -1,0 +1,163 @@
+INES Mapper 185
+
+INES Mapper 185
+
+iNES Mapper 185 denotes the CNROM circuit board with only 8 KiB of CHR-ROM. The particular ROM chip model (Sharp LH2367 or equivalent) changes the functionality of pins 26 (normally A13) and 27 (normally A14) into two programmable (during manufacturing) Chip Select inputs, effectively disabling CHR-ROM and tri-stating its data outputs when the one correct bank of four possible CHR-ROM banks is not selected.
+
+While the original purpose of these two chip select pins was to allow four chips to sit on the same bus selected by a two-bit chip select number that does not have to be demultiplexed into four chip enable signals, Mapper 185 uses them as a second (and equally weak) copy protection mechanism, in addition to the security diodes.
+
+Contents
+
+1 Overview
+
+2 Banks
+
+3 Registers
+
+3.1 Bank select ($8000-$FFFF)
+
+4 References
+
+Overview
+
+PRG ROM size: 16 KiB or 32 KiB
+
+PRG ROM bank size: Not bankswitched
+
+PRG RAM: None
+
+CHR capacity: 8 KiB ROM (copy protected)
+
+Nametable mirroring: Solder pads select vertical or horizontal mirroring
+
+Subject to bus conflicts: Yes
+
+Banks
+
+PPU $0000-$1FFF: 8 KB switchable CHR ROM bank
+
+Registers
+
+Bank select ($8000-$FFFF)
+
+7  bit  0
+---- ----
+..DC ..BA
+  ||   ||
+  ||   |+- Chip Select 2 (CS2)
+  ||   +-- Chip Select 1 (CS1)
+  |+------ Output to Diode 2 (D2)
+  +------- Output to Diode 1 (D1)
+
+The games verify the functionality of the Chip Select bits by writing the wrong CS1/CS2 value, thereby disabling CHR-ROM, verify that reading CHR-ROM does not return the correct value, then write the correct CS1/CS2 bits to enable CHR-ROM so that graphics can be displayed. A few titles additionally verify that reading CHR-ROM now does return the correct value. If either check fails, the game is either reset or freezes. The correct CS1/CS2 value that enables CHR-ROM is game-specific and specified in the Submapper field of the NES 2.0 header with a base of 4:
+
+Submapper  Meaning
+  4        CS1/CS2=0 enables CHR-ROM, all other values disable CHR-ROM
+  5        CS1/CS2=1 enables CHR-ROM, all other values disable CHR-ROM
+  6        CS1/CS2=2 enables CHR-ROM, all other values disable CHR-ROM
+  7        CS1/CS2=3 enables CHR-ROM, all other values disable CHR-ROM
+
+The base of 4 allows distinguishing "CS1/CS2=0" and a Submapper of "0" meaning "Unknown": Any Submapper other than 4-7 means that the correct CS1/CS2 value is unknown and one of two heuristics must be used instead to allow the game to run:
+
+Enable CHR-ROM only if the "(latch data &0xF) != 0 && (latch data) != 0x13". This heuristic fails for Seicross and is therefore discouraged.
+
+Disable CHR-ROM for the first two reads $2007 after a reset and then enable it. This works with all games, as they all test for the bad value first, and the correct value (if at all) second.
+
+When CHR is disabled, the pattern tables are open bus. Theoretically, this should return the LSB of the address read, but real-world behavior varies, and the earlier revision of Mighty Bomb Jack in fact relies on open bus at PPU address $0000 being something other than $00.
+
+This table has been assembled from nocash and the sources of MESS, Nestopia, and FCEUX; the specific tests were traced from dumps in GoodNES.
+
+bank
+PPU addr
+test
+bank
+PPU addr
+test
+
+Game
+Incorrect bank
+Must work
+
+Bird Week
+$F0
+$1FF0
+≠ $0C
+$0F
+$1FF0
+= $0C
+
+B-Wings
+$00
+$0000
+≠ $3C
+$33
+$0000
+= $3C
+
+Mighty Bomb Jack (J, PRG0)
+$00
+$0000
+≠ $00
+$11
+untested
+
+Mighty Bomb Jack (J, PRG1)
+$00
+$0001
+≠ $3C
+$11
+untested
+
+Sansuu 1 Nen
+$20
+$000C
+≠ $BC
+$22
+$000C
+= $BC
+
+Sansuu 2 Nen
+$20
+$0003
+≠ $42
+$22
+$0003
+= $42
+
+Othello
+$20
+$0006
+≠ $3F
+$22
+$0006
+= $3F
+
+Sansuu 3 Nen
+$00
+$0006
+≠ $34
+$2A
+$0006
+= $34
+
+Spy vs Spy
+$13
+$1F20
+≠ $55
+$21
+untested
+
+Seicross
+$21
+$0700…$0707
+≠ $20,$60,$70,$70,$70,$40,$08,$38
+$20
+untested
+
+The North American and PAL versions of Mighty Bomb Jack mount 32 KiB of CHR-ROM instead and so use normal mapper 3.
+
+References
+
+Disch's Mapper Notes
+
+Categories: Nintendo licensed mappers, INES Mappers, Mappers with bus conflicts, In NesCartDB, NES 2.0 mappers with submappers, Discrete logic mappers

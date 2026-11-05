@@ -1,0 +1,30 @@
+INES Mapper 097
+
+INES Mapper 097
+
+iNES Mapper 097 represents the single game that uses Irem's TAM-S1 IC, Kaiketsu Yanchamaru.
+
+ Registers:
+ --------------------------
+ This mapper does not have bus conflicts.
+
+   $8000-BFFF:  [M..P PPPP]
+     P = PRG Reg  (16k @ $C000)
+     M = Mirroring:
+        %0 = Horz (PPU A11)
+        %1 = Vert (PPU A10)
+
+
+ PRG Setup:
+ --------------------------
+
+       $8000   $A000   $C000   $E000
+     +---------------+---------------+
+     |     { -1}     |     $8000     |
+     +---------------+---------------+
+
+The underlying hardware is a little more capable, but is wired in a way such that that is inaccessible.
+
+Mapper 180 is basically this mapper without mirroring control. (But the fixed bank is 0, not last)
+
+Categories: In NesCartDB, INES Mappers

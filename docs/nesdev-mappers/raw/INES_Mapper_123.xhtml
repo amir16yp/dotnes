@@ -1,0 +1,77 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 123</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_123"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 123</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_123">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_123">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 123 is used for the 卡聖 (Kǎshèng) H2288 board, an <a href="MMC3.xhtml" title="MMC3">MMC3</a>-clone-bearing board with scrambled register indices, and an NROM-like PRG-ROM register that can override the MMC3 clone's PRG-ROM bank. Its UNIF board name is <b>UNL-H2288</b>. Used by:
+</p>
+<ul><li><i>Mortal Kombat 3</i> (Kǎshèng/Hummer Team, not to be confused with <i>Mortal Kombat 3</i> from SuperGame)</li>
+<li><i>Earthworm Jim 2</i> (Kǎshèng/Shin-Shin Electronics, not to be confused with <i>Earthworm Jim 2</i> from SuperGame)</li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#NROM_Override_Register_(%245800)"><span class="tocnumber">1.1</span> <span class="toctext">NROM Override Register ($5800)</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#MMC3-compatible_registers_(%248000-%24FFFF)"><span class="tocnumber">1.2</span> <span class="toctext">MMC3-compatible registers ($8000-$FFFF)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-4"><a href="#Similar_Mappers"><span class="tocnumber">2</span> <span class="toctext">Similar Mappers</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="NROM_Override_Register_.28.245800.29"/><span class="mw-headline" id="NROM_Override_Register_($5800)">NROM Override Register ($5800)</span></h2>
+<pre>Mask: $F800
+
+D~7654 3210
+  ---------
+  .M31 .2S0
+   +++--+|+- Select 16 KiB PRG-ROM bank at CPU
+   |     |   $8000-$BFFF and $C000-$FFFF (notice the bit order)
+   |     +-- 0: Do not replace bit 0 (NROM-128)
+   |         1: Replace bit 0 with CPU A14 (NROM-256)
+   +-------- 0: Use PRG bank from MMC3; ignore $5800 bits 0-3/5
+             1: Ignore PRG bank from MMC3; apply $5800 bits 0-3/5
+</pre>
+<h2><span id="MMC3-compatible_registers_.28.248000-.24FFFF.29"/><span class="mw-headline" id="MMC3-compatible_registers_($8000-$FFFF)">MMC3-compatible registers ($8000-$FFFF)</span></h2>
+<pre>$8000 index written   MMC3 register meant
+-------------------   -------------------
+0                     0
+1                     3
+2                     1
+3                     5
+4                     6
+5                     7
+6                     2
+7                     4
+</pre>
+<p>Bits 6 and 7 of the value written to $8000 are unchanged. See <a href="MMC3.xhtml" title="MMC3">MMC3</a> for further details.
+</p>
+<h1><span class="mw-headline" id="Similar_Mappers">Similar Mappers</span></h1>
+<ul><li>iNES Mappers <a href="INES_Mapper_114.xhtml" title="INES Mapper 114">114</a> and <a href="INES_Mapper_115.xhtml" title="INES Mapper 115">115</a> move the $5800 register to $6000 while rearranging its bits and add an outer CHR-ROM bank register at $6001. Mapper 114 keeps the MMC3 index register scrambling (using the same pattern) and adds register address scrambling, while Mapper 115 drops all scrambling.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123145553
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.012 seconds
+Real time usage: 0.017 seconds
+Preprocessor visited node count: 18/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:407-0!canonical and timestamp 20241123145553 and revision id 4940.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_using__4020__5FFF.xhtml">Mappers using $4020-$5FFF</a>, <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

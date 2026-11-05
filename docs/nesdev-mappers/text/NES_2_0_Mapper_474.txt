@@ -1,0 +1,9 @@
+NES 2.0 Mapper 474
+
+NES 2.0 Mapper 474
+
+NES 2.0 Mapper 474 has been tentatively assigned by Akerasoft to denote NROM-383 and NROM-368 PCBs.
+
+See also
+
+https://forums.nesdev.org/viewtopic.php?t=24638 Discussion

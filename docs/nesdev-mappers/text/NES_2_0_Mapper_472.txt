@@ -1,0 +1,5 @@
+NES 2.0 Mapper 472
+
+NES 2.0 Mapper 472
+
+NES 2.0 Mapper 472 denotes the 恒格 FK-206 JG MMC3-compatible PCB. It is basically mapper 52 with the bits reshuffled.

@@ -1,0 +1,53 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 287</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_287"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 287</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_287">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_287">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 287 is used for at least two 4-in-1 multicarts (411120-C, 811120-C). Its UNIF board names are <b>BMC-411120-C</b> and <b>BMC-K-3088</b>. The former has a DIP switch or jumper with a 0/1 setting.
+</p>
+<h2><span id="Outer_Bank_Register_.28.246000-.247FFF.2C_write.29"/><span class="mw-headline" id="Outer_Bank_Register_($6000-$7FFF,_write)">Outer Bank Register ($6000-$7FFF, write)</span></h2>
+<pre>Mask: $E000
+
+D~7654 3210
+  ---------
+  ..II MmOO
+    || |+++- Select 128 KiB Outer PRG-ROM/CHR-ROM bank regardless of banking mode
+    || |+--- If DIP Switch ==1: Same function as Bit 3
+    || ++--- Select PRG Banking Mode
+    ||        0: MMC3 Inner Bank, 128 KiB Outer Bank
+    ||        1: 32 KiB Inner Bank (Bits 0-1) and 128 KiB Outer Bank
+    ++------ Select 32 KiB inner PRG-ROM bank at CPU $8000-$FFFF if Bit 3==0
+</pre>
+<h2><span id="MMC3-compatible_registers_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="MMC3-compatible_registers_($8000-$FFFF,_write)">MMC3-compatible registers ($8000-$FFFF, write)</span></h2>
+<pre>Mask: $E001
+
+$8000, $8001, $A000, $A001, $C000, $C001, $E000, $E001: As normal <a href="MMC3.xhtml" title="MMC3">MMC3</a>.
+</pre>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>Because the outer bank register is connected to where WRAM would normally be, WRAM needs to be enabled via bit 7 of MMC3 register $A001 before accessing the outer bank register.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123161332
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.012 seconds
+Preprocessor visited node count: 13/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:672-0!canonical and timestamp 20241123161332 and revision id 7732.
+ -->
+</div><p class="categories">Categories: <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

@@ -1,0 +1,132 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 164</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_164"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 164</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_164">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_164">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 164</b> denotes the ROM chipset of the 东达 (Dōngdá) <i>PEC-9588 Pyramid Educational Computer</i> that was later also used on the 燕城 (Yànchéng) <b>cy2000-3</b> circuit board, used for the following games:
+</p>
+<ul><li><i>Final Fantasy 太空戰士 V</i> (G-003)</li>
+<li><i>大話西游</i> (Dàhuà Xīyóu, G-004)</li>
+<li><i>櫻桃小丸子</i> (Chibi Maruku-chan, G-005)</li>
+<li><i>岳飛傳</i> (Yuèfēi Zhuàn, G-006)</li>
+<li><i>Dark Seed - 黑暗之蛊</i> (G-009)</li>
+<li><i>口袋精靈: 金</i> (Pokémon: Gold Edition, not to be confused with several similarly-named ports of the same name)</li></ul>
+<p>The circuit board has address lines for 8 KiB of PRG-RAM, though all known carts mount either no or a 2 KiB RAM chip which is then mirrored three times across the respective address range. PRG-RAM is never battery-backed; all games save the game state to a 93C66 512-byte serial EEPROM. The EEPROM's &quot;ORG&quot; pin is tied to GND, selecting a word size of 8 bits. There is also a spot for a second EEPROM chip that is unpopulated on all known games.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#PRG-ROM_Bank_Low/1_bpp_Mode_Switch_(%245000,_write)"><span class="tocnumber">2.1</span> <span class="toctext">PRG-ROM Bank Low/1 bpp Mode Switch ($5000, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#PRG-ROM_Bank_High_(%245100,_write)"><span class="tocnumber">2.2</span> <span class="toctext">PRG-ROM Bank High ($5100, write)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Microwire_Interface_(%245200,_write)"><span class="tocnumber">2.3</span> <span class="toctext">Microwire Interface ($5200, write)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Mirroring_(%245300,_write)"><span class="tocnumber">2.4</span> <span class="toctext">Mirroring ($5300, write)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Microwire_Interface_(%245500,_read)"><span class="tocnumber">2.5</span> <span class="toctext">Microwire Interface ($5500, read)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#See_also"><span class="tocnumber">3</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: 0-8 KiB unbanked PRG-RAM, not battery-backed</li>
+<li>CPU $8000-$BFFF: 16 KiB switchable PRG-ROM bank</li>
+<li>CPU $C000-$FFFF: 16 KiB semi-fixed PRG-ROM bank</li>
+<li>CPU $8000-$FFFF: <i>alternatively:</i> 32 KiB swichable PRG-ROM bank</li>
+<li>PPU $0000-$1FFF: 8 KiB unbanked CHR-RAM</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<p>All registers are initialized to $00 on reset.
+</p>
+<h2><span id="PRG-ROM_Bank_Low.2F1_bpp_Mode_Switch_.28.245000.2C_write.29"/><span class="mw-headline" id="PRG-ROM_Bank_Low/1_bpp_Mode_Switch_($5000,_write)">PRG-ROM Bank Low/1 bpp Mode Switch ($5000, write)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  CSQM PPPp
+  ||+|-++++- PRG A18..A14 if M=0
+  || | ++++- PRG A18..A15 if M=1
+  || +------ PRG banking mode
+  ||          0: PRG A14..A18=QPPPp when CPU A14=0 (UxROM, 16 KiB switchable bank)
+  ||             PRG A14..A18=11111 when CPU A14=1 and S=0 (fixed bank=1F)
+  ||             PRG A14..A18=111p0 when CPU A14=1 and S=1 (fixed bank=1C or 1E)
+  ||          1: PRG A14=CPU A14, PRG A15..A18=PPPp (BxROM, 32 KiB switchable bank)
+  ||         Also selects nametable mirroring:
+  ||          0: Forced vertical mirroring
+  ||          1: Mirroring selected by $5300
+  |+-------- See 'M' bit description
+  +--------- 1 bpp video mode: when PPU A13=0 (pattern table) ...
+              0: CHR A3=PPU A3, CHR A12=PPU A12 (disable 1 bpp mode)
+              1: CHR A3=PPU A0, CHR A12=PPU A9, both latched on
+                 last rise of PPU A13 (enable 1 bpp mode)
+</pre>
+<ul><li>1 bpp mode is an all points-addressable video mode that allows the 8 KiB CHR-RAM to hold just enough data for an entire screen.</li>
+<li>Because this register is initialized to $00 on reset, thus clearing bit 4 which causes UxROM mode, the game's reset vectors will be at the end of 16 KiB bank #31.</li></ul>
+<h2><span id="PRG-ROM_Bank_High_.28.245100.2C_write.29"/><span class="mw-headline" id="PRG-ROM_Bank_High_($5100,_write)">PRG-ROM Bank High ($5100, write)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  .... ..PP
+         ++- PRG A20..A19
+</pre>
+<h2><span id="Microwire_Interface_.28.245200.2C_write.29"/><span class="mw-headline" id="Microwire_Interface_($5200,_write)">Microwire Interface ($5200, write)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  .T.S .C.D
+   | |  | +- 93C66 EEPROM DAT output
+   | |  +--- 93C66 EEPROM CLK output
+   | +------ 93C66 EEPROM #1 CS output
+   +-------- 93C66 EEPROM #2 CS output
+</pre>
+<h2><span id="Mirroring_.28.245300.2C_write.29"/><span class="mw-headline" id="Mirroring_($5300,_write)">Mirroring ($5300, write)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  M... ....
+  +--------- Nametable mirroring if $5000.4=1
+              0=Horizontal
+              1=Vertical
+</pre>
+<h2><span id="Microwire_Interface_.28.245500.2C_read.29"/><span class="mw-headline" id="Microwire_Interface_($5500,_read)">Microwire Interface ($5500, read)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  .... .A..
+        |
+        |
+        +--- 93C66 EEPROM DAT input (inverted)
+</pre>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<ul><li><a href="NES_2_0_Mapper_558.xhtml" title="NES 2.0 Mapper 558">NES 2.0 Mapper 558</a> is a later version which drops UxROM mode and connects the microwire interface to EEPROM differently.</li>
+<li><a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?p=257116">PCB pictures and circuit diagram</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241122231357
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.016 seconds
+Real time usage: 0.019 seconds
+Preprocessor visited node count: 28/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:448-0!canonical and timestamp 20241122231357 and revision id 19692.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_using__4020__5FFF.xhtml">Mappers using $4020-$5FFF</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a></p></div></body></html>

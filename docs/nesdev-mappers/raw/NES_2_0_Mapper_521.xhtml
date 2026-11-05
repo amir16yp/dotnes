@@ -1,0 +1,50 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 521</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_521"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 521</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_521">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_521">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 521</b> is used for <i>장두진 바둑교실: 입문편</i>, commonly known as <i>Korean Igo</i>. Its UNIF board name is <b>DREAMTECH01</b>, without prefix.
+</p>
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$BFFF: 16 KiB switchable PRG-ROM bank</li>
+<li>CPU $C000-$FFFF: 16 KiB fixed PRG-ROM bank (last bank in ROM file)</li>
+<li>PPU $0000-$1FFF: 8 KiB of unbanked CHR-RAM.</li></ul>
+<p>Mirroring is hard-wired.
+</p><p>Since the fixed PRG-ROM bank comes from a separate PRG-ROM chip, the ROM file can have a non-power-of-two size.
+</p>
+<h1><span id="Bank_Register_.28.245020.2C_write.29"/><span class="mw-headline" id="Bank_Register_($5020,_write)">Bank Register ($5020, write)</span></h1>
+<pre>Mask: $F030
+D~[.... BBBB]
+        ++++- PRG A18..14 when CPU A14=0
+</pre>
+<p>Note that writes to $5030 are ignored.
+</p>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<p><a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?p=296603">PCB images and circuit diagram</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241122205531
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.004 seconds
+Real time usage: 0.004 seconds
+Preprocessor visited node count: 11/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:827-0!canonical and timestamp 20241122205531 and revision id 22137.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a></p></div></body></html>

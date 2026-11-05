@@ -1,0 +1,315 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 256</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_256"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 256</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_256">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_256">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 256 is used for games using the bankswitching behavior of the <a href="VTxx.xhtml" class="mw-redirect" title="VT03">OneBus</a> Famiclones. The UNIF board names are <b>UNL-OneBus</b>, <b>BMC-OneBus</b> and <b>UNL-DANCE</b>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Single_and_split_PRG/CHR_address_space"><span class="tocnumber">2</span> <span class="toctext">Single and split PRG/CHR address space</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Bank_register_address_and_CPU_opcode_scrambling"><span class="tocnumber">3</span> <span class="toctext">Bank register address and CPU opcode scrambling</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Embedded_VT369_ROM"><span class="tocnumber">4</span> <span class="toctext">Embedded VT369 ROM</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>To emulate ROM images using mapper 256, one must support bankswitching, nametable mirroring selection and IRQs using both the VTxx native registers (see the <a href="VT02__PRG_ROM_Bankswitching.xhtml" title="VT02+ PRG-ROM Bankswitching">VT02+ PRG-ROM Bankswitching</a> and <a href="VT02__CHR_ROM_Bankswitching.xhtml" title="VT02+ CHR-ROM Bankswitching">VT02+ CHR-ROM Bankswitching</a> articles for details) as well as the <a href="VT02__MMC3_Compatibility_Registers.xhtml" title="VT02+ MMC3 Compatibility Registers">MMC3 compatible registers</a>.
+</p>
+<h2><span id="Single_and_split_PRG.2FCHR_address_space"/><span class="mw-headline" id="Single_and_split_PRG/CHR_address_space">Single and split PRG/CHR address space</span></h2>
+<p>On physical hardware, bankswitching by the VTxx console itself can only be used if the cartridge uses OneBus addressing, signalled by connecting certain pins on the cartridge connector to Vcc/GND, because only in OneBus mode are the CHR address lines repurposed as higher-order address lines for the single address space. Therefore, regular OneBus ROM images will only contain PRG ROM and no CHR ROM, and PRG ROM ($41xx) and CHR ROM ($201x) bankswitch registers apply to the same address space.
+</p><p>However, ROM images converted from Waixing's WXN format will have both PRG and CHR ROM, yet use the VTxx-native bankswitch registers and/or <a href="#Register_address_mangling">register address mangling</a>. These images cannot be run unchanged on physical hardware, and were intended to be run by Waixing's proprietary VTxx emulator found on several 32-bit plug-and-play consoles. For simplicity, mapper 256 is also used for such ROM images; to emulate them, simply apply the PRG ROM ($41xx) and CHR ROM ($201x) bankswitch registers to the respective separate address space.
+</p>
+<h2><span class="mw-headline" id="Bank_register_address_and_CPU_opcode_scrambling">Bank register address and CPU opcode scrambling</span></h2>
+<p>Several plug-and-play consoles use a simple protection scheme intended to prevent interchanging the ROM data between different consoles. The protection scheme works by simply swapping the addresses of the bankswitch registers. Some patterns only change the VTxx-native register addresses, others apply to the MMC3 compatibility registers as well. 
+</p><p>Other plug-and-play consoles, in particular those by Jungletac, scramble CPU opcode bytes (and only those) by swapping bits. These consoles power-on with opcode scrambling enabled, but allow it to be disabled --- for example, to run a pirated licensed NES game without modifying it --- by writing to register <b>411C</b> (submappers 12 and 14):
+</p>
+<pre>D~7654 3210
+  ---------
+  .E.. ....
+   +-------- Select CPU opcode encryption (submapper 12+14 only)
+              0: disabled
+              1: enabled (default at power-on)
+</pre>
+<p>or <b>$4169</b> (submappers 13 and 15):
+</p>
+<pre>D~7654 3210
+  ---------
+  .... ...E
+          +- Select CPU opcode encryption (submappers 13+15 only)
+              0: enabled (default at power-on)
+              1: disabled
+</pre>
+<p><a href="NES_2_0_submappers.xhtml#NES_2.0_Mapper_256" title="NES 2.0 submappers">Submappers</a> have been allocated to denote the type of protection scheme:
+</p>
+<table class="wikitable">
+<tbody><tr>
+<th rowspan="2">Submapper #</th>
+<th rowspan="2">Name</th>
+<th colspan="12">PPU bank affected by ...</th>
+<th colspan="4">CPU bank affected by ...</th>
+<th rowspan="2">CPU opcode bytes
+</th></tr>
+<tr>
+<th>$2012</th>
+<th>$2013</th>
+<th>$2014</th>
+<th>$2015</th>
+<th>$2016</th>
+<th>$2017</th>
+<th>$8000.0</th>
+<th>$8000.1</th>
+<th>$8000.2</th>
+<th>$8000.3</th>
+<th>$8000.4</th>
+<th>$8000.5</th>
+<th>$4107</th>
+<th>$4108</th>
+<th>$8000.6</th>
+<th>$8000.7
+</th></tr>
+<tr>
+<td>0</td>
+<td>Normal</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>none
+</td></tr>
+<tr>
+<td>1</td>
+<td>Waixing VT03</td>
+<td>$1400</td>
+<td>$1000</td>
+<td>$0800</td>
+<td>$0000</td>
+<td>$1C00</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$1800</td>
+<td>$1400</td>
+<td>$1000</td>
+<td>$0800</td>
+<td>$0000</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>none
+</td></tr>
+<tr>
+<td>2</td>
+<td>Power Joy Supermax</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$A000</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>$8000</td>
+<td>none
+</td></tr>
+<tr>
+<td>3</td>
+<td>Zechess/Hummer Team</td>
+<td>$0800</td>
+<td>$0000</td>
+<td>$1C00</td>
+<td>$1800</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>none
+</td></tr>
+<tr>
+<td>4</td>
+<td>Sports Game 69-in-1</td>
+<td>$1800</td>
+<td>$0800</td>
+<td>$1000</td>
+<td>$0000</td>
+<td>$1C00</td>
+<td>$1400</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>none
+</td></tr>
+<tr>
+<td>5</td>
+<td>Waixing VT02</td>
+<td>$1400</td>
+<td>$1000</td>
+<td>$0800</td>
+<td>$0000</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>none
+</td></tr>
+<tr>
+<td>12</td>
+<td>Cheertone</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>$8000</td>
+<td>$A000
+</td>
+<td>D7&lt;-&gt;D6, D1&lt;-&gt;D2 swapped, switched via $411C
+</td></tr>
+<tr>
+<td>13</td>
+<td>Cube Tech</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>$8000</td>
+<td>$A000
+</td>
+<td>D1 and D4 swapped, switched via $4169
+</td></tr>
+<tr>
+<td>14</td>
+<td>Karaoto</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>$8000</td>
+<td>$A000
+</td>
+<td>D6 and D7 swapped, switched via $411C
+</td></tr>
+<tr>
+<td>15</td>
+<td>Jungletac</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$0000</td>
+<td>$0800</td>
+<td>$1000</td>
+<td>$1400</td>
+<td>$1800</td>
+<td>$1C00</td>
+<td>$8000</td>
+<td>$A000</td>
+<td>$8000</td>
+<td>$A000
+</td>
+<td>D5 and D6 swapped, switched via $4169
+</td></tr></tbody></table>
+<h2><span class="mw-headline" id="Embedded_VT369_ROM">Embedded VT369 ROM</span></h2>
+<p>The VT369 variant of the OneBus famiclones has 4 KiB of ROM embedded into the NoaC glob itself. These 4 KiB are mapped to $1000-$1FFF of the main CPU's address space and to $4000-$4FFF of the sound CPU's address space, and contain initialization code and a sound CPU program. They are included as NES 2.0 Misc ROM.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123101313
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.033 seconds
+Real time usage: 0.041 seconds
+Preprocessor visited node count: 26/1000000
+Post‐expand include size: 2242/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    6.533      1 NES_2.0_Mapper_256/Submapper_table
+100.00%    6.533      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:640-0!canonical and timestamp 20241123101313 and revision id 20137.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_NES_2_0_mappers_with_submappers.xhtml">NES 2.0 mappers with submappers</a></p></div></body></html>

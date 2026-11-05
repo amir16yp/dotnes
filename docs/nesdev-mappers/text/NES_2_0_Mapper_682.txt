@@ -1,0 +1,9 @@
+NES 2.0 Mapper 682
+
+NES 2.0 Mapper 682
+
+NES 2.0 Mapper 682 has been tentatively allocated for Broke Studio's Rainbow Mapper.[1] Development forks of FCEUX and Mesen emulate it as mapper number 682.
+
+References
+
+↑ https://github.com/BrokeStudio/rainbow-net/blob/master/NES/mapper-doc.md

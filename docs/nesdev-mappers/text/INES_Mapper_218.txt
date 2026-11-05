@@ -1,0 +1,56 @@
+INES Mapper 218
+
+INES Mapper 218
+
+iNES Mapper 218 is used by the homebrew Magic Floor game. The cartridge contains only one single PRG-ROM chip (and a CIC, if required).
+
+There's no CHR-ROM or CHR-RAM. Instead, the console's internal 2Kbyte Name Table RAM is mapped as CHR-RAM. The 2K RAM is permanently selected (/VCS wired to GND), and can be used in four modes by wiring VA10 to one of the PPU.A10..A13 address lines:
+
+VA10 connection
+Effect on nametables
+iNES Flags 6
+UNIF "MIRR" bit 7-0
+
+PPU.A10
+Two-Screen, Vertical Mirroring
+$A1 (0001)
+$01
+
+PPU.A11
+Two-Screen, Horizontal Mirroring
+$A0 (0000)
+$00
+
+PPU.A12
+One-Screen, BLK0
+$A8 (1000)
+$02
+
+PPU.A13
+One-Screen, BLK1
+$A9 (1001)
+$03
+
+Note: The "alternative nametables" bit 3 in Byte 6 of iNES header is commonly thought as meaning four screens, but for this mapper it is used to choose between the two one-screen layouts.
+
+The VA10 connection also affects the CHR-RAM mapping at 0000h-1FFFh. BLK1 would be the most common case (1K NT plus 1K CHR-RAM). BLK0 would allow to swap CHR RAM via Port 2000h.Bit3-4. Two-Screen would allow to use two NTs (and to squeeze CHR data into unused NT areas). Two-Screen would also allow to use 2K OBJ tiles (when leaving BG unused).
+
+Note: 1K CHR-RAM allows to use as much as 64 tiles of 2bpp (or, with suitable color attributes, 128 monochrome tiles of 1bpp).
+
+Also note that with if reads/writes to mirrored addresses are avoided, software for this mapper can also be made compatible with AxROM ($A8,$A9), BxROM ($A0,A1) or NROM + CHR-RAM, or other suitable mappers. Magic Floor itself is well behaved enough to be emulated as AxROM or NROM + CHR-RAM with vertical mirroring.
+
+It has been used in two games, and one test ROM:
+
+Magic Floor ($A8)
+
+Starfight ($A8)
+
+OAM corruption stress test ROM ($A0)
+
+References
+
+nesdev forum, Post subject: Single Chip Cartridge
+
+nesdev forum, Post subject: Using the NES's PPU RAM as CHR RAM?
+
+Categories: INES Mappers

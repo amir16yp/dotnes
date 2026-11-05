@@ -1,0 +1,133 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 056</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_056"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 056</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_056">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_056">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><a class="mw-selflink selflink">iNES Mapper 056</a> reportedly represents a specific unlicensed reproduction of Super Mario Bros. 3
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#IRQ_(%248000-%24DFFF)"><span class="tocnumber">2.1</span> <span class="toctext">IRQ ($8000-$DFFF)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Bank_select_(%24E000-%24EFFF)"><span class="tocnumber">2.2</span> <span class="toctext">Bank select ($E000-$EFFF)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Bank_data_(%24F000-%24FFFF)"><span class="tocnumber">2.3</span> <span class="toctext">Bank data ($F000-$FFFF)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#PRG_bank_upper_bits_(%24F000-%24F3FF)"><span class="tocnumber">2.4</span> <span class="toctext">PRG bank upper bits ($F000-$F3FF)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Mirroring_control_(%24F800-%24FBFF)"><span class="tocnumber">2.5</span> <span class="toctext">Mirroring control ($F800-$FBFF)</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#CHR_banking_control_(%24FC00-%24FFFF)"><span class="tocnumber">2.6</span> <span class="toctext">CHR banking control ($FC00-$FFFF)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-9"><a href="#See_also"><span class="tocnumber">3</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>CPU $6000-$7FFF: 8 KB PRG RAM bank (not battery backed!)</li>
+<li>CPU $8000-$9FFF: 8 KB switchable PRG ROM bank</li>
+<li>CPU $A000-$BFFF: 8 KB switchable PRG ROM bank</li>
+<li>CPU $C000-$DFFF: 8 KB switchable PRG ROM bank</li>
+<li>CPU $E000-$FFFF: 8 KB semi-fixed PRG ROM bank (banks 15 or 31)</li>
+<li>PPU $0000-$03FF: 1 KB switchable CHR bank</li>
+<li>PPU $0400-$07FF: 1 KB switchable CHR bank</li>
+<li>PPU $0800-$0BFF: 1 KB switchable CHR bank</li>
+<li>PPU $0C00-$0FFF: 1 KB switchable CHR bank</li>
+<li>PPU $1000-$13FF: 1 KB switchable CHR bank</li>
+<li>PPU $1400-$17FF: 1 KB switchable CHR bank</li>
+<li>PPU $1800-$1BFF: 1 KB switchable CHR bank</li>
+<li>PPU $1C00-$1FFF: 1 KB switchable CHR bank</li></ul>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<h3><span id="IRQ_.28.248000-.24DFFF.29"/><span class="mw-headline" id="IRQ_($8000-$DFFF)">IRQ ($8000-$DFFF)</span></h3>
+<p>The IRQ functionality on this board is implemented by the KS202 ASIC on it. That IC was used in isolation in <a href="INES_Mapper_142.xhtml" title="INES Mapper 142">iNES Mapper 142</a>, and this mapper's IRQ will behave identically.
+</p>
+<h3><span id="Bank_select_.28.24E000-.24EFFF.29"/><span class="mw-headline" id="Bank_select_($E000-$EFFF)">Bank select ($E000-$EFFF)</span></h3>
+<p>Select one of three bank registers to update on next write to $F000.
+</p>
+<pre>7  bit  0
+---- ----
+.... .RRR
+      |||
+      +++- Specify which bank register to update on next write to Bank Data register
+           1: Select 8 KB PRG bank at CPU $8000-$9FFF
+           2: Select 8 KB PRG bank at CPU $A000-$BFFF
+           3: Select 8 KB PRG bank at CPU $C000-$DFFF
+           4,6: Writes to $F000 have no effect
+           0,5,7: unknown
+</pre>
+<h3><span id="Bank_data_.28.24F000-.24FFFF.29"/><span class="mw-headline" id="Bank_data_($F000-$FFFF)">Bank data ($F000-$FFFF)</span></h3>
+<p>Note that this register is logically superimposed on the next thirteen registers.
+</p>
+<pre>7  bit  0
+---- ----
+.... DDDD
+     ||||
+     ++++- New bank value, based on last value written to Bank select register (mentioned above)
+</pre>
+<h3><span id="PRG_bank_upper_bits_.28.24F000-.24F3FF.29"/><span class="mw-headline" id="PRG_bank_upper_bits_($F000-$F3FF)">PRG bank upper bits ($F000-$F3FF)</span></h3>
+<p>Note that these registers are superimposed on the Bank data register.
+</p><p>Mask: $FC03
+</p>
+<pre>$F000: [...P ....] - select PRG ROM A17 during reads from $8000-$9FFF
+$F001: [...P ....] - same, for reads from $A000-$BFFF
+$F002: [...P ....] - same, for reads from $C000-$DFFF
+$F003: [...P ....] - same, for reads from $E000-$FFFF
+</pre>
+<p>The game relies on these four registers powering up holding 1.
+</p><p>The original hardware dummies out the upper three bits, but they could have been connected.
+</p><p>The above six registers are intended be used together as
+</p>
+<pre> LDX #2
+ STX $E000
+ LDA bankA000
+ STA $F001
+</pre>
+<h3><span id="Mirroring_control_.28.24F800-.24FBFF.29"/><span class="mw-headline" id="Mirroring_control_($F800-$FBFF)">Mirroring control ($F800-$FBFF)</span></h3>
+<p>Note that this register is superimposed on the Bank data register.
+</p><p>Mask: $FC00
+</p>
+<pre>$F800: [.... ...M] - 0: H (PPU A11), 1: V (PPU A10)
+</pre>
+<h3><span id="CHR_banking_control_.28.24FC00-.24FFFF.29"/><span class="mw-headline" id="CHR_banking_control_($FC00-$FFFF)">CHR banking control ($FC00-$FFFF)</span></h3>
+<p>Note that these registers are superimposed on the Bank data register.
+</p><p>Mask: $FC07
+</p>
+<pre> $FC00 [.CCCCCCC] - select 1kB CHR for $0000-$03ff
+ $FC01 [.CCCCCCC] - select 1kB CHR for $0400-$07ff
+ $FC02 [.CCCCCCC] - select 1kB CHR for $0800-$0bff
+ $FC03 [.CCCCCCC] - select 1kB CHR for $0c00-$0fff
+ $FC04 [.CCCCCCC] - select 1kB CHR for $1000-$13ff
+ $FC05 [.CCCCCCC] - select 1kB CHR for $1400-$17ff
+ $FC06 [.CCCCCCC] - select 1kB CHR for $1800-$1bff
+ $FC07 [.CCCCCCC] - select 1kB CHR for $1c00-$1fff
+</pre>
+<p>The original hardware dummies out the top bit, but it could have been connected.
+</p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?f=9&amp;t=19314">krzysiobal's reverse-engineering notes</a></li>
+<li><a rel="nofollow" class="external text" href="https://problemkaputt.de/everynes.htm#mapper56piratesmb3">nocash's documentation</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123163442
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.015 seconds
+Real time usage: 0.020 seconds
+Preprocessor visited node count: 32/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:341-0!canonical and timestamp 20241123163442 and revision id 4330.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

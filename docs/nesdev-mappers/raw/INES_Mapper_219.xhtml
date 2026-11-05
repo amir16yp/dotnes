@@ -1,0 +1,182 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 219</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_219"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 219</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_219">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_219">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 219 is used for the 卡聖 (Kǎshèng) A9461 MMC3-clone-bearing board, used by:
+</p>
+<ul><li><i>Toy Story</i></li>
+<li><i>Super 1997 4-in-1 (NT-8029)</i></li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Mode_Register_(%248002)"><span class="tocnumber">1</span> <span class="toctext">Mode Register ($8002)</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#MMC3_mode_registers_(%248000-%24FFFF)"><span class="tocnumber">2</span> <span class="toctext">MMC3 mode registers ($8000-$FFFF)</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#MMC3_Bank_Register_Index_(%248000)/Data_(%248001)"><span class="tocnumber">3</span> <span class="toctext">MMC3 Bank Register Index ($8000)/Data ($8001)</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Extended_PRG-ROM_Bank_Index_(%248000,_%2423-%2426)/Data_(%248001)"><span class="tocnumber">4</span> <span class="toctext">Extended PRG-ROM Bank Index ($8000, $23-$26)/Data ($8001)</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#CHR-ROM_Bank_Number_Latch_Index_(%248000,_%2408-%241E,_even)/Data_(%248001)"><span class="tocnumber">5</span> <span class="toctext">CHR-ROM Bank Number Latch Index ($8000, $08-$1E, even)/Data ($8001)</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#CHR-ROM_Pseudo_2_KiB_switch_Index_(%248000,_%2409-%240F,_odd)/Data_(%248001)"><span class="tocnumber">6</span> <span class="toctext">CHR-ROM Pseudo 2 KiB switch Index ($8000, $09-$0F, odd)/Data ($8001)</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#CHR-ROM_1_KiB_switch_Index_(%248000,_%2411-%241F,_odd)/Data_(%248001)"><span class="tocnumber">7</span> <span class="toctext">CHR-ROM 1 KiB switch Index ($8000, $11-$1F, odd)/Data ($8001)</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Outer_Bank_Bit_0_(%245002)"><span class="tocnumber">8</span> <span class="toctext">Outer Bank Bit 0 ($5002)</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Outer_Bank_Bit_1_(%245003)"><span class="tocnumber">9</span> <span class="toctext">Outer Bank Bit 1 ($5003)</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#Note"><span class="tocnumber">10</span> <span class="toctext">Note</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#Sources"><span class="tocnumber">11</span> <span class="toctext">Sources</span></a></li>
+</ul>
+</div>
+
+<h2><span id="Mode_Register_.28.248002.29"/><span class="mw-headline" id="Mode_Register_($8002)">Mode Register ($8002)</span></h2>
+<pre>Mask: $E003
+
+7654 3210
+---------
+CPMR RRRR
+||++-++++-*Select bank register number (0-7 in MMC3 mode, $08-$26 in Extended mode)
+||+------- Select mode
+||          0: MMC3 mode
+||          1: Extended mode
+|+--------*1: PRG A14 inversion in MMC3 mode
++---------*1: CHR A12 inversion in MMC3 mode
+
+* Same as $8000
+</pre>
+<h2><span id="MMC3_mode_registers_.28.248000-.24FFFF.29"/><span class="mw-headline" id="MMC3_mode_registers_($8000-$FFFF)">MMC3 mode registers ($8000-$FFFF)</span></h2>
+<pre>Mask: $E001
+
+$A000, $A001, $C000, $C001, $E000, $E001: As on regular <a href="MMC3.xhtml" title="MMC3">MMC3</a>.
+</pre>
+<h2><span id="MMC3_Bank_Register_Index_.28.248000.29.2FData_.28.248001.29"/><span class="mw-headline" id="MMC3_Bank_Register_Index_($8000)/Data_($8001)">MMC3 Bank Register Index ($8000)/Data ($8001)</span></h2>
+<p>Mask: $E001. Used only if $8002 bit 5=0, see <a href="MMC3.xhtml" title="MMC3">MMC3</a>. Note that PRG-ROM and CHR-ROM banks are masked to 128 KiB.
+</p>
+<h2><span id="Extended_PRG-ROM_Bank_Index_.28.248000.2C_.2423-.2426.29.2FData_.28.248001.29"/><span class="mw-headline" id="Extended_PRG-ROM_Bank_Index_($8000,_$23-$26)/Data_($8001)">Extended PRG-ROM Bank Index ($8000, $23-$26)/Data ($8001)</span></h2>
+<p>Mask: $E001. Used only if $8002 bit 5=1.
+</p><p>$8000/$8002 value:
+</p>
+<pre>D~7654 3210
+  ---------
+  ..10 .RRR
+        +++- 6: Select 8 KiB PRG-ROM bank at CPU $8000-$9FFF
+             5: Select 8 KiB PRG-ROM bank at CPU $A000-$BFFF
+             4: Select 8 KiB PRG-ROM bank at CPU $C000-$DFFF 
+             3: Select 8 KiB PRG-ROM bank at CPU $E000-$FFFF
+</pre>
+<p>$8001 value:
+</p>
+<pre>D~7654 3210
+  ---------
+  ..BB BB..
+    ++-++--- Bits 0-3 (reversed order) of 8 KiB PRG-ROM bank number
+</pre>
+<h2><span id="CHR-ROM_Bank_Number_Latch_Index_.28.248000.2C_.2408-.241E.2C_even.29.2FData_.28.248001.29"/><span class="mw-headline" id="CHR-ROM_Bank_Number_Latch_Index_($8000,_$08-$1E,_even)/Data_($8001)">CHR-ROM Bank Number Latch Index ($8000, $08-$1E, even)/Data ($8001)</span></h2>
+<p>Mask: $E001. Used only if $8002 bit 5=1.
+</p><p>$8000 value:
+</p>
+<pre>D~7654 3210
+  ---------
+  ..00 1..0
+or
+D~7654 3210
+  ---------
+  ..01 ...0
+
+</pre>
+<p>$8001 value:
+</p>
+<pre>D~7654 3210
+  ---------
+  .... .654
+        +++- Bits 4-6 OR'd with next CHR-ROM switch's data
+</pre>
+<h2><span id="CHR-ROM_Pseudo_2_KiB_switch_Index_.28.248000.2C_.2409-.240F.2C_odd.29.2FData_.28.248001.29"/><span class="mw-headline" id="CHR-ROM_Pseudo_2_KiB_switch_Index_($8000,_$09-$0F,_odd)/Data_($8001)">CHR-ROM Pseudo 2 KiB switch Index ($8000, $09-$0F, odd)/Data ($8001)</span></h2>
+<p>Mask: $E001. Used only if $8002 bit 5=1.
+</p><p>$8000 value:
+</p>
+<pre>D~7654 3210
+  ---------
+  ..00 1RR1
+        ++-- Select CHR-ROM address range to switch
+         |    0: PPU $0000-$03FF
+         |    1: PPU $0400-$07FF
+         |    2: PPU $0800-$0BFF
+         |    3: PPU $0C00-$0FFF
+         +-- OR'd with Bit 0 of CHR-ROM bank data
+</pre>
+<p>$8001 value:
+</p>
+<pre>D~7654 3210
+  ---------
+  BBBB BBB.
+  ++++-+++-- Bits 0-6 of 1 KiB CHR-ROM bank number at PPU address selected via $8000/$8002.
+</pre>
+<p>The value is OR'd with bit 1 SHR 1 of the value written to $8000, then OR'd with bits 0-2 SHL 4 of the value written to the CHR-ROM latch.
+</p>
+<h2><span id="CHR-ROM_1_KiB_switch_Index_.28.248000.2C_.2411-.241F.2C_odd.29.2FData_.28.248001.29"/><span class="mw-headline" id="CHR-ROM_1_KiB_switch_Index_($8000,_$11-$1F,_odd)/Data_($8001)">CHR-ROM 1 KiB switch Index ($8000, $11-$1F, odd)/Data ($8001)</span></h2>
+<p>Mask: $E001. Used only if $8002 bit 5=1.
+</p><p>$8000 value:
+</p>
+<pre>D~7654 3210
+  ---------
+  ..01 RR.1
+       ++--- Select CHR-ROM address range to switch
+              0: PPU $1000-$13FF
+              1: PPU $1400-$17FF
+              2: PPU $1800-$1BFF
+              3: PPU $1C00-$1FFF
+</pre>
+<p>$8001 value:
+</p>
+<pre>D~7654 3210
+  ---------
+  BBBB BBB.
+  ++++-+++-- Bits 0-6 of 1 KiB CHR-ROM bank number at PPU address selected via $8000/$8002.
+</pre>
+<p>The value is OR'd with bits 0-2 SHL 4 of the value written to the CHR-ROM latch.
+</p>
+<h2><span id="Outer_Bank_Bit_0_.28.245002.29"/><span class="mw-headline" id="Outer_Bank_Bit_0_($5002)">Outer Bank Bit 0 ($5002)</span></h2>
+<pre>Mask: $5003
+
+D~7654 3210
+  ---------
+  .... ...B
+          +- Bit 0 of 128 KiB outer PRG-ROM and CHR-ROM bank
+</pre>
+<h2><span id="Outer_Bank_Bit_1_.28.245003.29"/><span class="mw-headline" id="Outer_Bank_Bit_1_($5003)">Outer Bank Bit 1 ($5003)</span></h2>
+<pre>Mask: $5003
+
+D~7654 3210
+  ---------
+  ..B. ....
+    +------- Bit 1 of 128 KiB outer PRG-ROM and CHR-ROM bank
+</pre>
+<p>The Outer Bank register must be initialized to $03 for the menu to appear.
+</p>
+<h2><span class="mw-headline" id="Note">Note</span></h2>
+<p>This mapper gets hot and breaks down easily when using dumping devices.
+</p>
+<h2><span class="mw-headline" id="Sources">Sources</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="https://sourceforge.net/p/fceultra/code/3320/tree/fceu/trunk/src/boards/a9746.cpp">FCEUX implementation</a></li>
+<li><a rel="nofollow" class="external text" href="https://github.com/rdanbrook/nestopia/blob/88d130fd083b9662ef49e8d5ef95513f4bb8759e/source/core/board/NstBoardUnlA9746.cpp">Nestopia's implementation</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123015803
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.015 seconds
+Real time usage: 0.018 seconds
+Preprocessor visited node count: 39/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:504-0!canonical and timestamp 20241123015803 and revision id 21696.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a></p></div></body></html>

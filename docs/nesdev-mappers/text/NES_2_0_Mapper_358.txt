@@ -1,0 +1,31 @@
+NES 2.0 Mapper 358
+
+NES 2.0 Mapper 358
+
+NES 2.0 Mapper 358 denotes a variation of NES 2.0 Mapper 282 with partially overlapping PRG/CHR outer banks:
+
+1997 Super Game 7-in-1 (JY-016) (PCB YY860606C, 512 kiB PRG-ROM)
+
+1998 Super HiK 5-in-1 (JY-113) (PCB YY860606C, 512 kiB PRG-ROM)
+
+1998 Super HiK 6-in-1 (JY-117) (unmarked PCB, 1024 KiB PRG-ROM)
+
+Outer Bank Register ($D003)
+
+Mask: $F803
+
+7654 3210
+---- ----
+..M. .ppC
+  |   ||+-- CHR-ROM A18 if M=0, ignored if M=1
+  |   ++--- PRG-ROM A18-A19
+  |   +---- CHR-ROM A19
+  +-------- Outer CHR bank size and selection
+             0: Mask to 256 KiB, use C
+             1: Mask to 512 KiB, ignore C
+
+PRG ($8000-$8FFF) bank select register bits that select 256 KiB banks are masked off. Dumping the CHR-ROM does not work reliably in 1 KiB CHR-ROM banking mode.
+
+For a description of all other registers, see J.Y. Company ASIC.
+
+Categories: Multicart mappers, Mappers with cycle IRQs, Mappers with scanline IRQs, Mappers using J.Y. Company ASIC, Mappers with ROM nametables

@@ -1,0 +1,130 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 091</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_091"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 091</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_091">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_091">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 091 was used by the original release of <i>Super Fighter III</i> from an unknown publisher, but is more commonly known by a clone board from J.Y. Company.
+</p>
+<table class="wikitable">
+<tbody><tr>
+<th colspan="3">INES Mapper 091 submapper table
+</th></tr>
+<tr>
+<th>Submapper #</th>
+<th>Board</th>
+<th>Games
+</th></tr>
+<tr>
+<td>0</td>
+<td>JY830623C</td>
+<td><i>Street Fighter 3</i>, <i>Mortal Kombat II</i>, <i>Dragon Ball Z 2</i>, <i>Mario &amp; Sonic 2</i>
+</td></tr>
+<tr>
+<td>0</td>
+<td>YY840238C</td>
+<td><i>1995 Super HIK 4-in-1 (JY-016)</i>, <i>1995 Super HiK 4-in-1 (JY-017)</i>
+</td></tr>
+<tr>
+<td>1</td>
+<td>EJ-006-1</td>
+<td><i>Super Fighter III</i>
+</td></tr></tbody></table>
+<p>Submapper 0 has a PA12-based IRQ counter and hard-wired mirroring; submapper 1 an M2-based IRQ counter and selectable mirroring.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#CHR-ROM_Bank_Select_(%246000-%246003,_write)"><span class="tocnumber">2.1</span> <span class="toctext">CHR-ROM Bank Select ($6000-$6003, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Nametable_Mirroring_Select_(%246004-%246005,_write,_submapper_1_only)"><span class="tocnumber">2.2</span> <span class="toctext">Nametable Mirroring Select ($6004-$6005, write, submapper 1 only)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#IRQ_Counter_Register_(%246006-%246007,_write,_submapper_1_only)"><span class="tocnumber">2.3</span> <span class="toctext">IRQ Counter Register ($6006-$6007, write, submapper 1 only)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#PRG-ROM_Bank_Select_(%247000-%247001,_write)"><span class="tocnumber">2.4</span> <span class="toctext">PRG-ROM Bank Select ($7000-$7001, write)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#IRQ_Stop/Acknowledge_(%247006,_write)"><span class="tocnumber">2.5</span> <span class="toctext">IRQ Stop/Acknowledge ($7006, write)</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#IRQ_Start/Reset_(%247007,_write)"><span class="tocnumber">2.6</span> <span class="toctext">IRQ Start/Reset ($7007, write)</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Outer_Bank_register_(%248000-%249FFF,_write,_submapper_0_only)"><span class="tocnumber">2.7</span> <span class="toctext">Outer Bank register ($8000-$9FFF, write, submapper 0 only)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="#Notes"><span class="tocnumber">3</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$9FFF: 8 KiB switchable PRG-ROM bank</li>
+<li>CPU $A000-$BFFF: 8 KiB switchable PRG-ROM bank</li>
+<li>CPU $C000-$FFFF: 16 KiB PRG-ROM bank, hard-wired to last bank</li>
+<li>PPU $0000-$07FF: 2 KiB switchable CHR-ROM bank</li>
+<li>PPU $0800-$0FFF: 2 KiB switchable CHR-ROM bank</li>
+<li>PPU $1000-$17FF: 2 KiB switchable CHR-ROM bank</li>
+<li>PPU $1800-$1FFF: 2 KiB switchable CHR-ROM bank</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="CHR-ROM_Bank_Select_.28.246000-.246003.2C_write.29"/><span class="mw-headline" id="CHR-ROM_Bank_Select_($6000-$6003,_write)">CHR-ROM Bank Select ($6000-$6003, write)</span></h2>
+<p>Mask: $F003/$F007 (submapper 0/1)
+</p>
+<ul><li>$6000: Select 2 KiB CHR-ROM bank at PPU $0000-$07FF</li>
+<li>$6001: Select 2 KiB CHR-ROM bank at PPU $0800-$0FFF</li>
+<li>$6002: Select 2 KiB CHR-ROM bank at PPU $1000-$17FF</li>
+<li>$6003: Select 2 KiB CHR-ROM bank at PPU $1800-$1FFF</li></ul>
+<h2><span id="Nametable_Mirroring_Select_.28.246004-.246005.2C_write.2C_submapper_1_only.29"/><span class="mw-headline" id="Nametable_Mirroring_Select_($6004-$6005,_write,_submapper_1_only)">Nametable Mirroring Select ($6004-$6005, write, submapper 1 only)</span></h2>
+<p>Mask: $F007
+</p>
+<ul><li>$6004: Select horizontal mirroring, value ignored</li>
+<li>$6005: Select vertical mirroring, value ignored</li></ul>
+<h2><span id="IRQ_Counter_Register_.28.246006-.246007.2C_write.2C_submapper_1_only.29"/><span class="mw-headline" id="IRQ_Counter_Register_($6006-$6007,_write,_submapper_1_only)">IRQ Counter Register ($6006-$6007, write, submapper 1 only)</span></h2>
+<p>Mask: $F007
+</p>
+<ul><li>$6006: Set IRQ Counter LSB</li>
+<li>$6007: Set IRQ Counter MSB</li></ul>
+<h2><span id="PRG-ROM_Bank_Select_.28.247000-.247001.2C_write.29"/><span class="mw-headline" id="PRG-ROM_Bank_Select_($7000-$7001,_write)">PRG-ROM Bank Select ($7000-$7001, write)</span></h2>
+<p>Mask: $F003/$F007 (submapper 0/1)
+</p>
+<ul><li>$7000: Select 8 KiB PRG-ROM bank at CPU $8000-$9FFF</li>
+<li>$7001: Select 8 KiB PRG-ROM bank at CPU $A000-$BFFF</li></ul>
+<h2><span id="IRQ_Stop.2FAcknowledge_.28.247006.2C_write.29"/><span class="mw-headline" id="IRQ_Stop/Acknowledge_($7006,_write)">IRQ Stop/Acknowledge ($7006, write)</span></h2>
+<p>Mask: $F003 (submapper 0)/$F007 (submapper 1)
+</p><p>Value is ignored..
+</p>
+<h2><span id="IRQ_Start.2FReset_.28.247007.2C_write.29"/><span class="mw-headline" id="IRQ_Start/Reset_($7007,_write)">IRQ Start/Reset ($7007, write)</span></h2>
+<p>Mask: $F003/$F007 (submapper 0/1)
+</p><p>Value is ignored.
+</p>
+<h2><span id="Outer_Bank_register_.28.248000-.249FFF.2C_write.2C_submapper_0_only.29"/><span class="mw-headline" id="Outer_Bank_register_($8000-$9FFF,_write,_submapper_0_only)">Outer Bank register ($8000-$9FFF, write, submapper 0 only)</span></h2>
+<p>Mask: unknown
+</p>
+<pre>A~FEDC BA98 7654 3210
+  -------------------
+  .... .... .... .PPC
+                  ||+- Select outer 512 KiB CHR-ROM bank (CHR A19)
+                  ++-- Select outer 128 KiB PRG-ROM bank (PRG A17-A18)
+</pre>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>Submapper 0: the IRQ counter is a binary counter clocked by PPU A12, and simply counts a fixed number of 64 unfiltered rises of PPU A12.</li>
+<li>Submapper 1: the IRQ counter is a binary counter clocked by the M2 signal with a factor of 5/4, meaning counting down by five every fourth M2 cycle.</li>
+<li>Submapper 1's <i>Super Fighter III</i> runs a hardware test when resetting with Select+Start+B pressed. The test exists in J.Y. Company's hacked versions as well, but was not adjusted for the simpler hardware and thus will fail some tests.</li>
+<li>The commonly available ROM image of <i>Super Fighter III</i> is a mapper hack for <a href="INES_Mapper_197.xhtml" title="INES Mapper 197">INES Mapper 197</a>.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123163518
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.023 seconds
+Real time usage: 0.028 seconds
+Preprocessor visited node count: 33/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:376-0!canonical and timestamp 20241123163518 and revision id 4682.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_fixed_timing_scanline_IRQs.xhtml">Mappers with fixed-timing scanline IRQs</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a></p></div></body></html>

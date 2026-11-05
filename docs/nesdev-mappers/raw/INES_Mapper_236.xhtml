@@ -1,0 +1,93 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 236</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_236"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 236</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_236">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_236">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 236</b> denotes the Realtec <b>8031</b> and <b>8155</b> circuit boards, used for a number of multicarts with 128 KiB PRG-ROM and 64 KiB CHR-ROM:
+</p>
+<ul><li><i>35-in-1 (HM5511)</i></li>
+<li><i>56-in-1 (NT-009)</i></li>
+<li><i>68-in-1 (HM5511)</i></li>
+<li><i>70-in-1</i></li></ul>
+<p>The Realtec <b>8099</b> PCB has twice the ROM size:
+</p>
+<ul><li><i>智慧大全 12-in-1</i></li></ul>
+<p>A variant of this circuit board (Realtec <b>8106</b> PCB) with 512 KiB PRG-ROM and 8 KiB of unbanked CHR-RAM <a rel="nofollow" class="external text" href="https://github.com/SourMesen/Mesen/blob/master/Core/Bmc70in1.h">is emulated under the same mapper number</a>:
+</p>
+<ul><li><i>800-in-1</i></li></ul>
+<p>Due to the presence of four solder pads that select one of sixteen displayed game counts, the same ROM is bound to exist with different cartridge codes.
+</p>
+<h2><span id="Lower_Address_Latch_.28.248000-.24BFFF.2C_write.29"/><span class="mw-headline" id="Lower_Address_Latch_($8000-$BFFF,_write)">Lower Address Latch ($8000-$BFFF, write)</span></h2>
+<pre>Mask: $C000
+
+Variant with CHR-ROM:
+A~FEDC BA98 7654 3210
+  -------------------
+  10.. .... ..M. CCCC
+              |  ++++- CHR A16..A13
+              +------- Nametable mirroring
+                        0: Vertical
+                        1: Horizontal
+
+Variant with CHR-RAM:
+A~FEDC BA98 7654 3210
+  -------------------
+  10.. .... ..M. .PPP
+              |   +++- PRG A19..A17
+              +------- Nametable mirroring
+                        0: Vertical
+                        1: Horizontal
+</pre>
+<h2><span id="Upper_Address_Latch_.28.24C000-.24FFFF.2C_write.29"/><span class="mw-headline" id="Upper_Address_Latch_($C000-$FFFF,_write)">Upper Address Latch ($C000-$FFFF, write)</span></h2>
+<pre>Mask: $C000
+
+Variant with CHR-ROM:
+A~FEDC BA98 7654 3210
+  -------------------
+  11.. .... ..SS PPPP
+              || ++++- PRG A17..A14
+              ++------ PRG Mode
+                        0: UNROM (PRG A14..16=111 when CPU A14=1)
+                        1: Read Solder Pad (like SS=0, plus
+                           PRG A0..A3=solder pad value)
+                        2: NROM-256 (PRG A14=CPU A14)
+                        3: NROM-128
+
+Variant with CHR-RAM:
+A~FEDC BA98 7654 3210
+  -------------------
+  11.. .... ..SS .PPP
+              ||  +++- PRG A16..A14
+              ++------ PRG Mode
+                        0: UNROM (PRG A14..16=111 when CPU A14=1)
+                        1: Read Solder Pad (like SS=0, plus
+                           PRG A0..A3=solder pad value)
+                        2: NROM-256 (PRG A14=CPU A14)
+                        3: NROM-128
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123162635
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.010 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 9/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:521-0!canonical and timestamp 20241123162635 and revision id 18875.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

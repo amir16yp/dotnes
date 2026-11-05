@@ -1,0 +1,194 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 561</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_561"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 561</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_561">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_561">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 561</b> denotes ROM image files extracted from disk images for the <i>Bung Super Game Doctor 2M</i> and <i>4M</i> <a href="RAM_cartridge.xhtml" title="RAM cartridge">RAM cartridges</a>.
+They represent games whose <a href="Game_Doctor_Magic_Card_FDS_Format.xhtml#Bung_Super_Game_Doctor_disks" title="Game Doctor/Magic Card FDS Format">Doctor Header file</a> denotes a Super Game Doctor disk (byte $0 bit 7 set, byte $7!=$00). 
+A clone of the <a href="Super_Magic_Card.xhtml" title="Super Magic Card">Magic Card 2M</a>, it differs in several aspects.
+</p><p>As with <a href="INES_Mapper_006.xhtml" title="INES Mapper 006">mapper 6</a>, the submapper field denotes the initial latch-based banking mode (0-7).
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Trainer"><span class="tocnumber">2</span> <span class="toctext">Trainer</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Banking_Modes"><span class="tocnumber">3</span> <span class="toctext">Banking Modes</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Latch-based_modes"><span class="tocnumber">3.1</span> <span class="toctext">Latch-based modes</span></a>
+<ul>
+<li class="toclevel-3 tocsection-5"><a href="#0:_UNROM"><span class="tocnumber">3.1.1</span> <span class="toctext">0: UNROM</span></a></li>
+<li class="toclevel-3 tocsection-6"><a href="#1:_UN1ROM+CHRSW"><span class="tocnumber">3.1.2</span> <span class="toctext">1: UN1ROM+CHRSW</span></a></li>
+<li class="toclevel-3 tocsection-7"><a href="#2:_UOROM"><span class="tocnumber">3.1.3</span> <span class="toctext">2: UOROM</span></a></li>
+<li class="toclevel-3 tocsection-8"><a href="#3:_Reverse_UOROM+CHRSW"><span class="tocnumber">3.1.4</span> <span class="toctext">3: Reverse UOROM+CHRSW</span></a></li>
+<li class="toclevel-3 tocsection-9"><a href="#4:_GNROM"><span class="tocnumber">3.1.5</span> <span class="toctext">4: GNROM</span></a></li>
+<li class="toclevel-3 tocsection-10"><a href="#5:_CNROM-256"><span class="tocnumber">3.1.6</span> <span class="toctext">5: CNROM-256</span></a></li>
+<li class="toclevel-3 tocsection-11"><a href="#6:_Custom_#1"><span class="tocnumber">3.1.7</span> <span class="toctext">6: Custom #1</span></a></li>
+<li class="toclevel-3 tocsection-12"><a href="#7:_Custom_#2"><span class="tocnumber">3.1.8</span> <span class="toctext">7: Custom #2</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-13"><a href="#4M_PRG_banking_mode"><span class="tocnumber">3.2</span> <span class="toctext">4M PRG banking mode</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-14"><a href="#Interrupts"><span class="tocnumber">4</span> <span class="toctext">Interrupts</span></a></li>
+<li class="toclevel-1 tocsection-15"><a href="#Registers"><span class="tocnumber">5</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-16"><a href="#1M_banking_mode_(%2442FC-%2442FF,_write-only)"><span class="tocnumber">5.1</span> <span class="toctext">1M banking mode ($42FC-$42FF, write-only)</span></a></li>
+<li class="toclevel-2 tocsection-17"><a href="#4M_PRG_banking_mode_(%2443FE-%2443FF,_write-only)"><span class="tocnumber">5.2</span> <span class="toctext">4M PRG banking mode ($43FE-$43FF, write-only)</span></a></li>
+<li class="toclevel-2 tocsection-18"><a href="#FDS_Write_Data_(%244024)"><span class="tocnumber">5.3</span> <span class="toctext">FDS Write Data ($4024)</span></a></li>
+<li class="toclevel-2 tocsection-19"><a href="#FDS_Control_(%244025)"><span class="tocnumber">5.4</span> <span class="toctext">FDS Control ($4025)</span></a></li>
+<li class="toclevel-2 tocsection-20"><a href="#IRQ_Counter_LSB/MSB_(%244100/%244101,_write-only)"><span class="tocnumber">5.5</span> <span class="toctext">IRQ Counter LSB/MSB ($4100/$4101, write-only)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-21"><a href="#Notes"><span class="tocnumber">6</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: 8 KiB WRAM</li>
+<li>CPU $8000-$FFFF: 32 KiB window into 256 KiB (Super Game Doctor 2M)/512 KiB (Super Game Doctor 4M) PRG memory</li>
+<li>PPU $0000-$1FFF: 8 KiB window into 32 KiB CHR memory</li></ul>
+<h1><span class="mw-headline" id="Trainer">Trainer</span></h1>
+<p>Loadable to any RAM offset and of arbitrary size, Super Game Doctor trainers cannot use the <a href="INES.xhtml#Trainer" title="INES">iNES format's trainer bit</a>. Instead, its data is included as NES 2.0 <a href="NES_2_0.xhtml#Miscellaneous_ROM_Area" title="NES 2.0">Misc. ROM</a> data:
+</p>
+<ul><li>Misc. ROM offset 0: Trainer load address (16-bit little endian)</li>
+<li>Misc. ROM offset 2: JSR address of pre-reset-handler initialization routine, or $0000 if none (16-bit little endian)</li>
+<li>Misc. ROM offset 4+: Trainer data</li></ul>
+<h1><span class="mw-headline" id="Banking_Modes">Banking Modes</span></h1>
+<h2><span class="mw-headline" id="Latch-based_modes">Latch-based modes</span></h2>
+<ul><li>A bus-conflict-free latch at CPU $8000-$FFFF switches PRG and CHR banks.</li>
+<li>The <a href="#1M_banking_mode_(%2442FC-%2442FF,_write-only)">1M Mode Register</a> selects the latch-based mode.</li>
+<li>The latch is only active when PRG memory is write-protected.</li>
+<li>There are no CNROM-128 or NROM-256 modes; BIOS runs such games in CNROM-256 mode by duplicating CHR banks.</li></ul>
+<h3><span class="mw-headline" id="0:_UNROM">0: <a href="UxROM.xhtml" class="mw-redirect" title="INES Mapper 002">UNROM</a></span></h3>
+<pre>D~[.... .PPP]
+         +++- CPU $8000-$BFFF: switchable 16 KiB PRG bank #0-#7 via PPP
+              CPU $C000-$FFFF: fixed 16 KiB PRG bank #7
+              PPU $0000-$1FFF: fixed 8 KiB CHR bank #0, writable
+</pre>
+<h3><span id="1:_UN1ROM.2BCHRSW"/><span class="mw-headline" id="1:_UN1ROM+CHRSW">1: <a href="INES_Mapper_094.xhtml" title="INES Mapper 094">UN1ROM</a>+CHRSW</span></h3>
+<pre>D~[..BB BBCC]
+     || ||++- PPU $0000-$1FFF: switchable 8 KiB CHR bank #0-#3 via CC, writable
+     ++-++--- CPU $8000-$BFFF: switchable 16 KiB PRG bank #0-#15 via PPP
+              CPU $C000-$FFFF: fixed 16 KiB PRG bank #7
+</pre>
+<p>UN1ROM+CHRSW is used for games that originally were <a href="SxROM.xhtml" class="mw-redirect" title="SKROM">SKROM</a> with 128 KiB PRG and 128 KiB CHR data. The original 128 KiB CHR data are stored in the second 128 KiB of PRG address space, with a trainer program copying the most-recentl CHR data into 32 KiB CHR memory.
+</p>
+<h3><span class="mw-headline" id="2:_UOROM">2: <a href="UxROM.xhtml" class="mw-redirect" title="INES Mapper 002">UOROM</a></span></h3>
+<pre>D~[.... PPPP]
+        ++++- CPU $8000-$BFFF: switchable 16 KiB PRG bank #0-#15 via PPPP
+              CPU $C000-$FFFF: fixed 16 KiB PRG bank #15
+              PPU $0000-$1FFF: fixed 8 KiB CHR bank #0, writable
+</pre>
+<p>With no other means of masking PRG addresses, UNROM vs. UOROM are explicitly differentiated.
+</p>
+<h3><span id="3:_Reverse_UOROM.2BCHRSW"/><span class="mw-headline" id="3:_Reverse_UOROM+CHRSW">3: <a href="INES_Mapper_097.xhtml" title="INES Mapper 097">Reverse UOROM</a>+CHRSW</span></h3>
+<pre>D~[..CC PPPP]
+     || ++++- CPU $C000-$FFFF: switchable 16 KiB PRG bank #0-#15 via PPPP
+     ||       CPU $8000-$7FFF: fixed 16 KiB PRG bank #15
+     ++------ PPU $0000-$1FFF: switchable 8 KiB CHR bank #0-#3 via CC, writable
+     
+</pre>
+<h3><span class="mw-headline" id="4:_GNROM">4: <a href="GxROM.xhtml" class="mw-redirect" title="GNROM">GNROM</a></span></h3>
+<pre>D~[..PP ..CC]
+     ||   ++- PPU $0000-$1FFF: switchable 8 KiB CHR bank #0-#3 via CC, write-protected
+     ++------ CPU $8000-$FFFF: switchable 32 KiB PRG bank #0-#3 via PP
+</pre>
+<h3><span class="mw-headline" id="5:_CNROM-256">5: <a href="INES_Mapper_003.xhtml" title="INES Mapper 003">CNROM-256</a></span></h3>
+<pre>D~[.... ..CC]
+          ++- PPU $0000-$1FFF: switchable 8 KiB CHR bank #0-#3 via CC, write-protected
+              CPU $8000-$FFFF: fixed 32 KiB PRG bank #3
+</pre>
+<h3><span id="6:_Custom_.231"/><span class="mw-headline" id="6:_Custom_#1">6: Custom #1</span></h3>
+<pre>D~[pppp PPPP]
+   |||| ++++- CPU $8000-$9FFF: switchable 8 KiB PRG bank #0-15 via PPPP
+   ++++------ CPU $A000-$BFFF: switchable 8 KiB PRG bank #0-15 via pppp
+              CPU $C000-$FFFF: fixed 16 bit PRG bank #7
+              PPU $0000-$1FFF: fixed 8 KiB CHR bank #0-3 at last-selected value in another mode
+</pre>
+<p>This mode is used by a few games that originally ran on the <a href="INES_Mapper_206.xhtml" title="INES Mapper 206">Namcot 118</a> ASIC.
+</p>
+<h3><span id="7:_Custom_.232"/><span class="mw-headline" id="7:_Custom_#2">7: Custom #2</span></h3>
+<pre>D~[ppp1 PPP0]
+   |||| ++++- CPU $8000-$9FFF: switchable 8 KiB PRG bank #0-14 via PPP0
+   ++++------ CPU $A000-$BFFF: switchable 8 KiB PRG bank #1-15 via ppp1
+              CPU $C000-$FFFF: fixed 16 bit PRG bank #7
+              PPU $0000-$1FFF: fixed 8 KiB CHR bank #0-3 at last-selected value in another mode
+</pre>
+<h2><span class="mw-headline" id="4M_PRG_banking_mode">4M PRG banking mode</span></h2>
+<ul><li>Four registers at $8000-$9FFF/$A000-$BFFF/$C000-$DFFF/$E000-$FFFF switch four 8 KiB PRG banks and the common 8 KiB CHR bank. They overlap with the latch at $8000-$FFFF and accept values even when the 4M PRG banking mode itself is not active.</li>
+<li>4M PRG banking mode is enabled by the <a href="#4M_PRG_banking_mode_(%2443FE-%2443FF,_write-only)">4M Mode Register</a>. When active, it overrides the Latch-based mode in all aspects except CHR memory protection, which is still decided by the <a href="#1M_banking_mode_(%2442FC-%2442FF,_write-only)">1M Mode Register</a>.</li>
+<li>The entire 512 KiB can be reached if available.</li></ul>
+<pre>D~[PPPP PPCC]
+   |||| ||++- PPU $0000-$1FFF: switchable 8 KiB CHR bank #0-#3 via CC in $8000-$FFFF
+   ++++-++--- CPU $8000-$9FFF: switchable 8 KiB PRG Bank #0-31 via PPPPPP in $8000-$9FFF
+              CPU $A000-$BFFF: switchable 8 KiB PRG Bank #0-31 via PPPPPP in $A000-$BFFF
+              CPU $C000-$DFFF: switchable 8 KiB PRG Bank #0-31 via PPPPPP in $C000-$DFFF
+              CPU $E000-$FFFF: switchable 8 KiB PRG Bank #0-31 via PPPPPP in $E000-$FFFF
+</pre>
+<h1><span class="mw-headline" id="Interrupts">Interrupts</span></h1>
+<ul><li>The Magic Card 1M/2M and Bung Game Doctor 1M cannot generate an IRQ themselves. They did not relay the M2 signal to the FDS RAM Adapter, so its IRQ counter could not be used either.</li>
+<li>The FDS RAM Adapter's Disk Data IRQ however is based on its own clock source. It can and was used by a few Super Game Doctor titles that were converted from Magic Card 1M/2M disks for frame timing.</li>
+<li>The Super Game Doctor 2M/4M add a cycle-based IRQ counter of its own.</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="1M_banking_mode_.28.2442FC-.2442FF.2C_write-only.29"/><span class="mw-headline" id="1M_banking_mode_($42FC-$42FF,_write-only)">1M banking mode ($42FC-$42FF, write-only)</span></h2>
+<pre>A~FEDC BA98 7654 3210  D~7654 3210
+  -------------------    ---------
+  0100 0010 1111 11bM    BBBM ....
+                   |+----|||+------ Set nametable mirroring type
+                   |     |||         0: One-screen, page 0
+                   |     |||         1: One-screen, page 1
+                   |     |||         2: Vertical
+                   |     |||         3: Horizontal
+                   +-----|||------- 0: PRG memory is writeable, latch is disabled
+                         |||        1: PRG memory is write-protected, latch is enabled
+                         +++------- Select latch-based banking mode
+</pre>
+<h2><span id="4M_PRG_banking_mode_.28.2443FE-.2443FF.2C_write-only.29"/><span class="mw-headline" id="4M_PRG_banking_mode_($43FE-$43FF,_write-only)">4M PRG banking mode ($43FE-$43FF, write-only)</span></h2>
+<pre>A~FEDC BA98 7654 3210  D~7654 3210
+  -------------------    ---------
+  0100 0011 1111 111M    .... ..CC
+                    |           ++- switchable 8 KiB CHR bank #0-#3 via CC
+                    |
+                    +- 4M PRG banking mode select
+                        0: Enable
+                        1: Disable
+</pre>
+<p>The CC bits are mirrors of those in the latch at $8000-$FFFF.
+</p>
+<h2><span id="FDS_Write_Data_.28.244024.29"/><span class="mw-headline" id="FDS_Write_Data_($4024)">FDS Write Data ($4024)</span></h2>
+<p><a href="Family_Computer_Disk_System.xhtml#Write_data_register_.28.244024.29" title="Family Computer Disk System">This register</a> is not part of the RAM cartridge, but part of the FDS RAM adapter that originally attached to it. Because the original Game Doctor 1M had no IRQ counter of its own, a few games abuse the FDS Disk Data IRQ for frame timing and write any value to this register to acknowledge a pending IRQ. 
+</p>
+<h2><span id="FDS_Control_.28.244025.29"/><span class="mw-headline" id="FDS_Control_($4025)">FDS Control ($4025)</span></h2>
+<p><a href="Family_Computer_Disk_System.xhtml#FDS_Control_.28.244025.29" title="Family Computer Disk System">This register</a> is not part of the RAM cartridge, but part of the FDS RAM adapter that originally attached to it. Because the original Game Doctor 1M had no IRQ counter of its own, a few games abuse the FDS Disk Data IRQ for frame timing. If bit 7 is set, the FDS RAM adapter will generate IRQs every 1,792 cycles of the 21.4772 MHz master clock, or after every 149+1/3 CPU cycles. 
+</p>
+<h2><span id="IRQ_Counter_LSB.2FMSB_.28.244100.2F.244101.2C_write-only.29"/><span class="mw-headline" id="IRQ_Counter_LSB/MSB_($4100/$4101,_write-only)">IRQ Counter LSB/MSB ($4100/$4101, write-only)</span></h2>
+<ul><li>This upwards-counting signed 16-bit counter is increased on every M2 rise and raises an IRQ when flipping from $FFFF to $0000.</li>
+<li>Counting and IRQ generation are enabled by writing a non-zero value to $4101, and are both disabled and an IRQ acknowledged by writing a zero value to $4101.</li></ul>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>The Venus Game Converter 2M is a fully-similar clone of the Super Game Doctor 2M.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241122235838
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.034 seconds
+Real time usage: 0.043 seconds
+Preprocessor visited node count: 78/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:2213-0!canonical and timestamp 20241122235838 and revision id 18925.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

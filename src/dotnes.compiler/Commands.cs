@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -200,10 +201,91 @@ static class Commands
         }
 
         Console.WriteLine($"Running {project}...");
+        // NES projects launch via dotnes.mesen (RunCommand → Mesen). Without it,
+        // `dotnet run` tries a .NET apphost that these projects never produce.
+        if (!ProjectReferencesMesen(project))
+        {
+            Console.Error.WriteLine(
+                "This project has no PackageReference to dotnes.mesen, so there is no emulator RunCommand.");
+            Console.Error.WriteLine(
+                "Add: <PackageReference Include=\"dotnes.mesen\" Version=\"2.2.1\" />");
+            Console.Error.WriteLine(
+                "Or open the built .nes under bin/Debug/<tfm>/ with any NES emulator.");
+            return 1;
+        }
+
         string extra = args.Length > 1
             ? " -- " + string.Join(" ", args.Skip(1).Select(a => $"\"{a}\""))
             : "";
         return Dotnet.Run($"run --project \"{project}\"{RestoreSourceArgs()}{extra}");
+    }
+
+    static bool ProjectReferencesMesen(string projectPath)
+    {
+        try
+        {
+            string text = File.ReadAllText(projectPath);
+            return text.Contains("dotnes.mesen", StringComparison.OrdinalIgnoreCase);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public static int Decompile(string[] args)
+    {
+        if (args.Length < 1 || string.IsNullOrWhiteSpace(args[0]))
+        {
+            Console.Error.WriteLine("Usage: dotnes decompile <input.nes> [output-directory] [--mode auto|transpile|raw]");
+            return 1;
+        }
+
+        string forward = string.Join(" ", args.Select(QuoteArg));
+
+        // 1) Adjacent binary (repo bin/Debug layout ships both tools side-by-side)
+        string adjacent = Path.Combine(ToolDirectory, OperatingSystem.IsWindows() ? "dotnes-decompiler.exe" : "dotnes-decompiler");
+        if (File.Exists(adjacent))
+            return RunProcess(adjacent, forward);
+
+        // 2) Source project next to the compiler project, or under repo src/
+        foreach (string candidate in DecompilerProjectCandidates())
+        {
+            if (File.Exists(candidate))
+                return Dotnet.Run($"run --project \"{candidate}\" -- {forward}");
+        }
+
+        // 3) Installed global/local tool
+        return Dotnet.Run($"tool run dotnes-decompiler -- {forward}");
+    }
+
+    static IEnumerable<string> DecompilerProjectCandidates()
+    {
+        // src/dotnes.compiler/bin/.../netX.0 → ../../../dotnes.decompiler
+        yield return Path.GetFullPath(Path.Combine(
+            ToolDirectory, "..", "..", "..", "dotnes.decompiler", "dotnes.decompiler.csproj"));
+        // repo/bin/Debug → ../../src/dotnes.decompiler
+        yield return Path.GetFullPath(Path.Combine(
+            ToolDirectory, "..", "..", "src", "dotnes.decompiler", "dotnes.decompiler.csproj"));
+    }
+
+    static string QuoteArg(string arg) =>
+        arg.Contains(' ') || arg.Contains('(') || arg.Contains(')')
+            ? $"\"{arg.Replace("\"", "\\\"")}\""
+            : arg;
+
+    static int RunProcess(string fileName, string arguments)
+    {
+        var psi = new ProcessStartInfo
+        {
+            FileName = fileName,
+            Arguments = arguments,
+            UseShellExecute = false,
+        };
+        using var process = Process.Start(psi)
+            ?? throw new InvalidOperationException($"Failed to start '{fileName}'.");
+        process.WaitForExit();
+        return process.ExitCode;
     }
 
     public static int Transpile(string[] args)
@@ -254,6 +336,7 @@ static class Commands
               dotnes new <name>                 Create a new NES project
               dotnes build [project]            Build the ROM (.nes)
               dotnes run [project]              Build and run in the emulator
+              dotnes decompile <rom> [outdir]   Decompile a .nes into a C# project
               dotnes transpile <dll> <chr.s>    Low-level transpile (advanced)
 
             Examples:
@@ -261,6 +344,7 @@ static class Commands
               cd mygame
               dotnes build
               dotnes run
+              dotnes decompile game.nes out/
             """);
     }
 

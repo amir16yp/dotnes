@@ -1,0 +1,66 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 409</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_409"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 409</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_409">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_409">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 409</b> denotes the <b>retroUSB DPCMcart</b> circuit board, used for the <a rel="nofollow" class="external text" href="https://sergioelisondo.bandcamp.com/album/a-winner-is-you">homebrew music cartridge &quot;A Winner is You&quot;</a> released by <a rel="nofollow" class="external text" href="https://retrousb.com/product_info.php?cPath=36&amp;products_id=143">retroUSB.</a>. It is basically an extremely oversized version of <a href="UxROM.xhtml" class="mw-redirect" title="UNROM">UNROM</a> that latches twelve bits of the address, rather than the data, bus for selecting banks from a 64 MiB PRG address space.
+</p><p>Despite being called &quot;DPCMcart&quot;, it cannot actually bank DPCM samples because of its fixed bank. Instead, <i>A Winner is You</i> uses the large ROM for PCM sample storage, played back with timed CPU code.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Address_Latch_(%24C000-%24CFFF,_write)"><span class="tocnumber">2.1</span> <span class="toctext">Address Latch ($C000-$CFFF, write)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-4"><a href="#See_also"><span class="tocnumber">3</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $8000-$BFFF: 16 KiB PRG bank, switchable</li>
+<li>CPU $C000-$FFFF: 16 KiB PRG bank, fixed to last bank</li>
+<li>PPU $0000-$1FFF. 8 KiB CHR RAM, unbanked</li>
+<li>Mirroring: Hard-wired</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="Address_Latch_.28.24C000-.24CFFF.2C_write.29"/><span class="mw-headline" id="Address_Latch_($C000-$CFFF,_write)">Address Latch ($C000-$CFFF, write)</span></h2>
+<pre>Register Mask: $8000 ?
+   Value Mask: $0FFF
+</pre>
+<pre>A~FEDC BA98 7654 3210
+  -------------------
+  1... BBBB BBBB BBBB
+       ++++-++++-++++- Selects bank via PRG A25..A14 at CPU $8000-BFFF (CPU A14=0)
+</pre>
+<p>This register may respond to all of $8000-FFFF, but it is unknown whether it does. <i>A Winner is You</i> only uses the $C000-CFFF range.
+</p>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<ul><li><a rel="nofollow" class="external free" href="https://forums.nesdev.org/viewtopic.php?t=15188">https://forums.nesdev.org/viewtopic.php?t=15188</a></li>
+<li><a rel="nofollow" class="external free" href="https://web.archive.org/web/20191024003230/nintendoage.com/forum/messageview.cfm?catid=34&amp;threadid=160050">https://web.archive.org/web/20191024003230/nintendoage.com/forum/messageview.cfm?catid=34&amp;threadid=160050</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123024321
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.015 seconds
+Real time usage: 0.019 seconds
+Preprocessor visited node count: 15/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:794-0!canonical and timestamp 20241123024321 and revision id 20235.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a></p></div></body></html>

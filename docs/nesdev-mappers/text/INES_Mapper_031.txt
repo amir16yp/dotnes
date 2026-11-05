@@ -1,0 +1,133 @@
+INES Mapper 031
+
+INES Mapper 031
+
+NSF subset
+
+Company
+
+varies (homebrew)
+
+Complexity
+
+CPLD
+
+Boards
+
+unknown (homebrew)
+
+PRG ROM capacity
+
+1024K
+
+PRG ROM window
+
+4K
+
+PRG RAM capacity
+
+None
+
+CHR capacity
+
+8K
+
+CHR window
+
+n/a
+
+Nametable mirroring
+
+Fixed H or V, controlled by solder pads
+
+Bus conflicts
+
+Not applicable
+
+IRQ
+
+No
+
+Audio
+
+No
+
+iNES mappers
+
+031
+
+iNES Mapper 031 represents a mapper created to facilitate cartridge compilations of NSF music. It implements a common subset of the features used by NSFs.
+
+PRG-ROM is bankswitched in 8 x 4 kB banks from $8000-FFFF. These are controlled by registers at $5FF8-$5FFF like the NSF mapper. The high bank at $F000-FFFF is initialized to the last bank at power-on.
+
+There is no CHR banking, so it is recommended to use 8 kB CHR-RAM with this mapper.
+
+As with BNROM and UxROM, there is no mirroring, CHR bank, or IRQ control; this mapper has hardwired H or V mirroring.
+
+Examples:
+
+2A03 Puritans (ROM)
+
+Famicompo Pico (ROMs)
+
+RNDM (info)
+
+EZNSF (forum post)
+
+ZENSF (forum post)
+
+Test ROMs (forum post)
+
+Contents
+
+1 Registers
+
+1.1 PRG bank select $5000-$5FFF
+
+2 References
+
+3 Emulator support
+
+Registers
+
+PRG bank select $5000-$5FFF
+
+address              data
+15      bit       0  7  bit  0
+-------------------  ---------
+0101 .... .... .AAA  PPPP PPPP
+                |||  |||| ||||
+                |||  ++++-++++- Select 4 kB PRG ROM bank at slot specified by write address.
+                +++------------ Specify 4 kB bank slot at: $8000 + (AAA * $1000)
+
+The canonical write position for these registers is $5FF8-$5FFF, as used in NSFs.
+
+At power on, the register at $5FFF is set to $FF. Startup code should be placed in the last bank. There is no change to this register on reset.
+
+References
+
+Excerpt from readme.txt describing the mapper
+
+Emulator support
+
+BizHawk 1.11.2
+
+FCEUX 2.2.3
+
+MAME 0.162
+
+Mesen 0.9.0
+
+Nintendulator 0.975
+
+OpenEmu (FCEUX core) 2.0.3
+
+puNES 0.84
+
+Cartridges:
+
+Everdrive N8 OS V14
+
+InfiniteNESLives Mapper 31 board
+
+Categories: Mappers using $4020-$5FFF, INES Mappers, CPLD mappers

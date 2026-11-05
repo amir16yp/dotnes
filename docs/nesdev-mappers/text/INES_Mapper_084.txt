@@ -1,0 +1,11 @@
+INES Mapper 084
+
+INES Mapper 084
+
+Reportedly "PC-SMB2J" used by "SMBJ2".
+
+Details are unknown (maybe meant to be same FDS port as Mapper 40 or 50).
+
+At some point, FCEUX lost support for this.
+
+Categories: Bad iNES Mappers, INES Mappers

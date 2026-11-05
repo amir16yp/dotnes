@@ -1,0 +1,134 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 045</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_045"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 045</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_045">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_045">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 045 denotes multicart PCBs using the GA23C ASIC in its standard configuration. It is an <a href="MMC3.xhtml" title="MMC3">MMC3</a> clone with four outer bank registers.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#MMC3-compatible_registers"><span class="tocnumber">1.1</span> <span class="toctext">MMC3-compatible registers</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#CHR-OR_LSB_(%246000_#0,_write)"><span class="tocnumber">1.2</span> <span class="toctext">CHR-OR LSB ($6000 #0, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#PRG-OR_LSB_(%246000_#1,_write)"><span class="tocnumber">1.3</span> <span class="toctext">PRG-OR LSB ($6000 #1, write)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#CHR-AND,_CHR-OR/PRG-OR_MSB_(%246000_#2,_write)"><span class="tocnumber">1.4</span> <span class="toctext">CHR-AND, CHR-OR/PRG-OR MSB ($6000 #2, write)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#PRG-AND,_register_lock_(%246000_#3,_write)"><span class="tocnumber">1.5</span> <span class="toctext">PRG-AND, register lock ($6000 #3, write)</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Reset_outer_bank_registers_and_release_lock_(%246001,_write)"><span class="tocnumber">1.6</span> <span class="toctext">Reset outer bank registers and release lock ($6001, write)</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Menu_Selection_#1_(%245000-%245FFF,_read)"><span class="tocnumber">1.7</span> <span class="toctext">Menu Selection #1 ($5000-$5FFF, read)</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Menu_Selection_#2"><span class="tocnumber">1.8</span> <span class="toctext">Menu Selection #2</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="#Notes"><span class="tocnumber">2</span> <span class="toctext">Notes</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<p>The four outer bank registers are accessed at address $6000. The first write goes to the first register, the second write to the second, and so on; the fifth write goes to the first register again. The outer bank registers overlay WRAM and function regardless of the MMC3's WRAM bits' setting.
+</p>
+<h2><span class="mw-headline" id="MMC3-compatible_registers">MMC3-compatible registers</span></h2>
+<ul><li>Bank select ($8000-$9FFE, even)</li>
+<li>Bank data ($8001-$9FFF, odd)</li>
+<li>Mirroring ($A000-$BFFE, even)</li>
+<li>PRG RAM protect ($A001-$BFFF, odd)</li>
+<li>IRQ latch ($C000-$DFFE, even)</li>
+<li>IRQ reload ($C001-$DFFF, odd)</li>
+<li>IRQ disable ($E000-$FFFE, even)</li>
+<li>IRQ enable ($E001-$FFFF, odd)</li></ul>
+<p>These registers function identically to the <a href="MMC3.xhtml" title="MMC3">MMC3</a>, with the PRG/CHR bank registers subject to masking by the outer bank registers.
+</p>
+<h2><span id="CHR-OR_LSB_.28.246000_.230.2C_write.29"/><span class="mw-headline" id="CHR-OR_LSB_($6000_#0,_write)">CHR-OR LSB ($6000 #0, write)</span></h2>
+<pre>Mask: $F001
+
+D~7654 3210
+  ---------
+  CCCC CCCC
+  ++++-++++- Select CHR A10-A17, OR'd with MMC3's CHR A10-A17 masked according to CHR-AND
+</pre>
+<h2><span id="PRG-OR_LSB_.28.246000_.231.2C_write.29"/><span class="mw-headline" id="PRG-OR_LSB_($6000_#1,_write)">PRG-OR LSB ($6000 #1, write)</span></h2>
+<pre>Mask: $F001
+
+D~7654 3210
+  ---------
+  ppPP PPPP
+  ||++-++++- Select PRG A13-A18, OR'd with MMC3's PRG A13-A18 masked according to PRG-AND
+  ++-------- Select PRG A19-A20
+</pre>
+<h2><span id="CHR-AND.2C_CHR-OR.2FPRG-OR_MSB_.28.246000_.232.2C_write.29"/><span class="mw-headline" id="CHR-AND,_CHR-OR/PRG-OR_MSB_($6000_#2,_write)">CHR-AND, CHR-OR/PRG-OR MSB ($6000 #2, write)</span></h2>
+<pre>Mask: $F001
+
+D~7654 3210
+  ---------
+  PPCC cccc
+  |||| ++++- Select number of CHR bits from MMC3
+  ||||       ($F: 256 KiB, $E: 128 KiB ... $7-$0: 1 KiB)
+  ||++------ Select CHR A18-A19
+  ++-------- Select CHR A20-A21 and PRG A21-22
+</pre>
+<h2><span id="PRG-AND.2C_register_lock_.28.246000_.233.2C_write.29"/><span class="mw-headline" id="PRG-AND,_register_lock_($6000_#3,_write)">PRG-AND, register lock ($6000 #3, write)</span></h2>
+<pre>Mask: $F001
+
+D~7654 3210
+  ---------
+  1LPP PPPP
+   |++ ++++- Select PRG-AND mask (inverted)
+   |||       ($00: 512 KiB, $20: 256 KiB...)
+   +-------- 1=Lock outer bank registers
+</pre>
+<h2><span id="Reset_outer_bank_registers_and_release_lock_.28.246001.2C_write.29"/><span class="mw-headline" id="Reset_outer_bank_registers_and_release_lock_($6001,_write)">Reset outer bank registers and release lock ($6001, write)</span></h2>
+<p>Writing any value to $6001 (mask: $F001) resets the outer bank registers as a soft reset would, clearing the &quot;Lock&quot; bit and making the next write to $6000 go to register #0.
+</p>
+<h2><span id="Menu_Selection_.231_.28.245000-.245FFF.2C_read.29"/><span class="mw-headline" id="Menu_Selection_#1_($5000-$5FFF,_read)">Menu Selection #1 ($5000-$5FFF, read)</span></h2>
+<p>The <i>超强年度新卡 (Super New Year Cart) 15-in-1</i> multicart has a DIP switch whose setting causes the menu program to select one of eight different menus.
+</p>
+<pre>A~FEDC BA98 7654 3210  D~7654 3210
+  -------------------    ---------
+  0101 AAAA AAAA ....    .... ...D
+       ++++-++++-----------------+- 1=If DIP switch is in the position selected by the corresponding A bit
+</pre>
+<p>This means that:
+</p>
+<ul><li>If the dip switch is in the &quot;0&quot; position, reads from $5010 return with D0 set while reads from $5020, $5040...$5800 return with D0 clear.</li>
+<li>If the dip switch is in the &quot;1&quot; position, reads from $5020 return with D0 set while reads from $5010, $5040...$5800 return with D0 clear.</li>
+<li>If the dip switch is in the &quot;7&quot; position, reads from $5800 return with D0 set while reads from $5010, $5020...$5400 return with D0 clear.</li></ul>
+<h2><span id="Menu_Selection_.232"/><span class="mw-headline" id="Menu_Selection_#2">Menu Selection #2</span></h2>
+<p>Some multicarts select between five different menus by connecting one of the higher address lines to PRG /CE. The menu code selects between menus by checking which of the higher address lines disables PRG-ROM when set.
+</p>
+<pre>Selection 0: No address line connected to PRG /CE
+Selection 1: PRG A20 connected to PRG /CE
+Selection 2: CHR A20 connected to PRG /CE
+Selection 3: PRG A19 connected to PRG /CE
+Selection 4: CHR A19 connected to PRG /CE
+</pre>
+<p>Cartridges with 1 MiB of PRG-/CHR-ROM cannot use selections 3/4, cartridges with 2 MiB of more of PRG-/CHR-ROM cannot use this menu selection mechanism.
+</p>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>Some multicart menus write the same values to the outer bank registers multiple times. Experiments during dumping do not suggest that this is necessary.</li>
+<li>NES 2.0 Mappers <a href="NES_2_0_Mapper_356.xhtml" title="NES 2.0 Mapper 356">356</a>, <a href="NES_2_0_Mapper_372.xhtml" title="NES 2.0 Mapper 372">372</a> and <a href="NES_2_0_Mapper_373.xhtml" title="NES 2.0 Mapper 373">373</a> repurpose bits from outer bank register #2 for other things.</li>
+<li><a href="NES_2_0_Mapper_269.xhtml" title="NES 2.0 Mapper 269">NES 2.0 Mapper 269</a> is an enhanced plug-and-play console variant of this mapper.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123163426
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.018 seconds
+Real time usage: 0.022 seconds
+Preprocessor visited node count: 37/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:330-0!canonical and timestamp 20241123163426 and revision id 19177.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

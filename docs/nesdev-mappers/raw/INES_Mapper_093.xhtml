@@ -1,0 +1,56 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 093</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_093"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 093</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_093">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_093">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>This is part of a family of Sunsoft mappers used by Japanese games: (<a href="INES_Mapper_089.xhtml" title="INES Mapper 089">iNES Mapper 089</a>, <a class="mw-selflink selflink">iNES Mapper 093</a>, <a href="INES_Mapper_184.xhtml" title="INES Mapper 184">iNES Mapper 184</a>)
+</p><p>This mapper represents the <a href="Sunsoft_2_pinout.xhtml" title="Sunsoft 2 pinout">Sunsoft-2 IC</a> on the Sunsoft-3R board. It is used by <a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/3142/shanghai">Shanghai</a>, as well as <a rel="nofollow" class="external text" href="https://nescartdb.com/profile/view/3858/fantasy-zone">Fantasy Zone</a> whose program is compatible with both this board and a different one that used the <a href="Sunsoft_1_pinout.xhtml" title="Sunsoft 1 pinout">Sunsoft-1 IC</a>.
+</p><p><a href="INES_Mapper_089.xhtml" title="INES Mapper 089">Mapper 89</a> uses the same Sunsoft-2 IC but on the Sunsoft-3 board and so differs in that it has mapper-controlled one-screen mirroring and CHR ROM banking. Note that the CHR bank lines are still hooked up to the RAM, explaining the RAM enable bit. For homebrew and hacks, games with CHR ROM should use 89's banking behavior with fixed mirroring.
+</p><p>Despite the mapper existing as a single IC, its functionality <a href="Sunsoft_2_pinout.xhtml" title="Sunsoft 2 pinout">is describable</a> using just a <a href="74377.xhtml" title="74377">74377</a> and a <a href="7432.xhtml" title="7432">7432</a> and should probably be considered discrete logic.
+</p><p>Here is the documentation in <a href="INES_Mapper_DischDocs.xhtml" title="INES Mapper DischDocs">disch's original style</a>:  
+</p>
+<pre> Registers **BUS CONFLICTS**:
+ --------------------------
+   
+   $8000-FFFF:  [.PPP ...E]
+     P = PRG Reg  (16k @ $8000)
+     E = CHR RAM enable:
+         0 = RAM is disabled; writes are ignored and reads are open bus
+             (like <a href="INES_Mapper_185.xhtml" title="INES Mapper 185">iNES Mapper 185</a> except no games use this)
+         1 = normal operation.
+ 
+ 
+ PRG Setup:
+ --------------------------
+ 
+       $8000   $A000   $C000   $E000  
+     +---------------+---------------+
+     |     $8000     |     { -1}     |
+     +---------------+---------------+
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123151705
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.008 seconds
+Real time usage: 0.012 seconds
+Preprocessor visited node count: 1/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 1/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:378-0!canonical and timestamp 20241123151705 and revision id 21298.
+ -->
+</div><p class="categories">Categories: <a href="Category_In_NesCartDB.xhtml">In NesCartDB</a>, <a href="Category_Discrete_logic_mappers.xhtml">Discrete logic mappers</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a></p></div></body></html>

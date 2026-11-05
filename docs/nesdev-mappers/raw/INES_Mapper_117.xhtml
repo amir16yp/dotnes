@@ -1,0 +1,80 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 117</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_117"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 117</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_117">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_117">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 117 is used for <i>Crayon Shin-Chan (Ch)</i> and <i>San Guo Zhi 4 - Chi Bi Feng Yun</i> by Future Media.
+</p>
+<h2><span class="mw-headline" id="Banks">Banks</span></h2>
+<ul><li>CPU $8000-$9FFF: 8 KB switchable PRG ROM bank.</li>
+<li>CPU $A000-$BFFF: 8 KB switchable PRG ROM bank.</li>
+<li>CPU $C000-$DFFF: 8 KB switchable PRG ROM bank.</li>
+<li>CPU $E000-$FFFF: 8 KB PRG ROM bank, fixed to the last bank.</li></ul>
+<ul><li>PPU $0000-$03FF: 1 KB switchable CHR ROM bank.</li>
+<li>PPU $0400-$07FF: 1 KB switchable CHR ROM bank.</li>
+<li>PPU $0800-$0BFF: 1 KB switchable CHR ROM bank.</li>
+<li>PPU $0C00-$0FFF: 1 KB switchable CHR ROM bank.</li>
+<li>PPU $1000-$13FF: 1 KB switchable CHR ROM bank.</li>
+<li>PPU $1400-$17FF: 1 KB switchable CHR ROM bank.</li>
+<li>PPU $1800-$1BFF: 1 KB switchable CHR ROM bank.</li>
+<li>PPU $1C00-$1FFF: 1 KB switchable CHR ROM bank.</li></ul>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<pre>$8000/$8001/$8002
+7  bit  0
+---- ----
+PPPP PPPP
+|||| ||||
+++++-++++- swaps 8 KB PRG ROM bank at CPU $8000/$A000/$C000.
+</pre>
+<pre>$A000/$A001/$A002/$A003/$A004/$A005/$A006/$A007
+7  bit  0
+---- ----
+CCCC CCCC
+|||| ||||
+++++-++++- swaps 1 KB CHR ROM bank at PPU $400*(address AND 7).
+</pre>
+<pre>$A008/$A009/$A00A/$A00B/$A00C/$A00D/$A00E/$A00F
+* Unknown, writes should be ignored.
+</pre>
+<pre>$C000/$C001/$C002
+* Any write to these registers sets the IRQ counter AND latch to the value written.
+* IRQs are also acknowledged.
+</pre>
+<pre>$E000
+7  bit  0
+---- ----
+xxxx xxxI
+        |
+        +-- IRQ enable/disable.
+</pre>
+<p><br/>
+</p>
+<h2><span class="mw-headline" id="IRQ_operation">IRQ operation</span></h2>
+<ul><li>The IRQ counter value selects PPU scanline MINUS $14 (?) to trigger an IRQ.</li>
+<li>If the IRQ counter matches the scanline number, and IRQs are enabled, and the latched value isn't zero, an IRQ is triggered. The counter is set to zero.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241122233925
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.008 seconds
+Real time usage: 0.011 seconds
+Preprocessor visited node count: 9/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:401-0!canonical and timestamp 20241122233925 and revision id 4888.
+ -->
+</div></div></body></html>

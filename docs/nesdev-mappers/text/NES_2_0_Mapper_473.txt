@@ -1,0 +1,9 @@
+NES 2.0 Mapper 473
+
+NES 2.0 Mapper 473
+
+NES 2.0 Mapper 473 denotes the KJ01A-18 MMC3-compatible multicart PCB, used by a Coolbaby 600-in-1 multicart.
+
+See also
+
+https://forums.nesdev.org/viewtopic.php?p=288045#p288045 register description

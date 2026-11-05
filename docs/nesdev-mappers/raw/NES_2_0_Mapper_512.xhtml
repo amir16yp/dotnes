@@ -1,0 +1,50 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 512</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_512"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 512</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_512">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_512">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 512 is used for 中國大亨 (Zhōngguó Dàhēng, often incorrectly rendered in Japanese as Chūgoku Taitei), a Chinese board game similar to Game of the Goose by Sachen. It uses an MMC3 clone with both CHR-ROM and at least 4 KiB of CHR-RAM, 4 KiB of additional VRAM, plus 8 KiB of battery-backed WRAM at CPU $6000-&amp;7FFF.
+</p>
+<h2><span class="mw-headline" id="Registers">Registers</span></h2>
+<p>Mask: probably $E001
+</p>
+<pre>   $8000, $8001, $A000, $A001, $C000, $C001, $E000, $E001: As normal MMC3.
+</pre>
+<p>Mask: unknown, but probably $C100
+</p>
+<pre>$4100: Set CHR and VRAM mode
+        0: CHR-ROM, CIRAM with MMC3-determined mirroring
+        1: CHR-ROM, Cartridge VRAM
+        2: CHR-RAM, CIRAM with MMC3-determined mirroring
+        3: Seemingly identical to 2
+</pre>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li>The game uses four pages of cartridge VRAM for the main game board, <i>plus</i> the two pages of CIRAM for the status bar, for a total of six nametable pages.</li>
+<li>While the fact that cartridge VRAM and CHR-RAM cannot be enabled at the same time might suggest that the same 4 KiB of RAM are used for both purposes, such is not the case, as the game board is expected to retain its content while Chinese characters are written into CHR-RAM.</li>
+<li>Even as the game uses WRAM at CPU $6000-$7FFF, it fails to enable it by writing $80 to $A001. Apparently, the MMC3 clone does not allow disabling WRAM.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123155530
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.008 seconds
+Real time usage: 0.012 seconds
+Preprocessor visited node count: 9/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:818-0!canonical and timestamp 20241123155530 and revision id 8073.
+ -->
+</div><p class="categories">Categories: <a href="Category_MMC3_with_CHR_ROM_and_CHR_RAM.xhtml">MMC3 with CHR ROM and CHR RAM</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a></p></div></body></html>

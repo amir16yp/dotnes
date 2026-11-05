@@ -1,0 +1,61 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 221</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_221"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 221</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_221">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_221">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>iNES Mapper 221 is used for multicarts using the NTDEC N625092 PCB. They have 8 KiB of unbanked CHR-RAM at PPU $0000-$1FFF. Their UNIF board name is <b>BMC-N625092</b>. 
+</p>
+<h2><span id="Mode.2FOuter_Bank_Register_.28.248000-.24BFFF.29"/><span class="mw-headline" id="Mode/Outer_Bank_Register_($8000-$BFFF)">Mode/Outer Bank Register ($8000-$BFFF)</span></h2>
+<pre>A~FEDC BA98 7654 3210
+  -------------------
+  10.. ..Bp ...O OOPM
+         ||    | |||+- Select nametable mirroring type
+         ||    | |||    0: Vertical
+         ||    | |||    1: Horizontal
+         ||    | ||+-- Select NROM-128/Other PRG-ROM modes
+         ||    | ||     0: NROM-128 (Inner Bank selects 16 KiB PRG-ROM bank
+         ||    | ||        at CPU $8000-$BFFF mirrored at CPU $C000-$FFFF)
+         ||    | ||     1: Other mode (decided by bit 8)
+         ||    +-++--- Select 128 KiB Outer PRG-ROM bank (PRG A17-A19)
+         |+----------- Select PRG-ROM mode if bit 1=1
+         |              0: NROM-128 (Inner Bank SHR 1 selects 32 KiB PRG-ROM
+         |                 bank at CPU $8000-$FFFF)
+         |              1: UNROM (Inner Bank selects 16 KiB PRG-ROM bank at
+         |                 CPU $8000-$BFFF, CPU $C000-$FFFF fixed to Inner Bank #7)
+         +------------ Select 1 MiB Outer PRG-ROM bank (PRG A20)
+</pre>
+<h2><span id="Inner_Bank_Register_.28.24C000-.24FFFF.29"/><span class="mw-headline" id="Inner_Bank_Register_($C000-$FFFF)">Inner Bank Register ($C000-$FFFF)</span></h2>
+<pre>A~FEDC BA98 7654 3210
+  -------------------
+  11.. .... .... CIII
+                 |+++- 16/32 KiB (depending on PRG-ROM mode) Inner Bank number
+                 +---- Select CHR-RAM write-protection
+                        0: Disabled, CHR-RAM write-enabled
+                        1: Enabled, CHR-RAM write-protected
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123093701
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.007 seconds
+Real time usage: 0.023 seconds
+Preprocessor visited node count: 6/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:506-0!canonical and timestamp 20241123093701 and revision id 5744.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

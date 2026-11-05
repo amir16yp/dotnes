@@ -1,0 +1,54 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 301</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_301"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 301</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_301">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_301">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 301 is used for <i>GG1</i> multicarts. Its UNIF board name is <b>BMC-8157</b>.
+</p>
+<h2><span id="Address_latch_.28.248000-.24FFFF.29"/><span class="mw-headline" id="Address_latch_($8000-$FFFF)">Address latch ($8000-$FFFF)</span></h2>
+<pre>Mask: $8000
+
+A~FEDC BA98 7654 3210
+  -------------------
+  .... ..PD POOI IIM.
+         || |||| ||+- Select nametable mirroring type
+         || |||| ||    0: Vertical
+         || |||| ||    1: Horizontal
+         || |||+-++-- Select 16 KiB inner PRG-ROM bank at CPU $8000-$BFFF        
+         || |++------ Select 128 KiB outer PRG-ROM bank
+         +|-+-------- Select 16 KiB inner PRG-ROM bank at CPU $C000-$FFFF
+          |           0: bank 0
+          |           1: same as CPU $8000-$BFFF (NROM-128)
+          |           2/3: bank 7 (UNROM)
+          +---------- Select 512 KiB outer PRG-ROM bank
+          
+</pre>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li>On carts with 512 KiB PRG-ROM or less, a jumper or DIP switch selects whether setting bit 8 will result in wrapped-around PRG-ROM data or open bus. This switches between a short menu with no and a long menu with repeats.</li>
+<li>CHR pattern data is stored in 8 KiB of unbanked CHR-RAM.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123094206
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.007 seconds
+Real time usage: 0.011 seconds
+Preprocessor visited node count: 8/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:686-0!canonical and timestamp 20241123094206 and revision id 7777.
+ -->
+</div><p class="categories">Categories: <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

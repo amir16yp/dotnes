@@ -1,0 +1,48 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 362</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_362"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 362</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_362">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_362">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 362 is used for an early VRC4-clone-based multicart PCB (830506C) from J.Y. Company, preceding the <a href="J_Y__Company_ASIC.xhtml" title="J.Y. Company ASIC">J.Y. Company ASIC</a>:
+</p>
+<ul><li><i>1995 Super HiK 4-in-1 (JY-005)</i></li></ul>
+<p>The <a href="VRC2_and_VRC4.xhtml" class="mw-redirect" title="VRC4">VRC4</a> clone is wired in the VRC4f configuration, i.e. address 0x001s to A0 and address 0x002s to A1. As each individual game on that multicart only has 128 KiB of PRG/CHR-ROM, the two highest CHR-ROM bank bits are repurposed as outer bank bits:
+</p>
+<h3><span id="CHR_Select_0_high_.28.24B001.29"/><span class="mw-headline" id="CHR_Select_0_high_($B001)">CHR Select 0 high ($B001)</span></h3>
+<pre>7  bit  0
+---------
+...O OLLL
+   | |+++- Select D4..D6 KiB of 1 KiB CHR-ROM bank at PPU $0000-$03FF
+   +-+---- Select outer 128 KiB PRG/CHR-ROM bank when PPU $0000-$03FF is accessed
+</pre>
+<ul><li>The high CHR Select register ($B004) is ignored.</li>
+<li>The other seven high CHR bank select registers continue the pattern for the other seven 1 KiB PPU banks.</li></ul>
+<h2><span class="mw-headline" id="Notes">Notes</span></h2>
+<ul><li>As with <a href="MMC1.xhtml#SOROM.2C_SUROM_and_SXROM" title="MMC1">SOROM, SUROM and SXROM</a>, if the several CHR bank registers do not specify the same outer bank, then PRG-ROM will would be bankswitched as the PPU renders.</li>
+<li>As with <a href="NES_2_0_Mapper_298.xhtml" title="NES 2.0 Mapper 298">NES 2.0 Mapper 298</a>, the VRC4 clone's F003 register only acknowledges IRQs but does not move the 'A' control bit to the 'E' control bit.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123164239
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.008 seconds
+Real time usage: 0.013 seconds
+Preprocessor visited node count: 11/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:747-0!canonical and timestamp 20241123164239 and revision id 7956.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

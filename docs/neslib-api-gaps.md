@@ -21,5 +21,6 @@ as a stub either has a builtin, an ILDispatch intrinsic, a C# NESLib body, or li
 - APU: DMC/frame constants, `apu_play_triangle` / `apu_stop_triangle`, `apu_play_noise` / `apu_stop_noise`
 - Input: `JOYPAD1`/`JOYPAD2`, zapper helpers
 - Memory: `memfill`, `oam_clear_fast`
-- Mappers: `mmc3_set_prg_bank`, `mmc3_wram_enable`, `uxrom_set_prg_bank`
+- Mappers: see `NESLib.Mappers.cs` — CNROM/UxROM/AxROM/MMC1–5/VRC/Namco/Bandai/
+  Jaleco/Irem/Taito/Sunsoft/NINA/Action/multicart helpers (lean STA surface)
 - Aliases: `rand()` → `rand8()`, pad1 / palette helpers, MMC1 C# wrappers

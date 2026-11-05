@@ -1,0 +1,49 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 006</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_006"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 006</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_006">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_006">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 006</b> denotes ROM images that have been extracted from disk images for the <i>Front Fareast Magic Card 1M</i> or <i>2M</i> <a href="RAM_cartridge.xhtml" title="RAM cartridge">RAM cartridges</a>. They represent games whose <a href="Game_Doctor_Magic_Card_FDS_Format.xhtml#Front_Fareast_Magic_Card_1M.2F2M.2F4M_disks" title="Game Doctor/Magic Card FDS Format">Doctor Header file</a> denotes a Magic Card 1M/2M disk (byte $0 bit 7 set, bits 4 and 5 clear, byte $7=$00). Refer to the <a href="Super_Magic_Card.xhtml" title="Super Magic Card">Super Magic Card</a> article for details on bankswitching. The Super Magic Card's registers are initialized to:
+</p>
+<pre>; Play mode, WRAM bank 0, 1 KiB CHR mode disabled
+<a href="Super_Magic_Card.xhtml#Super_Magic_Card_mode_.28.244500.2C_write-only.29" title="Super Magic Card">$4500</a> = $42 
+
+; PRG memory write-protected, two-screen mirroring
+<a href="Super_Magic_Card.xhtml#1M_banking_mode_.28.2442FC-.2442FF.2C_write-only.29" title="Super Magic Card">$42FF</a> = (submapper &lt;&lt;5) | (verticalMirroring? 0x00: 0x10)
+
+; 2M/4M banking mode disabled
+<a href="Super_Magic_Card.xhtml#2M.2F4M_PRG_banking_mode_.28.2443FC-.2443FF.2C_write-only.29" title="Super Magic Card">$43FF</a> = $00 
+</pre>
+<p>The <a href="NES_2_0.xhtml" title="NES 2.0">NES 2.0</a> Submapper field denotes the initial <a href="Super_Magic_Card.xhtml#Latch-based_modes" title="Super Magic Card">latch-based banking mode</a> (0-7). <a href="INES.xhtml" title="INES">NES 1.0</a> files correspond to submapper 1. <b>iNES <a href="INES_Mapper_006.xhtml" class="mw-redirect" title="INES Mapper 008">Mapper 8</a></b> is a synonym of Mapper 6 submapper 4.
+</p><p>The <a href="INES.xhtml" title="INES">iNES</a> header may specify a <a href="INES.xhtml#Trainer" title="INES">512-byte trainer</a> (corresponding to <a href="Game_Doctor_Magic_Card_FDS_Format.xhtml#Front_Fareast_Magic_Card_1M.2F2M.2F4M_disks" title="Game Doctor/Magic Card FDS Format">Doctor Header file</a>'s byte $0 bit 6 being set), which must be loaded to $7000-$71FF, be writable, and (on a hard reset) initialized by JSRing to $7003 before JMPing to the game's reset vector.
+</p><p>Battery-saving of WRAM content is not supported by any Magic Card model. Hard-resetting a game while restoring previously-saved WRAM content in emulators interferes with the correct operation of the trainer's program.
+</p>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<ul><li><a rel="nofollow" class="external text" href="https://nesdev.org/mapper6.txt">Mapper 6</a>  Info on the FFE mapper. By FanWen Yang (outdated).</li>
+<li><a rel="nofollow" class="external text" href="http://www.famicomdisksystem.com/game-doctor-copiers/">Info on various Famicom &quot;copiers&quot;</a></li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123011957
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.010 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 19/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:286-0!canonical and timestamp 20241123011957 and revision id 18921.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a></p></div></body></html>

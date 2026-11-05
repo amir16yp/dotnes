@@ -59,7 +59,10 @@
     <RunCommand>$(_MesenExe)</RunCommand>
     <_MesenTestRunnerArgs Condition="'$(MesenTestRunner)' == 'true'">--testrunner --doNotSaveSettings</_MesenTestRunnerArgs>
     <_MesenTimeoutArgs Condition="'$(MesenTimeout)' != ''">--timeout=$(MesenTimeout)</_MesenTimeoutArgs>
-    <RunArguments>$(TargetName).nes $(_MesenTestRunnerArgs) $(_MesenTimeoutArgs) $(MesenLuaScript)</RunArguments>
+    <!-- Quote ROM path — TargetName can contain spaces (e.g. Mega Man (Europe)).
+         XML &#34; survives MSBuild's habit of stripping a property that is only `"`. -->
+    <_MesenQt>&#34;</_MesenQt>
+    <RunArguments>$(_MesenQt)$(TargetName).nes$(_MesenQt) $(_MesenTestRunnerArgs) $(_MesenTimeoutArgs) $(MesenLuaScript)</RunArguments>
     <RunWorkingDirectory>$(OutputPath)</RunWorkingDirectory>
   </PropertyGroup>
 

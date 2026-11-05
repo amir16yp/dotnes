@@ -1,0 +1,67 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 366</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_366"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 366</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_366">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_366">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 366 is used for an MMC3-based multicart PCB (GN-45):
+</p>
+<ul><li><i>4-in-1 (K-3131GS)</i></li>
+<li><i>4-in-1 (K-3131SS)</i></li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Outer_Bank_Register_(%246800)"><span class="tocnumber">1</span> <span class="toctext">Outer Bank Register ($6800)</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#MMC3-compatible_registers"><span class="tocnumber">2</span> <span class="toctext">MMC3-compatible registers</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Note"><span class="tocnumber">3</span> <span class="toctext">Note</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#See_also"><span class="tocnumber">4</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span id="Outer_Bank_Register_.28.246800.29"/><span class="mw-headline" id="Outer_Bank_Register_($6800)">Outer Bank Register ($6800)</span></h2>
+<pre>Mask: unknown, probably $E0F0
+
+A~FEDC BA98 7654 3210
+  -------------------
+  0110 1000 LOOO ....
+            |+++------ Select outer 128 KiB PRG-ROM and CHR-ROM bank
+            +--------- 1=Lock outer bank
+</pre>
+<p>This register is accessible regardless of whether WRAM is enabled in the MMC3 clone's A001 register.
+It overlays the 8 KiB of WRAM that both multicarts have, making the Lock bit necessary to prevent the outer bank from changing once the game writes to WRAM.
+</p>
+<h2><span class="mw-headline" id="MMC3-compatible_registers">MMC3-compatible registers</span></h2>
+<pre>Mask: $E001
+
+See <a href="MMC3.xhtml" title="MMC3">MMC3</a>.
+</pre>
+<h2><span class="mw-headline" id="Note">Note</span></h2>
+<p><a rel="nofollow" class="external text" href="https://github.com/TASVideos/fceux/blob/master/src/boards/mmc3.cpp">FCEUX emulates this PCB under mapper number 205</a> together with &quot;OK-411&quot; (<a href="NES_2_0_Mapper_361.xhtml" title="NES 2.0 Mapper 361">NES 2.0 Mapper 361</a>), both of which are in turn different from the <a href="INES_Mapper_205.xhtml" title="INES Mapper 205">iNES Mapper 205</a> described in that mapper's wiki article.
+</p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<p><a href="NES_2_0_Mapper_361.xhtml" title="NES 2.0 Mapper 361">NES 2.0 Mapper 361</a> describes a simpler variant that latches the data bus instead of the address bus.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164244
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.010 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 17/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:751-0!canonical and timestamp 20241123164244 and revision id 7967.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

@@ -1,0 +1,72 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 282</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_282"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 282</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_282">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_282">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 282 is used by at least three J.Y. multicarts:
+</p>
+<ul><li><i>1997 Super HIK 18-in-1 (JY-101)</i></li>
+<li><i>1997 Super HIK 21-in-1 (JY-105)</i></li>
+<li><i>1998 Super HIK 5-in-1 (JY-114)</i></li>
+<li><i>Super 25-in-1 Final Fight (SC-128)</i></li></ul>
+<p>Each of them have 1 MiB each of PRG-ROM and CHR-ROM. They use the <a href="J_Y__Company_ASIC.xhtml" title="J.Y. Company ASIC">J.Y. Company ASIC</a>. Register $D003 controls 256 KiB outer banks.
+</p>
+<h2><span id="Outer_Bank_Register_.28.24D003.29"/><span class="mw-headline" id="Outer_Bank_Register_($D003)">Outer Bank Register ($D003)</span></h2>
+<pre>Mask: $F003
+
+7654 3210
+---- ----
+..LM CPPc
+  || |||+- Select 256 KiB outer CHR-ROM bank (CHR A18), ignored if L=1
+  || |++-- Select 256/512 KiB outer PRG-ROM bank
+  || +---- If bit 4==1: Select 512 KiB outer CHR-ROM bank
+  |+------ 0: Ignore bit 3
+  |        1: Obey bit 3
+  +------- Select outer CHR-ROM bank size
+            0: Mask $900x/$A00x to 256 KiB, use c
+            1: Mask $900x/$A00x to 512 KiB, ignore c
+</pre>
+<p>PRG ($8000-$8FFF) and CHR ($9000-$AFFF) bank select register bits that select 256 KiB banks (L=0)/512 KiB banks (L=1) are masked off. 
+</p><p>For a description of all other registers, see <a href="J_Y__Company_ASIC.xhtml" title="J.Y. Company ASIC">J.Y. Company ASIC</a>.
+</p>
+<h1><span class="mw-headline" id="Trivia">Trivia</span></h1>
+<p>Some of the multicarts show different version of menu according to what $5000 is returned from the mapper (the value that is read is masked with $C0, so only bits 7 &amp; 6 matters.):
+</p>
+<pre>1997 Super HIK 18-in-1 (JY-101)
+ $00   -&gt; 18 in 1
+ $40   -&gt; 900 in 1
+ $80   -&gt; 1600 in 1
+ $C0   -&gt; 6000000 in 1
+</pre>
+<pre>1997 Super HIK 21-in-1 (JY-105)
+ $00   -&gt; 21 in 1
+ $40   -&gt; 350 in 1
+ $80   -&gt; 1200 in 1
+ $C0   -&gt; 7000000 in 1
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123164042
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.008 seconds
+Real time usage: 0.011 seconds
+Preprocessor visited node count: 9/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:667-0!canonical and timestamp 20241123164042 and revision id 18939.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a>, <a href="Category_Mappers_with_cycle_IRQs.xhtml">Mappers with cycle IRQs</a>, <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_Mappers_using_J_Y__Company_ASIC.xhtml">Mappers using J.Y. Company ASIC</a>, <a href="Category_Mappers_with_ROM_nametables.xhtml">Mappers with ROM nametables</a></p></div></body></html>

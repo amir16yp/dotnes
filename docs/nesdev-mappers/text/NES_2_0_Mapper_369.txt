@@ -1,0 +1,22 @@
+NES 2.0 Mapper 369
+
+NES 2.0 Mapper 369
+
+NES 2.0 mapper 369 denotes the N49C-300 circuit board, used for the Super Mario Bros. Party multicart. Accordingly, it combines all the mappers used for the various Mario games (including SMB2J): 0, 4 and 40 with an outer bank register. Its UNIF board name is BMC-N49C-300.
+
+Outer Bank register ($4100, write)
+
+Mask: $C100
+
+The meaning of the individual bits is not understood yet. The following values are used:
+
+$4100  PRG offset  CHR offset  Mapper
+Value  (8K bank#)  (8K bank#)
+-------------------------------------
+$00    $00         $00         000: NROM (Mario Bros.)
+$01    $01         $01         000: NROM (Super Mario Bros.)
+$13    $08         $03         040: NTDEC 2722 (Super Mario Bros. 2J)
+$37    $10         $10         004: TLROM (Super Mario Bros. 2), PRG-ROM bank limited to 128 KiB
+$FF    $20         $20         004: TKROM (Super Mario Bros. 3), PRG-ROM bank limited to 256 KiB
+
+Categories: FDS conversion mappers, MMC3-like mappers, Multicart mappers, Mappers with fixed-timing cycle IRQs, Mappers with scanline IRQs

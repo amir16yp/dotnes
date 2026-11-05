@@ -1,0 +1,7 @@
+INES Mapper 224
+
+INES Mapper 224
+
+iNES Mapper 224 is used for the 晶科泰 (Jncota) KT-008 PCB. It includes the same chipset as the "MINDKIDS" multicarts (NES 2.0 Mapper 268, Submapper 1).
+
+Categories: Mappers with scanline IRQs, MMC3-like mappers

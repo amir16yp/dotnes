@@ -1,0 +1,11 @@
+INES Mapper 241
+
+INES Mapper 241
+
+iNES Mapper 241 denotes a BxROM-like circuit board with the addition of 8 KiB of WRAM at CPU $6000-$7FFF that can be battery-backed. INES Mapper 034 is not commonly used for BNROM with WRAM, because the WRAM's address space is partially overlaid by registers from the NINA-001 part of the mapper specification (although that could be alleviated by disabling the NINA-001 registers in the absence of CHR-ROM).
+
+BxROM with WRAM is typically used natively by games from Henge Dianzi with hard-wired mirroring and a few educational computer cartridges, but is more commonly used as a target for mapper hacks of games that originally used mappers 164, 178 and 227. Because those mapper hacks rarely take bus conflicts into consideration, mapper 241 should be emulated without bus conflicts. As a result of being mapper hacks, such games may also access registers in the $4800-$5FFF range.
+
+Mirroring is hard-wired to horizontal or vertical; INES Mapper 177 denotes a variant with mapper-controlled two-screen mirroring.
+
+Categories: INES Mappers, Mappers with CHR RAM

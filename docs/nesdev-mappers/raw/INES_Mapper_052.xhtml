@@ -1,0 +1,63 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 052</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_052"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 052</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_052">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_052">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 052</b> denotes the <b>Realtec 8213</b> and similar <a href="MMC3.xhtml" title="MMC3">MMC3</a>-based multicart circuit boards.
+</p>
+<h2><span id="Outer_Bank_Register_.28.246000-.247FFF.2C_write.29"/><span class="mw-headline" id="Outer_Bank_Register_($6000-$7FFF,_write)">Outer Bank Register ($6000-$7FFF, write)</span></h2>
+<pre>D~[LTCc SBPp]
+   |||| ||++-- PRG A18..A17
+   |||| |+---- PRG/CHR A19
+   |||| +----- PRG A17 mode: 0=from MMC3, 1=from p
+   ||++------- CHR A18..A17
+   |+--------- CHR A17 mode: 0=from MMC3, 1=from c
+   +---------- 1=Lock Outer Bank register until next reset
+Value on reset: $00
+</pre>
+<p>The MMC3's WRAM interface must be enabled and writeable in <a href="MMC3.xhtml#PRG_RAM_protect_(%24A001-%24BFFF,_odd)" title="MMC3">MMC3 register $A001</a>. The Outer Bank Register overlaps any actual PRG RAM that may be present.
+</p>
+<h2><span id="Mixed_CHR_ROM.2FCHR_RAM_variants"/><span class="mw-headline" id="Mixed_CHR_ROM/CHR_RAM_variants">Mixed CHR ROM/CHR RAM variants</span></h2>
+<p>Nestopia Plus! has defined <b>Submapper 13</b> to denote a PCB variant with 512 KiB of each PRG ROM and CHR ROM that can switch between regular CHR ROM and 8 KiB unbanked CHR RAM. CHR RAM is selected when PRG A17 and PRG A18 are both =1.
+</p><p>Nestopia Plus! further uses Submapper 13 to denote the <i>(AB-128) Well 8-in-1</i> multicart with 1 MiB of each PRG ROM and CHR ROM, which is incompatible to the above definition, and which is hereby reassigned to <b>Submapper 14</b>. Its actual PCB name is <b>AB892</b>, and its Outer Bank Register has the following form:
+</p>
+<pre>D~[LTRc SBBp]
+   |||| |||+-- PRG A18..A17
+   |||| |++--- PRG/CHR A19..A18
+   |||| +----- PRG A17 mode: 0=from MMC3, 1=from p
+   |||+------- CHR A17
+   ||+-------- 0=CHR-ROM, 1=CHR RAM
+   |+--------- CHR A17 mode: 0=from MMC3, 1=from c
+   +---------- 1=Lock Outer Bank register until next reset
+</pre>
+<p>At least one cart (AB-134) re-uses this PCB but leaves the CHR RAM spot unpopulated, still using the combined bit for PRG/CHR A18, but rendering the &quot;R&quot; bit 5 meaningless. The correct NES 2.0 header for this would be submapper 14 but with zero CHR RAM.
+</p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li><a rel="nofollow" class="external text" href="http://nesdev.org/Mari7in1.txt">&quot;Mario Party&quot; 7 in 1</a> by The Mad Dumper.</li>
+<li><a rel="nofollow" class="external text" href="http://forums.nesdev.org/viewtopic.php?f=9&amp;t=10703">Forum thread</a> about mapper 052 by FARID</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20241123162728
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.017 seconds
+Real time usage: 0.022 seconds
+Preprocessor visited node count: 15/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:337-0!canonical and timestamp 20241123162728 and revision id 21408.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

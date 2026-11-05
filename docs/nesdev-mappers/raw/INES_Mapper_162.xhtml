@@ -1,0 +1,129 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 162</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_162"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 162</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_162">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_162">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>iNES Mapper 162</b> denotes the 外星 (Wàixīng) <b>FS304</b> circuit board, used for the following games:
+</p>
+<ul><li><i>Mummy - 神鬼传奇</i></li>
+<li><i>Zelda 传说: 三神之力</i> (ES-1096)</li>
+<li><i>法老王 - Pharaoh</i> (ES-1114)</li>
+<li><i>火焰纹章 - 圣战的系谱</i> and its title screen hack <i>聖火徽章 III</i> (Shènghuǒ Huīzhāng III/Fire Emblem III)</li>
+<li><i>西游记后传</i> (ES-1097)</li></ul>
+<p>A compatible circuit board with an unknown PCB code is used for a few games from 南晶 (Nánjīng):
+</p>
+<ul><li><i>梁山英雄</i> (Liángshān Yīngxióng, NJ023, title screen hack of 水浒神兽, NJ019)</li>
+<li><i>时空斗士 - Pegasus Senya</i> (Shíkōng Dòushì, NJ024, title screen hack of 圣斗士星矢: 天马之幻想, NJ022)</li>
+<li><i>农场小精灵</i> (Nóngchǎng Xiǎojīnglíng, NJ025, title screen hack of 牧场物语 - Harvest Moon, NJ011)</li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#PRG-ROM_Bank_Low/CHR-RAM_Switch_(%245000,_write)"><span class="tocnumber">2.1</span> <span class="toctext">PRG-ROM Bank Low/CHR-RAM Switch ($5000, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Alternative_PRG-ROM_Bank_low_(%245100,_write)"><span class="tocnumber">2.2</span> <span class="toctext">Alternative PRG-ROM Bank low ($5100, write)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#PRG-ROM_Bank_High_(%245200,_write)"><span class="tocnumber">2.3</span> <span class="toctext">PRG-ROM Bank High ($5200, write)</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Mode_(%245300,_write)"><span class="tocnumber">2.4</span> <span class="toctext">Mode ($5300, write)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-7"><a href="#Notes"><span class="tocnumber">3</span> <span class="toctext">Notes</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#See_also"><span class="tocnumber">4</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: 8 KiB unbanked PRG-RAM, battery-backed</li>
+<li>CPU $8000-$FFFF: 32 KiB switchable PRG-ROM bank</li>
+<li>PPU $0000-$1FFF: 8 KiB unbanked CHR-RAM bank, 4 KiB can be automatically switched</li>
+<li>Nametable mirroring: hard-wired</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<p>All registers are initialized to $00 on reset.
+</p>
+<h2><span id="PRG-ROM_Bank_Low.2FCHR-RAM_Switch_.28.245000.2C_write.29"/><span class="mw-headline" id="PRG-ROM_Bank_Low/CHR-RAM_Switch_($5000,_write)">PRG-ROM Bank Low/CHR-RAM Switch ($5000, write)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  C... PPpq
+  |    |||+- PRG A15 if $5300.0=1 and $5300.2=1
+  |    ||+-- PRG A16 if $5300.2=1
+  |    ++--- PRG A18..A17
+  +--------- Automatic 4 KiB CHR-RAM switch: when PPU A13=0 (pattern table) ...
+              0: CHR A12=PPU A12 (disable auto-switch)
+              1: CHR A12=PPU A9 latched on last rise of PPU A13 (enable auto-switch)
+</pre>
+<p>Automatic 4 KiB CHR-RAM switch means that the left pattern table is used for the the top half of any nametable, and the right pattern table for the bottom half of any nametable, regardless of the scroll position. This auto-switch behavior is similar to that of <a href="INES_Mapper_096.xhtml" title="INES Mapper 096">mapper 96</a>.
+</p>
+<h2><span id="Alternative_PRG-ROM_Bank_low_.28.245100.2C_write.29"/><span class="mw-headline" id="Alternative_PRG-ROM_Bank_low_($5100,_write)">Alternative PRG-ROM Bank low ($5100, write)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  .... ..p.
+         +-- PRG A15 if $5300.0=0
+</pre>
+<h2><span id="PRG-ROM_Bank_High_.28.245200.2C_write.29"/><span class="mw-headline" id="PRG-ROM_Bank_High_($5200,_write)">PRG-ROM Bank High ($5200, write)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  .... ..PP
+         ++- PRG A20..A19
+</pre>
+<h2><span id="Mode_.28.245300.2C_write.29"/><span class="mw-headline" id="Mode_($5300,_write)">Mode ($5300, write)</span></h2>
+<pre>Mask: $FF00
+
+D~7654 3210
+  ---------
+  .... .A.B
+        | +- PRG A15 mode:
+        |     0: PRG A15=$5100.1
+        |     1: PRG A15=1       if A=0
+        |        PRG A15=$5000.0 if A=1
+        +--- PRG A16 mode:
+              0: PRG A16=1
+              1: PRG A16=$5000.1
+</pre>
+<p>Or in terms of where PRG A15-16 come from:
+</p>
+<pre>$5300.2/0   PRG A16   PRG A15
+-----------------------------
+      0.0      1      $5100.1
+      0.1      1         1
+      1.0   $5000.1   $5100.1
+      1.1   $5000.1   $5000.0
+</pre>
+<p>Because reset clears all registers' bits, games will boot in 32 KiB PRG-ROM bank #2 (A16=1 and A15=$5100.1=0).
+</p>
+<h1><span class="mw-headline" id="Notes">Notes</span></h1>
+<ul><li>To ensure that a cartridge to be dumped is really INES Mapper 162, write $04 to $5300 and verify that $5100.1 changes the PRG bank.</li>
+<li>The Waixing games run with $5300=$04, using $5100.1 to change PRG A16. The three Nanjing games run with $5300=$07, using $5000.0 to change PRG A16, except for a protection check shortly after the title screen where the described behavior of $5300=$04 is verified.</li></ul>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<p>Similar mappers: <a href="INES_Mapper_163.xhtml" title="INES Mapper 163">INES Mapper 163</a>, <a href="INES_Mapper_164.xhtml" title="INES Mapper 164">INES Mapper 164</a>, <a href="NES_2_0_Mapper_558.xhtml" title="NES 2.0 Mapper 558">NES 2.0 Mapper 558</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123163642
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.020 seconds
+Real time usage: 0.025 seconds
+Preprocessor visited node count: 29/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:446-0!canonical and timestamp 20241123163642 and revision id 19013.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_using__4020__5FFF.xhtml">Mappers using $4020-$5FFF</a>, <a href="Category_INES_Mappers.xhtml">INES Mappers</a>, <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a></p></div></body></html>

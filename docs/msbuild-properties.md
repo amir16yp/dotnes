@@ -175,6 +175,60 @@ Common mapper values:
 | 2 | UxROM | 16 KB switchable PRG banks, fixed CHR |
 | 3 | CNROM | Fixed PRG, switchable 8 KB CHR banks |
 | 4 | MMC3 | Switchable PRG and CHR banks with IRQ counter |
+| 5 | MMC5 | Multi-mode PRG/CHR banking (lean neslib register helpers) |
+| 7 | AxROM | 32 KB switchable PRG banks, single-screen mirroring bit |
+| 9 | MMC2 | 8 KB switchable PRG at `$8000`, CHR latches (Punch-Out!!) |
+| 10 | MMC4 | 16 KB switchable PRG at `$8000`, CHR latches (Fire Emblem) |
+| 11 | Color Dreams | 32 KB PRG + 8 KB CHR via packed `$8000` write |
+| 13 | CPROM | Fixed PRG, switchable 4 KB CHR-RAM banks |
+| 15 | 100-in-1 | Multi-mode PRG via `$8000` (`mapper15_set`) |
+| 19 | Namco 163 | `namco163_set_prg_bank` (lean; no IRAM/audio) |
+| 21–26 | VRC2/4/6 | Konami VRC family (`vrc24_*` / `vrc6_*`) |
+| 28 | Action 53 | `action53_set` |
+| 30 | UNROM 512 | 16 KB switchable PRG (homebrew / flashcart) |
+| 34 | BNROM | 32 KB switchable PRG banks |
+| 64 | RAMBO-1 | MMC3-like (decompiler approximates as 16 KB windows) |
+| 66 | GxROM | 32 KB PRG + 8 KB CHR banks via packed `$8000` write |
+| 69 | FME-7 | Sunsoft command/parameter banking (`fme7_*`) |
+| 70 | Bandai | 16 KB switchable PRG (`bandai_set_prg_bank`) |
+| 71 | Camerica | 16 KB switchable PRG (Codemasters) |
+| 73 | VRC3 | `vrc3_set_prg_bank` |
+| 75 | VRC1 | `vrc1_set_prg_bank` / `vrc1_set_chr_bank` |
+| 78 | Holy Diver | 16 KB PRG + CHR / mirroring via packed `$8000` write |
+| 79 | NINA-003/006 | 32 KB PRG + 8 KB CHR via `$4100` |
+| 85 | VRC7 | `vrc7_set_prg_bank` (lean; no expansion audio) |
+| 87 | Jaleco | Fixed PRG, switchable CHR via `$6000` |
+| 113 | NINA-06 | `nina113_set` / `nina113_set_banks` |
+| 185 | CNROM+ | `cnrom185_set_chr_bank` |
+| 206 | DxROM | MMC3 subset (decompiler approximates as 16 KB windows) |
+| 228 | Action 52 | `action52_write` (address-encoded banks) |
+| 16 | Bandai FCG | `bandai16_set_prg_bank` |
+| 18 | Jaleco SS88006 | `jaleco18_set_prg0` |
+| 32 / 65 | Irem | `irem32_set_prg_bank` / `irem65_set_prg_bank` |
+| 33 / 48 | Taito TC0190 | `taito33_set_prg_bank` |
+| 67 / 68 | Sunsoft-3/4 | `sunsoft3_set_prg_bank` / `sunsoft4_set_prg_bank` |
+| 72 / 86 / 140 | Jaleco | `jaleco72_set` / `jaleco86_set` / `jaleco140_set` |
+| 76 / 88 / 210 | Namco cousins | `namcot76_*` / `namco88_*` / `namco210_*` |
+| 80 | Taito X1-005 | `taito80_set_prg_bank` |
+| 89 / 93 / 184 | Sunsoft | `sunsoft89_set` / `sunsoft93_*` / `sunsoft184_*` |
+| 97 | Irem TAM-S1 | `irem97_set` |
+| 152 | Bandai | `bandai152_set` |
+| 189 | TXC | `txc189_set_prg_bank` |
+| 225 / 226 / 241 | Multicarts | `mapper225_write` / `mapper226_set` / `mapper241_*` |
+| 232 | BF9096 | `bf9096_set` |
+| 36 / 46 / 47 / 49 | TXC / Rumblestation / MMC3 carts | `txc36_*` / `mapper46_*` / `mapper47_*` / `mapper49_*` |
+| 77 / 83 / 91 / 92 | Irem / Cony / Jaleco | `irem77_set` / `cony83_*` / `mapper91_*` / `jaleco92_set` |
+| 95 / 96 / 112 / 133 | Namcot / Oeka / ASDER / Sachen | `namcot95_*` / `oeka96_set` / `asder112_*` / `sachen133_set` |
+| 156 / 176–178 | Misc / Waixing | `mapper156_*` / `mapper176_*` … |
+| 227 / 229–231 / 234–235 / 240 / 242 / 246 | Multicarts | `mapper227_write` / `mapper229_set` … |
+| 37 / 40–42 / 52 / 57–58 / 60 / 62 | Misc MMC3 / NTDEC / Caltron | `mapper37_*` / `mapper40_*` … |
+| 74 / 82 / 90 / 99 / 157–158 | MMC3 / Taito / JY / VS / Bandai / Tengen | `mapper74_*` / `taito82_*` / `jy90_*` / `vs99_*` … |
+| 163 / 164 / 182 / 209 / 243 / 245 | Nanjing / MMC3 / JY / Sachen / Waixing | `mapper163_*` / `mapper182_*` / `sachen243_set` … |
+| Many more | FFE / BMC / Sachen / Waixing / pirates / VRC / RAMBO-1 / UN1ROM / DxROM / RET-CUFROM / Racermate | See `NESLib.Mappers.cs`; packing matches NESDev bit layouts |
+
+Any mapper 0–255 can be written into the iNES header via `NESMapper`. Bank-switch
+helpers exist in neslib for the mappers above; only MMC3 has an opt-in banked ROM
+layout engine (`NESMmc3BankedLayout`).
 
 The mapper number is encoded in bits 4–7 of iNES Flags6 and Flags7.
 
@@ -308,6 +362,65 @@ Each affected stock dispatcher restores it after the callback JSR, adding
 or changes inside callback mapper-write sequences. See the
 [interrupt and selector contract](mmc3-bank-layout.md#interrupt-and-selector-contract)
 for the required CHR mode and scheduling constraints.
+
+### `NESPackMode`
+
+Controls how the `.nes` image is produced after the managed build.
+
+| | |
+|---|---|
+| **Type** | `string` |
+| **Default** | `Transpile` |
+
+- `Transpile` — normal IL→6502 path (default).
+- `RawPrg` — write the iNES header (exact `NESRawHeader` when set, otherwise from
+  MSBuild props), then concatenate the raw PRG image from `NESRawPrg` with CHR
+  gathered from `NESAssembly` CHARS segments. Skips IL→6502. Used by the
+  decompiler for arbitrary ROMs so rebuilds stay byte-identical.
+
+```xml
+<PropertyGroup>
+  <NESPackMode>RawPrg</NESPackMode>
+  <NESRawPrg>prg.bin</NESRawPrg>
+  <NESRawHeader>header.bin</NESRawHeader>
+  <NESPrgBanks>2</NESPrgBanks>
+  <NESChrBanks>1</NESChrBanks>
+</PropertyGroup>
+```
+
+`NESPackMode=RawPrg` cannot be combined with `NESMmc3BankedLayout` or
+`NESPrgBank` / `NESChrBank` / `NESManagedCodeBank` items. The PRG file length
+must equal `NESPrgBanks × 16384`. Prefer `NESRawHeader` for commercial ROMs —
+reconstructed headers zero bytes 8–15 and drop trainer / NES 2.0 fields.
+
+### `NESRawPrg`
+
+Path to a raw PRG ROM image consumed when `NESPackMode=RawPrg`.
+
+| | |
+|---|---|
+| **Type** | `string` |
+| **Default** | _(empty)_ |
+
+### `NESRawHeader`
+
+Optional path to an exact 16-byte iNES header for `NESPackMode=RawPrg`. When set,
+the header is written verbatim instead of reconstructing Flags6/7 and zeroing
+bytes 8–15.
+
+| | |
+|---|---|
+| **Type** | `string` |
+| **Default** | _(empty)_ |
+
+### `NESRawTrainer`
+
+Optional path to a 512-byte trainer used with `NESRawHeader` when Flags6 bit 2 is set.
+
+| | |
+|---|---|
+| **Type** | `string` |
+| **Default** | _(empty)_ |
 
 ### `NESBattery`
 

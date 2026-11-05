@@ -1,0 +1,17 @@
+INES Mapper 061
+
+INES Mapper 061
+
+iNES Mapper 61, when using CHR ROM, denotes the NTDEC 0324 PCB, used for two HQ 高品質合卡 15-in-1 multicarts. A compatible PCB with ID GS-2017 mounts 8 KiB of unbanked CHR RAM instead, used for the 方塊外傳 9合1 - Tetris Family 9-in-1 and RCM 20-in-1 multicarts.
+
+Address Latch ($8000-$FFFF, write)
+
+A~[1... CCCC M.pN PPPP]
+        |||| | || ++++- PRG A18..A15
+        |||| | |+------ 0: PRG A14=CPU A14 (NROM-256)
+        |||| | |        1: PRG A14=p (NROM-128)
+        |||| | +------- PRG A14 if M=1
+        |||| +--------- Mirroring, 0=Vertical, 1=Horizontal
+        ++++----------- CHR A16..A13 (when using CHR ROM)
+
+Categories: Multicart mappers

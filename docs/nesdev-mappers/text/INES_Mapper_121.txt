@@ -1,0 +1,134 @@
+INES Mapper 121
+
+INES Mapper 121
+
+iNES Mapper 121 is used for the 卡聖 (Kǎshèng) A9711 and A9713 MMC3-clone-bearing protected boards.
+
+A9711 (256 KiB PRG-ROM):
+
+MK6 (title screen hack of 幽☆遊☆白書 Final)
+
+Sonic & Knuckles 5 (hack of Somari, originally released by 哥德 (Gouder) on INES Mapper 116)
+
+Sonic 3D Blast 6 (hack of Somari, originally released by 哥德 (Gouder) on INES Mapper 116)
+
+Street Fighter Zero 2 '97 (not Street Fighter Zero 2)
+
+Super Real Bout 97 (hack of 餓狼伝説 Special, originally released by 哥德 (Gouder) on INES Mapper 116)
+
+The Panda Prince/Super Lion King 2/熊貓太子 (Xióngmāo Tàizǐ)
+
+Ultimate Mortal Kombat 3 (hack of Mortal Kombat 3)
+
+Ultimate Mortal Kombat 4 (hack of Mortal Kombat 3)
+
+幽☆遊☆白書 97 V (Yū Yū Hakusho 97 V, title screen hack of 幽☆遊☆白書 Final)
+
+A9713 (512 KiB PRG-ROM):
+
+3-in-1: Earthworm Jim 2+4, The Lion King
+
+Contents
+
+1 Registers
+
+1.1 Protection Array Read ($5000-$5FFF)
+
+1.2 Protection Array Index ($5000-$5FFF)
+
+1.3 Outer Bank Register ($5180, A9713 only)
+
+1.4 CHR A18 Control ($8000-$9FFF, even; A9711 only)
+
+1.5 MMC3-compatible registers ($8000-$FFFF)
+
+1.6 Protection Latch ($8001)
+
+1.7 Protection Index ($8003)
+
+2 Errata
+
+3 Similar Mappers
+
+Registers
+
+Protection Array Read ($5000-$5FFF)
+
+Mask: probably $F000
+
+Returns the value from the four-byte protection array ($83, $83, $42, $00) indexed by the previous write to $5000-$5FFF.
+
+Protection Array Index ($5000-$5FFF)
+
+Mask: probably $F000
+
+D~7654 3210
+  ---------
+  .... ..II
+         ++- Select index into protection array on next $5000-$5FFF read
+
+FCEUX' source code claims that address bit 8 switches between two protection arrays, the second one being $00, $02, $02, $03.
+
+Outer Bank Register ($5180, A9713 only)
+
+Mask: $F180
+
+D~7654 3210
+  ---------
+  M... ....
+  +--------- Select outer 256 KiB PRG-ROM and CHR-ROM bank
+
+CHR A18 Control ($8000-$9FFF, even; A9711 only)
+
+Mask: $E001
+
+D~7654 3210
+  ---------
+  M... ....
+  +--------- Select CHR A18 Mode
+              0: CHR A18=inverted PPU A12
+              1: CHR A18=PPU A12
+
+On the A9711 board, either sprites or background tiles will come from the second 256 KiB of CHR-ROM. Note that setting bit 7 will still also activate the MMC3 clone's CHR A12 inversion.
+
+MMC3-compatible registers ($8000-$FFFF)
+
+Mask: $E001, see MMC3.
+
+Protection Latch ($8001)
+
+Mask: $E003
+
+If the previous write to the Protection Index register ($8003) selected indices $26, $28 or $2A, the value written to $8001 --- with the lower six bits reversed -- is immediately applied. Otherwise, it will only be applied upon the next write to the $8003. Regardless of the $8003 setting, the MMC3 clone will always receive the write as well.
+
+Protection Index ($8003)
+
+Mask: $E003
+
+Bits 0-5 select a protection index register. If a valid index has been selected, the value previously written to $8001 --- with the lower six bits reversed --- is applied. If an invalid index has been selected, the $A000/$C000/$E000 banks selected via $8003 expire, and normal MMC3 PRG-ROM banking is restored.
+
+Index $26: Select 8 KiB PRG-ROM bank at CPU $E000-$FFFF using current bit-reversed $8001 value, and apply subsequent writes to $8001 to this index as well.
+
+Index $28: Select 8 KiB PRG-ROM bank at CPU $C000-$DFFF using current bit-reversed $8001 value, and apply subsequent writes to $8001 to this index as well.
+
+Index $2A: Select 8 KiB PRG-ROM bank at CPU $A000-$BFFF using current bit-reversed $8001 value, and apply subsequent writes to $8001 to this index as well.
+
+Index $2C: Select 8 KiB PRG-ROM bank at CPU $E000-$FFFF using current bit-reversed $8001 value if it is not zero, but do not apply subsequent writes to $8001 to this index.
+
+Index $2F: Do nothing, but keep the $A000/$C000/$E000 banks previously selected via $8003.
+
+Indices $20/$29/$2B/$3C/$3F: Select 8 KiB PRG-ROM bank at CPU $E000-$FFFF using current bit-reversed $8001 value, but do not apply subsequent writes to $8001 to this index.
+
+All other indices: Restore normal MMC3 PRG-ROM banking.
+
+Writing to $8003 also has the side effect of writing the same value to the MMC clone's $8000 register.
+
+Errata
+
+GoodNES 3.23b has several INES Mapper 121 images erroneously set to 187.
+
+Similar Mappers
+
+iNES Mapper 187 has the same CHR A18 behavior as the A9711 board, adds an NROM override register, and drops the complex protection.
+
+Categories: Mappers using $4020-$5FFF, Mappers with scanline IRQs, MMC3-like mappers

@@ -1,0 +1,108 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>INES Mapper 190</title><link rel="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_190"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>INES Mapper 190</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/INES_Mapper_190">current version</a> | View <a href="Special_AllPages.xhtml#INES_Mapper_190">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><br/>
+This mapper was assigned by Kevtris for a newly-dumped game from 1992: Magic Kid GooGoo
+</p><p>Here's a page discussing it: <a rel="nofollow" class="external free" href="http://forums.lostlevels.org/viewtopic.php?p=35234">http://forums.lostlevels.org/viewtopic.php?p=35234</a>
+</p><p>Mednafen supported it with <a rel="nofollow" class="external text" href="http://forum.fobby.net/index.php?t=msg&amp;th=1483">0.9.42</a>
+</p><p>FCEUX supported it with <a rel="nofollow" class="external text" href="https://sourceforge.net/p/fceultra/code/3334/">r3334</a>
+</p><p>PowerPak Mapper: <a rel="nofollow" class="external text" href="https://forums.nesdev.org/viewtopic.php?f=9&amp;t=15682">forum thread</a>
+</p><p>Here's Kevtris's notes on the mapper:
+</p>
+<pre>
+Magic Kid GooGoo
+----------------
+
+012517
+Kevtris
+
+
+I have assigned this game mapper 190.  Fortunately the mapper is fairly
+simple, being composed of two 74LS670 4*4 register file chips, a PAL16R4,
+some pullup resistors, two ROMs and an 8K WRAM.
+
+The mapper is fairly straight forward, but kind of weird.  
+
+PRG switching:
+--------------
+
+There's 16 16K PRG ROM banks, but a combination of address and data lines are used
+to select it.
+
+C000-FFFF is set to the *first* bank of ROM at all times (vs. the more common
+last bank of ROM).
+
+8000-BFFF is selectable by writing to either 8000-9FFF or C000-DFFF.
+
+Writing to 8000-9FFF will select bank 0-7 depending on D0-D2.
+Writing to C000-DFFF will select bank 8-15 depending on D0-D2.
+
+So the 4 bank bits are formed like so:
+
+A14, D2, D1, D0  (highest bit to lowest bit)
+
+I don't know why they did it this way but they did.
+
+There is also 8K of RAM mapped in at 6000-7FFF.  This RAM is always enabled and is
+not battery backed.
+
+
+CHR Switching:
+--------------
+
+CHR is composed of 4 2K banks at 0000-07FF, 0800-0FFF, 1000-17FF, 1800-1FFF.
+
+Writing to A000 selects the bank at 0000-07FF in PPU space,
+A001 selects the bank at 0800-0FFF
+A002 selects the bank at 1000-17FF
+A003 selects the bank at 1800-1FFF
+
+Only A0, A1, A13, 14, and 15 are used to select the CHR bank and match the following mask:
+
+101x xxxx xxxx xxbb
+
+b = CHR bank # to change.   
+
+This means that A000, A004, A008, A00C, ... BFF8, BFFC all set the first 2K CHR bank.
+</pre>
+<p>Rephrasing in a more tabular manner:
+</p>
+<pre>A~[1P0. .... .... ....] D~[.... .PPP]
+    |                            |||
+    +----------------------------+++--- Select 16 KiB PRG bank at $8000-$BFFF
+</pre>
+<p>PRG bank at $C000-$FFFF fixed to bank 0
+</p>
+<pre>A~[101. .... .... ..bb] D~[CCCC CCCC]
+                    ||     |||| ||||
+                    ||     ++++-++++--- Select 2 KiB CHR bank ...
+                    ++----------------- for PPU address starting at bb*$800
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123163718
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.009 seconds
+Real time usage: 0.013 seconds
+Preprocessor visited node count: 5/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 1492/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:474-0!canonical and timestamp 20241123163718 and revision id 5456.
+ -->
+</div><p class="categories">Categories: <a href="Category_INES_Mappers.xhtml">INES Mappers</a></p></div></body></html>

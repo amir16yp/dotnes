@@ -1,0 +1,103 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 368</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_368"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 368</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_368">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_368">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><div class="thumb tright"><div class="thumbinner" style="width:302px;"><a href="File_YUNG8_front_jpg.xhtml" class="image"><img alt="" src="../wiki-images/YUNG8-front.jpg" decoding="async" width="300" height="225" class="thumbimage" srcset="/w/images/default/thumb/8/85/YUNG8-front.jpg/450px-YUNG8-front.jpg 1.5x, /w/images/default/thumb/8/85/YUNG8-front.jpg/600px-YUNG8-front.jpg 2x"/></a>  <div class="thumbcaption"><div class="magnify"><a href="File_YUNG8_front_jpg.xhtml" class="internal" title="Enlarge"/></div>PCB front</div></div></div>
+<div class="thumb tright"><div class="thumbinner" style="width:302px;"><a href="File_YUNG8_back_jpg.xhtml" class="image"><img alt="" src="../wiki-images/YUNG8-back.jpg" decoding="async" width="300" height="400" class="thumbimage" srcset="/w/images/default/thumb/5/5a/YUNG8-back.jpg/450px-YUNG8-back.jpg 1.5x, /w/images/default/thumb/5/5a/YUNG8-back.jpg/600px-YUNG8-back.jpg 2x"/></a>  <div class="thumbcaption"><div class="magnify"><a href="File_YUNG8_back_jpg.xhtml" class="internal" title="Enlarge"/></div>PCB back (mirrored, pin 31 on the left)</div></div></div>
+<p>NES 2.0 Mapper 368 denotes the Yung-08 cartridge conversion PCB of the disk system game <i>Super Mario Bros. 2 (Japan)</i>. It is the &quot;parent&quot; of the <a href="INES_Mapper_050.xhtml" title="INES Mapper 050">N-32</a> and <a href="NES_2_0_Mapper_357.xhtml" title="NES 2.0 Mapper 357">Mr. Mary 2</a> conversions, as both retain (jumped-over) <a href="#Latch_read_.28.244122.2C_read.29">protection-reading code</a> from this version.
+</p><p>There are two 32 KiB PRG-ROM chips, one 2 KiB PRG-ROM, and one 8 KiB CHR-ROM chip. The ROM image's 128 KiB PRG-ROM part is arranged as follows:
+</p>
+<ol><li>Offset $00000: First PRG-ROM chip (32 KiB)</li>
+<li>Offset $08000: Second PRG-ROM chip (32 KiB)</li>
+<li>Offset $10000: Third PRG-ROM chip, repeated 32 times (64 KiB)</li></ol>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Banks"><span class="tocnumber">1</span> <span class="toctext">Banks</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Registers"><span class="tocnumber">2</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#PRG_Bank_Select_(%244022,_write)"><span class="tocnumber">2.1</span> <span class="toctext">PRG Bank Select ($4022, write)</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Latch_write/IRQ_Control_(%244122,_write)"><span class="tocnumber">2.2</span> <span class="toctext">Latch write/IRQ Control ($4122, write)</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Latch_read_(%244122,_read)"><span class="tocnumber">2.3</span> <span class="toctext">Latch read ($4122, read)</span></a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Banks">Banks</span></h1>
+<ul><li>CPU $6000-$7FFF: 8 KiB PRG-ROM bank, fixed to #2</li>
+<li>CPU $8000-$9FFF: 8 KiB PRG-ROM bank, fixed to #1</li>
+<li>CPU $A000-$BFFF: 8 KiB PRG-ROM bank, fixed to #0</li>
+<li>CPU $C000-$DFFF: 8 KiB PRG-ROM bank, switchable</li>
+<li>CPU $E000-$FFFF: 8 KiB PRG-ROM bank, fixed to #8 (2 KiB PRG-ROM repeated four times)</li>
+<li>PPU $0000-$1FFF: unbanked 8 KiB CHR-ROM</li></ul>
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="PRG_Bank_Select_.28.244022.2C_write.29"/><span class="mw-headline" id="PRG_Bank_Select_($4022,_write)">PRG Bank Select ($4022, write)</span></h2>
+<pre>Mask: $F1FF
+
+Bit 7654 3210
+    ---------
+    .... .CCC
+          +++- Select 8 KiB PRG-ROM bank at CPU $C000-$DFFF
+</pre>
+<p>The actual bank number is:
+</p>
+<pre>Value  Bank#
+------------
+0      4
+1      3
+2      5
+3      3
+4      6
+5      3
+6      7
+7      3
+</pre>
+<h2><span id="Latch_write.2FIRQ_Control_.28.244122.2C_write.29"/><span class="mw-headline" id="Latch_write/IRQ_Control_($4122,_write)">Latch write/IRQ Control ($4122, write)</span></h2>
+<pre>Mask: $F1FF
+
+D~7654 3210
+  ---------
+  ..LL .L.I
+    ||  | +- 0: Acknowledge and disable IRQ, reset counter
+    ||  | |  1: Enable IRQ
+    ++--+-+- Bits to be read-back
+</pre>
+<p>When enabled, the 12-bit IRQ counter increases on every M2 cycle until it overflows, upon which an IRQ is fired.
+</p>
+<h2><span id="Latch_read_.28.244122.2C_read.29"/><span class="mw-headline" id="Latch_read_($4122,_read)">Latch read ($4122, read)</span></h2>
+<pre>Mask: $F1FF
+
+D~7654 3210
+  ---------
+  10LL 1L1L
+    ++--+-+- Latched bits
+</pre>
+<p>When holding the A button while pressing START to begin in World A-1, the game checks the latch's functionality and returns to the title screen if the check fails.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123145425
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.026 seconds
+Real time usage: 0.038 seconds
+Preprocessor visited node count: 23/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:753-0!canonical and timestamp 20241123145424 and revision id 7973.
+ -->
+</div><p class="categories">Categories: <a href="Category_FDS_conversion_mappers.xhtml">FDS conversion mappers</a>, <a href="Category_Mappers_with_fixed_timing_cycle_IRQs.xhtml">Mappers with fixed-timing cycle IRQs</a></p></div></body></html>

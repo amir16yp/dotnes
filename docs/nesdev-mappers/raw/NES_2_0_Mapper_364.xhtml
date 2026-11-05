@@ -1,0 +1,57 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 364</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_364"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 364</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_364">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_364">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 364</b> is used for an early MMC3-based multicart PCB (<b>JY830832C</b>) from J.Y. Company, preceding the <a href="J_Y__Company_ASIC.xhtml" title="J.Y. Company ASIC">J.Y. Company ASIC</a>. A compatible PCB has the code <b>9053</b>.
+</p>
+<ul><li><i>1994 Super HiK 3-in-1 (JY-007)</i></li>
+<li><i>1996 Super HiK Gold Card (LT-953)</i></li></ul>
+<h2><span id="Outer_Bank_Register_.28.246000-.247FFF.29"/><span class="mw-headline" id="Outer_Bank_Register_($6000-$7FFF)">Outer Bank Register ($6000-$7FFF)</span></h2>
+<pre>Mask: $E000
+
+D~7654 3210
+  ---------
+  .PSC ....
+   ||+------ CHR A18
+   |+------- PRG/CHR A17 mode
+   |          0: Preserve MMC3's PRG/CHR A17
+   |          1: Force PRG/CHR A17 to 0
+   +-------- PRG A18
+</pre>
+<p>This register is accessible regardless of whether WRAM is enabled in the MMC3 clone's A001 register. It may be possible that there is another bit, unused on the only discovered cartridge using this mapper, that selects the bit value which PRG/CHR A17 is forced to when S=1.
+</p>
+<h2><span class="mw-headline" id="MMC3-compatible_registers">MMC3-compatible registers</span></h2>
+<pre>Mask: $E001
+
+See <a href="MMC3.xhtml" title="MMC3">MMC3</a>.
+</pre>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<p><a href="NES_2_0_Mapper_361.xhtml" title="NES 2.0 Mapper 361">NES 2.0 Mapper 361</a> describes a simpler variant with a fixed outer bank size.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123125835
+Cache expiry: 86400
+Reduced expiry: false
+Complications: []
+CPU time usage: 0.012 seconds
+Real time usage: 0.017 seconds
+Preprocessor visited node count: 13/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:749-0!canonical and timestamp 20241123125835 and revision id 21441.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

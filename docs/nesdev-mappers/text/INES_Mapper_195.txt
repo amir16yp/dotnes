@@ -1,0 +1,49 @@
+INES Mapper 195
+
+INES Mapper 195
+
+iNES Mapper 195 describes Waixing's FS303 PCB, which has an MMC3 clone and a GAL that can dynamically change which CHR banks are mapped to RAM. Used by the following games:
+
+哥伦布传 - 黄金中文版: Waixing's Chinese translation of Tomy's Columbus - Ougon no Yoake, original release only (PRG-ROM CRC32 0xE4E842D0)
+
+天使之翼 2, 足球小将: Waixing's Chinese translation of Tecmo's Captain Tsubasa Vol. II: Super Strike
+
+赌神 - Numen Wager, 赌王 - Moses Wager, 洛克人 X: Waixing's Chinese translation of Technos' Sugoro Quest: Dice no Senshi-tachi
+
+A compatible circuit board (with unknown PCB code) adds 4 KiB of non-battery-backed PRG-RAM (recognizable as such in the NES 2.0 header) mapped to CPU $5000-$5FFF:
+
+天神之剑: Waixing's Chinese translation of SNK's God Slayer/Crystalis.
+
+The games write, via the PPU, to specific CHR banks in order to select both which and how many CHR banks are mapped to RAM instead of ROM. Writes to CHR ROM in multiples of 1 KiB:
+
+CHRB~[1Z.D L.L.]
+      || | | |
+      |+-|-+-+---------------- Select first bank and size of CHR RAM:
+      || |                      $80 = $28-$2B
+      || |                      $82 = $00-$03
+      || |                      $88 = $4C-$4F
+      || |                      $8A = $64-$67
+      || |                      $C0 = $46-$47
+      || |                      $C2 = $7C-$7D
+      || |                      $C8 = $0A-$0B
+      || |                      $CA = only CHR ROM
+      || +-------------------- If 1, ignore above and always enable CHR ROM / disable CHR RAM
+      |+---------------------- Number of banks of CHR RAM, 0=4KiB, 1=2KiB
+      +----------------------- Must be 1
+Power-on value: $80
+
+The PCB mounts 32 KiB of CHR-RAM, although address lines for only 8 KiB are connected. Since CHR A10-A12 are connected to CHR-RAM just as they are connected to CHR-ROM, setting $80 ($28-$2B) will select different 4 KiB of CHR-RAM from setting $88 ($4C-$4F), but the same 4 KiB as setting $82 ($00-$03), because CHR A13 is not connected to CHR-RAM.
+
+Notes:
+
+The more common ROM image of the Chinese translation of Columbus (PRG-ROM CRC32 0xBFF2E9EC) is actually from a 2006 re-release of the game that uses INES Mapper 176 instead, recognizable by the values it writes to $A001.
+
+The common ROM images of the Chinese translation of Captain Tsubasa II have been hacked to work with a fixed setting of $82 ($00-$03) and can be identified by having the bytes at 60 EA EA EA at .NES file offset $41CC.
+
+The game 風雲 - Traitor Legend is commonly set to mapper 195. The ROM images to which this applies (PRG-ROM CRC32 0xA9B36A7D/0xC7E3F93A) are actually from 2005/2006 re-releases of the game that use INES Mapper 176, recognizable by the values they write to $A001. The original 1997 release of the game used INES Mapper 074 instead.
+
+Mappers 252 and 253, also used for Waixing's localizations, are similar but use a VRC4.
+
+See also: NewRisingSun's findings
+
+Categories: Mappers with scanline IRQs, INES Mappers, MMC3 with CHR ROM and CHR RAM

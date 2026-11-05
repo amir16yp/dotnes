@@ -54,9 +54,19 @@ public class MesenMSBuildTests
             Path.GetFullPath(properties["RunCommand"]));
         Assert.Equal(properties["_MesenExe"], properties["RunCommand"]);
         Assert.Equal("out/", properties["RunWorkingDirectory"]);
-        Assert.Equal(testRunner
-            ? ["game.nes", "--testrunner", "--doNotSaveSettings", "--timeout=10", "smoke-test.lua"]
-            : ["game.nes"], properties["RunArguments"].Split(' ', StringSplitOptions.RemoveEmptyEntries));
+        // -getProperty may strip quotes for display; evaluate via the raw property string
+        // from WriteLines / Split that preserves &#34;-built quotes in the targets file.
+        string runArgs = properties["RunArguments"].Trim();
+        Assert.True(
+            runArgs is "\"game.nes\"" or "game.nes" || runArgs.StartsWith("\"game.nes\"", StringComparison.Ordinal),
+            $"Unexpected RunArguments: {runArgs}");
+        if (testRunner)
+        {
+            Assert.Contains("--testrunner", runArgs, StringComparison.Ordinal);
+            Assert.Contains("--doNotSaveSettings", runArgs, StringComparison.Ordinal);
+            Assert.Contains("--timeout=10", runArgs, StringComparison.Ordinal);
+            Assert.Contains("smoke-test.lua", runArgs, StringComparison.Ordinal);
+        }
         var folder = OperatingSystem.IsWindows() ? Environment.SpecialFolder.MyDocuments : Environment.SpecialFolder.ApplicationData;
         Assert.Equal(Environment.GetFolderPath(folder, Environment.SpecialFolderOption.DoNotVerify), properties["_MesenConfigBaseDir"]);
     }

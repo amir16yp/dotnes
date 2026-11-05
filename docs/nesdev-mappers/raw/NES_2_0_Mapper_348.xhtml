@@ -1,0 +1,69 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 348</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_348"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 348</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_348">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_348">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p>NES 2.0 Mapper 348 is used for multicarts using <i>830118C</i>-numbered PCBs such as <i>1994 New Series Red Pig 7-in-1</i>. Its UNIF board name is <b>BMC-830118C</b>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Registers"><span class="tocnumber">1</span> <span class="toctext">Registers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#MMC3-compatible_registers_(%248000-%24FFFF,_write)"><span class="tocnumber">1.1</span> <span class="toctext">MMC3-compatible registers ($8000-$FFFF, write)</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Outer_Bank_Register_(%246800,_write)"><span class="tocnumber">1.2</span> <span class="toctext">Outer Bank Register ($6800, write)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-4"><a href="#GNROM-like_Mode"><span class="tocnumber">2</span> <span class="toctext">GNROM-like Mode</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Similar_Mappers"><span class="tocnumber">3</span> <span class="toctext">Similar Mappers</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Registers">Registers</span></h1>
+<h2><span id="MMC3-compatible_registers_.28.248000-.24FFFF.2C_write.29"/><span class="mw-headline" id="MMC3-compatible_registers_($8000-$FFFF,_write)">MMC3-compatible registers ($8000-$FFFF, write)</span></h2>
+<p>These registers function identically to a normal <a href="MMC3.xhtml" title="MMC3">MMC3</a>, except in <a href="#GNROM-like_Mode">GNROM mode</a>.
+</p>
+<h2><span id="Outer_Bank_Register_.28.246800.2C_write.29"/><span class="mw-headline" id="Outer_Bank_Register_($6800,_write)">Outer Bank Register ($6800, write)</span></h2>
+<pre>Mask: probably $E000
+
+D~7654 3210
+  ---------
+  .... OO..
+       ++--- Select 128 KiB outer PRG-ROM bank (i.e. PRG A17-A18)
+             and 128 KiB outer CHR-ROM bank (i.e. CHR A17-A18)
+</pre>
+<ul><li>This bank register functions as a substitute for WRAM and can only be written to if $A001 bit 7 is set and $A001 bit 6 is clear.</li>
+<li>The Outer Bank Register's PRG/CHR A17-A18 replace the MMC3's.</li></ul>
+<h1><span class="mw-headline" id="GNROM-like_Mode">GNROM-like Mode</span></h1>
+<p>If PRG A17 and PRG A18 are both 1 (i.e. if $6800 AND $0C==$0C), standard MMC3 PRG-ROM banking is replaced with an odd GNROM-ish mode, in which the MMC3's CPU A14 input is held low and PRG A14 is directly connected to CPU A14, resulting in the following bank layout:
+</p>
+<ul><li>CPU $8000-$BFFF: MMC3 banks effective in the $8000-$BFFF range but as if their bank register values were AND'd with $FD</li>
+<li>CPU $C000-$FFFF: MMC3 banks effective in the $8000-$BFFF range but as if their bank register values were OR'd with $02</li></ul>
+<h1><span class="mw-headline" id="Similar_Mappers">Similar Mappers</span></h1>
+<p><a href="NES_2_0_Mapper_315.xhtml" title="NES 2.0 Mapper 315">NES 2.0 Mapper 315</a> is similar but with the Outer Bank Register bits being arranged slightly differently.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20241123164218
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.012 seconds
+Real time usage: 0.015 seconds
+Preprocessor visited node count: 21/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:733-0!canonical and timestamp 20241123164218 and revision id 7904.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_scanline_IRQs.xhtml">Mappers with scanline IRQs</a>, <a href="Category_MMC3_like_mappers.xhtml">MMC3-like mappers</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>

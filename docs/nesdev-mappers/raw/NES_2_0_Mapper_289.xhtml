@@ -1,0 +1,74 @@
+<?xml version="1.0" ?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns="http://www.w3.org/1999/xhtml"><head><title>NES 2.0 Mapper 289</title><link rel="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_289"/>
+<meta name="viewport" content="width=display-width"/>
+<link rel="stylesheet" type="text/css" href="w.css"/>
+<script type="text/javascript" src="w.js"/>
+</head><body><h1>NES 2.0 Mapper 289</h1><nav class="fromwiki">
+From <a href="Nesdev_Wiki.xhtml">NESdev Wiki</a> | View <a class="canonical" href="https://www.nesdev.org/wiki/NES_2.0_Mapper_289">current version</a> | View <a href="Special_AllPages.xhtml#NES_2_0_Mapper_289">other pages</a>
+</nav><div class="article">
+<div class="mw-parser-output"><p><b>NES 2.0 Mapper 289</b> is used for at least three multicarts designated in UNIF as <b>BMC-60311C</b>.
+</p>
+<ul><li><i>(EW-16-1) Super HiK 17-in-1</i></li>
+<li><i>1995 Champion Cassette 1200-in-1 - 94年超值珍藏版</i></li>
+<li><i>Super 76-in-1</i> (with Contra)</li></ul>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"/></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Mode_Register_(%246000),_write"><span class="tocnumber">1</span> <span class="toctext">Mode Register ($6000), write</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Outer_Bank_Register_(%246001),_write"><span class="tocnumber">2</span> <span class="toctext">Outer Bank Register ($6001), write</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Solder_Pad_Register_(%246000,_read)"><span class="tocnumber">3</span> <span class="toctext">Solder Pad Register ($6000, read)</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Data_Latch_(%248000-%24FFFF),_write"><span class="tocnumber">4</span> <span class="toctext">Data Latch ($8000-$FFFF), write</span></a></li>
+</ul>
+</div>
+
+<h2><span id="Mode_Register_.28.246000.29.2C_write"/><span class="mw-headline" id="Mode_Register_($6000),_write">Mode Register ($6000), write</span></h2>
+<pre>D~[.... MLPP]  Address mask: $E001
+        ||++- PRG Banking Mode
+        ||     0: NROM-128: PRG A14-A16 from Outer Bank Register
+        ||     1: NROM-256: PRG A15-A16 from Outer Bank Register, PRG A14=CPU A14
+        ||     2: UNROM: PRG A14-A16 from Data Latch when CPU A14=0, and 111b when CPU A14=1
+        ||     3: PRG A14-16=1 regardless of CPU A14
+        |+--- Protect CHR-RAM
+        |      0: CHR-RAM writable
+        |      1: CHR-RAM write-protected
+        +---- Select nametable mirroring type
+               0: Vertical
+               1: Horizontal
+</pre>
+<h2><span id="Outer_Bank_Register_.28.246001.29.2C_write"/><span class="mw-headline" id="Outer_Bank_Register_($6001),_write">Outer Bank Register ($6001), write</span></h2>
+<pre>D~[.QQQ QPPp]  Address mask: $E001
+    ||| |||+- PRG A14 in NROM-128 PRG Banking Mode
+    ||| |++-- PRG A16..15 in NROM-128/-256 Banking Modes
+    +++-+---- PRG A20..A17
+</pre>
+<h2><span id="Solder_Pad_Register_.28.246000.2C_read.29"/><span class="mw-headline" id="Solder_Pad_Register_($6000,_read)">Solder Pad Register ($6000, read)</span></h2>
+<pre>D~[.... ..PP]  Address mask: $E000
+   |||| ||++- Solder pad setting
+   ++++-++--- Open Bus 
+</pre>
+<h2><span id="Data_Latch_.28.248000-.24FFFF.29.2C_write"/><span class="mw-headline" id="Data_Latch_($8000-$FFFF),_write">Data Latch ($8000-$FFFF), write</span></h2>
+<pre>D~[.... .PPP]  Address mask: $8000
+         +++- PRG A16..14 in UNROM PRG Banking Mode when CPU A14=0
+</pre>
+<!-- 
+NewPP limit report
+Cached time: 20241123164053
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.010 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 15/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 0/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key nesdev_db-wiki_:pcache:idhash:674-0!canonical and timestamp 20241123164053 and revision id 20161.
+ -->
+</div><p class="categories">Categories: <a href="Category_Mappers_with_CHR_RAM.xhtml">Mappers with CHR RAM</a>, <a href="Category_Multicart_mappers.xhtml">Multicart mappers</a></p></div></body></html>
