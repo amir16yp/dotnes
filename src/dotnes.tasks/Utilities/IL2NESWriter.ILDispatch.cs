@@ -2918,6 +2918,11 @@ partial class IL2NESWriter
                     case nameof(NESLib.mapper59_set):
                     case nameof(NESLib.mapper108_set_prg_bank):
                     case nameof(NESLib.mapper169_set):
+                    case nameof(NESLib.mapper129_set):
+                    case nameof(NESLib.mapper264_set_outer):
+                    case nameof(NESLib.mapper285_set):
+                    case nameof(NESLib.mapper274_set_inner):
+                    case nameof(NESLib.mapper429_set):
                     case nameof(NESLib.cnrom_set_chr_bank):
                         // Bus-conflict / simple mappers: bank (or packed value) already in A → STA $8000
                         Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x8000);
@@ -2951,6 +2956,13 @@ partial class IL2NESWriter
                     case nameof(NESLib.mapper251_set_outer):
                     case nameof(NESLib.mapper134_set):
                     case nameof(NESLib.mapper125_set_prg_bank):
+                    case nameof(NESLib.mapper122_set_chr_bank):
+                    case nameof(NESLib.mapper131_set_outer):
+                    case nameof(NESLib.mapper126_set_outer):
+                    case nameof(NESLib.mapper534_set_outer):
+                    case nameof(NESLib.mapper292_set_prg):
+                    case nameof(NESLib.mapper444_set_outer):
+                    case nameof(NESLib.mapper391_set_outer):
                         Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x6000);
                         _immediateInA = null;
                         _pokeLastValue = null;
@@ -2971,6 +2983,8 @@ partial class IL2NESWriter
                     case nameof(NESLib.sachen150_set):
                     case nameof(NESLib.mapper135_set):
                     case nameof(NESLib.mapper172_set):
+                    case nameof(NESLib.mapper109_set):
+                    case nameof(NESLib.mapper110_set):
                         Emit(Opcode.STA, AddressMode.Absolute, NESLib.NINA_BANK_SELECT);
                         _immediateInA = null;
                         _pokeLastValue = null;
@@ -2993,6 +3007,17 @@ partial class IL2NESWriter
                         break;
                     case nameof(NESLib.mapper50_set_prg_bank):
                         Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x4020);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper357_set_prg):
+                    case nameof(NESLib.mapper368_set_prg):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x4022);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper357_set_aux):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x4120);
                         _immediateInA = null;
                         _pokeLastValue = null;
                         break;
@@ -3245,6 +3270,7 @@ partial class IL2NESWriter
                     case nameof(NESLib.mapper183_set_prg_bank):
                     case nameof(NESLib.mapper252_set_prg_bank):
                     case nameof(NESLib.mapper253_set_prg_bank):
+                    case nameof(NESLib.mapper542_set_prg_bank):
                     case nameof(NESLib.vrc7_set_prg_bank):
                     case nameof(NESLib.namco163_set_prg_bank):
                     case nameof(NESLib.namco210_set_prg_bank):
@@ -3253,6 +3279,8 @@ partial class IL2NESWriter
                     case nameof(NESLib.taito33_set_prg_bank):
                     case nameof(NESLib.taito48_set_prg_bank):
                     case nameof(NESLib.taito80_set_prg_bank):
+                    case nameof(NESLib.mapper365_set_prg_bank):
+                    case nameof(NESLib.mapper359_set_prg_bank):
                         {
                             if (Stack.Count >= 2)
                             {
@@ -3270,6 +3298,14 @@ partial class IL2NESWriter
 
                                 ushort addr = operand switch
                                 {
+                                    nameof(NESLib.mapper365_set_prg_bank) or nameof(NESLib.mapper359_set_prg_bank) => which switch
+                                    {
+                                        0 => (ushort)0x8000,
+                                        1 => (ushort)0x8001,
+                                        2 => (ushort)0x8002,
+                                        3 => (ushort)0x8003,
+                                        _ => throw new TranspileException($"{operand}: which must be 0–3.", MethodName),
+                                    },
                                     nameof(NESLib.vrc1_set_prg_bank) or nameof(NESLib.mapper151_set_prg_bank) => which switch
                                     {
                                         0 => NESLib.VRC1_PRG_BANK0,
@@ -3290,7 +3326,8 @@ partial class IL2NESWriter
                                         or nameof(NESLib.mapper27_set_prg_bank)
                                         or nameof(NESLib.mapper183_set_prg_bank)
                                         or nameof(NESLib.mapper252_set_prg_bank)
-                                        or nameof(NESLib.mapper253_set_prg_bank) => which switch
+                                        or nameof(NESLib.mapper253_set_prg_bank)
+                                        or nameof(NESLib.mapper542_set_prg_bank) => which switch
                                     {
                                         0 => NESLib.VRC24_PRG_BANK0,
                                         1 => NESLib.VRC24_PRG_BANK1,
@@ -3413,6 +3450,16 @@ partial class IL2NESWriter
                     case nameof(NESLib.mapper100_set_bank):
                     case nameof(NESLib.mapper121_set_bank):
                     case nameof(NESLib.mapper123_set_bank):
+                    case nameof(NESLib.mapper126_set_bank):
+                    case nameof(NESLib.mapper534_set_bank):
+                    case nameof(NESLib.mapper260_set_bank):
+                    case nameof(NESLib.mapper269_set_bank):
+                    case nameof(NESLib.mapper292_set_bank):
+                    case nameof(NESLib.mapper351_set_bank):
+                    case nameof(NESLib.mapper383_set_bank):
+                    case nameof(NESLib.mapper444_set_bank):
+                    case nameof(NESLib.mapper315_set_bank):
+                    case nameof(NESLib.mapper391_set_bank):
                         {
                             // Same shape as mmc3_set_*_bank: STA $8000 (reg), STA $8001 (bank)
                             if (Stack.Count >= 2)
@@ -3462,6 +3509,23 @@ partial class IL2NESWriter
                     case nameof(NESLib.mapper173_write):
                     case nameof(NESLib.mapper216_write):
                     case nameof(NESLib.mapper255_write):
+                    case nameof(NESLib.mapper331_write):
+                    case nameof(NESLib.mapper347_write):
+                    case nameof(NESLib.mapper417_write):
+                    case nameof(NESLib.mapper446_write):
+                    case nameof(NESLib.mapper375_write):
+                    case nameof(NESLib.mapper383_write):
+                    case nameof(NESLib.mapper452_write):
+                    case nameof(NESLib.mapper286_write):
+                    case nameof(NESLib.mapper302_write):
+                    case nameof(NESLib.mapper305_write):
+                    case nameof(NESLib.mapper354_write):
+                    case nameof(NESLib.mapper380_write):
+                    case nameof(NESLib.mapper451_write):
+                    case nameof(NESLib.mapper454_write):
+                    case nameof(NESLib.mapper274_write):
+                    case nameof(NESLib.mapper398_write):
+                    case nameof(NESLib.mapper528_write):
                         {
                             // write(ushort register, byte value) → LDA #value, STA register
                             if (Stack.Count >= 2)
@@ -3496,16 +3560,93 @@ partial class IL2NESWriter
                         break;
                     case nameof(NESLib.mapper162_set_prg_low):
                     case nameof(NESLib.mapper187_set_outer):
+                    case nameof(NESLib.mapper260_set_mode):
+                    case nameof(NESLib.mapper269_set_outer):
+                    case nameof(NESLib.mapper371_set):
+                    case nameof(NESLib.mapper446_set_mode):
+                    case nameof(NESLib.mapper351_set_chr_base):
+                    case nameof(NESLib.mapper518_set_prg):
+                    case nameof(NESLib.mapper543_set_outer):
+                    case nameof(NESLib.mapper558_set_prg_low):
                         Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5000);
                         _immediateInA = null;
                         _pokeLastValue = null;
                         break;
+                    case nameof(NESLib.mapper371_set_aux):
+                    case nameof(NESLib.mapper558_set_prg_high):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5100);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper351_set_prg_base):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5001);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper351_set_mode):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5002);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper296_set_config):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x411D);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper296_set_outer):
+                    case nameof(NESLib.mapper270_set_outer):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x412C);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper304_set_prg):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x4027);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper315_set_outer):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x6800);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper544_set_prg2):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x9C00);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper266_set_prg):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x900C);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper359_set_prg_base):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x9000);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper260_set_prg_base):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5001);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper260_set_chr_base):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5002);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.mapper264_set_mode):
+                        Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x8400);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
                     case nameof(NESLib.mapper162_set_prg_high):
+                    case nameof(NESLib.mapper518_set_mode):
                         Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5200);
                         _immediateInA = null;
                         _pokeLastValue = null;
                         break;
                     case nameof(NESLib.mapper162_set_mode):
+                    case nameof(NESLib.mapper558_set_mode):
                         Emit(Opcode.STA, AddressMode.Absolute, (ushort)0x5300);
                         _immediateInA = null;
                         _pokeLastValue = null;

@@ -1078,9 +1078,51 @@ public class DecompilerTests
 
         var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
         _logger.WriteLine($"{code}");
-        Assert.Contains("do { a = peek(PPU_STATUS); } while (!negative);", code);
+        // Optimized recovery lifts PPU_STATUS bit7 spin → waitvsync (same semantics).
+        Assert.Contains("waitvsync();", code);
+        Assert.DoesNotContain("do { a = peek(PPU_STATUS); } while (!negative);", code);
         Assert.Contains("while (true) ;", code);
         Assert.DoesNotContain("goto L_8000", code);
+        Assert.Contains("Memory accesses (peek / poke counts", code);
+        Assert.Contains("PPU_STATUS", code);
+        Assert.Matches(@"PPU_STATUS\s+peek×1", code);
+
+        string exact = new Decompiler(new NESRomReader(rom), _logger, PackModePreference.Auto, RecoveryStyle.Exact)
+            .Decompile();
+        Assert.DoesNotContain("waitvsync();", exact);
+        Assert.Contains("peek(PPU_STATUS)", exact);
+    }
+
+    [Fact]
+    public void Decompiler_LiftsScrollAndOamDmaToNesLib()
+    {
+        // RESET: STA $2005 ×2; LDA #0 / STA $2003; LDA #2 / STA $4014; JMP self
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0x8D, 0x05, 0x20, // STA $2005
+            0x8D, 0x05, 0x20, // STA $2005
+            0xA9, 0x00,       // LDA #0
+            0x8D, 0x03, 0x20, // STA $2003
+            0xA9, 0x02,       // LDA #2
+            0x8D, 0x14, 0x40, // STA $4014
+            0x4C, 0x12, 0x80, // JMP $8012 (self)
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("ppu_scroll(", code);
+        Assert.Contains("oam_dma(2);", code);
+        Assert.DoesNotContain("poke(PPU_OAM_DMA", code);
     }
 
     /// <summary>4×16KB UxROM: reset in fixed bank 3 switches to bank 1 then JMP $8000.</summary>

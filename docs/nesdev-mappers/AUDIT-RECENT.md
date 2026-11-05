@@ -596,3 +596,73 @@ Audited **52** recently added / packing-fixed mappers.
 - 55: NROM + $6000 ROM/RAM, no bankswitch
 - 186: Fukutake Study Box BIOS — assignment unused
 - 218: Magic Floor CIRAM-as-CHR — no bankswitch
+
+---
+
+# Batch 12 (classic aliases + NES 2.0 lean)
+
+## Aliases (audited vs redirect pages)
+- **109** → Sachen 8259D / 137 — `mapper109_set` @$4100
+- **110** → Sachen 243 — `mapper110_set` @$4100
+- **122** → Sunsoft-1 / 184 — `mapper122_set_chr_bank` @$6000
+- **126** → TEC9719 family / 534 — outer @$6000 + MMC3 bank
+- **129** → mapper 58 — `mapper129_set` @$8000
+- **131** → mapper 205 — `mapper131_set_outer` @$6000
+- **534** — same outer/MMC3 lean surface as 126
+
+## NES 2.0 added
+- **260** HP10xx: mode @$5000, PRG @$5001, CHR @$5002, MMC3 bank — OK vs spec
+- **269** Games Xplosion: outer @$5000 (sequential), MMC3 — OK
+- **264** Yoko: outer @$8000, mode @$8400 — OK lean
+- **331** BMC-12-IN-1: absolute write @$A000/$C000/$E000 — OK
+
+## Still skipped (no useful lean PRG surface / missing page)
+- 0 NROM, 20 FDS, 55 no bankswitch, 102→284 stub, 104 PEGASUS page missing from dump,
+  124 kevtris archive only, 127/128/170 stub pages, 186 Study Box, 218 Magic Floor
+
+# Batch 13
+- **347** KS7030: `mapper347_write` @$8000/$9000 — OK; no $8000 window model
+- **365** Asder PC-95: `mapper365_set_prg_bank(which,bank)` @$8000+which — OK; 16K model
+- **371** PEC-586 ES: `$5000`/`$5100` — OK; 16K model
+- **417** Fine Studio: absolute write — OK; 16K model
+- **446** SMD172B: mode @$5000 + supervisor write — OK; no fixed window (FPGA)
+
+Also: `NESRomReader` now reads NES 2.0 mapper bits 8–11.
+
+# Batch 14
+- **266** City Fighter: `$900C` 32K PRG — OK
+- **292** Dragon Fighter: `$6000` PRG + MMC3 — OK
+- **296** VT3x: `$411D`/`$412C` — OK
+- **351** Techline XB: `$5000`–`$5002` + MMC3 — OK
+- **359** SB-5013: `$8000+which` + `$9000` base — OK
+- **375** 2MiB latch (≡227+): absolute write — OK; 32K+bus model
+- **383** JY soccer: MMC3 + PAL write — OK
+- **452** DS-9-27: absolute latch — OK; 32K model
+
+# Batch 15
+- **285** A65AS: data latch @$8000 — OK
+- **286** BS-5: address latch write — OK; 16K
+- **302** KS7057: absolute write — OK; 16K
+- **305** KS7031: address-select write — OK; no $8000 window
+- **354** FAM250: @$E000/$F000 latch — OK; 32K
+- **357** Bit Corp 4602: @$4022/@$4120 — OK
+- **368** Yung-08: @$4022 — OK
+- **380** 970630C: address latch write — OK; 32K
+- **444** NC7000M: @$6000 + MMC3 — OK
+- **451** Haratyler: absolute write — OK; 16K
+- **454** 110-in-1: latch write — OK; 32K
+
+# Batch 16
+- **270** OneBus UIO: `$412C` — OK
+- **274** Cartridge Story: inner `$8000` + outer write — OK; 32K
+- **304** SMB2J FDS: `$4027` — OK; no $8000 window
+- **315** 830134C: `$6800` + MMC3 — OK
+- **391** BS-110: `$6000` + MMC3 — OK
+- **398** JY YY840820C: absolute write — OK; 16K
+- **429** FCFC1: `$8000` latch — OK; 32K (no bus conflicts)
+- **518** Subor Dance: `$5000`/`$5200` — OK; 32K
+- **528** 831128C: FME-7-like write — OK; 16K
+- **542** Mao VRC4: vrc24 PRG — OK
+- **543** CH-501: serial `$5000` lean — OK
+- **544** FS306: `$9C00` PRG2 — OK
+- **558** Yancheng: `$5000`/`$5100`/`$5300` — OK; 32K

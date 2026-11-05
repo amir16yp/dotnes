@@ -753,4 +753,178 @@ public class MappersTests : RoslynTests
         Assert.Contains("A9038DFF41", hex); // $41FF
         Assert.Contains("A90A8D0080", hex); // 169 ≡ 15
     }
+
+    [Fact]
+    public void Batch12_AliasesAndNes2_Emit()
+    {
+        var hex = Convert.ToHexString(GetProgramBytes(
+            """
+            mapper109_set(0x05);
+            mapper122_set_chr_bank(0x47);
+            mapper126_set_outer(0x11);
+            mapper126_set_bank(6, 2);
+            mapper260_set_mode(0x04);
+            mapper260_set_prg_base(0x0A);
+            mapper269_set_outer(0x03);
+            mapper264_set_outer(0x12);
+            mapper264_set_mode(0x01);
+            mapper331_write(0xE000, 0x0C);
+            mapper534_set_bank(7, 1);
+            ppu_on_all();
+            while (true) ;
+            """)!);
+        Assert.Contains("A9058D0041", hex); // 109 @$4100
+        Assert.Contains("A9478D0060", hex); // 122 ≡ 184 @$6000
+        Assert.Contains("A9118D0060", hex); // 126 outer
+        Assert.Contains("A9068D0080A9028D0180", hex); // 126 bank
+        Assert.Contains("A9048D0050", hex); // 260 mode @$5000
+        Assert.Contains("A90A8D0150", hex); // 260 prg @$5001
+        Assert.Contains("A9038D0050", hex); // 269 outer
+        Assert.Contains("A9128D0080", hex); // 264 outer
+        Assert.Contains("A9018D0084", hex); // 264 mode @$8400
+        Assert.Contains("A90C8D00E0", hex); // 331 @$E000
+        Assert.Contains("A9078D0080A9018D0180", hex); // 534 bank
+    }
+
+    [Fact]
+    public void Batch13_Nes2More_Emit()
+    {
+        var hex = Convert.ToHexString(GetProgramBytes(
+            """
+            mapper347_write(0x8000, 0x05);
+            mapper365_set_prg_bank(2, 7);
+            mapper371_set(0x53);
+            mapper371_set_aux(0x01);
+            mapper417_write(0x8001, 0x0A);
+            mapper446_set_mode(0x81);
+            mapper446_write(0x5001, 0x10);
+            ppu_on_all();
+            while (true) ;
+            """)!);
+        Assert.Contains("A9058D0080", hex); // 347 @$8000
+        Assert.Contains("A9078D0280", hex); // 365 which=2 @$8002
+        Assert.Contains("A9538D0050", hex); // 371 @$5000
+        Assert.Contains("A9018D0051", hex); // 371 aux @$5100
+        Assert.Contains("A90A8D0180", hex); // 417 @$8001
+        Assert.Contains("A9818D0050", hex); // 446 mode
+        Assert.Contains("A9108D0150", hex); // 446 @$5001
+    }
+
+    [Fact]
+    public void Batch14_Nes2More_Emit()
+    {
+        var hex = Convert.ToHexString(GetProgramBytes(
+            """
+            mapper266_set_prg(0x0C);
+            mapper292_set_prg(3);
+            mapper292_set_bank(6, 2);
+            mapper296_set_config(0x02);
+            mapper296_set_outer(0x01);
+            mapper351_set_chr_base(0x10);
+            mapper351_set_prg_base(0x20);
+            mapper351_set_mode(0x04);
+            mapper359_set_prg_bank(1, 5);
+            mapper359_set_prg_base(0x08);
+            mapper375_write(0x8000, 0x11);
+            mapper383_set_bank(7, 1);
+            mapper452_write(0xC000, 0x22);
+            ppu_on_all();
+            while (true) ;
+            """)!);
+        Assert.Contains("A90C8D0C90", hex); // 266 @$900C
+        Assert.Contains("A9038D0060", hex); // 292 prg @$6000
+        Assert.Contains("A9068D0080A9028D0180", hex); // 292 bank
+        Assert.Contains("A9028D1D41", hex); // 296 @$411D
+        Assert.Contains("A9018D2C41", hex); // 296 @$412C
+        Assert.Contains("A9108D0050", hex); // 351 chr
+        Assert.Contains("A9208D0150", hex); // 351 prg
+        Assert.Contains("A9048D0250", hex); // 351 mode
+        Assert.Contains("A9058D0180", hex); // 359 which=1
+        Assert.Contains("A9088D0090", hex); // 359 base @$9000
+        Assert.Contains("A9118D0080", hex); // 375
+        Assert.Contains("A9078D0080A9018D0180", hex); // 383
+        Assert.Contains("A9228D00C0", hex); // 452 @$C000
+    }
+
+    [Fact]
+    public void Batch15_Nes2More_Emit()
+    {
+        var hex = Convert.ToHexString(GetProgramBytes(
+            """
+            mapper285_set(0x41);
+            mapper286_write(0xA000, 0x03);
+            mapper302_write(0xB000, 0x05);
+            mapper305_write(0x8000, 0x00);
+            mapper354_write(0xF000, 0x12);
+            mapper357_set_prg(0x04);
+            mapper357_set_aux(0x01);
+            mapper368_set_prg(0x06);
+            mapper380_write(0x8000, 0x21);
+            mapper444_set_outer(0x0A);
+            mapper444_set_bank(6, 2);
+            mapper451_write(0xE000, 0x10);
+            mapper454_write(0x8000, 0x07);
+            ppu_on_all();
+            while (true) ;
+            """)!);
+        Assert.Contains("A9418D0080", hex); // 285
+        Assert.Contains("A9038D00A0", hex); // 286 @$A000
+        Assert.Contains("A9058D00B0", hex); // 302 @$B000
+        Assert.Contains("A9008D0080", hex); // 305
+        Assert.Contains("A9128D00F0", hex); // 354 @$F000
+        Assert.Contains("A9048D2240", hex); // 357 @$4022
+        Assert.Contains("A9018D2041", hex); // 357 @$4120
+        Assert.Contains("A9068D2240", hex); // 368
+        Assert.Contains("A9218D0080", hex); // 380
+        Assert.Contains("A90A8D0060", hex); // 444 outer
+        Assert.Contains("A9068D0080A9028D0180", hex); // 444 bank
+        Assert.Contains("A9108D00E0", hex); // 451 @$E000
+        Assert.Contains("A9078D0080", hex); // 454
+    }
+
+    [Fact]
+    public void Batch16_Nes2More_Emit()
+    {
+        var hex = Convert.ToHexString(GetProgramBytes(
+            """
+            mapper270_set_outer(0x02);
+            mapper274_set_inner(0x05);
+            mapper274_write(0xA000, 0x10);
+            mapper304_set_prg(0x01);
+            mapper315_set_outer(0x06);
+            mapper315_set_bank(6, 2);
+            mapper391_set_outer(0x0C);
+            mapper398_write(0x8000, 0xC0);
+            mapper429_set(0x14);
+            mapper518_set_prg(0x03);
+            mapper518_set_mode(0x01);
+            mapper528_write(0xA009, 0x07);
+            mapper542_set_prg_bank(0, 4);
+            mapper543_set_outer(0x01);
+            mapper544_set_prg2(0x08);
+            mapper558_set_prg_low(0x0A);
+            mapper558_set_prg_high(0x02);
+            mapper558_set_mode(0x00);
+            ppu_on_all();
+            while (true) ;
+            """)!);
+        Assert.Contains("A9028D2C41", hex); // 270 @$412C
+        Assert.Contains("A9058D0080", hex); // 274 inner
+        Assert.Contains("A9108D00A0", hex); // 274 outer
+        Assert.Contains("A9018D2740", hex); // 304 @$4027
+        Assert.Contains("A9068D0068", hex); // 315 @$6800
+        Assert.Contains("A9068D0080A9028D0180", hex); // 315 bank
+        Assert.Contains("A90C8D0060", hex); // 391
+        Assert.Contains("A9C08D0080", hex); // 398
+        Assert.Contains("A9148D0080", hex); // 429
+        Assert.Contains("A9038D0050", hex); // 518 prg
+        Assert.Contains("A9018D0052", hex); // 518 mode
+        Assert.Contains("A9078D09A0", hex); // 528 @$A009
+        Assert.Contains("A9048D0080", hex); // 542 PRG0
+        Assert.Contains("A9018D0050", hex); // 543
+        Assert.Contains("A9088D009C", hex); // 544 @$9C00
+        Assert.Contains("A90A8D0050", hex); // 558 low
+        Assert.Contains("A9028D0051", hex); // 558 high
+        Assert.Contains("A9008D0053", hex); // 558 mode
+    }
 }

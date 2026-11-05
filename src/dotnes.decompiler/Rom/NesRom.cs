@@ -51,6 +51,9 @@ class NESRomReader
         VerticalMirroring = (flags6 & 0x01) != 0;
         HasBattery = (flags6 & 0x02) != 0;
         Mapper = ((flags6 >> 4) & 0x0F) | (flags7 & 0xF0);
+        // NES 2.0: flags7 bits 2–3 == 0b10 → mapper bits 8–11 in header byte 8
+        if ((flags7 & 0x0C) == 0x08)
+            Mapper |= (Header[8] & 0x0F) << 8;
 
         Trainer = (flags6 & 0x04) != 0 ? reader.ReadBytes(512) : Array.Empty<byte>();
         if ((flags6 & 0x04) != 0 && Trainer.Length != 512)

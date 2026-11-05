@@ -300,7 +300,80 @@ public class PrgBankModelTests
         Assert.False(new PrgBankModel(CreateRom(120, 16)).HasSwitchable16KWindow); // only banks $6000
     }
 
-    /// <summary>Minimal iNES ROM with distinctive PRG bytes (offset = low byte of address).</summary>
+    [Fact]
+    public void Batch12_AliasesAndNes2()
+    {
+        Assert.True(new PrgBankModel(CreateRom(109, 8)).IsNinaBankRegisterWrite(0x4100));
+        Assert.True(new PrgBankModel(CreateRom(110, 8)).IsNinaBankRegisterWrite(0x4100));
+        Assert.True(new PrgBankModel(CreateRom(129, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(126, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(131, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(260, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(264, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(269, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(331, 8)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(534, 16)).HasSwitchable16KWindow);
+    }
+
+    [Fact]
+    public void Batch13_Nes2More()
+    {
+        Assert.True(new PrgBankModel(CreateRom(365, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(371, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(417, 16)).HasSwitchable16KWindow);
+        // 347 banks $6000/$7000 windows; 446 is FPGA supervisor — no fixed $8000 model
+        Assert.False(new PrgBankModel(CreateRom(347, 16)).HasSwitchable16KWindow);
+        Assert.False(new PrgBankModel(CreateRom(446, 16)).HasSwitchable16KWindow);
+    }
+
+    [Fact]
+    public void Batch14_Nes2More()
+    {
+        Assert.True(new PrgBankModel(CreateRom(266, 16)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(292, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(296, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(351, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(359, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(375, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(375, 8)).BusConflictBankSwitch);
+        Assert.True(new PrgBankModel(CreateRom(383, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(452, 8)).HasSwitchable32KWindow);
+    }
+
+    [Fact]
+    public void Batch15_Nes2More()
+    {
+        Assert.True(new PrgBankModel(CreateRom(285, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(286, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(302, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(354, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(357, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(368, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(380, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(444, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(451, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(454, 8)).HasSwitchable32KWindow);
+        Assert.False(new PrgBankModel(CreateRom(305, 16)).HasSwitchable16KWindow); // banks $6000 window
+    }
+
+    [Fact]
+    public void Batch16_Nes2More()
+    {
+        Assert.True(new PrgBankModel(CreateRom(270, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(274, 8)).HasSwitchable32KWindow);
+        Assert.False(new PrgBankModel(CreateRom(304, 16)).HasSwitchable16KWindow); // $6000 only
+        Assert.True(new PrgBankModel(CreateRom(315, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(391, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(398, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(429, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(518, 8)).HasSwitchable32KWindow);
+        Assert.True(new PrgBankModel(CreateRom(528, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(542, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(544, 16)).HasSwitchable16KWindow);
+        Assert.True(new PrgBankModel(CreateRom(558, 8)).HasSwitchable32KWindow);
+    }
+
+    /// <summary>Minimal iNES/NES 2.0 ROM with distinctive PRG bytes (offset = low byte of address).</summary>
     static NESRomReader CreateRom(int mapper, int prgBanks16k)
     {
         int prgSize = prgBanks16k * 16384;
@@ -313,6 +386,12 @@ public class PrgBankModelTests
         rom[5] = 0; // CHR RAM
         rom[6] = (byte)((mapper & 0x0F) << 4);
         rom[7] = (byte)(mapper & 0xF0);
+        if (mapper > 255)
+        {
+            // NES 2.0 identifier in flags7 bits 2–3; mapper bits 8–11 in byte 8
+            rom[7] = (byte)((rom[7] & 0xF0) | 0x08);
+            rom[8] = (byte)((mapper >> 8) & 0x0F);
+        }
 
         for (int i = 0; i < prgSize; i++)
             rom[16 + i] = (byte)(i & 0xFF);

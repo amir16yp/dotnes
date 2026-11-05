@@ -1,4 +1,6 @@
+using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using dotnes.Disasm;
 using NES;
 
@@ -64,6 +66,23 @@ sealed class GeneralRecoverer
         _logger.WriteLine(
             $"General recovery ({_style}): {routines.Count} routines, {_disasm.Instructions.Count} instruction sites");
 
+        var emitted = new List<(int Bank, ushort Address, string Name, List<string> Body)>();
+        foreach (var site in order)
+        {
+            string name = routines[site];
+            emitted.Add((site.Bank, site.Address, name, DecompileRoutine(site.Bank, site.Address, routines)));
+        }
+
+        // Stubs for JSR/JMP targets we named but never recovered a body for.
+        foreach (var site in _stubRoutines.OrderBy(t => t.Bank).ThenBy(t => t.Address))
+        {
+            if (routines.ContainsKey(site))
+                continue;
+            emitted.Add((site.Bank, site.Address, RoutineName(site.Bank, site.Address), []));
+        }
+
+        var access = TallyMemoryAccess(emitted.SelectMany(e => e.Body));
+
         var sb = new StringBuilder();
         if (Optimize)
         {
@@ -81,6 +100,7 @@ sealed class GeneralRecoverer
         sb.AppendLine($"// Mirroring={(_rom.VerticalMirroring ? "Vertical" : "Horizontal")}, Battery={_rom.HasBattery}");
         sb.AppendLine($"// Vectors: NMI=${_rom.NmiVector:X4} RESET=${_rom.ResetVector:X4} IRQ=${_rom.IrqVector:X4}");
         sb.AppendLine($"// Recovered {_disasm.Instructions.Count} instruction sites across {routines.Count} routines.");
+        AppendMemoryAccessComment(sb, access);
         sb.AppendLine();
         // Soft-CPU recovery is readable analysis; keep every discovered routine (no DCE).
         sb.AppendLine("#nullable disable");
@@ -97,13 +117,19 @@ sealed class GeneralRecoverer
         sb.AppendLine("while (true) ;");
         sb.AppendLine();
 
-        foreach (var site in order)
+        foreach (var (bank, address, name, body) in emitted)
         {
-            string name = routines[site];
-            var body = DecompileRoutine(site.Bank, site.Address, routines);
-            // Keep empty stubs too — callers may still reference them.
+            bool stub = body.Count == 0 && name.StartsWith("func_", StringComparison.Ordinal)
+                && _stubRoutines.Contains((bank, address)) && !routines.ContainsKey((bank, address));
+            if (stub)
+            {
+                sb.AppendLine($"// bank={bank} ${address:X4} (unrecovered stub — keep for callers)");
+                sb.AppendLine($"void {name}() {{ }}");
+                sb.AppendLine();
+                continue;
+            }
 
-            sb.AppendLine($"// bank={site.Bank} ${site.Address:X4}");
+            sb.AppendLine($"// bank={bank} ${address:X4}");
             sb.AppendLine($"void {name}()");
             sb.AppendLine("{");
             foreach (string line in body)
@@ -114,18 +140,211 @@ sealed class GeneralRecoverer
             sb.AppendLine();
         }
 
-        // Stubs for JSR/JMP targets we named but never recovered a body for.
-        foreach (var site in _stubRoutines.OrderBy(t => t.Bank).ThenBy(t => t.Address))
+        return sb.ToString();
+    }
+
+    static void AppendMemoryAccessComment(
+        StringBuilder sb,
+        IReadOnlyDictionary<string, (int Peeks, int Pokes)> access)
+    {
+        if (access.Count == 0)
+            return;
+
+        sb.AppendLine("// Memory accesses (peek / poke counts in recovered code):");
+        const int maxLabel = 28;
+        int width = Math.Min(maxLabel, access.Keys.Max(k => Math.Min(k.Length, maxLabel)));
+        foreach (var (addr, counts) in access.OrderBy(kv => MemoryAccessSortKey(kv.Key)))
         {
-            if (routines.ContainsKey(site))
-                continue;
-            string name = RoutineName(site.Bank, site.Address);
-            sb.AppendLine($"// bank={site.Bank} ${site.Address:X4} (unrecovered stub — keep for callers)");
-            sb.AppendLine($"void {name}() {{ }}");
+            string label = addr.Length <= maxLabel ? addr : addr[..(maxLabel - 3)] + "...";
+            sb.Append("//   ");
+            sb.Append(label.PadRight(width));
+            sb.Append("  peek×");
+            sb.Append(counts.Peeks);
+            sb.Append("  poke×");
+            sb.Append(counts.Pokes);
             sb.AppendLine();
         }
+    }
 
-        return sb.ToString();
+    static (int Kind, ushort Num, string Key) MemoryAccessSortKey(string key)
+    {
+        // Named MMIO first (by well-known address), then numeric $xxxx, then other exprs.
+        ushort? known = key switch
+        {
+            "PPU_CTRL" => NESLib.PPU_CTRL,
+            "PPU_MASK" => NESLib.PPU_MASK,
+            "PPU_STATUS" => NESLib.PPU_STATUS,
+            "PPU_OAM_ADDR" => NESLib.PPU_OAM_ADDR,
+            "PPU_OAM_DATA" => NESLib.PPU_OAM_DATA,
+            "PPU_SCROLL" => NESLib.PPU_SCROLL,
+            "PPU_ADDR" => NESLib.PPU_ADDR,
+            "PPU_DATA" => NESLib.PPU_DATA,
+            "PPU_OAM_DMA" => NESLib.PPU_OAM_DMA,
+            "APU_STATUS" => NESLib.APU_STATUS,
+            "APU_PULSE1_CTRL" => NESLib.APU_PULSE1_CTRL,
+            "APU_PULSE2_CTRL" => NESLib.APU_PULSE2_CTRL,
+            "JOYPAD1" => NESLib.JOYPAD1,
+            "JOYPAD2" => NESLib.JOYPAD2,
+            _ => null,
+        };
+        if (known.HasValue)
+            return (0, known.Value, key);
+        if (key.Length >= 2 && key[0] == '$')
+        {
+            ReadOnlySpan<char> hex = key.AsSpan(1);
+            if (hex.EndsWith("+x", StringComparison.Ordinal) || hex.EndsWith("+y", StringComparison.Ordinal))
+                hex = hex[..^2];
+            if (ushort.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort num))
+                return (1, num, key);
+        }
+        return (2, 0, key);
+    }
+
+    static Dictionary<string, (int Peeks, int Pokes)> TallyMemoryAccess(IEnumerable<string> lines)
+    {
+        var map = new Dictionary<string, (int Peeks, int Pokes)>(StringComparer.Ordinal);
+        foreach (string line in lines)
+            TallyMemoryAccessLine(line.Trim(), map);
+        return map;
+    }
+
+    static void TallyMemoryAccessLine(string line, Dictionary<string, (int Peeks, int Pokes)> map)
+    {
+        // Lifted NESLib calls still count as the underlying MMIO traffic.
+        if (line == "waitvsync();")
+        {
+            AddAccess(map, "PPU_STATUS", peek: true);
+            return;
+        }
+        if (line.StartsWith("ppu_scroll(", StringComparison.Ordinal))
+        {
+            AddAccess(map, "PPU_SCROLL", peek: false);
+            AddAccess(map, "PPU_SCROLL", peek: false);
+            return;
+        }
+        if (line.StartsWith("oam_dma(", StringComparison.Ordinal))
+        {
+            AddAccess(map, "PPU_OAM_ADDR", peek: false);
+            AddAccess(map, "PPU_OAM_DMA", peek: false);
+            return;
+        }
+
+        for (int i = 0; i < line.Length; i++)
+        {
+            if (StartsWithAt(line, i, "peek("))
+            {
+                if (TryReadCallArg(line, i + "peek(".Length, out string arg, out int end)
+                    && NormalizeAccessAddress(arg, out string key))
+                    AddAccess(map, key, peek: true);
+                i = Math.Max(i, end - 1);
+                continue;
+            }
+            if (StartsWithAt(line, i, "poke("))
+            {
+                if (TryReadPokeAddr(line, i + "poke(".Length, out string arg, out int end)
+                    && NormalizeAccessAddress(arg, out string key))
+                    AddAccess(map, key, peek: false);
+                i = Math.Max(i, end - 1);
+            }
+        }
+    }
+
+    static void AddAccess(Dictionary<string, (int Peeks, int Pokes)> map, string key, bool peek)
+    {
+        map.TryGetValue(key, out var cur);
+        map[key] = peek ? (cur.Peeks + 1, cur.Pokes) : (cur.Peeks, cur.Pokes + 1);
+    }
+
+    static bool StartsWithAt(string s, int i, string token) =>
+        i + token.Length <= s.Length
+        && string.Compare(s, i, token, 0, token.Length, StringComparison.Ordinal) == 0;
+
+    static bool TryReadCallArg(string line, int start, out string arg, out int end)
+    {
+        arg = null!;
+        end = start;
+        int depth = 1;
+        for (int i = start; i < line.Length; i++)
+        {
+            char c = line[i];
+            if (c == '(') depth++;
+            else if (c == ')')
+            {
+                depth--;
+                if (depth == 0)
+                {
+                    arg = line[start..i].Trim();
+                    end = i + 1;
+                    return arg.Length > 0;
+                }
+            }
+        }
+        return false;
+    }
+
+    static bool TryReadPokeAddr(string line, int start, out string arg, out int end)
+    {
+        arg = null!;
+        end = start;
+        int depth = 0;
+        for (int i = start; i < line.Length; i++)
+        {
+            char c = line[i];
+            if (c == '(') depth++;
+            else if (c == ')') depth--;
+            else if (c == ',' && depth == 0)
+            {
+                arg = line[start..i].Trim();
+                end = i;
+                return arg.Length > 0;
+            }
+        }
+        return false;
+    }
+
+    static bool NormalizeAccessAddress(string expr, out string key)
+    {
+        key = null!;
+        string e = expr.Trim();
+        if (e.Length == 0)
+            return false;
+
+        // (ushort)(BASE + x|y)  or  BASE + x
+        string index = "";
+        if (e.EndsWith(" + x", StringComparison.Ordinal))
+        {
+            index = "+x";
+            e = e[..^4].Trim();
+        }
+        else if (e.EndsWith(" + y", StringComparison.Ordinal))
+        {
+            index = "+y";
+            e = e[..^4].Trim();
+        }
+
+        if (e.StartsWith("(ushort)(", StringComparison.Ordinal) && e.EndsWith(')'))
+            e = e["(ushort)(".Length..^1].Trim();
+        else if (e.StartsWith("(ushort)", StringComparison.Ordinal))
+            e = e["(ushort)".Length..].Trim();
+
+        if (Regex.IsMatch(e, @"^[A-Z][A-Z0-9_]*$"))
+        {
+            key = e + index;
+            return true;
+        }
+
+        if (e.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
+            && ulong.TryParse(e.AsSpan(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ulong hex))
+        {
+            key = hex <= 0xFF ? $"${hex:X2}{index}" : $"${hex:X4}{index}";
+            return true;
+        }
+
+        // Indirect / messy — keep a shortened form.
+        if (e.Length > 48)
+            e = e[..45] + "...";
+        key = e + index;
+        return true;
     }
 
     string RoutineName(int bank, ushort addr) =>
@@ -265,6 +484,8 @@ sealed class GeneralRecoverer
         FoldImmPokes(statements);
         // Optimizer (default): structure spin loops / while(true). Exact keeps raw goto/labels.
         var structured = Optimize ? StructureLoops(statements) : statements;
+        if (Optimize)
+            LiftNesLibPatterns(structured);
         // C# forbids a label as the last statement in a block — ensure every label has a stmt.
         for (int i = 0; i < structured.Count; i++)
         {
@@ -272,6 +493,79 @@ sealed class GeneralRecoverer
                 structured[i] = name + ": ;";
         }
         return structured;
+    }
+
+    /// <summary>
+    /// Replace soft-CPU idioms with NESLib calls when semantics match.
+    /// Does not invent helpers that do extra work (e.g. poke CTRL/MASK ≠ ppu_off).
+    /// </summary>
+    static void LiftNesLibPatterns(List<string> statements)
+    {
+        for (int i = 0; i < statements.Count; i++)
+        {
+            // do { a = peek(PPU_STATUS); } while (!negative);  →  waitvsync();
+            if (IsOneLineWaitVsync(statements[i]))
+            {
+                statements[i] = "waitvsync();";
+                continue;
+            }
+
+            // Multi-line structured form of the same spin.
+            if (i + 4 < statements.Count
+                && statements[i] == "do"
+                && statements[i + 1] == "{"
+                && IsPeekPpuStatus(statements[i + 2].Trim())
+                && statements[i + 3] == "}"
+                && statements[i + 4] == "while (!negative);")
+            {
+                statements.RemoveRange(i, 5);
+                statements.Insert(i, "waitvsync();");
+                continue;
+            }
+
+            // poke(PPU_SCROLL, x); poke(PPU_SCROLL, y);  →  ppu_scroll(x, y);
+            if (i + 1 < statements.Count
+                && TryParsePoke(statements[i], out string scrollAddr1, out string sx)
+                && TryParsePoke(statements[i + 1], out string scrollAddr2, out string sy)
+                && scrollAddr1 == "PPU_SCROLL" && scrollAddr2 == "PPU_SCROLL")
+            {
+                statements.RemoveRange(i, 2);
+                statements.Insert(i, $"ppu_scroll({sx}, {sy});");
+                continue;
+            }
+
+            // poke(PPU_OAM_ADDR, 0); poke(PPU_OAM_DMA, page);  →  oam_dma(page);
+            if (i + 1 < statements.Count
+                && TryParsePoke(statements[i], out string oamAddr, out string oamZero)
+                && TryParsePoke(statements[i + 1], out string oamDma, out string page)
+                && oamAddr == "PPU_OAM_ADDR" && oamZero is "0" or "0x00"
+                && oamDma == "PPU_OAM_DMA")
+            {
+                statements.RemoveRange(i, 2);
+                statements.Insert(i, $"oam_dma({page});");
+            }
+        }
+    }
+
+    static bool IsOneLineWaitVsync(string line) =>
+        line == "do { a = peek(PPU_STATUS); } while (!negative);";
+
+    static bool IsPeekPpuStatus(string line) =>
+        line == "a = peek(PPU_STATUS);";
+
+    static bool TryParsePoke(string line, out string addr, out string value)
+    {
+        addr = value = null!;
+        const string prefix = "poke(";
+        if (!line.StartsWith(prefix, StringComparison.Ordinal) || !line.EndsWith(");", StringComparison.Ordinal))
+            return false;
+        string inner = line[prefix.Length..^2];
+        int comma = inner.IndexOf(',');
+        if (comma < 0)
+            return false;
+        addr = inner[..comma].Trim();
+        value = inner[(comma + 1)..].Trim();
+        return addr.Length > 0 && value.Length > 0;
     }
 
     static bool IsLabel(string line, string name) =>

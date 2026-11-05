@@ -1219,4 +1219,230 @@ public static partial class NESLib
     /// Yuxing / GoodNES Contra 168-in-1 mis-tag (mapper 169 ≡ 15): write packed latch to $8000 — prefer <see cref="mapper15_set"/>.
     /// </summary>
     public static void mapper169_set(byte value) => throw null!;
+
+    // ---- Batch 12: classic aliases + NES 2.0 lean ----
+
+    /// <summary>Sachen Great Wall mis-tag (mapper 109 ≡ 137 / 8259D): write via $4100 — prefer <see cref="sachen137_set"/>.</summary>
+    public static void mapper109_set(byte value) => throw null!;
+
+    /// <summary>Sachen Honey Peach mis-tag (mapper 110 ≡ 243): write via $4100 — prefer <see cref="sachen243_set"/>.</summary>
+    public static void mapper110_set(byte value) => throw null!;
+
+    /// <summary>fwNES Sunsoft-1 mis-tag (mapper 122 ≡ 184): write CHR banks to $6000 — prefer <see cref="sunsoft184_set_chr_bank"/>.</summary>
+    public static void mapper122_set_chr_bank(byte bank) => throw null!;
+
+    /// <summary>Duplicate of mapper 58 (mapper 129): write packed value to $8000 — prefer <see cref="mapper58_set"/>.</summary>
+    public static void mapper129_set(byte value) => throw null!;
+
+    /// <summary>Alt assignment of mapper 205 (mapper 131): outer via $6000 — prefer <see cref="mapper205_set_outer"/>.</summary>
+    public static void mapper131_set_outer(byte bank) => throw null!;
+
+    /// <summary>TEC9719 / ING family (mapper 126 ≡ 422/534): outer/mode via $6000–$6003 — lean STA $6000.</summary>
+    public static void mapper126_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 126: MMC3-compatible bank select/data.</summary>
+    public static void mapper126_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Mapper 534 (ING-022; same outer as 126/422): outer via $6000.</summary>
+    public static void mapper534_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 534: MMC3-compatible bank select/data.</summary>
+    public static void mapper534_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>HP10xx/HP20xx multicart (mapper 260): mode register at $5000.</summary>
+    public static void mapper260_set_mode(byte value) => throw null!;
+
+    /// <summary>Mapper 260: PRG base at $5001.</summary>
+    public static void mapper260_set_prg_base(byte value) => throw null!;
+
+    /// <summary>Mapper 260: CHR base at $5002.</summary>
+    public static void mapper260_set_chr_base(byte value) => throw null!;
+
+    /// <summary>Mapper 260: MMC3-compatible bank select/data.</summary>
+    public static void mapper260_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>MMC3 multicart (mapper 269): sequential outer writes at $5000.</summary>
+    public static void mapper269_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 269: MMC3-compatible bank select/data.</summary>
+    public static void mapper269_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Yoko Soft Cony (mapper 264): write outer PRG bank to $8000.</summary>
+    public static void mapper264_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 264: write mode to $8400.</summary>
+    public static void mapper264_set_mode(byte value) => throw null!;
+
+    /// <summary>BMC-12-IN-1 / NS03 (mapper 331): write packed bank/mode via absolute <paramref name="register"/> ($A000/$C000/$E000).</summary>
+    public static void mapper331_write(ushort register, byte value) => throw null!;
+
+    // ---- Batch 13 ----
+
+    /// <summary>Kaiser KS7030 Doki Doki Panic (mapper 347): write bank/mirroring via absolute <paramref name="register"/> ($8000/$9000).</summary>
+    public static void mapper347_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Asder PC-95 (mapper 365): select 8KB PRG bank; <paramref name="which"/> 0–3 → $8000–$8003.</summary>
+    public static void mapper365_set_prg_bank(byte which, byte bank) => throw null!;
+
+    /// <summary>Spanish PEC-586 cartridge (mapper 371): main register at $5000.</summary>
+    public static void mapper371_set(byte value) => throw null!;
+
+    /// <summary>Mapper 371: auxiliary register at $5100.</summary>
+    public static void mapper371_set_aux(byte value) => throw null!;
+
+    /// <summary>Fine Studio Batman/RoboCop pirate (mapper 417): write via absolute <paramref name="register"/> ($8000–$8023).</summary>
+    public static void mapper417_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Mindkids SMD172B FPGA (mapper 446): supervisor mapper-select / lock at $5000.</summary>
+    public static void mapper446_set_mode(byte value) => throw null!;
+
+    /// <summary>Mapper 446: supervisor write via absolute <paramref name="register"/> ($5001–$5006).</summary>
+    public static void mapper446_write(ushort register, byte value) => throw null!;
+
+    // ---- Batch 14 ----
+
+    /// <summary>City Fighter IV (mapper 266): 32KB PRG select at $900C (VRC4 clone overlay).</summary>
+    public static void mapper266_set_prg(byte value) => throw null!;
+
+    /// <summary>Dragon Fighter MMC3 clone (mapper 292): PRG bank for $8000 at $6000.</summary>
+    public static void mapper292_set_prg(byte bank) => throw null!;
+
+    /// <summary>Mapper 292: MMC3-compatible bank select/data.</summary>
+    public static void mapper292_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>FC Pocket / My Arcade VT3x (mapper 296): mapper config at $411D.</summary>
+    public static void mapper296_set_config(byte value) => throw null!;
+
+    /// <summary>Mapper 296: outer bank at $412C.</summary>
+    public static void mapper296_set_outer(byte value) => throw null!;
+
+    /// <summary>Techline XB multicart (mapper 351): CHR base / ASIC mode at $5000.</summary>
+    public static void mapper351_set_chr_base(byte value) => throw null!;
+
+    /// <summary>Mapper 351: PRG base at $5001.</summary>
+    public static void mapper351_set_prg_base(byte value) => throw null!;
+
+    /// <summary>Mapper 351: banking mode at $5002.</summary>
+    public static void mapper351_set_mode(byte value) => throw null!;
+
+    /// <summary>Mapper 351: MMC3-compatible bank select/data (when in MMC3 ASIC mode).</summary>
+    public static void mapper351_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>SB-5013 / GCL8050 multicart (mapper 359): 8KB PRG; <paramref name="which"/> 0–3 → $8000–$8003.</summary>
+    public static void mapper359_set_prg_bank(byte which, byte bank) => throw null!;
+
+    /// <summary>Mapper 359: PRG base at $9000.</summary>
+    public static void mapper359_set_prg_base(byte value) => throw null!;
+
+    /// <summary>2 MiB address-latch multicart (mapper 375): write via absolute <paramref name="register"/> (enhancement of 227).</summary>
+    public static void mapper375_write(ushort register, byte value) => throw null!;
+
+    /// <summary>JY YY840708C Soccer 6-in-1 (mapper 383): MMC3-compatible bank select/data.</summary>
+    public static void mapper383_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Mapper 383: PAL outer bits via absolute <paramref name="register"/> ($8100 mask).</summary>
+    public static void mapper383_write(ushort register, byte value) => throw null!;
+
+    /// <summary>DS-9-27 multicart (mapper 452): address/data latch via absolute <paramref name="register"/> ($8000–$DFFF).</summary>
+    public static void mapper452_write(ushort register, byte value) => throw null!;
+
+    // ---- Batch 15 ----
+
+    /// <summary>A65AS / JY-066 multicart (mapper 285): packed data latch to $8000.</summary>
+    public static void mapper285_set(byte value) => throw null!;
+
+    /// <summary>Benshieng BS-5 (mapper 286): address-latch bank select via absolute <paramref name="register"/>.</summary>
+    public static void mapper286_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Kaiser KS7057 Gyruss FDS conversion (mapper 302): write via absolute <paramref name="register"/> ($8000/$B000–$E003).</summary>
+    public static void mapper302_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Kaiser KS7031 Dracula II FDS conversion (mapper 305): address-select PRG bank via absolute <paramref name="register"/>.</summary>
+    public static void mapper305_write(ushort register, byte value) => throw null!;
+
+    /// <summary>FAM250 / 810139C multicart (mapper 354): address/data latch via absolute <paramref name="register"/> ($E000–$FFFF; like mapper 15+).</summary>
+    public static void mapper354_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Bit Corp 4602 (mapper 357): PRG bank select at $4022 (SMB2J mode).</summary>
+    public static void mapper357_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 357: secondary bank/IRQ latch at $4120.</summary>
+    public static void mapper357_set_aux(byte value) => throw null!;
+
+    /// <summary>Yung-08 SMB2J conversion (mapper 368): PRG bank at $4022.</summary>
+    public static void mapper368_set_prg(byte value) => throw null!;
+
+    /// <summary>970630C / KN-35A multicart (mapper 380): address latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper380_write(ushort register, byte value) => throw null!;
+
+    /// <summary>NC7000M multicart (mapper 444): outer/mode at $6000 (WRAM enable required on hardware).</summary>
+    public static void mapper444_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 444: MMC3-compatible bank select/data.</summary>
+    public static void mapper444_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>Haratyler (mapper 451): bank/IRQ/mirroring via absolute <paramref name="register"/> ($A000/$C000/$E000).</summary>
+    public static void mapper451_write(ushort register, byte value) => throw null!;
+
+    /// <summary>110-in-1 custom 227-like (mapper 454): address/data latch via absolute <paramref name="register"/>.</summary>
+    public static void mapper454_write(ushort register, byte value) => throw null!;
+
+    // ---- Batch 16 ----
+
+    /// <summary>OneBus UIO multicart (mapper 270): outer PRG via $412C.</summary>
+    public static void mapper270_set_outer(byte value) => throw null!;
+
+    /// <summary>RCM Cartridge Story (mapper 274): inner bank/mirroring at $8000.</summary>
+    public static void mapper274_set_inner(byte value) => throw null!;
+
+    /// <summary>Mapper 274: outer bank/chip select via absolute <paramref name="register"/> ($A000–$FFFF).</summary>
+    public static void mapper274_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Whirlwind SMB2J-family FDS conversion (mapper 304): PRG bank for $6000 at $4027.</summary>
+    public static void mapper304_set_prg(byte value) => throw null!;
+
+    /// <summary>BMC-830134C multicart (mapper 315): outer at $6800; MMC3 when WRAM enabled.</summary>
+    public static void mapper315_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 315: MMC3-compatible bank select/data.</summary>
+    public static void mapper315_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>BS-110 MMC3 variant (mapper 391): outer/mode at $6000.</summary>
+    public static void mapper391_set_outer(byte value) => throw null!;
+
+    /// <summary>Mapper 391: MMC3-compatible bank select/data.</summary>
+    public static void mapper391_set_bank(byte reg, byte bank) => throw null!;
+
+    /// <summary>JY YY840820C (mapper 398): outer/mode via absolute <paramref name="register"/> (overlaps VRC4).</summary>
+    public static void mapper398_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Milowork FCFC1 A-mode (mapper 429): packed PRG/CHR latch to $8000 (no bus conflicts).</summary>
+    public static void mapper429_set(byte value) => throw null!;
+
+    /// <summary>Subor Dance 2000 (mapper 518): PRG bank at $5000.</summary>
+    public static void mapper518_set_prg(byte value) => throw null!;
+
+    /// <summary>Mapper 518: mode at $5200.</summary>
+    public static void mapper518_set_mode(byte value) => throw null!;
+
+    /// <summary>UNL-831128C Rugby 2-in-1 (mapper 528): FME-7-like absolute <paramref name="register"/> ($A000/$C000).</summary>
+    public static void mapper528_write(ushort register, byte value) => throw null!;
+
+    /// <summary>Mao Zedong VRC4 pirate (mapper 542): same lean PRG surface as <see cref="vrc24_set_prg_bank"/>.</summary>
+    public static void mapper542_set_prg_bank(byte which, byte bank) => throw null!;
+
+    /// <summary>CH-501 MMC1 multicart (mapper 543): serial outer bit stream at $5000 (lean STA $5000).</summary>
+    public static void mapper543_set_outer(byte value) => throw null!;
+
+    /// <summary>Waixing FS306 (mapper 544): VRC-like PRG0/PRG1 via <see cref="vrc24_set_prg_bank"/>; extra PRG2 at $9C00.</summary>
+    public static void mapper544_set_prg2(byte bank) => throw null!;
+
+    /// <summary>Yancheng YC-03-09 (mapper 558): PRG low at $5000 (like Waixing 162).</summary>
+    public static void mapper558_set_prg_low(byte value) => throw null!;
+
+    /// <summary>Mapper 558: PRG high at $5100.</summary>
+    public static void mapper558_set_prg_high(byte value) => throw null!;
+
+    /// <summary>Mapper 558: mode at $5300.</summary>
+    public static void mapper558_set_mode(byte value) => throw null!;
 }
