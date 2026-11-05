@@ -348,3 +348,6 @@ test_err.txt
 
 # Repo-specific, png in root of repo
 /*.png
+
+# Local DOTNET_ROOT / NuGet home used by agents or CI wrappers
+.dotnet-cli/
