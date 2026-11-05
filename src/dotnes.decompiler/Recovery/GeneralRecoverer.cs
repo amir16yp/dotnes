@@ -48,12 +48,23 @@ sealed class GeneralRecoverer
                 order.Add((bank, addr));
         }
 
-        int fixedBank = _disasm.Banks.FixedBank;
-        AddRoutine(fixedBank, _rom.ResetVector, "reset");
+        void AddVectorRoutine(ushort addr, string name)
+        {
+            if (_disasm.TryGetAny(addr, out var insn) && insn.IsOfficial)
+            {
+                AddRoutine(insn.Bank, addr, name);
+                return;
+            }
+            AddRoutine(_disasm.Banks.SiteBank(addr, 0), addr, name);
+        }
+
+        // Vectors may land in the low window ($8000) on NROM-256 — use the disassembler's
+        // site bank, not FixedBank alone (that only covers the last 16KB / $C000+).
+        AddVectorRoutine(_rom.ResetVector, "reset");
         if (_rom.NmiVector != _rom.ResetVector)
-            AddRoutine(fixedBank, _rom.NmiVector, "nmi");
+            AddVectorRoutine(_rom.NmiVector, "nmi");
         if (_rom.IrqVector != _rom.ResetVector && _rom.IrqVector != _rom.NmiVector)
-            AddRoutine(fixedBank, _rom.IrqVector, "irq");
+            AddVectorRoutine(_rom.IrqVector, "irq");
 
         foreach (var (bank, target) in CollectCallTargets().OrderBy(t => t.Bank).ThenBy(t => t.Address))
             AddRoutine(bank, target, RoutineName(bank, target));
@@ -122,7 +133,11 @@ sealed class GeneralRecoverer
         sb.AppendLine("void push(byte v) => cpuStack.Push(v);");
         sb.AppendLine("byte pop() => cpuStack.Pop();");
         sb.AppendLine();
-        sb.AppendLine("reset();");
+        bool hasReset = emitted.Any(e => e.Name == "reset");
+        if (hasReset)
+            sb.AppendLine("reset();");
+        else
+            sb.AppendLine("// reset vector was not recovered as a routine");
         sb.AppendLine("while (true) ;");
         sb.AppendLine();
 

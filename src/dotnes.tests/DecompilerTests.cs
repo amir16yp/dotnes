@@ -140,6 +140,7 @@ public class DecompilerTests
         Assert.Contains("<OutputType>Exe</OutputType>", csproj);
         Assert.Contains("<TargetFramework>net10.0</TargetFramework>", csproj);
         Assert.Contains("<Using Include=\"NES\" />", csproj);
+        Assert.Contains("<Using Include=\"NES.NESLib\" Static=\"true\" />", csproj);
         Assert.Contains("dotnes", csproj);
         // hello uses default settings so no mapper/prg/chr overrides
         Assert.DoesNotContain("NESMapper", csproj);
@@ -1393,6 +1394,8 @@ public class DecompilerTests
             NesLibEnumFormatter.FormatApuStatus(0x1F));
         Assert.Equal("APUFRAME.IRQ_INHIBIT | APUFRAME.MODE_5STEP",
             NesLibEnumFormatter.FormatApuFrame(0xC0));
+        Assert.Equal("APUFRAME.IRQ_INHIBIT | APUFRAME.MODE_5STEP | (APUFRAME)0x3F",
+            NesLibEnumFormatter.FormatApuFrame(0xFF));
     }
 
     [Fact]

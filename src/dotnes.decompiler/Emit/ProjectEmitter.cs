@@ -64,6 +64,9 @@ static class ProjectEmitter
         sb.AppendLine();
         sb.AppendLine("  <ItemGroup>");
         sb.AppendLine("    <Using Include=\"NES\" />");
+        // Explicit in case an older package props file is resolved; matches samples/dotnes.defaults.props.
+        sb.AppendLine("    <Using Include=\"NES.NESLib\" Static=\"true\" />");
+        sb.AppendLine("    <Using Include=\"NES.NESColor\" Static=\"true\" />");
         sb.AppendLine($"    <PackageReference Include=\"dotnes\" Version=\"{version}\" />");
         // Wires RunCommand → Mesen so `dotnes run` / `dotnet run` launch the .nes, not a .NET apphost.
         sb.AppendLine($"    <PackageReference Include=\"dotnes.mesen\" Version=\"{mesenVersion}\" />");

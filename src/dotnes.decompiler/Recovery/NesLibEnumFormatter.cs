@@ -99,7 +99,7 @@ static class NesLibEnumFormatter
         if (single != null)
             return single;
 
-        return FormatFlags(value, PadFlags, castPrefix: null);
+        return FormatFlags(value, PadFlags, leftoverEnum: "PAD");
     }
 
     /// <summary>
@@ -177,7 +177,7 @@ static class NesLibEnumFormatter
             (0x20, "MASK.TINT_RED"),
             (0x40, "MASK.TINT_GREEN"),
             (0x80, "MASK.TINT_BLUE"),
-        }, castPrefix: null);
+        }, leftoverEnum: "MASK");
     }
 
     public static string FormatPpuCtrl(byte value)
@@ -195,7 +195,7 @@ static class NesLibEnumFormatter
             (0x20, "PPUCTRL.SPR_SIZE_8X16"),
             (0x40, "PPUCTRL.MASTER_SLAVE"),
             (0x80, "PPUCTRL.NMI"),
-        }, castPrefix: null);
+        }, leftoverEnum: "PPUCTRL");
     }
 
     public static string FormatApuStatus(byte value)
@@ -210,7 +210,7 @@ static class NesLibEnumFormatter
             (0x04, "APUSTATUS.TRIANGLE"),
             (0x08, "APUSTATUS.NOISE"),
             (0x10, "APUSTATUS.DMC"),
-        }, castPrefix: null);
+        }, leftoverEnum: "APUSTATUS");
     }
 
     public static string FormatApuFrame(byte value)
@@ -222,7 +222,7 @@ static class NesLibEnumFormatter
         {
             (0x40, "APUFRAME.IRQ_INHIBIT"),
             (0x80, "APUFRAME.MODE_5STEP"),
-        }, castPrefix: null);
+        }, leftoverEnum: "APUFRAME");
     }
 
     /// <summary>
@@ -274,7 +274,7 @@ static class NesLibEnumFormatter
         _ => value <= 9 ? value.ToString() : $"0x{value:X2}",
     };
 
-    static string FormatFlags(byte value, (byte Bit, string Name)[] flags, string? castPrefix)
+    static string FormatFlags(byte value, (byte Bit, string Name)[] flags, string? leftoverEnum = null)
     {
         var parts = new List<string>();
         byte remaining = value;
@@ -287,14 +287,14 @@ static class NesLibEnumFormatter
             }
         }
 
+        // Cast leftovers so `Enum | 0xNN` type-checks (C# forbids Enum | int).
         if (remaining != 0)
-            parts.Add($"0x{remaining:X2}");
+            parts.Add(leftoverEnum != null ? $"({leftoverEnum})0x{remaining:X2}" : $"0x{remaining:X2}");
 
         if (parts.Count == 0)
             return "0";
 
-        string joined = string.Join(" | ", parts);
-        return castPrefix != null ? $"({castPrefix})({joined})" : joined;
+        return string.Join(" | ", parts);
     }
 
     static Dictionary<byte, string> BuildNesColorMap()
