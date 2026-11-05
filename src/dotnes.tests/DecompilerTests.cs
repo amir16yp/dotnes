@@ -141,6 +141,8 @@ public class DecompilerTests
         Assert.Contains("<TargetFramework>net10.0</TargetFramework>", csproj);
         Assert.Contains("<Using Include=\"NES\" />", csproj);
         Assert.Contains("<Using Include=\"NES.NESLib\" Static=\"true\" />", csproj);
+        Assert.Contains("<Using Remove=\"NES.NESColor\" />", csproj);
+        Assert.DoesNotContain("NES.NESColor\" Static=\"true\"", csproj);
         Assert.Contains("dotnes", csproj);
         // hello uses default settings so no mapper/prg/chr overrides
         Assert.DoesNotContain("NESMapper", csproj);
@@ -1248,8 +1250,8 @@ public class DecompilerTests
         rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
 
         var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
-        Assert.Contains("joypad1_write(1);", code);
-        Assert.Contains("joypad1_write(0);", code);
+        Assert.Contains("joypad1_write(JOYSTROBE.Latch)", code);
+        Assert.Contains("joypad1_write(JOYSTROBE.Shift)", code);
         Assert.Contains("a = joypad1_read();", code);
         Assert.Contains("a = joypad2_read();", code);
         Assert.DoesNotContain("peek(JOYPAD", code);
@@ -1438,10 +1440,92 @@ public class DecompilerTests
         Assert.Equal("(byte)PAD.UP", up);
         Assert.True(NesLibEnumFormatter.TryFormatPadByteOperand(0xDF, out string clearDown));
         Assert.Equal("(byte)~PAD.DOWN", clearDown);
+        Assert.Equal("JOYSTROBE.Latch", NesLibEnumFormatter.FormatJoyStrobe(1));
+        Assert.Equal("JOYSTROBE.Shift", NesLibEnumFormatter.FormatJoyStrobe(0));
+        Assert.Equal("JOYPADBIT.DATA", NesLibEnumFormatter.FormatJoypadBit(1));
         Assert.Equal("PulseChannel.Pulse1", NesLibEnumFormatter.FormatPulseChannel(0));
         Assert.Equal("APUDuty.Duty50", NesLibEnumFormatter.FormatApuDuty(2));
         Assert.Equal("NESColor.Red", NesLibEnumFormatter.FormatNesColor(0x16));
         Assert.Equal("OAM.FLIP_H | OAM.BEHIND", NesLibEnumFormatter.FormatOamAttr((byte)(OAM.FLIP_H | OAM.BEHIND)));
+    }
+
+    [Fact]
+    public void NesLibCallFormatter_PalBgColAndPalSprCol_UseNesColor()
+    {
+        Assert.Equal(
+            "pal_bg_col(1, NESColor.Red);",
+            NesLibCallFormatter.FormatCallN("pal_bg_col", "0x16", ["1"]));
+        Assert.Equal(
+            "pal_spr_col(0, NESColor.White);",
+            NesLibCallFormatter.FormatCallN("pal_spr_col", "0x30", ["0"]));
+        Assert.Equal(
+            "pal_col(2, NESColor.LightGray);",
+            NesLibCallFormatter.FormatCallN("pal_col", "0x20", ["2"]));
+    }
+
+    [Fact]
+    public void Decompiler_LiftsJoypadStrobeAndSerialBitAsEnums()
+    {
+        // RESET: LDA #1 / STA $4016 / LDA #0 / STA $4016 / LDA $4016 / AND #1 / JMP self
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA9, 0x01,       // LDA #$01
+            0x8D, 0x16, 0x40, // STA $4016
+            0xA9, 0x00,       // LDA #$00
+            0x8D, 0x16, 0x40, // STA $4016
+            0xAD, 0x16, 0x40, // LDA $4016
+            0x29, 0x01,       // AND #$01
+            0x4C, 0x0C, 0x80, // JMP $800C
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("joypad1_write(JOYSTROBE.Latch)", code);
+        Assert.Contains("joypad1_write(JOYSTROBE.Shift)", code);
+        Assert.Contains("joypad1_read()", code);
+        Assert.Contains("JOYPADBIT.DATA", code);
+    }
+
+    [Fact]
+    public void Decompiler_PromotesHotRamAddressesToConsts()
+    {
+        // RESET: loop that peeks/pokes $00FE three times, then JMP self
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xAD, 0xFE, 0x00, // LDA $00FE
+            0x8D, 0xFE, 0x00, // STA $00FE
+            0xAD, 0xFE, 0x00, // LDA $00FE
+            0x8D, 0xFE, 0x00, // STA $00FE
+            0xAD, 0xFE, 0x00, // LDA $00FE
+            0x4C, 0x00, 0x80, // JMP $8000
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("const ushort zp_FE = 0x00FE;", code);
+        Assert.Contains("peek(zp_FE)", code);
+        Assert.DoesNotContain("peek((ushort)0xFE)", code);
+        Assert.DoesNotContain("peek((ushort)0x00FE)", code);
     }
 
     [Fact]
@@ -1494,6 +1578,44 @@ public class DecompilerTests
         Assert.Contains("a == (byte)PAD.UP", code);
         Assert.Contains("a & (byte)~PAD.DOWN", code);
         Assert.Contains("vram_adr(0x3F00)", code);
+        Assert.Contains("vram_put(NESColor.Black)", code);
+        Assert.Contains("vram_put(NESColor.Red)", code);
+    }
+
+    [Fact]
+    public void Decompiler_LiftsPaletteColorsAfterShiftExprVramAdr()
+    {
+        // RESET: LDA #$3F / STA $2006 / LDA #$00 / STA $2006  (hi/lo interrupted — not folded)
+        //        then after other work: expression-style palette adr + puts
+        // Simpler: LDA #$0F / STA $2007 after vram_adr((0x3F<<8)|0) via:
+        //   LDA #$3F / STA $2006 / TXA / STA $2006 / LDA #$0F / STA $2007 / LDA #$16 / STA $2007
+        // with X=0 so address is $3F00 (pokes not consecutive → not folded to constant vram_adr).
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA2, 0x00,       // LDX #$00
+            0xA9, 0x3F,       // LDA #$3F
+            0x8D, 0x06, 0x20, // STA $2006
+            0x8A,             // TXA
+            0x8D, 0x06, 0x20, // STA $2006
+            0xA9, 0x0F,       // LDA #$0F
+            0x8D, 0x07, 0x20, // STA $2007
+            0xA9, 0x16,       // LDA #$16
+            0x8D, 0x07, 0x20, // STA $2007
+            0x4C, 0x00, 0x80, // JMP $8000
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
         Assert.Contains("vram_put(NESColor.Black)", code);
         Assert.Contains("vram_put(NESColor.Red)", code);
     }

@@ -92,6 +92,7 @@ sealed class GeneralRecoverer
             emitted.Add((site.Bank, site.Address, RoutineName(site.Bank, site.Address), []));
         }
 
+        IReadOnlyDictionary<ushort, string> addrConsts = new Dictionary<ushort, string>();
         if (Optimize)
         {
             var bodies = emitted.Select(e => e.Body).ToList();
@@ -99,6 +100,7 @@ sealed class GeneralRecoverer
             var (maskZps, ctrlZps) = CollectPpuShadowZeroPages(bodies);
             foreach (var body in bodies)
                 FormatTypedZpLiterals(body, padZps, maskZps, ctrlZps);
+            addrConsts = PromoteHotAddresses(bodies, padZps, maskZps, ctrlZps);
         }
 
         var access = TallyMemoryAccess(emitted.SelectMany(e => e.Body));
@@ -127,6 +129,13 @@ sealed class GeneralRecoverer
         sb.AppendLine("#pragma warning disable CS8321 // unused local function (keep all discovered routines)");
         sb.AppendLine("#pragma warning disable CS0162 // unreachable code from literal branches");
         sb.AppendLine("#pragma warning disable CS0164 // unreferenced labels from partial CFG");
+        if (addrConsts.Count > 0)
+        {
+            sb.AppendLine("// Frequently peeked/poked addresses (auto-promoted from soft-CPU traffic).");
+            foreach (var (addr, name) in addrConsts.OrderBy(kv => kv.Key))
+                sb.AppendLine($"const ushort {name} = 0x{addr:X4};");
+            sb.AppendLine();
+        }
         sb.AppendLine("byte a = 0, x = 0, y = 0;");
         sb.AppendLine("bool carry = false, zero = false, negative = false;");
         sb.AppendLine("var cpuStack = new Stack<byte>();");
@@ -703,7 +712,7 @@ sealed class GeneralRecoverer
         {
             if (pokeAddr == "JOYPAD1")
             {
-                lifted = $"joypad1_write({pokeVal});";
+                lifted = FormatLiftedEnumCall("joypad1_write", pokeVal, NesLibEnumFormatter.FormatJoyStrobe, "JOYSTROBE");
                 return true;
             }
             if (pokeAddr is "JOYPAD2" or "APU_FRAME")
@@ -929,7 +938,7 @@ sealed class GeneralRecoverer
         return (mask, ctrl);
     }
 
-    const byte AKindNone = 0, AKindPad = 1, AKindMask = 2, AKindCtrl = 3;
+    const byte AKindNone = 0, AKindPad = 1, AKindMask = 2, AKindCtrl = 3, AKindJoySerial = 4;
 
     static void FormatTypedZpLiterals(
         List<string> statements,
@@ -938,6 +947,7 @@ sealed class GeneralRecoverer
         HashSet<byte> ctrlZps)
     {
         bool writingPalette = false;
+        bool expectingPaletteLo = false;
         byte aKind = AKindNone;
 
         for (int i = 0; i < statements.Count; i++)
@@ -945,14 +955,7 @@ sealed class GeneralRecoverer
             string indent = LeadingIndent(statements[i]);
             string line = statements[i].TrimStart();
 
-            if (TryParseVramAdrConstant(line, out ushort vaddr))
-            {
-                writingPalette = (vaddr & 0xFF00) == 0x3F00;
-            }
-            else if (line.StartsWith("vram_adr(", StringComparison.Ordinal))
-            {
-                writingPalette = false;
-            }
+            TryUpdatePaletteWriteContext(line, ref writingPalette, ref expectingPaletteLo);
 
             if (line.StartsWith("vram_put(", StringComparison.Ordinal) && writingPalette
                 && TryParseVramPutLiteral(line, out byte color))
@@ -961,10 +964,18 @@ sealed class GeneralRecoverer
                 continue;
             }
 
+            // Raw serial joypad reads: only bit 0 is button data (JOYPADBIT), not PAD.*.
+            if (line is "a = joypad1_read();" or "a = joypad2_read();")
+            {
+                aKind = AKindJoySerial;
+                continue;
+            }
+
             if (TryParseAssignPeekZp(line, out string dest, out byte srcZp))
             {
                 if (dest == "a")
                 {
+                    // Assembled controller bytes / pad_poll shadows → assume PAD on compares.
                     aKind = padZps.Contains(srcZp) ? AKindPad
                         : maskZps.Contains(srcZp) ? AKindMask
                         : ctrlZps.Contains(srcZp) ? AKindCtrl
@@ -1005,6 +1016,9 @@ sealed class GeneralRecoverer
     {
         rewritten = null!;
 
+        if (kind == AKindJoySerial)
+            return TryRewriteJoySerialLine(line, out rewritten);
+
         Func<byte, string?> formatOp = kind switch
         {
             AKindPad => b => NesLibEnumFormatter.TryFormatPadByteOperand(b, out string e) ? e : null,
@@ -1032,6 +1046,7 @@ sealed class GeneralRecoverer
         if (kind != AKindPad)
             return false;
 
+        // Assume PAD for compares against assembled joystick / pad_poll state.
         const string zeroPrefix = "zero = a == ";
         if (!line.StartsWith(zeroPrefix, StringComparison.Ordinal))
             return false;
@@ -1048,6 +1063,33 @@ sealed class GeneralRecoverer
             .Replace($"a >= {immCmp}", $"a >= {padExpr}")
             .Replace($"(a - {immCmp})", $"(a - {padExpr})");
         return true;
+    }
+
+    static bool TryRewriteJoySerialLine(string line, out string rewritten)
+    {
+        rewritten = null!;
+        // carry = (a & 1) != 0; a >>= 1;
+        if (line.Contains("(a & 1)", StringComparison.Ordinal)
+            || line.Contains("(a & 0x01)", StringComparison.OrdinalIgnoreCase))
+        {
+            rewritten = line
+                .Replace("(a & 1)", "(a & (byte)JOYPADBIT.DATA)", StringComparison.Ordinal)
+                .Replace("(a & 0x01)", "(a & (byte)JOYPADBIT.DATA)", StringComparison.OrdinalIgnoreCase)
+                .Replace("(a & 0x1)", "(a & (byte)JOYPADBIT.DATA)", StringComparison.OrdinalIgnoreCase);
+            return !ReferenceEquals(rewritten, line) && rewritten != line;
+        }
+
+        const string andPrefix = "a = (byte)(a & ";
+        if (line.StartsWith(andPrefix, StringComparison.Ordinal) && line.EndsWith(");", StringComparison.Ordinal))
+        {
+            string imm = line[andPrefix.Length..^2].Trim();
+            if (TryParseByteLiteral(imm, out byte b) && b == 1)
+            {
+                rewritten = $"{andPrefix}(byte)JOYPADBIT.DATA);";
+                return true;
+            }
+        }
+        return false;
     }
 
     static string? FormatFlagsByteOperand(byte value, Func<byte, string> formatFlags, bool tryClear)
@@ -1142,6 +1184,50 @@ sealed class GeneralRecoverer
                 && byte.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte zp))
                 yield return zp;
             i = hexEnd;
+        }
+    }
+
+    /// <summary>
+    /// Track whether subsequent <c>vram_put</c> literals target the PPU palette ($3Fxx).
+    /// Recognizes constant <c>vram_adr(0x3F..)</c>, <c>(0x3F &lt;&lt; 8) | …</c> forms, and
+    /// <c>poke(PPU_ADDR, 0x3F)</c> + following lo write.
+    /// </summary>
+    static void TryUpdatePaletteWriteContext(string line, ref bool writingPalette, ref bool expectingPaletteLo)
+    {
+        if (TryParseVramAdrConstant(line, out ushort vaddr))
+        {
+            writingPalette = (vaddr & 0xFF00) == 0x3F00;
+            expectingPaletteLo = false;
+            return;
+        }
+
+        if (line.StartsWith("vram_adr(", StringComparison.Ordinal))
+        {
+            // Soft-CPU lift often emits vram_adr((ushort)((0x3F << 8) | lo)) when lo is a register.
+            writingPalette = line.Contains("0x3F << 8", StringComparison.OrdinalIgnoreCase);
+            expectingPaletteLo = false;
+            return;
+        }
+
+        if (TryParsePoke(line, out string pokeAddr, out string pokeVal) && pokeAddr == "PPU_ADDR")
+        {
+            // PPU_ADDR is written hi then lo. After hi=0x3F, the next write is lo of $3Fxx.
+            if (expectingPaletteLo)
+            {
+                writingPalette = true;
+                expectingPaletteLo = false;
+                return;
+            }
+
+            if (TryParseByteLiteral(pokeVal, out byte hi) && hi == 0x3F)
+            {
+                expectingPaletteLo = true;
+                writingPalette = true;
+            }
+            else
+            {
+                writingPalette = false;
+            }
         }
     }
 
@@ -1613,6 +1699,112 @@ sealed class GeneralRecoverer
 
     static string IndirectZp(byte zp) =>
         $"(peek({FormatZp(zp)}) | peek({FormatZp((byte)(zp + 1))}) << 8)";
+
+    /// <summary>
+    /// Absolute addresses touched often enough to deserve a named <c>const ushort</c>.
+    /// Immediate byte values are intentionally not promoted (too ambiguous).
+    /// </summary>
+    const int HotAddressMinAccesses = 3;
+
+    static IReadOnlyDictionary<ushort, string> PromoteHotAddresses(
+        List<List<string>> bodies,
+        HashSet<byte> padZps,
+        HashSet<byte> maskZps,
+        HashSet<byte> ctrlZps)
+    {
+        var counts = new Dictionary<ushort, int>();
+        foreach (var body in bodies)
+        {
+            foreach (string raw in body)
+            {
+                foreach (ushort addr in ExtractUshortLiterals(raw))
+                    counts[addr] = counts.GetValueOrDefault(addr) + 1;
+            }
+        }
+
+        var map = new Dictionary<ushort, string>();
+        var usedNames = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var (addr, count) in counts.OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key))
+        {
+            if (count < HotAddressMinAccesses)
+                continue;
+            // Skip MMIO already emitted as NESLib names (never appear as (ushort)0x…).
+            if (addr >= 0x2000 && addr < 0x4020)
+                continue;
+
+            string name = NameHotAddress(addr, padZps, maskZps, ctrlZps);
+            if (!usedNames.Add(name))
+                name = addr <= 0xFF ? $"zp_{addr:X2}" : addr < 0x8000 ? $"ram_{addr:X4}" : $"rom_{addr:X4}";
+            usedNames.Add(name);
+            map[addr] = name;
+        }
+
+        if (map.Count == 0)
+            return map;
+
+        // Rewrite whole (ushort)0x… tokens only — never prefix-match 0x00 inside 0x00FE.
+        foreach (var body in bodies)
+        {
+            for (int i = 0; i < body.Count; i++)
+                body[i] = RewriteUshortLiterals(body[i], map);
+        }
+
+        return map;
+    }
+
+    static readonly Regex UshortLiteralPattern = new(
+        @"\(ushort\)0x([0-9A-Fa-f]{1,4})(?![0-9A-Fa-f])",
+        RegexOptions.Compiled);
+
+    static string RewriteUshortLiterals(string line, IReadOnlyDictionary<ushort, string> map) =>
+        UshortLiteralPattern.Replace(line, m =>
+        {
+            if (!ushort.TryParse(m.Groups[1].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort addr))
+                return m.Value;
+            return map.TryGetValue(addr, out string? name) ? name : m.Value;
+        });
+
+    static string NameHotAddress(
+        ushort addr,
+        HashSet<byte> padZps,
+        HashSet<byte> maskZps,
+        HashSet<byte> ctrlZps)
+    {
+        if (addr <= 0xFF)
+        {
+            byte zp = (byte)addr;
+            if (padZps.Contains(zp))
+                return $"pad_{zp:X2}";
+            if (maskZps.Contains(zp))
+                return $"ppu_mask_shadow";
+            if (ctrlZps.Contains(zp))
+                return $"ppu_ctrl_shadow";
+            return $"zp_{zp:X2}";
+        }
+        if (addr < 0x8000)
+            return $"ram_{addr:X4}";
+        return $"rom_{addr:X4}";
+    }
+
+    static IEnumerable<ushort> ExtractUshortLiterals(string line)
+    {
+        int i = 0;
+        while (i < line.Length)
+        {
+            int at = line.IndexOf("(ushort)0x", i, StringComparison.OrdinalIgnoreCase);
+            if (at < 0)
+                yield break;
+            int hexStart = at + "(ushort)0x".Length;
+            int hexEnd = hexStart;
+            while (hexEnd < line.Length && Uri.IsHexDigit(line[hexEnd]))
+                hexEnd++;
+            string hex = line[hexStart..hexEnd];
+            if (hex.Length is >= 1 and <= 4
+                && ushort.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort addr))
+                yield return addr;
+            i = hexEnd;
+        }
+    }
 
     static string IndexAddr(string baseAddr, string index) => $"(ushort)({baseAddr} + {index})";
 

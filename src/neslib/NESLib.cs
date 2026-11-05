@@ -1051,7 +1051,7 @@ public static partial class NESLib
     /// <summary>Raw read of controller port 2 ($4017).</summary>
     public static byte joypad2_read() => peek(JOYPAD2);
     /// <summary>Raw write to controller port 1 ($4016) — typically the strobe line.</summary>
-    public static void joypad1_write(byte value) => poke(JOYPAD1, value);
+    public static void joypad1_write(JOYSTROBE value) => poke(JOYPAD1, (byte)value);
     /// <summary>Write APU frame counter ($4017). Same address as <see cref="JOYPAD2"/> on read.</summary>
     public static void apu_frame(APUFRAME value) => poke(APU_FRAME, (byte)value);
 

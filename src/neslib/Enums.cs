@@ -44,6 +44,29 @@ public enum PAD : byte
 }
 
 /// <summary>
+/// Controller port 1 strobe writes via <see cref="NESLib.joypad1_write"/>.
+/// Pulse <see cref="Latch"/> then <see cref="Shift"/> to begin a serial button read.
+/// </summary>
+public enum JOYSTROBE : byte
+{
+    /// <summary>Strobe low — shift mode; each <c>joypad*_read</c> returns the next button.</summary>
+    Shift = 0,
+    /// <summary>Strobe high — latch all buttons into the controller's shift register.</summary>
+    Latch = 1,
+}
+
+/// <summary>
+/// Bits returned by <see cref="NESLib.joypad1_read"/> / <see cref="NESLib.joypad2_read"/>.
+/// Assembled button state after a full shift uses <see cref="PAD"/> instead.
+/// </summary>
+[Flags]
+public enum JOYPADBIT : byte
+{
+    /// <summary>Serial data (bit 0) — 1 while the current button is held.</summary>
+    DATA = 0x01,
+}
+
+/// <summary>
 /// VRAM auto-increment mode for <see cref="NESLib.vram_inc(VramIncrement)"/>
 /// </summary>
 public enum VramIncrement : byte

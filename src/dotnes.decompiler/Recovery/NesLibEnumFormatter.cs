@@ -225,6 +225,22 @@ static class NesLibEnumFormatter
         }, leftoverEnum: "APUFRAME");
     }
 
+    public static string FormatJoyStrobe(byte value) => value switch
+    {
+        0 => "JOYSTROBE.Shift",
+        1 => "JOYSTROBE.Latch",
+        _ => $"(JOYSTROBE)0x{value:X2}",
+    };
+
+    public static string FormatJoypadBit(byte value)
+    {
+        if (value == 0)
+            return "0";
+        if (value == (byte)JOYPADBIT.DATA)
+            return "JOYPADBIT.DATA";
+        return FormatFlags(value, [(0x01, "JOYPADBIT.DATA")], leftoverEnum: "JOYPADBIT");
+    }
+
     /// <summary>
     /// Sprite attribute byte: palette 0-3 plus optional OAM.FLIP_*/BEHIND flags.
     /// </summary>
@@ -267,6 +283,8 @@ static class NesLibEnumFormatter
         "APUSTATUS" => FormatApuStatus(value),
         "APUFRAME" => FormatApuFrame(value),
         "PAD" => FormatPad(value),
+        "JOYSTROBE" => FormatJoyStrobe(value),
+        "JOYPADBIT" => FormatJoypadBit(value),
         "VideoSystem" => FormatVideoSystem(value),
         "MMC1Mirror" => FormatMmc1Mirror(value),
         "NESColor" => FormatNesColor(value),

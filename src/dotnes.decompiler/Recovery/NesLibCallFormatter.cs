@@ -78,6 +78,7 @@ static class NesLibCallFormatter
             "ppu_ctrl" => $"ppu_ctrl({(aValue.HasValue ? NesLibEnumFormatter.FormatPpuCtrl(aValue.Value) : "0")});",
             "apu_frame" => $"apu_frame({(aValue.HasValue ? NesLibEnumFormatter.FormatApuFrame(aValue.Value) : "0")});",
             "apu_status_write" => $"apu_status_write({(aValue.HasValue ? NesLibEnumFormatter.FormatApuStatus(aValue.Value) : "0")});",
+            "joypad1_write" => $"joypad1_write({(aValue.HasValue ? NesLibEnumFormatter.FormatJoyStrobe(aValue.Value) : "JOYSTROBE.Shift")});",
             "music_pause" => $"music_pause({((aValue ?? 0) != 0).ToString().ToLowerInvariant()});",
             "apu_stop" => $"apu_stop({(aValue.HasValue ? NesLibEnumFormatter.FormatPulseChannel(aValue.Value) : "PulseChannel.Pulse1")});",
             "mmc1_set_mirroring" => $"mmc1_set_mirroring({(aValue.HasValue ? NesLibEnumFormatter.FormatMmc1Mirror(aValue.Value) : "0")});",
@@ -179,11 +180,14 @@ static class NesLibCallFormatter
             "apu_status_write" when args.Length >= 1 =>
                 $"apu_status_write({FormatApuStatusArg(args[0])});",
 
+            "joypad1_write" when args.Length >= 1 =>
+                $"joypad1_write({FormatJoyStrobeArg(args[0])});",
+
             "mmc1_set_mirroring" when args.Length >= 1 =>
                 $"mmc1_set_mirroring({FormatMmc1MirrorArg(args[0])});",
 
-            "pal_col" when args.Length == 2 =>
-                $"pal_col({FormatOamArg(args[0])}, {FormatNesColorArg(args[1])});",
+            "pal_col" or "pal_bg_col" or "pal_spr_col" when args.Length == 2 =>
+                $"{name}({FormatOamArg(args[0])}, {FormatNesColorArg(args[1])});",
 
             "pad_poll" or "pad_trigger" or "pad_state" or "oam_hide_rest"
                 or "delay" or "set_rand" or "fade_in" or "fade_out"
@@ -253,6 +257,9 @@ static class NesLibCallFormatter
 
     static string FormatApuFrameArg(string arg) =>
         TryParseByte(arg, out byte b) ? NesLibEnumFormatter.FormatApuFrame(b) : arg;
+
+    static string FormatJoyStrobeArg(string arg) =>
+        TryParseByte(arg, out byte b) ? NesLibEnumFormatter.FormatJoyStrobe(b) : arg;
 
     static string FormatPadArg(string arg) =>
         TryParseByte(arg, out byte b) ? NesLibEnumFormatter.FormatPad(b) : arg;

@@ -66,7 +66,9 @@ static class ProjectEmitter
         sb.AppendLine("    <Using Include=\"NES\" />");
         // Explicit in case an older package props file is resolved; matches samples/dotnes.defaults.props.
         sb.AppendLine("    <Using Include=\"NES.NESLib\" Static=\"true\" />");
-        sb.AppendLine("    <Using Include=\"NES.NESColor\" Static=\"true\" />");
+        // Decompiler emits NESColor.Name (via using NES;). Strip the package's
+        // using static NES.NESColor so bare color names are not in scope.
+        sb.AppendLine("    <Using Remove=\"NES.NESColor\" />");
         sb.AppendLine($"    <PackageReference Include=\"dotnes\" Version=\"{version}\" />");
         // Wires RunCommand → Mesen so `dotnes run` / `dotnet run` launch the .nes, not a .NET apphost.
         sb.AppendLine($"    <PackageReference Include=\"dotnes.mesen\" Version=\"{mesenVersion}\" />");

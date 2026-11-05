@@ -138,8 +138,13 @@ static NES.NESLib.jaleco72_set(byte value) -> void
 static NES.NESLib.jaleco86_set(byte value) -> void
 static NES.NESLib.jaleco92_set(byte value) -> void
 static NES.NESLib.jaleco_set_chr_bank(byte bank) -> void
+NES.JOYPADBIT
+NES.JOYPADBIT.DATA = 1 -> NES.JOYPADBIT
+NES.JOYSTROBE
+NES.JOYSTROBE.Latch = 1 -> NES.JOYSTROBE
+NES.JOYSTROBE.Shift = 0 -> NES.JOYSTROBE
 static NES.NESLib.joypad1_read() -> byte
-static NES.NESLib.joypad1_write(byte value) -> void
+static NES.NESLib.joypad1_write(NES.JOYSTROBE value) -> void
 static NES.NESLib.joypad2_read() -> byte
 static NES.NESLib.jy209_set_prg_bank(byte reg, byte bank) -> void
 static NES.NESLib.jy211_set_prg_bank(byte reg, byte bank) -> void
