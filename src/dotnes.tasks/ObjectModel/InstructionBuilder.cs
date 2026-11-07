@@ -265,6 +265,9 @@ public static class Asm
     public static Instruction STA_abs_X(ushort address) =>
         new(Opcode.STA, AddressMode.AbsoluteX, new AbsoluteOperand(address));
 
+    public static Instruction ADC_abs_X(ushort address) =>
+        new(Opcode.ADC, AddressMode.AbsoluteX, new AbsoluteOperand(address));
+
     #endregion
 
     #region Absolute,Y Mode ($XXXX,Y)

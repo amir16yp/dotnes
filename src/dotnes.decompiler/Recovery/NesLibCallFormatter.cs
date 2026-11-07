@@ -378,6 +378,69 @@ static class NesLibCallFormatter
         return $"vram_adr(0x{addr:X4});";
     }
 
+    /// <summary>
+    /// SoftCpu-friendly text/tile run: printable ASCII → string; else <c>new byte[] { … }</c>
+    /// with a comment naming the ASCII string form when every byte is a printable character.
+    /// </summary>
+    public static string FormatVramWriteFromBytes(IReadOnlyList<byte> bytes)
+    {
+        if (bytes.Count == 0)
+            return "vram_write(\"\");";
+
+        bool allPrintable = true;
+        for (int i = 0; i < bytes.Count; i++)
+        {
+            byte b = bytes[i];
+            if (b < 0x20 || b >= 0x7F)
+            {
+                allPrintable = false;
+                break;
+            }
+        }
+
+        string asciiLiteral = EscapeAsciiString(bytes);
+
+        if (allPrintable)
+            return $"vram_write(\"{asciiLiteral}\");";
+
+        var parts = new string[bytes.Count];
+        for (int i = 0; i < bytes.Count; i++)
+            parts[i] = FormatByte(bytes[i]);
+
+        string bytesExpr = $"new byte[] {{ {string.Join(", ", parts)} }}";
+
+        // Only annotate when a tile font decodes to confident English; otherwise leave as byte[].
+        if (GameTextTableRecovery.TryDecodeTiles(bytes, out string tiled, out _))
+            return $"vram_write({bytesExpr}); // can be replaced with \"{tiled}\"";
+
+        return $"vram_write({bytesExpr});";
+    }
+
+    /// <summary>Build a C# string literal body: printable as-is, else <c>\xHH</c>.</summary>
+    public static string EscapeAsciiString(IReadOnlyList<byte> bytes)
+    {
+        var sb = new System.Text.StringBuilder(bytes.Count * 4);
+        for (int i = 0; i < bytes.Count; i++)
+        {
+            byte b = bytes[i];
+            switch (b)
+            {
+                case (byte)'\\': sb.Append("\\\\"); break;
+                case (byte)'"': sb.Append("\\\""); break;
+                case (byte)'\n': sb.Append("\\n"); break;
+                case (byte)'\r': sb.Append("\\r"); break;
+                case (byte)'\t': sb.Append("\\t"); break;
+                default:
+                    if (b >= 0x20 && b < 0x7F)
+                        sb.Append((char)b);
+                    else
+                        sb.Append("\\x").Append(b.ToString("X2"));
+                    break;
+            }
+        }
+        return sb.ToString();
+    }
+
     static string CanonicalName(string name) => name switch
     {
         "get_frame_count" => "nesclock",

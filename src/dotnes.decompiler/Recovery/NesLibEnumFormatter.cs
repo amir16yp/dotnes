@@ -66,6 +66,7 @@ static class NesLibEnumFormatter
         return $"(byte){mirrorName} | 0x{rest:X2}";
     }
 
+    /// <summary>LSB-first (ROR) — <see cref="NES.PAD"/> / <c>pad_poll</c>.</summary>
     static readonly (byte Bit, string Name)[] PadFlags =
     [
         (0x01, "PAD.A"),
@@ -78,39 +79,54 @@ static class NesLibEnumFormatter
         (0x80, "PAD.RIGHT"),
     ];
 
-    public static string FormatPad(byte value)
+    /// <summary>MSB-first (ROL) — <see cref="NES.PADMSB"/> / <c>pad_poll_msb</c> (SMB-style).</summary>
+    static readonly (byte Bit, string Name)[] PadMsbFlags =
+    [
+        (0x01, "PADMSB.RIGHT"),
+        (0x02, "PADMSB.LEFT"),
+        (0x04, "PADMSB.DOWN"),
+        (0x08, "PADMSB.UP"),
+        (0x10, "PADMSB.START"),
+        (0x20, "PADMSB.SELECT"),
+        (0x40, "PADMSB.B"),
+        (0x80, "PADMSB.A"),
+    ];
+
+    public static string FormatPad(byte value) => FormatPadFlags(value, msbFirst: false);
+
+    public static string FormatPadMsb(byte value) => FormatPadFlags(value, msbFirst: true);
+
+    static string FormatPadFlags(byte value, bool msbFirst)
     {
         if (value == 0)
             return "0";
 
-        // Prefer a single named button when possible
-        string? single = value switch
+        var flags = msbFirst ? PadMsbFlags : PadFlags;
+        string? single = null;
+        foreach (var (bit, name) in flags)
         {
-            0x01 => "PAD.A",
-            0x02 => "PAD.B",
-            0x04 => "PAD.SELECT",
-            0x08 => "PAD.START",
-            0x10 => "PAD.UP",
-            0x20 => "PAD.DOWN",
-            0x40 => "PAD.LEFT",
-            0x80 => "PAD.RIGHT",
-            _ => null,
-        };
+            if (value == bit)
+            {
+                single = name;
+                break;
+            }
+        }
         if (single != null)
             return single;
 
-        return FormatFlags(value, PadFlags, leftoverEnum: "PAD");
+        return FormatFlags(value, flags, leftoverEnum: msbFirst ? "PADMSB" : "PAD");
     }
 
     /// <summary>
-    /// True when every set bit is a <see cref="PAD"/> flag (no leftover bits).
+    /// True when every set bit is a pad flag in the given packing.
     /// </summary>
-    public static bool IsExactPadFlags(byte value)
+    public static bool IsExactPadFlags(byte value, bool msbFirst = false)
     {
         if (value == 0)
             return false;
+        var flags = msbFirst ? PadMsbFlags : PadFlags;
         byte remaining = value;
-        foreach (var (bit, _) in PadFlags)
+        foreach (var (bit, _) in flags)
         {
             if ((value & bit) != 0)
                 remaining = (byte)(remaining & ~bit);
@@ -119,32 +135,30 @@ static class NesLibEnumFormatter
     }
 
     /// <summary>
-    /// Formats a pad mask/compare/AND operand as a byte expression:
-    /// <c>(byte)PAD.UP</c>, <c>(byte)(PAD.A | PAD.B)</c>, or <c>(byte)~PAD.DOWN</c> for clear-masks.
+    /// Formats a pad mask/compare/AND operand as a byte expression using LSB (<see cref="PAD"/>)
+    /// or MSB (<see cref="PADMSB"/>) names.
     /// </summary>
-    public static bool TryFormatPadByteOperand(byte value, out string expression)
+    public static bool TryFormatPadByteOperand(byte value, out string expression, bool msbFirst = false)
     {
         expression = null!;
         if (value == 0)
             return false;
 
-        // Clear-mask: AND #$DF clears DOWN → (byte)~PAD.DOWN
+        // Clear-mask: AND #$DF clears one/two buttons → (byte)~PAD*.X
         byte cleared = (byte)~value;
-        if (cleared != 0 && IsExactPadFlags(cleared) && BitCount(cleared) <= 2)
+        if (cleared != 0 && IsExactPadFlags(cleared, msbFirst) && BitCount(cleared) <= 2)
         {
-            string pad = FormatPad(cleared);
+            string pad = FormatPadFlags(cleared, msbFirst);
             expression = pad.Contains('|', StringComparison.Ordinal)
                 ? $"(byte)~({pad})"
                 : $"(byte)~{pad}";
             return true;
         }
 
-        if (!IsExactPadFlags(value))
+        if (!IsExactPadFlags(value, msbFirst))
             return false;
 
-        // Avoid turning common non-input masks into buttons without caller context:
-        // caller must gate on pad-typed / pad-ZP. Multi-bit face/nibble masks are fine there.
-        string flags = FormatPad(value);
+        string flags = FormatPadFlags(value, msbFirst);
         expression = flags.Contains('|', StringComparison.Ordinal)
             ? $"(byte)({flags})"
             : $"(byte){flags}";

@@ -2,7 +2,7 @@ namespace dotnes.Disasm;
 
 /// <summary>
 /// Maps CPU addresses to PRG file offsets for common iNES mappers.
-/// Unknown/obscure mappers fall back to a last-32KB window view (RawPrg still exact).
+/// Unknown/obscure mappers fall back to a last-32KB window view (SoftCpu gap-bridge still exact).
 /// </summary>
 sealed class PrgBankModel
 {

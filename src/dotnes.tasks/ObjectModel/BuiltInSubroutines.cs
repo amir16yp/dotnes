@@ -2292,11 +2292,18 @@ internal static class BuiltInSubroutines
     #region Pad Polling
 
     /// <summary>
-    /// _pad_poll - Poll controller state
+    /// pad_poll — LSB-first (ROR): A lands in bit 0 (<see cref="PAD"/>).
     /// </summary>
-    public static Block PadPoll()
+    public static Block PadPoll() => PadPollCore(nameof(NESLib.pad_poll), msbFirst: false);
+
+    /// <summary>
+    /// pad_poll_msb — MSB-first (ROL): A lands in bit 7 (<see cref="PADMSB"/>).
+    /// </summary>
+    public static Block PadPollMsb() => PadPollCore(nameof(NESLib.pad_poll_msb), msbFirst: true);
+
+    static Block PadPollCore(string name, bool msbFirst)
     {
-        var block = new Block(nameof(NESLib.pad_poll));
+        var block = new Block(name);
         block.Emit(TAY())
              .Emit(LDX(0x00))
              // Pad poll port
@@ -2306,11 +2313,14 @@ internal static class BuiltInSubroutines
              .Emit(STA_abs(0x4016))
              .Emit(LDA(0x08))
              .Emit(STA_zpg(TEMP))
-             // Pad poll loop
+             // Pad poll loop — ROR = LSB-first (neslib), ROL = MSB-first (SMB)
              .Emit(LDA_abs_Y(0x4016), "@padPollLoop")
-             .Emit(LSR_A())
-             .Emit(ROR_X_zpg(TEMP + 1))
-             .Emit(DEC_zpg(TEMP))
+             .Emit(LSR_A());
+        if (msbFirst)
+            block.Emit(ROL_zpg_X(TEMP + 1));
+        else
+            block.Emit(ROR_X_zpg(TEMP + 1));
+        block.Emit(DEC_zpg(TEMP))
              .Emit(BNE(-10))  // branch to @padPollLoop
              .Emit(INX())
              .Emit(CPX(0x03))
@@ -2330,6 +2340,30 @@ internal static class BuiltInSubroutines
              .Emit(TXA())
              .Emit(STA_abs_Y(0x003E))
              .Emit(LDX(0x00))
+             .Emit(RTS());
+        return block;
+    }
+
+    /// <summary>
+    /// pad_reverse_bits — swap LSB ↔ MSB pad layouts (bit-reverse one byte).
+    /// </summary>
+    public static Block PadReverseBits()
+    {
+        // 8× ASL into carry + ROR into result (classic 6502 bit reverse).
+        var block = new Block(nameof(NESLib.pad_reverse_bits));
+        block.Emit(STA_zpg(TEMP))
+             .Emit(LDA(0x00))
+             .Emit(STA_zpg(TEMP + 1))
+             .Emit(LDX(0x08), "@revLoop")
+             .Emit(LDA_zpg(TEMP))
+             .Emit(ASL_A())
+             .Emit(STA_zpg(TEMP))
+             .Emit(LDA_zpg(TEMP + 1))
+             .Emit(ROR_A())
+             .Emit(STA_zpg(TEMP + 1))
+             .Emit(DEX())
+             .Emit(BNE(-13))
+             .Emit(LDA_zpg(TEMP + 1))
              .Emit(RTS());
         return block;
     }

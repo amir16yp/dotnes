@@ -4,7 +4,7 @@ namespace dotnes;
 
 /// <summary>
 /// Packs an iNES ROM from raw PRG bytes, optional CHR bytes, and header metadata.
-/// Used by <c>NESPackMode=RawPrg</c> so decompiled arbitrary ROMs can rebuild byte-identically.
+/// Used by <c>NESPackMode=SoftCpu</c> to pack lowered PRG + CHR + exact header.
 /// </summary>
 static class NesRomPacker
 {
@@ -152,7 +152,7 @@ static class NesRomPacker
         }
 
         using var writer = new BinaryWriter(stream, Encoding.ASCII, leaveOpen: true);
-        logger.WriteLine($"Writing RawPrg header (mapper={mapper}, PRG={prgBanks}, CHR={chrBanks})...");
+        logger.WriteLine($"Writing iNES header (mapper={mapper}, PRG={prgBanks}, CHR={chrBanks})...");
         writer.Write('N');
         writer.Write('E');
         writer.Write('S');

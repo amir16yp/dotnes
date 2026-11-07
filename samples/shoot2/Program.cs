@@ -161,11 +161,11 @@ vram_put(0x01);
 vram_put(0x01);
 
 // Silence all APU channels, then enable them (before ppu_on to avoid startup noise)
-poke(APU_PULSE1_CTRL, 0x30);    // silence pulse 1 (halt, volume 0)
-poke(APU_PULSE2_CTRL, 0x30);    // silence pulse 2
-poke(APU_TRIANGLE_CTRL, 0x80);  // silence triangle (halt)
-poke(APU_NOISE_CTRL, 0x30);     // silence noise
-poke(APU_STATUS, 0x0F);         // enable all channels
+apu_pulse1_ctrl(0x30);    // silence pulse 1 (halt, volume 0)
+apu_pulse2_ctrl(0x30);    // silence pulse 2
+apu_triangle_ctrl(0x80);  // silence triangle (halt)
+apu_noise_ctrl(0x30);     // silence noise
+apu_status_write(APUSTATUS.PULSE1 | APUSTATUS.PULSE2 | APUSTATUS.TRIANGLE | APUSTATUS.NOISE);
 
 bank_spr(1);
 bank_bg(0);
@@ -404,10 +404,10 @@ while (true)
                 enemy_active[ei] = 0;
                 player_hit_timer = 16;
                 // Kick-start player death sound (plays during flash via hardware decay)
-                poke(APU_NOISE_CTRL, 0x05);
-                poke(APU_NOISE_PERIOD, 0x08);
-                poke(APU_NOISE_LENGTH, 0x0F);
-                poke(APU_STATUS, 0x0B);
+                apu_noise_ctrl(0x05);
+                apu_noise_period(0x08);
+                apu_noise_length(0x0F);
+                apu_status_write(APUSTATUS.PULSE1 | APUSTATUS.PULSE2 | APUSTATUS.NOISE);
                 pal_spr_bright(8);
                 ppu_wait_nmi();
                 ppu_wait_nmi();
@@ -435,9 +435,9 @@ while (true)
         {
             // APU_PULSE_SUSTAIN: pitch tracks bullet Y, duty 50%, constant vol 6
             byte pitch = (byte)(255 - bullet_y[si]);
-            poke(APU_PULSE1_CTRL, 0xB6);
-            poke(APU_PULSE1_TIMER_LO, pitch);
-            poke(APU_PULSE1_TIMER_HI, 0x00);
+            apu_pulse1_ctrl(0xB6);
+            apu_pulse1_timer_lo(pitch);
+            apu_pulse1_timer_hi(0x00);
             snd_bullet = 1;
             break;
         }
@@ -445,7 +445,7 @@ while (true)
     if (snd_bullet == 0)
     {
         // Silence pulse 1 (use local to ensure correct transpilation after if-check)
-        poke(APU_PULSE1_CTRL, snd_silence);
+        apu_pulse1_ctrl(snd_silence);
     }
 
     // Noise: explosion and player-hit sounds
@@ -454,9 +454,9 @@ while (true)
         // Player hit: slower decay (rate 5), louder, longer (length 15)
         byte ph_frame = (byte)(16 - player_hit_timer);
         byte ph_period = (byte)(8 + ph_frame);
-        poke(APU_NOISE_CTRL, 0x05);
-        poke(APU_NOISE_PERIOD, ph_period);
-        poke(APU_NOISE_LENGTH, 0x0F);
+        apu_noise_ctrl(0x05);
+        apu_noise_period(ph_period);
+        apu_noise_length(0x0F);
     }
     else
     {
@@ -467,9 +467,9 @@ while (true)
                 // Enemy explosion: faster decay (rate 2), quieter, shorter (length 8)
                 byte ex_frame = (byte)(16 - exp_timer[si]);
                 byte ex_period = (byte)(8 + ex_frame);
-                poke(APU_NOISE_CTRL, 0x02);
-                poke(APU_NOISE_PERIOD, ex_period);
-                poke(APU_NOISE_LENGTH, 0x08);
+                apu_noise_ctrl(0x02);
+                apu_noise_period(ex_period);
+                apu_noise_length(0x08);
                 break;
             }
         }
@@ -482,15 +482,15 @@ while (true)
         {
             // APU_TRIANGLE_SUSTAIN(0x100 | y)
             byte ey = enemy_y[si];
-            poke(APU_TRIANGLE_CTRL, 0xFF);
-            poke(APU_TRIANGLE_TIMER_LO, ey);
-            poke(APU_TRIANGLE_TIMER_HI, 0x01);
+            apu_triangle_ctrl(0xFF);
+            apu_triangle_timer_lo(ey);
+            apu_triangle_timer_hi(0x01);
             snd_enable = (byte)(snd_enable | 0x04);
             break;
         }
     }
 
-    poke(APU_STATUS, snd_enable);
+    apu_status_write((APUSTATUS)snd_enable);
 
     // --- Draw sprites ---
     using (var oam = new OamScope())

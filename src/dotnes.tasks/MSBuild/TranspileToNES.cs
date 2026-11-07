@@ -81,18 +81,18 @@ public class TranspileToNES : Task
     public string NESMmc3ManagedInterruptContract { get; set; } = "";
 
     /// <summary>
-    /// ROM packaging mode: "Transpile" (default) or "RawPrg".
-    /// RawPrg writes header + NESRawPrg bytes + CHR without IL→6502.
+    /// ROM packaging mode: "Transpile" (default) or "SoftCpu".
+    /// SoftCpu lowers soft-CPU Program.cs onto NESRawPrg (data/gap bridge).
     /// </summary>
     public string NESPackMode { get; set; } = "Transpile";
 
     /// <summary>
-    /// Path to a raw PRG ROM image used when NESPackMode=RawPrg.
+    /// Path to a PRG ROM image used as SoftCpu data/gap bridge.
     /// </summary>
     public string NESRawPrg { get; set; } = "";
 
     /// <summary>
-    /// Optional path to an exact 16-byte iNES header used when NESPackMode=RawPrg.
+    /// Optional path to an exact 16-byte iNES header used when NESPackMode=SoftCpu.
     /// When set, the header is written verbatim (preserves NES 2.0 / trailer bytes).
     /// </summary>
     public string NESRawHeader { get; set; } = "";
@@ -110,9 +110,9 @@ public class TranspileToNES : Task
         var assemblies = AssemblyFiles.Select(a => new AssemblyReader(a)).ToList();
         using var output = new MemoryStream();
 
-        if (IsRawPrgMode())
+        if (IsSoftCpuMode())
         {
-            ExecuteRawPrg(assemblies, output);
+            ExecuteSoftCpu(assemblies, output);
         }
         else
         {
@@ -157,27 +157,41 @@ public class TranspileToNES : Task
         return true;
     }
 
-    bool IsRawPrgMode() =>
-        string.Equals(NESPackMode?.Trim(), "RawPrg", StringComparison.OrdinalIgnoreCase);
+    bool IsSoftCpuMode()
+    {
+        string mode = NESPackMode?.Trim() ?? "";
+        // SoftCpu replaced RawPrg; accept the old name so existing decompiled projects still build.
+        return mode.Equals("SoftCpu", StringComparison.OrdinalIgnoreCase)
+            || mode.Equals("RawPrg", StringComparison.OrdinalIgnoreCase);
+    }
 
-    void ExecuteRawPrg(IList<AssemblyReader> assemblies, Stream output)
+    void ExecuteSoftCpu(IList<AssemblyReader> assemblies, Stream output)
     {
         if (string.IsNullOrWhiteSpace(NESRawPrg))
-            throw new InvalidOperationException("NESPackMode=RawPrg requires NESRawPrg to point at a PRG image.");
+            throw new InvalidOperationException("NESPackMode=SoftCpu requires NESRawPrg to point at a PRG image.");
         if (!File.Exists(NESRawPrg))
             throw new InvalidOperationException($"NESRawPrg file '{NESRawPrg}' was not found.");
         if (NESMmc3BankedLayout)
-            throw new InvalidOperationException("NESPackMode=RawPrg cannot be combined with NESMmc3BankedLayout.");
+            throw new InvalidOperationException("NESPackMode=SoftCpu cannot be combined with NESMmc3BankedLayout.");
         if (NESPrgBank.Length > 0 || NESChrBank.Length > 0 || NESManagedCodeBank.Length > 0)
-            throw new InvalidOperationException("NESPackMode=RawPrg does not support NESPrgBank, NESChrBank, or NESManagedCodeBank items.");
+            throw new InvalidOperationException("NESPackMode=SoftCpu does not support NESPrgBank, NESChrBank, or NESManagedCodeBank items.");
+
+        string programCs = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(NESRawPrg)) ?? ".", "Program.cs");
+        if (!File.Exists(programCs))
+            throw new InvalidOperationException($"NESPackMode=SoftCpu requires Program.cs next to NESRawPrg ('{programCs}').");
 
         byte[] prgRom = File.ReadAllBytes(NESRawPrg);
+        var result = SoftCpuRecompiler.Recompile(File.ReadAllText(programCs), prgRom, Logger);
+        prgRom = result.PrgRom;
+        if (result.RoutinesLowered == 0 && result.RoutinesSkipped > 0)
+            Log.LogWarning("SoftCpu lowered 0 routines; ROM keeps prg.bin gap-bridge bytes only.");
+
         byte[]? chrRom = null;
         if (NESChrBanks > 0)
         {
             chrRom = NesRomPacker.GatherChrData(assemblies);
             if (chrRom.Length == 0)
-                throw new InvalidOperationException("NESPackMode=RawPrg with CHR ROM requires at least one CHARS segment.");
+                throw new InvalidOperationException("NESPackMode=SoftCpu with CHR ROM requires at least one CHARS segment.");
         }
 
         byte[]? exactHeader = null;

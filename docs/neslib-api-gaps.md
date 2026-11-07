@@ -18,7 +18,9 @@ as a stub either has a builtin, an ILDispatch intrinsic, a C# NESLib body, or li
 
 - CPU ops: `nop`, `pha`/`pla`, `php`/`plp`, `tax`/`txa`/`tay`/`tya`, `txs`/`tsx`, `inx`/`dex`/`iny`/`dey`, `brk`
 - PPU: `PPU_OAM_*`, `oam_dma`, `ppu_status`, `ppu_scroll`, `sprite0_wait`, `sprite0_hit`, `NT_ATTR_*`
-- APU: DMC/frame constants, `apu_play_triangle` / `apu_stop_triangle`, `apu_play_noise` / `apu_stop_noise`
+- APU: DMC/frame constants, `apu_play_*` / `apu_stop_*`, runtime channel writers
+  (`apu_pulse1_ctrl`, `apu_noise_period`, `apu_dmc_raw`, …) as ILDispatch STA,
+  `apu_status_write` / `apu_frame` / `apu_status()`
 - Input: `JOYPAD1`/`JOYPAD2`, zapper helpers
 - Memory: `memfill`, `oam_clear_fast`
 - Mappers: see `NESLib.Mappers.cs` — CNROM/UxROM/AxROM/MMC1–5/VRC/Namco/Bandai/

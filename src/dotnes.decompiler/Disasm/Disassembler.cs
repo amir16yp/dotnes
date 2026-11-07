@@ -62,7 +62,23 @@ sealed class Disassembler
         Enqueue(work, _rom.ResetVector, 0);
         Enqueue(work, _rom.NmiVector, 0);
         Enqueue(work, _rom.IrqVector, 0);
+        Trace(work);
+    }
 
+    /// <summary>
+    /// Continue recursive descent from extra entry points (e.g. absolute loads of controller RAM
+    /// discovered after joypad poll recovery). Already-traced PRG bytes are skipped.
+    /// </summary>
+    public void ContinueFrom(IEnumerable<(ushort Cpu, int Bank)> entries)
+    {
+        var work = new Queue<(ushort Cpu, int Bank)>();
+        foreach (var (cpu, bank) in entries)
+            Enqueue(work, cpu, bank);
+        Trace(work);
+    }
+
+    void Trace(Queue<(ushort Cpu, int Bank)> work)
+    {
         while (work.Count > 0)
         {
             var (pc, bank) = work.Dequeue();
@@ -155,7 +171,7 @@ sealed class Disassembler
     public string GenerateListing()
     {
         var sb = new System.Text.StringBuilder();
-        sb.AppendLine("; Auto-generated disassembly — not required for RawPrg rebuild");
+        sb.AppendLine("; Auto-generated disassembly — not required for SoftCpu rebuild");
         sb.AppendLine($"; Mapper={_rom.Mapper}, PRG banks={_rom.PrgBanks}");
 
         int listingBanks = _banks.SwitchableBankCount;

@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { getTiles, setTiles } from "./lspClient";
+import { showTileReferences } from "./tileReferences";
 
 class ChrDocument implements vscode.CustomDocument {
   public tiles: number[][];
@@ -95,6 +96,20 @@ export class ChrEditorProvider implements vscode.CustomEditorProvider<ChrDocumen
         }
         case "save": {
           await this.saveCustomDocument(document, new vscode.CancellationTokenSource().token);
+          break;
+        }
+        case "findReferences": {
+          const { tileIndex } = msg as { tileIndex: number };
+          const pixels = document.tiles[tileIndex];
+          if (!pixels) {
+            vscode.window.showWarningMessage(`Tile ${tileIndex} is out of range.`);
+            break;
+          }
+          await showTileReferences({
+            tileIndex,
+            pixels: Array.from(pixels),
+            chrUri: document.uri,
+          });
           break;
         }
       }
@@ -200,6 +215,9 @@ export class ChrEditorProvider implements vscode.CustomEditorProvider<ChrDocumen
     <canvas id="sheet"></canvas>
     <canvas id="detail" width="256" height="256"></canvas>
   </main>
+  <div id="ctx" class="ctx hidden" role="menu">
+    <button type="button" data-cmd="findReferences" role="menuitem">Find references…</button>
+  </div>
   <script nonce="${nonce}" src="${scriptUri}"></script>
 </body>
 </html>`;

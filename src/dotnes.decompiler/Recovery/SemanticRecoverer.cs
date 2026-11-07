@@ -1723,7 +1723,12 @@ sealed class SemanticRecoverer
         { NESLib.APU_NOISE_CTRL, nameof(NESLib.APU_NOISE_CTRL) },
         { NESLib.APU_NOISE_PERIOD, nameof(NESLib.APU_NOISE_PERIOD) },
         { NESLib.APU_NOISE_LENGTH, nameof(NESLib.APU_NOISE_LENGTH) },
+        { NESLib.APU_DMC_FREQ, nameof(NESLib.APU_DMC_FREQ) },
+        { NESLib.APU_DMC_RAW, nameof(NESLib.APU_DMC_RAW) },
+        { NESLib.APU_DMC_START, nameof(NESLib.APU_DMC_START) },
+        { NESLib.APU_DMC_LEN, nameof(NESLib.APU_DMC_LEN) },
         { NESLib.APU_STATUS, nameof(NESLib.APU_STATUS) },
+        { NESLib.APU_FRAME, nameof(NESLib.APU_FRAME) },
     };
 
     /// <summary>
@@ -1738,20 +1743,27 @@ sealed class SemanticRecoverer
 
     /// <summary>
     /// Format a poke() statement with a named or hex address and typed value when known.
+    /// APU channel registers lift to dedicated neslib writers.
     /// </summary>
     static string FormatPoke(ushort addr, byte value)
     {
+        if (TryFormatApuRegisterWrite(addr, FormatByteLit(value), out string apuWrite))
+            return apuWrite;
+
+        if (addr == NESLib.APU_STATUS)
+            return $"apu_status_write({NesLibEnumFormatter.FormatApuStatus(value)});";
+        if (addr == NESLib.APU_FRAME)
+            return $"apu_frame({NesLibEnumFormatter.FormatApuFrame(value)});";
+
         string formattedValue = addr switch
         {
             _ when addr == NESLib.PPU_MASK => NesLibEnumFormatter.FormatMask(value),
             _ when addr == NESLib.PPU_CTRL => NesLibEnumFormatter.FormatPpuCtrl(value),
-            _ when addr == NESLib.APU_STATUS => NesLibEnumFormatter.FormatApuStatus(value),
-            _ when addr == NESLib.APU_FRAME => NesLibEnumFormatter.FormatApuFrame(value),
             _ when (addr & 0xFF00) == 0x3F00 => NesLibEnumFormatter.FormatNesColor(value),
-            _ => value <= 9 ? value.ToString() : $"0x{value:X2}",
+            _ => FormatByteLit(value),
         };
         // Typed enums need a byte cast at the poke() call site.
-        if (addr is NESLib.PPU_MASK or NESLib.PPU_CTRL or NESLib.APU_STATUS or NESLib.APU_FRAME
+        if (addr is NESLib.PPU_MASK or NESLib.PPU_CTRL
             || (addr & 0xFF00) == 0x3F00)
         {
             if (formattedValue is not "0" && !formattedValue.StartsWith("NESColor.", StringComparison.Ordinal))
@@ -1760,11 +1772,50 @@ sealed class SemanticRecoverer
         return $"poke({FormatAddress(addr)}, {formattedValue});";
     }
 
+    static string FormatByteLit(byte value) =>
+        value <= 9 ? value.ToString() : $"0x{value:X2}";
+
+    /// <summary>Map APU channel MMIO to <c>apu_pulse1_ctrl(v)</c>-style writers.</summary>
+    static bool TryFormatApuRegisterWrite(ushort addr, string valueExpr, out string statement)
+    {
+        string? fn = addr switch
+        {
+            NESLib.APU_PULSE1_CTRL => "apu_pulse1_ctrl",
+            NESLib.APU_PULSE1_SWEEP => "apu_pulse1_sweep",
+            NESLib.APU_PULSE1_TIMER_LO => "apu_pulse1_timer_lo",
+            NESLib.APU_PULSE1_TIMER_HI => "apu_pulse1_timer_hi",
+            NESLib.APU_PULSE2_CTRL => "apu_pulse2_ctrl",
+            NESLib.APU_PULSE2_SWEEP => "apu_pulse2_sweep",
+            NESLib.APU_PULSE2_TIMER_LO => "apu_pulse2_timer_lo",
+            NESLib.APU_PULSE2_TIMER_HI => "apu_pulse2_timer_hi",
+            NESLib.APU_TRIANGLE_CTRL => "apu_triangle_ctrl",
+            NESLib.APU_TRIANGLE_TIMER_LO => "apu_triangle_timer_lo",
+            NESLib.APU_TRIANGLE_TIMER_HI => "apu_triangle_timer_hi",
+            NESLib.APU_NOISE_CTRL => "apu_noise_ctrl",
+            NESLib.APU_NOISE_PERIOD => "apu_noise_period",
+            NESLib.APU_NOISE_LENGTH => "apu_noise_length",
+            NESLib.APU_DMC_FREQ => "apu_dmc_freq",
+            NESLib.APU_DMC_RAW => "apu_dmc_raw",
+            NESLib.APU_DMC_START => "apu_dmc_start",
+            NESLib.APU_DMC_LEN => "apu_dmc_len",
+            _ => null,
+        };
+        if (fn is null)
+        {
+            statement = null!;
+            return false;
+        }
+        statement = $"{fn}({valueExpr});";
+        return true;
+    }
+
     /// <summary>
     /// Format a peek() statement with a named or hex address.
     /// </summary>
     static string FormatPeek(ushort addr) =>
-        $"peek({FormatAddress(addr)});";
+        addr == NESLib.APU_STATUS
+            ? "apu_status();"
+            : $"peek({FormatAddress(addr)});";
 
     /// <summary>
     /// Format a call to a user-defined function.

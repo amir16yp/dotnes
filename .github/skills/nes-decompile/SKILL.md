@@ -23,24 +23,24 @@ The decompiler lives at `src/dotnes.decompiler/` and is a .NET CLI tool.
 ```bash
 dotnet run --project src/dotnes.decompiler -- <input.nes> [output-directory] [--mode auto|transpile|raw] [--exact]
 # or
-dotnes decompile <input.nes> [output-directory] [--mode auto|transpile|raw] [--exact]
+dotnes decompile <input.nes> [output-directory] [--mode auto|transpile|softcpu] [--exact]
 ```
 
 - **`<input.nes>`** — Path to the NES ROM file (required)
 - **`[output-directory]`** — Where to write the C# project (optional; defaults to the ROM filename without extension)
-- **`--mode`** — `auto` (default): Transpile for detected dotnes ROMs, RawPrg otherwise; `transpile` forces NESLib C# recovery; `raw` forces byte-identical `prg.bin` packing
+- **`--mode`** — `auto` (default): Transpile for detected dotnes ROMs, SoftCpu otherwise; `transpile` forces NESLib C# recovery; `softcpu` forces soft-CPU Program.cs → 6502
 - **`--exact`** / **`--no-optimize`** — Opt out of soft-CPU structuring (more literal goto/labels). Default is optimized readability. Never removes discovered routines (no dead-code elimination).
 
 ### Output Files
 
 | File | Description |
 |------|-------------|
-| `Program.cs` | Recovered C# — NESLib for dotnes ROMs; soft-CPU game logic for arbitrary ROMs |
+| `Program.cs` | Recovered C# — NESLib for dotnes ROMs; soft-CPU game logic for arbitrary ROMs (SoftCpu code authority) |
 | `{name}.csproj` | MSBuild project with NES header props (`NESMirroring`, `NESBattery`, mapper/banks, optional `NESPackMode`) |
 | `chr_generic.s` / `chr_generic_N.s` | CHR ROM as ca65 assembly |
-| `prg.bin` / `header.bin` | Exact PRG + iNES header (RawPrg mode only; rebuild authority) |
-| `RomImage.cs` | C# mirror of the exact header (RawPrg mode only) |
-| `disasm.s` | Best-effort listing (RawPrg mode only) |
+| `prg.bin` / `header.bin` | SoftCpu data/gap bridge + exact iNES header |
+| `RomImage.cs` | C# mirror of the exact header (SoftCpu) |
+| `disasm.s` | Best-effort listing (SoftCpu) |
 
 ### What Gets Recovered (dotnes / NESLib)
 
@@ -63,7 +63,7 @@ Final-built-in detection uses byte signatures extracted from `BuiltInSubroutines
 
 ### Arbitrary (non-dotnes) ROMs
 
-Auto mode emits `NESPackMode=RawPrg` with `prg.bin`/`header.bin` so rebuilds are **byte-identical**. `Program.cs` gets soft-CPU recovered game logic (optimized for reading by default — structured loops, folded imm+poke; pass `--exact` for literal recovery). All discovered routines are kept (no DCE). Packing still uses the raw PRG until transpile can match commercial banks.
+Auto mode emits `NESPackMode=SoftCpu` with soft-CPU `Program.cs` as code authority and `prg.bin`/`header.bin` as the data/gap bridge. SoftCpu lowers recovered routines to 6502 at original addresses; unrecovered spans keep `prg.bin` bytes. Pass `--exact` for more literal recovery. All discovered routines are kept (no DCE).
 
 ## Common Workflows
 
@@ -83,7 +83,7 @@ python scripts/compare_rom.py samples/hello/bin/Debug/net10.0/hello.nes hello-ro
 ## Architecture
 
 1. **Disassemble** — recursive descent from RESET/NMI/IRQ
-2. **Detect** — stock CRT prefix → Transpile vs RawPrg
+2. **Detect** — stock CRT prefix → Transpile vs SoftCpu
 3. **Recover** — symbol table from `CreateWithBuiltIns` + signature DB; lift NESLib calls / control flow
 4. **Emit** — project tree via `ProjectEmitter`
 
@@ -96,7 +96,7 @@ python scripts/compare_rom.py samples/hello/bin/Debug/net10.0/hello.nes hello-ro
 | `NESChrBanks` | CHR banks ≠ 1 | `<NESChrBanks>2</NESChrBanks>` |
 | `NESMirroring` | Vertical mirroring | `<NESMirroring>Vertical</NESMirroring>` |
 | `NESBattery` | Battery-backed SRAM | `<NESBattery>true</NESBattery>` |
-| `NESPackMode` / `NESRawPrg` | Non-dotnes / `--mode raw` | `RawPrg` + `prg.bin` |
+| `NESPackMode` / `NESRawPrg` | Non-dotnes / SoftCpu | `SoftCpu` + `prg.bin` gap bridge |
 
 ## Related Skills
 

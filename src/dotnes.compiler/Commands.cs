@@ -189,10 +189,12 @@ static class Commands
 
     public static int Run(string[] args)
     {
+        ParseRunArgs(args, out string? projectArg, out string[] forward);
+
         string project;
         try
         {
-            project = Dotnet.FindProject(args.Length > 0 ? args[0] : null);
+            project = Dotnet.FindProject(projectArg);
         }
         catch (Exception ex)
         {
@@ -200,13 +202,12 @@ static class Commands
             return 1;
         }
 
-        Console.WriteLine($"Running {project}...");
-        // NES projects launch via dotnes.mesen (RunCommand → Mesen). Without it,
-        // `dotnet run` tries a .NET apphost that these projects never produce.
+        // NES projects set ComputeNETCoreBuildOutputFiles=false — no .NET apphost.
+        // Build the ROM, then launch Mesen with the .nes path (do not use `dotnet run`).
         if (!ProjectReferencesMesen(project))
         {
             Console.Error.WriteLine(
-                "This project has no PackageReference to dotnes.mesen, so there is no emulator RunCommand.");
+                "This project has no PackageReference to dotnes.mesen, so there is no emulator.");
             Console.Error.WriteLine(
                 "Add: <PackageReference Include=\"dotnes.mesen\" Version=\"2.2.1\" />");
             Console.Error.WriteLine(
@@ -214,10 +215,85 @@ static class Commands
             return 1;
         }
 
-        string extra = args.Length > 1
-            ? " -- " + string.Join(" ", args.Skip(1).Select(a => $"\"{a}\""))
-            : "";
-        return Dotnet.Run($"run --project \"{project}\"{RestoreSourceArgs()}{extra}");
+        Console.WriteLine($"Building {project}...");
+        int buildExit = Dotnet.Run($"build \"{project}\" -v minimal{RestoreSourceArgs()}");
+        if (buildExit != 0)
+            return buildExit;
+
+        if (!TryGetRunLaunchInfo(project, out string mesenExe, out string romPath, out string? error))
+        {
+            Console.Error.WriteLine(error);
+            return 1;
+        }
+
+        ClearStaleMesenLock();
+
+        var arguments = new StringBuilder();
+        arguments.Append(QuoteArg(romPath));
+        foreach (string arg in forward)
+        {
+            arguments.Append(' ');
+            arguments.Append(QuoteArg(arg));
+        }
+
+        Console.WriteLine($"Running {romPath}...");
+        int exit = RunProcess(mesenExe, arguments.ToString());
+        if (exit != 0 && MesenLockExists() && Process.GetProcessesByName("Mesen").Length == 0)
+        {
+            Console.Error.WriteLine(
+                "Mesen left a stale lock file. Remove ~/.config/MesenCE/mesen.lock (or Documents/MesenCE on Windows) and retry.");
+        }
+        return exit;
+    }
+
+    static bool MesenLockExists()
+    {
+        try
+        {
+            string? configBase = Environment.GetFolderPath(
+                OperatingSystem.IsWindows()
+                    ? Environment.SpecialFolder.MyDocuments
+                    : Environment.SpecialFolder.ApplicationData,
+                Environment.SpecialFolderOption.DoNotVerify);
+            if (string.IsNullOrEmpty(configBase))
+                return false;
+            return File.Exists(Path.Combine(configBase, "MesenCE", "mesen.lock"))
+                || File.Exists(Path.Combine(configBase, "Mesen2", "mesen.lock"));
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// <c>dotnes run [project] [-- mesen-args...]</c> or <c>dotnes run -- mesen-args...</c>.
+    /// </summary>
+    static void ParseRunArgs(string[] args, out string? projectArg, out string[] forward)
+    {
+        projectArg = null;
+        forward = [];
+        if (args.Length == 0)
+            return;
+
+        int i = 0;
+        if (args[0] == "--")
+        {
+            forward = args.Skip(1).ToArray();
+            return;
+        }
+
+        if (!args[0].StartsWith('-'))
+        {
+            projectArg = args[0];
+            i = 1;
+        }
+
+        if (i < args.Length && args[i] == "--")
+            i++;
+
+        if (i < args.Length)
+            forward = args.Skip(i).ToArray();
     }
 
     static bool ProjectReferencesMesen(string projectPath)
@@ -230,6 +306,151 @@ static class Commands
         catch
         {
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Reads Mesen exe + ROM path from the project after a successful build.
+    /// </summary>
+    static bool TryGetRunLaunchInfo(string project, out string mesenExe, out string romPath, out string? error)
+    {
+        mesenExe = "";
+        romPath = "";
+        error = null;
+
+        string projectDir = Path.GetDirectoryName(project) ?? Directory.GetCurrentDirectory();
+        var props = GetMsBuildProperties(project, "NESTargetPath,_MesenExe,RunCommand,OutputPath,TargetName");
+        if (props is null)
+        {
+            error = "Could not evaluate MSBuild properties for the project.";
+            return false;
+        }
+
+        mesenExe = FirstNonEmpty(props, "_MesenExe", "RunCommand");
+        if (string.IsNullOrWhiteSpace(mesenExe) || !File.Exists(mesenExe))
+        {
+            error = "Mesen was not installed. Rebuild so dotnes.mesen can download it, or check your platform.";
+            return false;
+        }
+
+        string nesTarget = NormalizeMsBuildPath(props.GetValueOrDefault("NESTargetPath") ?? "");
+        if (!string.IsNullOrWhiteSpace(nesTarget))
+        {
+            romPath = Path.IsPathRooted(nesTarget)
+                ? Path.GetFullPath(nesTarget)
+                : Path.GetFullPath(Path.Combine(projectDir, nesTarget));
+        }
+        else
+        {
+            string outputPath = NormalizeMsBuildPath(props.GetValueOrDefault("OutputPath") ?? "");
+            string targetName = props.GetValueOrDefault("TargetName") ?? Path.GetFileNameWithoutExtension(project);
+            if (string.IsNullOrWhiteSpace(outputPath))
+            {
+                error = "Could not resolve NESTargetPath / OutputPath after build.";
+                return false;
+            }
+            string outputDir = Path.IsPathRooted(outputPath)
+                ? Path.GetFullPath(outputPath)
+                : Path.GetFullPath(Path.Combine(projectDir, outputPath));
+            romPath = Path.Combine(outputDir, targetName + ".nes");
+        }
+
+        if (!File.Exists(romPath))
+        {
+            error = $"ROM not found after build: {romPath}";
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// MSBuild <c>-getProperty</c> may emit Windows backslashes even on Linux
+    /// (e.g. <c>bin\Debug/net10.0/</c>). Normalize before path combine/exists checks.
+    /// </summary>
+    internal static string NormalizeMsBuildPath(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+            return path;
+        return path
+            .Replace('\\', Path.DirectorySeparatorChar)
+            .Replace('/', Path.DirectorySeparatorChar);
+    }
+
+    static string FirstNonEmpty(Dictionary<string, string> props, params string[] keys)
+    {
+        foreach (string key in keys)
+        {
+            if (props.TryGetValue(key, out string? value) && !string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+        return "";
+    }
+
+    static Dictionary<string, string>? GetMsBuildProperties(string project, string propertyList)
+    {
+        var psi = new ProcessStartInfo
+        {
+            FileName = "dotnet",
+            Arguments = $"msbuild \"{project}\" -nologo -getProperty:{propertyList}",
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+        };
+        using var process = Process.Start(psi);
+        if (process is null)
+            return null;
+        string stdout = process.StandardOutput.ReadToEnd();
+        process.WaitForExit();
+        if (process.ExitCode != 0)
+            return null;
+
+        // -getProperty emits either a bare value (one prop) or JSON { "Properties": { ... } }.
+        stdout = stdout.Trim();
+        if (stdout.StartsWith('{'))
+        {
+            using var doc = System.Text.Json.JsonDocument.Parse(stdout);
+            if (!doc.RootElement.TryGetProperty("Properties", out var propsElement))
+                return null;
+            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var prop in propsElement.EnumerateObject())
+                map[prop.Name] = prop.Value.GetString() ?? "";
+            return map;
+        }
+
+        // Single property — caller asked for a list, so treat as failure to parse.
+        return null;
+    }
+
+    /// <summary>
+    /// MesenCE leaves mesen.lock if a previous process died. A new launch then tries to
+    /// hand off via a pipe that nobody owns and exits without opening the ROM.
+    /// </summary>
+    static void ClearStaleMesenLock()
+    {
+        try
+        {
+            if (Process.GetProcessesByName("Mesen").Length > 0)
+                return;
+
+            string? configBase = Environment.GetFolderPath(
+                OperatingSystem.IsWindows()
+                    ? Environment.SpecialFolder.MyDocuments
+                    : Environment.SpecialFolder.ApplicationData,
+                Environment.SpecialFolderOption.DoNotVerify);
+            if (string.IsNullOrEmpty(configBase))
+                return;
+
+            foreach (string name in new[] { "MesenCE", "Mesen2" })
+            {
+                string lockPath = Path.Combine(configBase, name, "mesen.lock");
+                if (File.Exists(lockPath))
+                    File.Delete(lockPath);
+            }
+        }
+        catch
+        {
+            // Best-effort; launching may still work if the lock was already clear.
         }
     }
 
@@ -335,7 +556,7 @@ static class Commands
             Usage:
               dotnes new <name>                 Create a new NES project
               dotnes build [project]            Build the ROM (.nes)
-              dotnes run [project]              Build and run in the emulator
+              dotnes run [project] [-- args]    Build ROM and launch in Mesen
               dotnes decompile <rom> [outdir]   Decompile a .nes into a C# project
               dotnes transpile <dll> <chr.s>    Low-level transpile (advanced)
 

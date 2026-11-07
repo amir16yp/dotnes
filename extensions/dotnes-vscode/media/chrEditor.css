@@ -116,3 +116,33 @@ main {
   justify-self: center;
   cursor: crosshair;
 }
+
+.ctx {
+  position: fixed;
+  z-index: 20;
+  min-width: 180px;
+  padding: 4px;
+  background: var(--panel);
+  border: 1px solid #333842;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.ctx.hidden {
+  display: none;
+}
+
+.ctx button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: var(--fg);
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 8px 10px;
+}
+
+.ctx button:hover {
+  background: #333842;
+}

@@ -87,13 +87,32 @@ static NES.NESLib.NT_ATTR_C(byte x, byte y) -> ushort
 static NES.NESLib.NT_ATTR_D(byte x, byte y) -> ushort
 static NES.NESLib.action52_write(ushort register, byte value) -> void
 static NES.NESLib.action53_set(byte value) -> void
+static NES.NESLib.apu_dmc_freq(byte value) -> void
+static NES.NESLib.apu_dmc_len(byte value) -> void
+static NES.NESLib.apu_dmc_raw(byte value) -> void
+static NES.NESLib.apu_dmc_start(byte value) -> void
 static NES.NESLib.apu_frame(NES.APUFRAME value) -> void
+static NES.NESLib.apu_noise_ctrl(byte value) -> void
+static NES.NESLib.apu_noise_length(byte value) -> void
+static NES.NESLib.apu_noise_period(byte value) -> void
 static NES.NESLib.apu_play_noise(byte period, byte volume, bool toneMode) -> void
 static NES.NESLib.apu_play_triangle(ushort period, byte linear) -> void
+static NES.NESLib.apu_pulse1_ctrl(byte value) -> void
+static NES.NESLib.apu_pulse1_sweep(byte value) -> void
+static NES.NESLib.apu_pulse1_timer_hi(byte value) -> void
+static NES.NESLib.apu_pulse1_timer_lo(byte value) -> void
+static NES.NESLib.apu_pulse2_ctrl(byte value) -> void
+static NES.NESLib.apu_pulse2_sweep(byte value) -> void
+static NES.NESLib.apu_pulse2_timer_hi(byte value) -> void
+static NES.NESLib.apu_pulse2_timer_lo(byte value) -> void
+static NES.NESLib.apu_status() -> byte
 static NES.NESLib.apu_status_write(NES.APUSTATUS value) -> void
 static NES.NESLib.apu_stop_all() -> void
 static NES.NESLib.apu_stop_noise() -> void
 static NES.NESLib.apu_stop_triangle() -> void
+static NES.NESLib.apu_triangle_ctrl(byte value) -> void
+static NES.NESLib.apu_triangle_timer_hi(byte value) -> void
+static NES.NESLib.apu_triangle_timer_lo(byte value) -> void
 static NES.NESLib.asder112_set_prg_bank(byte bank) -> void
 static NES.NESLib.axrom_set_prg_bank(byte bank) -> void
 static NES.NESLib.bandai152_set(byte value) -> void
@@ -108,6 +127,7 @@ static NES.NESLib.bf9096_set(byte value) -> void
 static NES.NESLib.bnrom_set_prg_bank(byte bank) -> void
 static NES.NESLib.brk() -> void
 static NES.NESLib.camerica_set_prg_bank(byte bank) -> void
+static NES.NESLib.cld() -> void
 static NES.NESLib.cnrom185_set_chr_bank(byte bank) -> void
 static NES.NESLib.colordreams_set(byte value) -> void
 static NES.NESLib.colordreams_set_banks(byte prgBank, byte chrBank) -> void
@@ -686,13 +706,34 @@ static NES.NESLib.nop() -> void
 static NES.NESLib.oam_dma(byte page) -> void
 static NES.NESLib.oeka96_set(byte value) -> void
 static NES.NESLib.pad1_poll() -> NES.PAD
+static NES.NESLib.pad1_poll_msb() -> NES.PADMSB
 static NES.NESLib.pad1_state() -> NES.PAD
 static NES.NESLib.pad1_trigger() -> NES.PAD
+static NES.NESLib.pad2_poll() -> NES.PAD
+static NES.NESLib.pad2_poll_msb() -> NES.PADMSB
+static NES.NESLib.pad2_state() -> NES.PAD
+static NES.NESLib.pad2_trigger() -> NES.PAD
+static NES.NESLib.pad_poll_lsb(byte pad) -> NES.PAD
+static NES.NESLib.pad_poll_msb(byte pad) -> NES.PADMSB
+static NES.NESLib.pad_reverse_bits(byte bits) -> byte
+static NES.NESLib.pad_from_msb(NES.PADMSB bits) -> NES.PAD
+static NES.NESLib.pad_to_msb(NES.PAD bits) -> NES.PADMSB
+static NES.NESLib.joypad1_data() -> bool
+static NES.NESLib.joypad2_data() -> bool
+NES.PADMSB
+NES.PADMSB.A = 128 -> NES.PADMSB
+NES.PADMSB.B = 64 -> NES.PADMSB
+NES.PADMSB.SELECT = 32 -> NES.PADMSB
+NES.PADMSB.START = 16 -> NES.PADMSB
+NES.PADMSB.UP = 8 -> NES.PADMSB
+NES.PADMSB.DOWN = 4 -> NES.PADMSB
+NES.PADMSB.LEFT = 2 -> NES.PADMSB
+NES.PADMSB.RIGHT = 1 -> NES.PADMSB
 static NES.NESLib.pal_bg_col(byte index, byte color) -> void
 static NES.NESLib.pal_spr_col(byte index, byte color) -> void
 static NES.NESLib.pha() -> void
 static NES.NESLib.php() -> void
-static NES.NESLib.pla() -> void
+static NES.NESLib.pla() -> byte
 static NES.NESLib.plp() -> void
 static NES.NESLib.ppu_ctrl(NES.PPUCTRL value) -> void
 static NES.NESLib.ppu_mask_write(NES.MASK mask) -> void
@@ -717,6 +758,7 @@ static NES.NESLib.sachen148_set(byte value) -> void
 static NES.NESLib.sachen149_set_chr_bank(byte bank) -> void
 static NES.NESLib.sachen150_set(byte value) -> void
 static NES.NESLib.sachen243_set(byte value) -> void
+static NES.NESLib.sed() -> void
 static NES.NESLib.sprite0_hit() -> bool
 static NES.NESLib.sprite0_wait() -> void
 static NES.NESLib.sunsoft184_set_chr_bank(byte bank) -> void

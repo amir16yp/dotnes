@@ -1,46 +1,55 @@
 namespace NES;
 
 /// <summary>
-/// Return value of <see cref="NESLib.pad_poll(byte)"/>
+/// Controller buttons in <b>LSB-first</b> order (ROR shift-in), as returned by
+/// <see cref="NESLib.pad_poll"/> / <see cref="NESLib.pad_poll_lsb"/>.
+/// Serial order A→B→Select→Start→Up→Down→Left→Right lands in bits 0→7.
 /// </summary>
+[Flags]
 public enum PAD : byte
 {
-    /// <summary>
-    /// A flag (bit 0) with value 0x01.
-    /// </summary>
+    /// <summary>A (bit 0) = 0x01.</summary>
     A = 0x01,
-    /// <summary>
-    /// B flag (bit 1) with value 0x02.
-    /// </summary>
+    /// <summary>B (bit 1) = 0x02.</summary>
     B = 0x02,
-
-    /// <summary>
-    /// SELECT flag (bit 2) with value 0x04.
-    /// </summary>
+    /// <summary>SELECT (bit 2) = 0x04.</summary>
     SELECT = 0x04,
-    /// <summary>
-    /// START flag (bit 3) with value 0x08.
-    /// </summary>
+    /// <summary>START (bit 3) = 0x08.</summary>
     START = 0x08,
-    /// <summary>
-    /// UP flag (bit 4) with value 0x10.
-    /// </summary>
+    /// <summary>UP (bit 4) = 0x10.</summary>
     UP = 0x10,
-
-    /// <summary>
-    /// DOWN flag (bit 5) with value 0x20.
-    /// </summary>
+    /// <summary>DOWN (bit 5) = 0x20.</summary>
     DOWN = 0x20,
-
-    /// <summary>
-    /// LEFT flag (bit 6) with value 0x40.
-    /// </summary>
+    /// <summary>LEFT (bit 6) = 0x40.</summary>
     LEFT = 0x40,
-
-    /// <summary>
-    /// RIGHT flag (bit 7) with value 0x80.
-    /// </summary>
+    /// <summary>RIGHT (bit 7) = 0x80.</summary>
     RIGHT = 0x80,
+}
+
+/// <summary>
+/// Controller buttons in <b>MSB-first</b> order (ROL shift-in), as returned by
+/// <see cref="NESLib.pad_poll_msb"/>. Same serial buttons, but A ends in bit 7
+/// (Super Mario Bros. and many commercial games use this packing).
+/// </summary>
+[Flags]
+public enum PADMSB : byte
+{
+    /// <summary>RIGHT (bit 0) = 0x01.</summary>
+    RIGHT = 0x01,
+    /// <summary>LEFT (bit 1) = 0x02.</summary>
+    LEFT = 0x02,
+    /// <summary>DOWN (bit 2) = 0x04.</summary>
+    DOWN = 0x04,
+    /// <summary>UP (bit 3) = 0x08.</summary>
+    UP = 0x08,
+    /// <summary>START (bit 4) = 0x10.</summary>
+    START = 0x10,
+    /// <summary>SELECT (bit 5) = 0x20.</summary>
+    SELECT = 0x20,
+    /// <summary>B (bit 6) = 0x40.</summary>
+    B = 0x40,
+    /// <summary>A (bit 7) = 0x80.</summary>
+    A = 0x80,
 }
 
 /// <summary>

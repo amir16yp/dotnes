@@ -2453,8 +2453,10 @@ partial class IL2NESWriter
                         }
                         break;
                     case nameof(NESLib.pad_poll):
+                    case nameof(NESLib.pad_poll_msb):
+                    case nameof(NESLib.pad_reverse_bits):
                     case nameof(NESLib.pad_trigger):
-                        // pad_poll/pad_trigger returns result in A — store to dynamically allocated temp
+                        // pad_poll*/pad_trigger/pad_reverse_bits return result in A — store to temp
                         EmitWithLabel(Opcode.JSR, AddressMode.Absolute, operand);
                         if (_padReloadAddress == 0)
                         {
@@ -2743,6 +2745,14 @@ partial class IL2NESWriter
                         break;
                     case nameof(NESLib.sei):
                         Emit(Opcode.SEI, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.cld):
+                        Emit(Opcode.CLD, AddressMode.Implied);
+                        argsAlreadyPopped = true;
+                        break;
+                    case nameof(NESLib.sed):
+                        Emit(Opcode.SED, AddressMode.Implied);
                         argsAlreadyPopped = true;
                         break;
                     case nameof(NESLib.nop):
@@ -4539,6 +4549,107 @@ partial class IL2NESWriter
                         _immediateInA = null;
                         argsAlreadyPopped = true;
                         break;
+                    // Runtime APU register writers — value already in A (like mapper STA helpers).
+                    case nameof(NESLib.apu_status_write):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_STATUS);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_frame):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_FRAME);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_pulse1_ctrl):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_PULSE1_CTRL);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_pulse1_sweep):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_PULSE1_SWEEP);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_pulse1_timer_lo):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_PULSE1_TIMER_LO);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_pulse1_timer_hi):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_PULSE1_TIMER_HI);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_pulse2_ctrl):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_PULSE2_CTRL);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_pulse2_sweep):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_PULSE2_SWEEP);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_pulse2_timer_lo):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_PULSE2_TIMER_LO);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_pulse2_timer_hi):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_PULSE2_TIMER_HI);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_triangle_ctrl):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_TRIANGLE_CTRL);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_triangle_timer_lo):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_TRIANGLE_TIMER_LO);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_triangle_timer_hi):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_TRIANGLE_TIMER_HI);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_noise_ctrl):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_NOISE_CTRL);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_noise_period):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_NOISE_PERIOD);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_noise_length):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_NOISE_LENGTH);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_dmc_freq):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_DMC_FREQ);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_dmc_raw):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_DMC_RAW);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_dmc_start):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_DMC_START);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
+                    case nameof(NESLib.apu_dmc_len):
+                        Emit(Opcode.STA, AddressMode.Absolute, NESLib.APU_DMC_LEN);
+                        _immediateInA = null;
+                        _pokeLastValue = null;
+                        break;
                     case nameof(NESLib.memfill):
                         EmitWithLabel(Opcode.JSR, AddressMode.Absolute, nameof(NESLib.memfill));
                         UsedMethods?.Add(nameof(NESLib.memfill));
@@ -5033,7 +5144,8 @@ partial class IL2NESWriter
                         // A now has a new return value; any previous pad_poll result is gone.
                         // pad_poll sets its own flag after this block, so this only clears
                         // the flag for non-pad_poll calls (e.g. rand8).
-                        if (operand != nameof(NESLib.pad_poll) && operand != nameof(NESLib.pad_trigger)
+                        if (operand != nameof(NESLib.pad_poll) && operand != nameof(NESLib.pad_poll_msb)
+                            && operand != nameof(NESLib.pad_trigger)
                             && operand != nameof(NESLib.pad_pressed))
                         {
                             _padPollResultAvailable = false;

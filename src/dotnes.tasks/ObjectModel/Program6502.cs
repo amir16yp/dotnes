@@ -981,9 +981,16 @@ public class Program6502
             implementedNesLib is null || !implementedNesLib.Contains(name);
 
         // pad_poll is needed directly or as a dependency of pad_trigger/pad_state
-        if ((usedMethods.Contains("pad_poll") || usedMethods.Contains("pad_trigger") || usedMethods.Contains("pad_state"))
+        if ((usedMethods.Contains("pad_poll") || usedMethods.Contains("pad_trigger") || usedMethods.Contains("pad_state")
+                || usedMethods.Contains("pad_poll_lsb"))
             && NotImplemented("pad_poll"))
             action(BuiltInSubroutines.PadPoll());
+        if (usedMethods.Contains("pad_poll_msb") && NotImplemented("pad_poll_msb"))
+            action(BuiltInSubroutines.PadPollMsb());
+        if ((usedMethods.Contains("pad_reverse_bits") || usedMethods.Contains("pad_from_msb")
+                || usedMethods.Contains("pad_to_msb"))
+            && NotImplemented("pad_reverse_bits"))
+            action(BuiltInSubroutines.PadReverseBits());
         // pad_trigger/pad_state: included when directly called OR via oam_spr+pad_poll pattern
         if ((usedMethods.Contains("pad_trigger") || (needsDecsp4 && usedMethods.Contains("pad_poll")))
             && NotImplemented("pad_trigger"))

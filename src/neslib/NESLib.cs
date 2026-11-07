@@ -242,12 +242,18 @@ public static partial class NESLib
     /// </summary>
     public static void sei() => throw null!;
 
+    /// <summary>clear decimal mode (6502 CLD)</summary>
+    public static void cld() => throw null!;
+
+    /// <summary>set decimal mode (6502 SED)</summary>
+    public static void sed() => throw null!;
+
     /// <summary>6502 NOP</summary>
     public static void nop() => throw null!;
-    /// <summary>6502 PHA</summary>
+    /// <summary>6502 PHA — push A</summary>
     public static void pha() => throw null!;
-    /// <summary>6502 PLA</summary>
-    public static void pla() => throw null!;
+    /// <summary>6502 PLA — pull into A (return value is A)</summary>
+    public static byte pla() => throw null!;
     /// <summary>6502 PHP</summary>
     public static void php() => throw null!;
     /// <summary>6502 PLP</summary>
@@ -479,16 +485,41 @@ public static partial class NESLib
     public static byte oam_spr_2x2(byte x, byte y, byte topLeft, byte bottomLeft, byte topRight, byte bottomRight, byte attr, byte sprid) => throw null!;
 
     /// <summary>
-    /// poll controller and return enum like PAD.LEFT, etc.
+    /// Poll controller (LSB-first / ROR packing). Same as <see cref="pad_poll_lsb"/>.
     /// </summary>
     /// <param name="pad">pad number (0 or 1)</param>
-    /// <returns>Enum like PAD.LEFT, etc.</returns>
     public static PAD pad_poll(byte pad) => throw null!;
 
     /// <summary>
-    /// poll controller 1
+    /// Poll controller with LSB-first bit order (A in bit 0). Alias of <see cref="pad_poll"/>.
     /// </summary>
+    public static PAD pad_poll_lsb(byte pad) => pad_poll(pad);
+
+    /// <summary>
+    /// Poll controller with MSB-first bit order (A in bit 7) — matches SMB-style ROL packing.
+    /// </summary>
+    public static PADMSB pad_poll_msb(byte pad) => throw null!;
+
+    /// <summary>Bit-reverse a pad byte between <see cref="PAD"/> and <see cref="PADMSB"/> layouts.</summary>
+    public static byte pad_reverse_bits(byte bits) => throw null!;
+
+    /// <summary>Convert MSB-packed buttons to LSB <see cref="PAD"/>.</summary>
+    public static PAD pad_from_msb(PADMSB bits) => (PAD)pad_reverse_bits((byte)bits);
+
+    /// <summary>Convert LSB <see cref="PAD"/> to MSB-packed buttons.</summary>
+    public static PADMSB pad_to_msb(PAD bits) => (PADMSB)pad_reverse_bits((byte)bits);
+
+    /// <summary>Poll controller 1 (LSB-first).</summary>
     public static PAD pad1_poll() => pad_poll(0);
+
+    /// <summary>Poll controller 2 (LSB-first).</summary>
+    public static PAD pad2_poll() => pad_poll(1);
+
+    /// <summary>Poll controller 1 (MSB-first).</summary>
+    public static PADMSB pad1_poll_msb() => pad_poll_msb(0);
+
+    /// <summary>Poll controller 2 (MSB-first).</summary>
+    public static PADMSB pad2_poll_msb() => pad_poll_msb(1);
 
     /// <summary>
     /// buttons newly pressed this frame on controller 1
@@ -496,9 +527,19 @@ public static partial class NESLib
     public static PAD pad1_trigger() => pad_trigger(0);
 
     /// <summary>
+    /// buttons newly pressed this frame on controller 2
+    /// </summary>
+    public static PAD pad2_trigger() => pad_trigger(1);
+
+    /// <summary>
     /// current held buttons on controller 1
     /// </summary>
     public static PAD pad1_state() => pad_state(0);
+
+    /// <summary>
+    /// current held buttons on controller 2
+    /// </summary>
+    public static PAD pad2_state() => pad_state(1);
 
     /// <summary>
     /// set metasprite in OAM buffer
@@ -1050,13 +1091,64 @@ public static partial class NESLib
     public static byte joypad1_read() => peek(JOYPAD1);
     /// <summary>Raw read of controller port 2 ($4017).</summary>
     public static byte joypad2_read() => peek(JOYPAD2);
+    /// <summary>Serial data bit from port 1 (bit 0) — one button during a shift sequence.</summary>
+    public static bool joypad1_data() => (peek(JOYPAD1) & (byte)JOYPADBIT.DATA) != 0;
+    /// <summary>Serial data bit from port 2 (bit 0) — one button during a shift sequence.</summary>
+    public static bool joypad2_data() => (peek(JOYPAD2) & (byte)JOYPADBIT.DATA) != 0;
     /// <summary>Raw write to controller port 1 ($4016) — typically the strobe line.</summary>
     public static void joypad1_write(JOYSTROBE value) => poke(JOYPAD1, (byte)value);
     /// <summary>Write APU frame counter ($4017). Same address as <see cref="JOYPAD2"/> on read.</summary>
-    public static void apu_frame(APUFRAME value) => poke(APU_FRAME, (byte)value);
+    public static void apu_frame(APUFRAME value) => throw null!;
 
     /// <summary>Write APUSTATUS ($4015) channel enables immediately.</summary>
-    public static void apu_status_write(APUSTATUS value) => poke(APU_STATUS, (byte)value);
+    public static void apu_status_write(APUSTATUS value) => throw null!;
+
+    /// <summary>Read APUSTATUS ($4015) — length-counter / DMC interrupt status.</summary>
+    public static byte apu_status() => peek(APU_STATUS);
+
+    // Runtime APU channel register writes (accept variables; unlike apu_play_* helpers).
+    // ILDispatch emits STA abs — same cost as poke to a fixed APU address.
+
+    /// <summary>Write pulse 1 control ($4000).</summary>
+    public static void apu_pulse1_ctrl(byte value) => throw null!;
+    /// <summary>Write pulse 1 sweep ($4001).</summary>
+    public static void apu_pulse1_sweep(byte value) => throw null!;
+    /// <summary>Write pulse 1 timer low ($4002).</summary>
+    public static void apu_pulse1_timer_lo(byte value) => throw null!;
+    /// <summary>Write pulse 1 timer high / length ($4003).</summary>
+    public static void apu_pulse1_timer_hi(byte value) => throw null!;
+
+    /// <summary>Write pulse 2 control ($4004).</summary>
+    public static void apu_pulse2_ctrl(byte value) => throw null!;
+    /// <summary>Write pulse 2 sweep ($4005).</summary>
+    public static void apu_pulse2_sweep(byte value) => throw null!;
+    /// <summary>Write pulse 2 timer low ($4006).</summary>
+    public static void apu_pulse2_timer_lo(byte value) => throw null!;
+    /// <summary>Write pulse 2 timer high / length ($4007).</summary>
+    public static void apu_pulse2_timer_hi(byte value) => throw null!;
+
+    /// <summary>Write triangle linear counter / control ($4008).</summary>
+    public static void apu_triangle_ctrl(byte value) => throw null!;
+    /// <summary>Write triangle timer low ($400A).</summary>
+    public static void apu_triangle_timer_lo(byte value) => throw null!;
+    /// <summary>Write triangle timer high / length ($400B).</summary>
+    public static void apu_triangle_timer_hi(byte value) => throw null!;
+
+    /// <summary>Write noise control ($400C).</summary>
+    public static void apu_noise_ctrl(byte value) => throw null!;
+    /// <summary>Write noise period ($400E).</summary>
+    public static void apu_noise_period(byte value) => throw null!;
+    /// <summary>Write noise length ($400F).</summary>
+    public static void apu_noise_length(byte value) => throw null!;
+
+    /// <summary>Write DMC frequency / IRQ ($4010).</summary>
+    public static void apu_dmc_freq(byte value) => throw null!;
+    /// <summary>Write DMC raw DAC ($4011).</summary>
+    public static void apu_dmc_raw(byte value) => throw null!;
+    /// <summary>Write DMC sample start ($4012).</summary>
+    public static void apu_dmc_start(byte value) => throw null!;
+    /// <summary>Write DMC sample length ($4013).</summary>
+    public static void apu_dmc_len(byte value) => throw null!;
 
     // Battery-backed SRAM address range ($6000-$7FFF) for use with peek()/poke()
 

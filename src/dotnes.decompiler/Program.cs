@@ -21,9 +21,9 @@ for (int i = 0; i < args.Length; i++)
         preference = args[++i].Trim().ToLowerInvariant() switch
         {
             "transpile" => PackModePreference.Transpile,
-            "raw" or "rawprg" => PackModePreference.RawPrg,
+            "softcpu" or "soft" => PackModePreference.SoftCpu,
             "auto" => PackModePreference.Auto,
-            _ => throw new ArgumentException($"Unknown mode '{args[i]}'. Expected auto, transpile, or raw."),
+            _ => throw new ArgumentException($"Unknown mode '{args[i]}'. Expected auto, transpile, or softcpu."),
         };
         continue;
     }
@@ -87,7 +87,7 @@ string projectName = Path.GetFileNameWithoutExtension(inputPath);
 decompiler.WriteProject(outputDir, projectName);
 
 logger.WriteStatus($"Pack mode: {decompiler.ResolvedPackMode}");
-if (decompiler.ResolvedPackMode == PackMode.RawPrg)
+if (decompiler.ResolvedPackMode == PackMode.SoftCpu)
     logger.WriteStatus($"Recovery: {decompiler.RecoveryStyle}");
 logger.WriteStatus("Decompilation complete.");
 return 0;
@@ -99,12 +99,12 @@ static void PrintUsage()
     Console.WriteLine("Decompiles a .nes ROM into a C# project rebuildable with dotnes.");
     Console.WriteLine();
     Console.WriteLine("Pack mode:");
-    Console.WriteLine("  --mode auto|transpile|raw");
-    Console.WriteLine("  auto       Detect dotnes layout → Transpile; otherwise RawPrg (default)");
+    Console.WriteLine("  --mode auto|transpile|softcpu");
+    Console.WriteLine("  auto       Detect dotnes layout → Transpile; otherwise SoftCpu (default)");
     Console.WriteLine("  transpile  Force NESLib C# recovery (best for dotnes-built ROMs)");
-    Console.WriteLine("  raw        Force RawPrg packing (byte-identical rebuild via prg.bin)");
+    Console.WriteLine("  softcpu    Soft-CPU Program.cs → 6502 (prg.bin fills data gaps)");
     Console.WriteLine();
-    Console.WriteLine("Soft-CPU recovery (RawPrg / arbitrary ROMs):");
+    Console.WriteLine("Soft-CPU recovery (SoftCpu / arbitrary ROMs):");
     Console.WriteLine("  (default)  Optimized readability — structure loops; keep all routines (no DCE)");
     Console.WriteLine("  --exact    Opt out of structuring (more literal goto/labels)");
     Console.WriteLine("  --no-optimize  Alias for --exact");

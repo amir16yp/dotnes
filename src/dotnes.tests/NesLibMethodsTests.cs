@@ -105,6 +105,37 @@ public class NesLibMethodsTests : RoslynTests
     }
 
     [Fact]
+    public void PadPollMsb_EmitsRolBuiltin()
+    {
+        using var transpiler = BuildProgram(
+            """
+            PADMSB p = pad_poll_msb(0);
+            if ((p & PADMSB.START) != 0) { }
+            while (true) ;
+            """, out var program);
+
+        Assert.Contains("pad_poll_msb", transpiler.UsedMethods);
+        Assert.NotNull(program.GetBlock("pad_poll_msb"));
+        Assert.Null(program.GetBlock("pad_poll")); // LSB poll not pulled in
+    }
+
+    [Fact]
+    public void PadReverseBits_ConvertsBetweenLayouts()
+    {
+        using var transpiler = BuildProgram(
+            """
+            PADMSB m = pad_poll_msb(0);
+            PAD l = pad_from_msb(m);
+            if ((l & PAD.A) != 0) { }
+            while (true) ;
+            """, out var program);
+
+        Assert.Contains("pad_reverse_bits", transpiler.UsedMethods);
+        Assert.NotNull(program.GetBlock("pad_reverse_bits"));
+        Assert.NotNull(program.GetBlock("pad_poll_msb"));
+    }
+
+    [Fact]
     public void ApuStopAll_StopsBothPulseChannels()
     {
         using var transpiler = BuildProgram(

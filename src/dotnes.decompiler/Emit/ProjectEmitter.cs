@@ -22,9 +22,9 @@ static class ProjectEmitter
             sb.AppendLine("    <NESMirroring>Vertical</NESMirroring>");
         if (rom.HasBattery)
             sb.AppendLine("    <NESBattery>true</NESBattery>");
-        if (packMode == PackMode.RawPrg)
+        if (packMode == PackMode.SoftCpu)
         {
-            sb.AppendLine("    <NESPackMode>RawPrg</NESPackMode>");
+            sb.AppendLine("    <NESPackMode>SoftCpu</NESPackMode>");
             sb.AppendLine("    <NESRawPrg>prg.bin</NESRawPrg>");
             sb.AppendLine("    <NESRawHeader>header.bin</NESRawHeader>");
             if (rom.HasTrainer)
@@ -51,14 +51,15 @@ static class ProjectEmitter
         if (localSource != null)
             sb.AppendLine($"    <RestoreAdditionalProjectSources>{localSource}</RestoreAdditionalProjectSources>");
         AppendRomProperties(sb, rom, packMode);
-        if (packMode == PackMode.RawPrg)
+        if (packMode == PackMode.SoftCpu)
         {
-            // Soft-CPU Program.cs is readable game logic, not NESLib transpile input.
-            // Analyzers target Transpile patterns; packing uses prg.bin regardless of IL.
-            // Keep unused local functions from static discovery (no dead-code elimination).
+            // Soft-CPU Program.cs must still compile as normal C# against neslib.
+            // SoftCpu lowers Program.cs; prg.bin fills data gaps. Analyzers target Transpile
+            // patterns and would false-flag soft-CPU idioms, so they stay off here.
+            // CS8321/0162/0164: keep every discovered routine / literal branch / partial CFG.
             sb.AppendLine("    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>");
             sb.AppendLine("    <RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>");
-            sb.AppendLine("    <NoWarn>$(NoWarn);CS8321;CS0162;CS0164</NoWarn>");
+            sb.AppendLine("    <NoWarn>$(NoWarn);CS8321;CS0162;CS0164;CS0168;CS0219</NoWarn>");
         }
         sb.AppendLine("  </PropertyGroup>");
         sb.AppendLine();
@@ -85,9 +86,9 @@ static class ProjectEmitter
     public static string GenerateRomImageCs(NESRomReader rom)
     {
         var sb = new StringBuilder();
-        sb.AppendLine("// Auto-generated ROM image metadata for RawPrg rebuilds.");
+        sb.AppendLine("// Auto-generated ROM image metadata for SoftCpu rebuilds.");
         sb.AppendLine("// Header (and trainer) match header.bin / trainer.bin exactly.");
-        sb.AppendLine("// PRG authority remains prg.bin until banked verbatim spans replace it.");
+        sb.AppendLine("// prg.bin is the SoftCpu data/gap bridge; Program.cs owns lowered code.");
         sb.AppendLine();
         sb.AppendLine("static class RomImage");
         sb.AppendLine("{");
@@ -151,7 +152,7 @@ static class ProjectEmitter
             File.WriteAllText(Path.Combine(outputDir, "nuget.config"), nuget.ToString());
         }
 
-        if (packMode == PackMode.RawPrg)
+        if (packMode == PackMode.SoftCpu)
         {
             File.WriteAllBytes(Path.Combine(outputDir, "prg.bin"), rom.PrgRom);
             File.WriteAllBytes(Path.Combine(outputDir, "header.bin"), rom.Header);
@@ -251,21 +252,47 @@ static class ProjectEmitter
 
     static string? FindLocalPackageSource()
     {
-        // Prefer the directory next to the running decompiler (bin/Debug when building from source)
+        // Prefer the directory next to the running decompiler (bin/Debug|Release when building from source)
         string toolDir = AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         if (HasDotnesNupkg(toolDir))
             return toolDir;
 
-        // Walk up a few levels looking for bin/Debug packs
+        // Walk up looking for the newest local pack (Debug or Release) so PADMSB / new APIs resolve.
         string? dir = toolDir;
-        for (int i = 0; i < 5 && dir != null; i++)
+        string? best = null;
+        DateTime bestWrite = DateTime.MinValue;
+        for (int i = 0; i < 6 && dir != null; i++)
         {
-            string candidate = Path.Combine(dir, "bin", "Debug");
-            if (HasDotnesNupkg(candidate))
-                return candidate;
+            foreach (string cfg in new[] { "Debug", "Release" })
+            {
+                string candidate = Path.Combine(dir, "bin", cfg);
+                if (!HasDotnesNupkg(candidate))
+                    continue;
+                DateTime write = NewestDotnesNupkgWriteTime(candidate);
+                if (write > bestWrite)
+                {
+                    bestWrite = write;
+                    best = candidate;
+                }
+            }
             dir = Directory.GetParent(dir)?.FullName;
         }
-        return null;
+        return best;
+    }
+
+    static DateTime NewestDotnesNupkgWriteTime(string dir)
+    {
+        DateTime best = DateTime.MinValue;
+        foreach (string file in Directory.EnumerateFiles(dir, "dotnes.*.nupkg"))
+        {
+            string name = Path.GetFileName(file);
+            if (name is null || !Regex.IsMatch(name, @"^dotnes\.\d.*\.nupkg$", RegexOptions.IgnoreCase))
+                continue;
+            DateTime w = File.GetLastWriteTimeUtc(file);
+            if (w > best)
+                best = w;
+        }
+        return best;
     }
 
     static bool HasDotnesNupkg(string dir) =>

@@ -101,4 +101,32 @@ public class ApuTests : RoslynTests
         var hex = Convert.ToHexString(bytes);
         Assert.Contains("A930" + "8D0440", hex);   // LDA #$30, STA $4004
     }
+
+    [Fact]
+    public void RegisterWriters_EmitInlineAbsoluteStores()
+    {
+        // ILDispatch STA abs — same cost as poke to a fixed APU address.
+        var hex = Convert.ToHexString(GetProgramBytes(
+            """
+            apu_status_write(APUSTATUS.PULSE1 | APUSTATUS.PULSE2 | APUSTATUS.TRIANGLE | APUSTATUS.NOISE);
+            apu_pulse1_ctrl(0x90);
+            apu_pulse1_sweep(0x7F);
+            apu_pulse2_ctrl(0x9D);
+            apu_triangle_ctrl(0xFF);
+            apu_noise_ctrl(0x10);
+            apu_noise_period(3);
+            apu_noise_length(0x58);
+            apu_dmc_raw(0x40);
+            while (true) ;
+            """));
+        Assert.Contains("A90F" + "8D1540", hex); // status $4015
+        Assert.Contains("A990" + "8D0040", hex); // pulse1 ctrl
+        Assert.Contains("A97F" + "8D0140", hex); // pulse1 sweep
+        Assert.Contains("A99D" + "8D0440", hex); // pulse2 ctrl
+        Assert.Contains("A9FF" + "8D0840", hex); // triangle ctrl
+        Assert.Contains("A910" + "8D0C40", hex); // noise ctrl
+        Assert.Contains("A903" + "8D0E40", hex); // noise period
+        Assert.Contains("A958" + "8D0F40", hex); // noise length
+        Assert.Contains("A940" + "8D1140", hex); // dmc raw
+    }
 }

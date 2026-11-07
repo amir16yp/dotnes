@@ -129,21 +129,66 @@
     painting = false;
   });
 
-  sheet.addEventListener("click", (ev) => {
-    const rect = sheet.getBoundingClientRect();
-    const scaleX = sheet.width / rect.width;
-    const scaleY = sheet.height / rect.height;
+  function tileIndexAt(ev, canvas) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
     const x = (ev.clientX - rect.left) * scaleX;
     const y = (ev.clientY - rect.top) * scaleY;
     const tilePx = 8 * zoom;
     const col = Math.floor(x / tilePx);
     const row = Math.floor(y / tilePx);
     const idx = row * cols + col;
-    if (idx >= 0 && idx < tiles.length) {
+    return idx >= 0 && idx < tiles.length ? idx : -1;
+  }
+
+  sheet.addEventListener("click", (ev) => {
+    const idx = tileIndexAt(ev, sheet);
+    if (idx >= 0) {
       selected = idx;
       drawSheet();
       drawDetail();
     }
+  });
+
+  const menu = document.getElementById("ctx");
+  function hideMenu() {
+    menu.classList.add("hidden");
+  }
+
+  sheet.addEventListener("contextmenu", (ev) => {
+    ev.preventDefault();
+    const idx = tileIndexAt(ev, sheet);
+    if (idx < 0) return;
+    selected = idx;
+    drawSheet();
+    drawDetail();
+    menu.style.left = ev.clientX + "px";
+    menu.style.top = ev.clientY + "px";
+    menu.classList.remove("hidden");
+  });
+
+  detail.addEventListener("contextmenu", (ev) => {
+    ev.preventDefault();
+    if (!tiles[selected]) return;
+    menu.style.left = ev.clientX + "px";
+    menu.style.top = ev.clientY + "px";
+    menu.classList.remove("hidden");
+  });
+
+  menu.addEventListener("click", (ev) => {
+    const btn = ev.target.closest("[data-cmd]");
+    if (!btn) return;
+    hideMenu();
+    if (btn.dataset.cmd === "findReferences") {
+      vscode.postMessage({ type: "findReferences", tileIndex: selected });
+    }
+  });
+
+  window.addEventListener("click", hideMenu);
+  window.addEventListener("blur", hideMenu);
+  window.addEventListener("keydown", (ev) => {
+    if (ev.key === "Escape") hideMenu();
   });
 
   window.addEventListener("message", (event) => {

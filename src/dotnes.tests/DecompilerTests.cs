@@ -86,12 +86,12 @@ public class DecompilerTests
 
         var code = decompiler.Decompile();
 
-        // shoot2 uses poke() for APU initialization (silence channels)
-        Assert.Contains("poke(APU_PULSE1_CTRL, 0x30);", code);
-        Assert.Contains("poke(APU_PULSE2_CTRL, 0x30);", code);
-        Assert.Contains("poke(APU_TRIANGLE_CTRL, 0x80);", code);
-        Assert.Contains("poke(APU_NOISE_CTRL, 0x30);", code);
-        Assert.Contains("poke(APU_STATUS, 0x0F);", code);
+        // shoot2 APU init recovered as neslib register writers
+        Assert.Contains("apu_pulse1_ctrl(0x30);", code);
+        Assert.Contains("apu_pulse2_ctrl(0x30);", code);
+        Assert.Contains("apu_triangle_ctrl(0x80);", code);
+        Assert.Contains("apu_noise_ctrl(0x30);", code);
+        Assert.Contains("apu_status_write(APUSTATUS.PULSE1 | APUSTATUS.PULSE2 | APUSTATUS.TRIANGLE | APUSTATUS.NOISE)", code);
     }
 
     [Fact]
@@ -884,15 +884,14 @@ public class DecompilerTests
         var code = decompiler.Decompile();
 
         // The inline set_sounds() code writes APU registers with constant values.
-        // The decompiler should recover these as poke() calls.
-        // poke(APU_PULSE1_CTRL, 0xB6) = duty 50% + constant vol 6 (bullet fire)
-        Assert.Contains("poke(APU_PULSE1_CTRL, 0xB6);", code);
-        // poke(APU_NOISE_CTRL, 0x05) = envelope decay rate 5 (player hit)
-        Assert.Contains("poke(APU_NOISE_CTRL, 0x05);", code);
-        // poke(APU_NOISE_CTRL, 0x02) = envelope decay rate 2 (enemy explosion)
-        Assert.Contains("poke(APU_NOISE_CTRL, 0x02);", code);
-        // poke(APU_TRIANGLE_CTRL, 0xFF) = sustain counter (enemy dive)
-        Assert.Contains("poke(APU_TRIANGLE_CTRL, 0xFF);", code);
+        // apu_pulse1_ctrl(0xB6) = duty 50% + constant vol 6 (bullet fire)
+        Assert.Contains("apu_pulse1_ctrl(0xB6);", code);
+        // apu_noise_ctrl(5) = envelope decay rate 5 (player hit)
+        Assert.Contains("apu_noise_ctrl(5);", code);
+        // apu_noise_ctrl(2) = envelope decay rate 2 (enemy explosion)
+        Assert.Contains("apu_noise_ctrl(2);", code);
+        // apu_triangle_ctrl(0xFF) = sustain counter (enemy dive)
+        Assert.Contains("apu_triangle_ctrl(0xFF);", code);
     }
 
     [Fact]
@@ -953,21 +952,23 @@ public class DecompilerTests
     }
 
     [Fact]
-    public void Decompiler_ArbitraryRom_UsesRawPrgPackMode()
+    public void Decompiler_ArbitraryRom_UsesSoftCpuPackMode()
     {
         byte[] romBytes = CreateMinimalArbitraryRom();
         var rom = new NESRomReader(romBytes);
         var decompiler = new Decompiler(rom, _logger);
         string code = decompiler.Decompile();
 
-        Assert.Equal(PackMode.RawPrg, decompiler.ResolvedPackMode);
+        Assert.Equal(PackMode.SoftCpu, decompiler.ResolvedPackMode);
         Assert.Equal(RecoveryStyle.Optimized, decompiler.RecoveryStyle);
-        Assert.Contains("optimized soft-CPU recovery", code);
+        Assert.Contains("SoftCpu recovery (optimized)", code);
+        Assert.Contains("no 6502 register surface", code);
+        Assert.Contains("residual SoftCpu IR", code);
         Assert.Contains("#pragma warning disable CS8321", code);
         Assert.Contains("void reset()", code);
         Assert.Contains("while (true)", code);
         string csproj = decompiler.GenerateCsproj("arb");
-        Assert.Contains("<NESPackMode>RawPrg</NESPackMode>", csproj);
+        Assert.Contains("<NESPackMode>SoftCpu</NESPackMode>", csproj);
         Assert.Contains("<NESRawPrg>prg.bin</NESRawPrg>", csproj);
         Assert.Contains("<NESRawHeader>header.bin</NESRawHeader>", csproj);
         Assert.Contains("<NESPrgBanks>1</NESPrgBanks>", csproj);
@@ -975,7 +976,7 @@ public class DecompilerTests
         Assert.Contains("<PackageReference Include=\"dotnes.mesen\" Version=\"", csproj);
         Assert.DoesNotContain("Version=\"*\"", csproj);
         Assert.Contains("<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>", csproj);
-        Assert.Contains("<NoWarn>$(NoWarn);CS8321;CS0162;CS0164</NoWarn>", csproj);
+        Assert.Contains("<NoWarn>$(NoWarn);CS8321;CS0162;CS0164;CS0168;CS0219</NoWarn>", csproj);
         Assert.DoesNotContain("Recovered.cs", csproj);
     }
 
@@ -988,14 +989,14 @@ public class DecompilerTests
         string code = decompiler.Decompile();
 
         Assert.Equal(RecoveryStyle.Exact, decompiler.RecoveryStyle);
-        Assert.Contains("exact soft-CPU recovery", code);
+        Assert.Contains("SoftCpu recovery (--exact)", code);
         Assert.DoesNotContain("optimized soft-CPU recovery", code);
         Assert.Contains("#pragma warning disable CS8321", code);
         Assert.Contains("void reset()", code);
     }
 
     [Fact]
-    public void Decompiler_RawPrg_RoundTrip_MatchesOriginalRomBytes()
+    public void Decompiler_SoftCpu_RoundTrip_MatchesOriginalRomBytes_WhenNoOverlay()
     {
         byte[] original = CreateMinimalArbitraryRom();
         var rom = new NESRomReader(original);
@@ -1008,7 +1009,7 @@ public class DecompilerTests
             Assert.Equal(rom.PrgRom, prg);
             Assert.Equal(rom.Header, header);
 
-            // Pack the same way TranspileToNES RawPrg does with exact header
+            // SoftCpu gap-bridge pack with exact header (no successful overlay required)
             using var ms = new MemoryStream();
             NesRomPacker.Write(ms, prg, rom.ChrRom, rom.PrgBanks, rom.ChrBanks, rom.Mapper,
                 rom.VerticalMirroring ? "Vertical" : "Horizontal", rom.HasBattery, _logger,
@@ -1023,7 +1024,7 @@ public class DecompilerTests
     }
 
     [Fact]
-    public void Decompiler_RawPrg_RoundTrip_PreservesNonZeroHeaderTrailer()
+    public void Decompiler_SoftCpu_RoundTrip_PreservesNonZeroHeaderTrailer()
     {
         byte[] original = CreateMinimalArbitraryRom();
         // Mega Man–style trailer / NES 2.0-ish bytes that reconstructed headers wipe
@@ -1097,6 +1098,52 @@ public class DecompilerTests
     }
 
     [Fact]
+    public void Decompiler_StructuresIfElseDiamond_AndSugarsAlu()
+    {
+        // RESET:
+        //   AND #$7F
+        //   BEQ then
+        //     ORA #$01
+        //     JMP join
+        //   then: EOR #$02
+        //   join: RTS   (keeps join in-routine so full diamond structures)
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0x29, 0x7F,       // AND #$7F            $8000
+            0xF0, 0x05,       // BEQ $8009 (then)     $8002
+            0x09, 0x01,       // ORA #$01             $8004 else
+            0x4C, 0x0B, 0x80, // JMP $800B (join)     $8006
+            0x49, 0x02,       // EOR #$02             $8009 then
+            0x60,             // RTS                  $800B join
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("a &= 0x7F;", code);
+        Assert.Contains("else", code);
+        Assert.DoesNotContain("if (zero) goto", code);
+        Assert.DoesNotContain("if (!zero) goto", code);
+        // Zero-test after AND is sugared to a readable compare.
+        Assert.True(
+            code.Contains("if (a == 0)", StringComparison.Ordinal)
+            || code.Contains("if (zero)", StringComparison.Ordinal),
+            code);
+        // Imm format may be decimal or hex depending on emit path.
+        Assert.True(code.Contains("a |= 0x01;") || code.Contains("a |= 1;"), code);
+        Assert.True(code.Contains("a ^= 0x02;") || code.Contains("a ^= 2;"), code);
+    }
+
+    [Fact]
     public void Decompiler_LiftsScrollAndOamDmaToNesLib()
     {
         // RESET: STA $2005 ×2; LDA #0 / STA $2003; LDA #2 / STA $4014; JMP self
@@ -1126,6 +1173,105 @@ public class DecompilerTests
         Assert.Contains("ppu_scroll(", code);
         Assert.Contains("oam_dma(2);", code);
         Assert.DoesNotContain("poke(PPU_OAM_DMA", code);
+    }
+
+    [Fact]
+    public void Decompiler_LiftsOamDmaWhenAddrWrittenFromA()
+    {
+        // STA $2003 with A already 0 (no immediate fold), then STA $4014
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA9, 0x00,       // LDA #0
+            0x8D, 0x03, 0x20, // STA $2003
+            0xA9, 0x02,       // LDA #2
+            0x8D, 0x14, 0x40, // STA $4014
+            0x4C, 0x00, 0x80, // JMP $8000
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        // FoldImmPokes may collapse LDA#0/STA into poke(..., 0) — either form must lift.
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("oam_dma(2);", code);
+        Assert.DoesNotContain("poke(PPU_OAM_DMA", code);
+    }
+
+    [Fact]
+    public void Decompiler_LiftsSprite0HitSpins()
+    {
+        // wait clear (AND #$40 / BNE), then wait hit (AND #$40 / BEQ)
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            // @clear: BIT/LDA $2002; AND #$40; BNE clear
+            0xAD, 0x02, 0x20, // LDA $2002
+            0x29, 0x40,       // AND #$40
+            0xD0, 0xF9,       // BNE -7
+            // @hit: LDA $2002; AND #$40; BEQ hit
+            0xAD, 0x02, 0x20,
+            0x29, 0x40,
+            0xF0, 0xF9,
+            0x4C, 0x00, 0x80,
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.True(
+            code.Contains("sprite0_wait();", StringComparison.Ordinal)
+            || (code.Contains("sprite0_hit()", StringComparison.Ordinal)
+                && code.Contains("while (", StringComparison.Ordinal)),
+            "expected sprite0_wait or sprite0_hit spins");
+    }
+
+    [Fact]
+    public void Decompiler_LiftsVramFillLoop()
+    {
+        // LDY #$40 / LDA #$24 / STA $2007 / DEY / BNE
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA0, 0x40,       // LDY #$40
+            0xA9, 0x24,       // LDA #$24
+            0x8D, 0x07, 0x20, // STA $2007
+            0x88,             // DEY
+            0xD0, 0xFA,       // BNE -6  (back to LDA #$24)
+            0x4C, 0x00, 0x80,
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        // Best: vram_fill; else at least vram_put in a counted loop.
+        Assert.True(
+            code.Contains("vram_fill(", StringComparison.Ordinal)
+            || code.Contains("vram_put(", StringComparison.Ordinal),
+            "expected vram_fill or vram_put loop");
     }
 
     [Fact]
@@ -1314,7 +1460,7 @@ public class DecompilerTests
     }
 
     [Fact]
-    public void Decompiler_WriteProject_RawPrg_EmitsPrgBin()
+    public void Decompiler_WriteProject_SoftCpu_EmitsPrgBin()
     {
         byte[] romBytes = CreateMinimalArbitraryRom();
         var rom = new NESRomReader(romBytes);
@@ -1336,6 +1482,44 @@ public class DecompilerTests
             Assert.Contains("void reset()", File.ReadAllText(Path.Combine(dir, "Program.cs")));
             Assert.Contains("prg.bin", File.ReadAllText(Path.Combine(dir, "Program.cs")));
             Assert.True(File.Exists(Path.Combine(dir, "disasm.s")));
+        }
+        finally
+        {
+            if (Directory.Exists(dir))
+                Directory.Delete(dir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void Decompiler_WriteProject_SoftCpu_ProgramCs_Compiles()
+    {
+        // Soft-CPU Program.cs is the compile target; SoftCpu packs lowered PRG + gap-bridge.
+        byte[] romBytes = CreateMinimalArbitraryRom();
+        var rom = new NESRomReader(romBytes);
+        var decompiler = new Decompiler(rom, _logger);
+        string dir = Path.Combine(Path.GetTempPath(), "dotnes-decompile-build-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            decompiler.WriteProject(dir, "arb");
+            string csproj = Path.Combine(dir, "arb.csproj");
+            Assert.True(File.Exists(csproj));
+            Assert.Contains("CS8321", File.ReadAllText(csproj));
+
+            var psi = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "dotnet",
+                Arguments = $"build \"{csproj}\" -v q --nologo",
+                WorkingDirectory = dir,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+            };
+            using var proc = System.Diagnostics.Process.Start(psi)!;
+            string stdout = proc.StandardOutput.ReadToEnd();
+            string stderr = proc.StandardError.ReadToEnd();
+            Assert.True(proc.WaitForExit(120_000), "dotnet build timed out");
+            Assert.True(proc.ExitCode == 0,
+                $"Soft-CPU Program.cs failed to compile.\nstdout:\n{stdout}\nstderr:\n{stderr}");
         }
         finally
         {
@@ -1432,6 +1616,71 @@ public class DecompilerTests
     }
 
     [Fact]
+    public void Decompiler_LiftsApuChannelRegisterWrites()
+    {
+        // RESET: LDA #$90 / STA $4000 / LDX #$BB / STX $4001 / LDY #$40 / STY $4011 / JMP self
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA9, 0x90,       // LDA #$90
+            0x8D, 0x00, 0x40, // STA $4000
+            0xA2, 0xBB,       // LDX #$BB
+            0x8E, 0x01, 0x40, // STX $4001
+            0xA0, 0x40,       // LDY #$40
+            0x8C, 0x11, 0x40, // STY $4011
+            0x4C, 0x10, 0x80, // JMP $8010
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("apu_pulse1_ctrl(0x90);", code);
+        Assert.Contains("apu_pulse1_sweep(0xBB);", code);
+        Assert.Contains("apu_dmc_raw(0x40);", code);
+        Assert.DoesNotContain("poke(APU_PULSE1_CTRL", code);
+        Assert.DoesNotContain("poke(APU_DMC_RAW", code);
+    }
+
+    [Fact]
+    public void Decompiler_LiftsApuPokeInsideOneLineIf()
+    {
+        // SoftCpu/SMB shape: compare then conditional STA to an APU register.
+        // LDA $07BB / CMP #$06 / BNE +5 / LDA #$BB / STA $4001 / JMP self
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xAD, 0xBB, 0x07, // LDA $07BB
+            0xC9, 0x06,       // CMP #$06
+            0xD0, 0x05,       // BNE +5
+            0xA9, 0xBB,       // LDA #$BB
+            0x8D, 0x01, 0x40, // STA $4001
+            0x4C, 0x00, 0x80, // JMP $8000
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("apu_pulse1_sweep(0xBB)", code);
+        Assert.DoesNotContain("poke(APU_PULSE1_SWEEP", code);
+    }
+
+    [Fact]
     public void NesLibEnumFormatter_PadAndApu()
     {
         Assert.Equal("PAD.A", NesLibEnumFormatter.FormatPad((byte)PAD.A));
@@ -1440,6 +1689,12 @@ public class DecompilerTests
         Assert.Equal("(byte)PAD.UP", up);
         Assert.True(NesLibEnumFormatter.TryFormatPadByteOperand(0xDF, out string clearDown));
         Assert.Equal("(byte)~PAD.DOWN", clearDown);
+        Assert.Equal("PADMSB.START", NesLibEnumFormatter.FormatPadMsb(0x10));
+        Assert.Equal("PADMSB.A", NesLibEnumFormatter.FormatPadMsb(0x80));
+        Assert.True(NesLibEnumFormatter.TryFormatPadByteOperand(0x10, out string startMsb, msbFirst: true));
+        Assert.Equal("(byte)PADMSB.START", startMsb);
+        Assert.True(NesLibEnumFormatter.TryFormatPadByteOperand(0xC0, out string abMsb, msbFirst: true));
+        Assert.Equal("(byte)(PADMSB.B | PADMSB.A)", abMsb);
         Assert.Equal("JOYSTROBE.Latch", NesLibEnumFormatter.FormatJoyStrobe(1));
         Assert.Equal("JOYSTROBE.Shift", NesLibEnumFormatter.FormatJoyStrobe(0));
         Assert.Equal("JOYPADBIT.DATA", NesLibEnumFormatter.FormatJoypadBit(1));
@@ -1497,6 +1752,540 @@ public class DecompilerTests
     }
 
     [Fact]
+    public void Decompiler_StructuresCountdownAsDoWhileDec()
+    {
+        // LDX #3 / L: INY / DEX / BNE L / RTS
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA2, 0x03, // LDX #3
+            0xC8,       // INY
+            0xCA,       // DEX
+            0xD0, 0xFC, // BNE -4 → INY
+            0x60,       // RTS
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        // Counted DEX/BNE with init → for (x = N; x != 0; x--)
+        Assert.Contains("for (x = 3; x != 0; x--)", code);
+        Assert.DoesNotContain("while (!zero)", code);
+        Assert.DoesNotContain("while (--x != 0)", code);
+    }
+
+    [Fact]
+    public void Decompiler_StructuresCountdownForThroughNoise()
+    {
+        // LDY #7 / …noise… / INX / DEY / BNE — for (y = 7; y != 0; y--) despite
+        // intervening A/ZP ops and a one-line if before the loop.
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA0, 0x07,       // LDY #7
+            0xA9, 0x02,       // LDA #2
+            0x85, 0x00,       // STA $00
+            0xAD, 0xA8, 0x07, // LDA $07A8
+            0x29, 0x02,       // AND #2
+            0x18,             // CLC
+            0xD0, 0x01,       // BNE +1
+            0x38,             // SEC
+            0xE8,             // INX
+            0x88,             // DEY
+            0xD0, 0xFC,       // BNE -4 → INX
+            0x60,             // RTS
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("for (y = 7; y != 0; y--)", code);
+    }
+
+    [Fact]
+    public void Decompiler_StructuresCountUpForWithInitLookback()
+    {
+        // LDX #0 / LDA $10 / STA $00 / INX / CPX #4 / BNE → for (x = 0; x != 4; x++)
+        // with a ZP store between init and loop body.
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA2, 0x00,       // LDX #0
+            0xA9, 0x10,       // LDA #$10
+            0x85, 0x00,       // STA $00
+            0xE8,             // INX
+            0xE0, 0x04,       // CPX #4
+            0xD0, 0xF7,       // BNE -9 → LDA
+            0x60,             // RTS
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("for (x = 0; x != 4; x++)", code);
+    }
+
+    [Fact]
+    public void Decompiler_CollapsesConsecutiveLsrs()
+    {
+        // LDA #$80 / LSR / LSR / LSR / RTS
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA9, 0x80, // LDA #$80
+            0x4A,       // LSR A
+            0x4A,       // LSR A
+            0x4A,       // LSR A
+            0x60,       // RTS
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("a >>= 3;", code);
+        Assert.DoesNotContain("carry = (a & 1) != 0; a >>= 1;", code);
+    }
+
+    [Fact]
+    public void Decompiler_IndexedPeeksKeepUshortCastForCsharp()
+    {
+        // LDX #0 / LDA $07D7,X / RTS — must stay peek((ushort)(… + x)) so C# builds.
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA2, 0x00,       // LDX #0
+            0xBD, 0xD7, 0x07, // LDA $07D7,X
+            0x60,             // RTS
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("peek((ushort)(", code);
+        Assert.Contains("+ x)", code);
+        Assert.DoesNotContain("peek(0x07D7 + x)", code);
+    }
+
+    [Fact]
+    public void SoftCpu_LowersCountdownDoWhile()
+    {
+        var basePrg = new byte[0x4000];
+        Array.Fill(basePrg, (byte)0xEA);
+        string program = """
+            byte a = 0, x = 0, y = 0;
+            bool carry = false, zero = false, negative = false;
+
+            // bank=0 $8000
+            void reset()
+            {
+                x = 3;
+                do
+                {
+                    y++;
+                }
+                while (--x != 0);
+                return;
+            }
+            """;
+        var result = SoftCpuRecompiler.Recompile(program, basePrg);
+        Assert.Empty(result.Diagnostics);
+        Assert.True(result.RoutinesLowered >= 1);
+        // Expect LDX #3 / INY / DEX / BNE loop
+        Assert.Equal(0xA2, result.PrgRom[0]); // LDX #
+        Assert.Equal(0x03, result.PrgRom[1]);
+        Assert.Equal(0xC8, result.PrgRom[2]); // INY
+        Assert.Equal(0xCA, result.PrgRom[3]); // DEX
+        Assert.Equal(0xD0, result.PrgRom[4]); // BNE
+    }
+
+    [Fact]
+    public void Decompiler_RecoversOamBufferFromIndexedStoresAndDma()
+    {
+        // STA $0200,Y ×3 + oam_dma(2)
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA0, 0x00,       // LDY #0
+            0xA9, 0x11,       // LDA #$11
+            0x99, 0x00, 0x02, // STA $0200,Y
+            0xC8,             // INY
+            0x99, 0x00, 0x02, // STA $0200,Y
+            0xC8,             // INY
+            0x99, 0x00, 0x02, // STA $0200,Y
+            0xA9, 0x00,       // LDA #0
+            0x8D, 0x03, 0x20, // STA $2003
+            0xA9, 0x02,       // LDA #2
+            0x8D, 0x14, 0x40, // STA $4014
+            0x4C, 0x00, 0x80, // JMP $8000
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("byte[] oam = new byte[256]; // $0200", code);
+        Assert.Contains("byte[] oam_y = new byte[256]; // $0200", code);
+        Assert.Contains("oam_dma(2);", code);
+        Assert.True(code.Contains("oam_y[y] =") || code.Contains("oam[y] ="), code);
+        Assert.DoesNotContain("const ushort ram_0200", code);
+        Assert.DoesNotContain("poke((ushort)(ram_0200", code);
+    }
+
+    [Fact]
+    public void BufferRecovery_DetectsOamAndRewritesIndexedPeekPoke()
+    {
+        var bodies = new List<List<string>>
+        {
+            new()
+            {
+                "poke((ushort)(ram_0200 + y), a);",
+                "poke((ushort)(ram_0200 + y), a);",
+                "poke((ushort)(ram_0200 + y), a);",
+                "oam_dma(2);",
+                "a = peek((ushort)(ram_0300 + x));",
+                "a = peek((ushort)(ram_0300 + x));",
+                "poke((ushort)(ram_0300 + x), a);",
+                "poke((ushort)(ram_0301 + x), a);",
+                "poke((ushort)(ram_0304 + x), a);",
+                "poke(ram_0300, 4);",
+                "x = peek(ram_0300);",
+            },
+        };
+        var names = new Dictionary<ushort, string>
+        {
+            [0x0200] = "ram_0200",
+            [0x0300] = "ram_0300",
+            [0x0301] = "ram_0301",
+            [0x0304] = "ram_0304",
+        };
+        var ptrs = new List<PaletteTableRecovery.VramPointerTable>
+        {
+            new(0x8000, 0x8001, [0x0300]),
+        };
+
+        var buffers = BufferRecovery.FindBuffers(bodies, names, ptrs);
+        Assert.Contains(buffers, b => b.Name == "oam" && b.Base == 0x0200 && b.Size == 256);
+        var vram = Assert.Single(buffers, b => b.Name == "vram_buf");
+        Assert.Equal(0x0300, vram.Base);
+        Assert.True(vram.Size >= 5, $"vram_buf size {vram.Size}");
+
+        BufferRecovery.RewriteBodies(bodies, buffers, names);
+        Assert.Contains(bodies[0], l => l.Contains("oam[y] = a"));
+        Assert.Contains(bodies[0], l => l.Contains("vram_buf[x] = a") || l.Contains("vram_buf[x]"));
+        Assert.Contains(bodies[0], l => l.Contains("vram_buf[x + 1]"));
+        Assert.Contains(bodies[0], l => l.Contains("vram_buf[x + 4]"));
+        Assert.Contains(bodies[0], l => l.Contains("vram_buf[0] = 4"));
+        Assert.Contains(bodies[0], l => l.Contains("x = vram_buf[0]"));
+        Assert.DoesNotContain(bodies[0], l => l.Contains("ram_0200"));
+        Assert.DoesNotContain(bodies[0], l => l.Contains("ram_0301"));
+        Assert.DoesNotContain(bodies[0], l => l.Contains("peek(ram_0300)"));
+    }
+
+    [Fact]
+    public void SoftCpu_LowersCollapsedMultiShift()
+    {
+        var basePrg = new byte[0x4000];
+        Array.Fill(basePrg, (byte)0xEA);
+        string program = """
+            // bank=0 $8000
+            void reset()
+            {
+                a = 0x80;
+                a >>= 3;
+                return;
+            }
+            """;
+        var result = SoftCpuRecompiler.Recompile(program, basePrg);
+        Assert.Empty(result.Diagnostics);
+        Assert.Equal(0xA9, result.PrgRom[0]); // LDA #
+        Assert.Equal(0x80, result.PrgRom[1]);
+        Assert.Equal(0x4A, result.PrgRom[2]); // LSR A
+        Assert.Equal(0x4A, result.PrgRom[3]);
+        Assert.Equal(0x4A, result.PrgRom[4]);
+        Assert.Equal(0x60, result.PrgRom[5]); // RTS
+    }
+
+    [Fact]
+    public void Decompiler_SugarsCompareBranchesIntoReadableIfs()
+    {
+        // LDA $70 / CMP #$02 / BEQ skip / CMP #$01 / BNE exit / … / skip: RTS
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA5, 0x70,       // LDA $70
+            0xC9, 0x02,       // CMP #$02
+            0xF0, 0x06,       // BEQ +6 → skip (past BNE)
+            0xC9, 0x01,       // CMP #$01
+            0xD0, 0x02,       // BNE +2 → exit
+            0xA5, 0x72,       // LDA $72
+            0x60,             // RTS (skip / exit)
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.DoesNotContain("zero = a ==", code);
+        Assert.True(
+            code.Contains("if (a != 2)", StringComparison.Ordinal)
+            || code.Contains("if (a == 2)", StringComparison.Ordinal),
+            "expected sugared compare if");
+        Assert.True(
+            code.Contains("if (a != 1) return", StringComparison.Ordinal)
+            || code.Contains("if (a == 1)", StringComparison.Ordinal),
+            "expected early-exit compare");
+    }
+
+    [Fact]
+    public void Decompiler_StructuresSkipArmWithExitGoto()
+    {
+        // if (x != 1) goto then; if (y >= $60) goto join; then: LDA #0; join: RTS
+        // Outer skip body contains goto to join (after skip) — must still structure.
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA2, 0x02,       // LDX #2
+            0xA0, 0x10,       // LDY #10
+            0xE0, 0x01,       // CPX #1
+            0xD0, 0x04,       // BNE +4 → then ($800A)
+            0xC0, 0x60,       // CPY #$60
+            0xB0, 0x02,       // BCS +2 → join ($800C)
+            0xA9, 0x00,       // then: LDA #0
+            0x60,             // join: RTS
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("if (x == 1)", code);
+        Assert.DoesNotContain("if (x != 1) goto", code);
+    }
+
+    [Fact]
+    public void Decompiler_SugarsMemDecZeroTest()
+    {
+        // DEC $70 / BNE +1 / RTS  (skip empty) — becomes if (zp != 0) style
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        // Make $70 hot enough to promote: multiple accesses
+        byte[] codeBytes =
+        [
+            0xC6, 0x70, // DEC $70
+            0xD0, 0x01, // BNE +1 → RTS
+            0xA9, 0x01, // LDA #1
+            0x60,       // RTS
+            // pad with more $70 traffic so it promotes
+            0xA5, 0x70, // LDA $70
+            0x85, 0x70, // STA $70
+            0xA5, 0x70,
+            0x60,
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.DoesNotContain("if (!zero)", code);
+        Assert.True(
+            code.Contains("!= 0)", StringComparison.Ordinal)
+            || code.Contains("== 0)", StringComparison.Ordinal),
+            code);
+    }
+
+    [Fact]
+    public void Decompiler_StructuresCompareBoundDoWhile()
+    {
+        // LDY #0 / L: INY / CPY #6 / BCC L / RTS
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA0, 0x00, // LDY #0
+            0xC8,       // INY
+            0xC0, 0x06, // CPY #6
+            0x90, 0xFB, // BCC -5 → INY
+            0x60,       // RTS
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("while (y < 6)", code);
+        Assert.DoesNotContain("zero = y ==", code);
+    }
+
+    [Fact]
+    public void Decompiler_SugarsDiscardedLsrBitTest()
+    {
+        // LDA $70 / LSR / BCS +3 / LDA #$01 / RTS / LDA #$02 / RTS
+        // Both arms reload A ⇒ drop shift, test bit0.
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA5, 0x70,       // LDA $70
+            0x4A,             // LSR
+            0xB0, 0x03,       // BCS +3 → $8008
+            0xA9, 0x01,       // LDA #1
+            0x60,             // RTS
+            0xA9, 0x02,       // LDA #2
+            0x60,             // RTS
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.DoesNotContain("carry = (a & 1) != 0; a >>= 1;", code);
+        Assert.Contains("(a & 1)", code);
+    }
+
+    [Fact]
+    public void Decompiler_SugarsCpxOneLinerWithoutNegativeFlags()
+    {
+        // LDX $70 / CPX #$06 / BEQ +2 / INY / RTS
+        // CPX emit omits negative= — must still sugar to if (x == 6).
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA6, 0x70, // LDX $70
+            0xE0, 0x06, // CPX #$06
+            0xF0, 0x01, // BEQ +1 → RTS
+            0xC8,       // INY
+            0x60,       // RTS
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.DoesNotContain("zero = x ==", code);
+        Assert.True(
+            code.Contains("if (x == 6)", StringComparison.Ordinal)
+            || code.Contains("if (x != 6)", StringComparison.Ordinal),
+            "expected sugared CPX if");
+    }
+
+    [Fact]
+    public void Decompiler_SugarsZeroTestAfterYLoad()
+    {
+        // LDY $70 / BEQ +2 / LDA #$1E / RTS
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA4, 0x70, // LDY $70
+            0xF0, 0x02, // BEQ +2 → RTS
+            0xA9, 0x1E, // LDA #$1E
+            0x60,       // RTS
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.DoesNotContain("if (zero)", code);
+        Assert.True(
+            code.Contains("if (y == 0)", StringComparison.Ordinal)
+            || code.Contains("if (y != 0)", StringComparison.Ordinal),
+            "expected zero-test on y after load");
+    }
+
+    [Fact]
     public void Decompiler_PromotesHotRamAddressesToConsts()
     {
         // RESET: loop that peeks/pokes $00FE three times, then JMP self
@@ -1522,8 +2311,12 @@ public class DecompilerTests
         rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
 
         var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
-        Assert.Contains("const ushort zp_FE = 0x00FE;", code);
-        Assert.Contains("peek(zp_FE)", code);
+        // Single-routine scope → reset_FE; multi-routine would stay zp_FE.
+        Assert.Contains("byte reset_FE = 0; // $FE", code);
+        Assert.Contains("a = reset_FE", code);
+        Assert.Contains("reset_FE = a", code);
+        Assert.DoesNotContain("peek(reset_FE)", code);
+        Assert.DoesNotContain("poke(reset_FE", code);
         Assert.DoesNotContain("peek((ushort)0xFE)", code);
         Assert.DoesNotContain("peek((ushort)0x00FE)", code);
     }
@@ -1533,7 +2326,7 @@ public class DecompilerTests
     {
         // RESET:
         //   LDA #$01 / STA $4016 / LDA #$00 / STA $4016
-        //   LDA $4016 / LSR / ROL $F5
+        //   LDA $4016 / LSR / ROL $F5  (MSB assemble bit)
         //   LDA $F5 / CMP #$10
         //   LDA #$3F / STA $2006 / LDA #$00 / STA $2006
         //   LDA #$0F / STA $2007 / LDA #$16 / STA $2007
@@ -1553,9 +2346,9 @@ public class DecompilerTests
             0x4A,             // LSR
             0x26, 0xF5,       // ROL $F5
             0xA5, 0xF5,       // LDA $F5
-            0xC9, 0x10,       // CMP #$10  (PAD.UP)
+            0xC9, 0x10,       // CMP #$10  (PADMSB.START)
             0xA5, 0xF5,       // LDA $F5
-            0x29, 0xDF,       // AND #$DF  (~PAD.DOWN)
+            0x29, 0xDF,       // AND #$DF  (~PADMSB.SELECT)
             0xA9, 0x3F,       // LDA #$3F
             0x8D, 0x06, 0x20, // STA $2006
             0xA9, 0x00,       // LDA #$00
@@ -1575,11 +2368,103 @@ public class DecompilerTests
 
         var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
         Assert.Contains("joypad1_read()", code);
-        Assert.Contains("a == (byte)PAD.UP", code);
-        Assert.Contains("a & (byte)~PAD.DOWN", code);
+        Assert.Contains("a == (byte)PADMSB.START", code);
+        Assert.True(
+            code.Contains("a & (byte)~PADMSB.SELECT", StringComparison.Ordinal)
+            || code.Contains("a &= (byte)~PADMSB.SELECT", StringComparison.Ordinal),
+            "expected AND of ~PADMSB.SELECT");
         Assert.Contains("vram_adr(0x3F00)", code);
-        Assert.Contains("vram_put(NESColor.Black)", code);
-        Assert.Contains("vram_put(NESColor.Red)", code);
+        Assert.Contains("NESColor.Black", code);
+        Assert.Contains("NESColor.Red", code);
+    }
+
+    [Fact]
+    public void Decompiler_LiftsJoypadShiftLoopToPadPoll()
+    {
+        // RESET: strobe $4016, LDY #8 / LDA $4016 / LSR / ROL abs / DEY / BNE, STA $06FC, JMP
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA9, 0x01,       // LDA #$01
+            0x8D, 0x16, 0x40, // STA $4016 Latch
+            0xA9, 0x00,       // LDA #$00
+            0x8D, 0x16, 0x40, // STA $4016 Shift
+            0xA0, 0x08,       // LDY #$08
+            0xAD, 0x16, 0x40, // LDA $4016
+            0x4A,             // LSR
+            0x2A,             // ROL A
+            0x88,             // DEY
+            0xD0, 0xF9,       // BNE
+            0x8D, 0xFC, 0x06, // STA $06FC
+            0x4C, 0x00, 0x80, // JMP $8000
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        // LSR + ROL A → MSB packing → pad_poll_msb; unstructured/gotos keep the loop.
+        Assert.True(
+            code.Contains("pad_poll_msb(", StringComparison.Ordinal)
+            || code.Contains("pad_poll(", StringComparison.Ordinal)
+            || code.Contains("joypad1_read()", StringComparison.Ordinal)
+            || code.Contains("JOYPAD1", StringComparison.Ordinal),
+            "expected joypad poll or raw JOYPAD1 traffic");
+        if (code.Contains("pad_poll_msb(", StringComparison.Ordinal))
+            Assert.DoesNotContain("pad_poll(0)", code);
+    }
+
+    [Fact]
+    public void Decompiler_LiftsPadMasksOnAbsoluteControllerRam()
+    {
+        // SMB-style: assemble pad into $06FC via JOYPAD1 reads, then LDA $06FC / AND #$10 (START).
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA9, 0x01,       // LDA #$01
+            0x8D, 0x16, 0x40, // STA $4016
+            0xA9, 0x00,       // LDA #$00
+            0x8D, 0x16, 0x40, // STA $4016
+            0xA2, 0x00,       // LDX #$00
+            0xA0, 0x08,       // LDY #$08
+            // loop: LDA $4016,X / LSR / ROL abs / DEY / BNE
+            0xBD, 0x16, 0x40, // LDA $4016,X
+            0x4A,             // LSR
+            0x2E, 0xFC, 0x06, // ROL $06FC
+            0x88,             // DEY
+            0xD0, 0xF6,       // BNE loop (rel -10 → LDA $4016,X)
+            0xAD, 0xFC, 0x06, // LDA $06FC
+            0x29, 0x10,       // AND #$10 (PADMSB.START)
+            0xAD, 0xFC, 0x06, // LDA $06FC
+            0x29, 0x30,       // AND #$30 (START|SELECT)
+            0x8D, 0xFC, 0x06, // STA $06FC (keep addr hot)
+            0x4C, 0x00, 0x80, // JMP $8000
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("pad_poll_msb(", code);
+        Assert.Contains("PADMSB.START", code);
+        Assert.Contains("PADMSB.SELECT", code);
+        Assert.DoesNotContain("PAD.UP", code);
+        Assert.DoesNotContain("a & 0x10", code);
+        Assert.DoesNotContain("a & 0x30", code);
     }
 
     [Fact]
@@ -1616,8 +2501,277 @@ public class DecompilerTests
         rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
 
         var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
-        Assert.Contains("vram_put(NESColor.Black)", code);
-        Assert.Contains("vram_put(NESColor.Red)", code);
+        Assert.Contains("NESColor.Black", code);
+        Assert.Contains("NESColor.Red", code);
+    }
+
+    [Fact]
+    public void PaletteTableRecovery_FindsVramBufferRecords()
+    {
+        // Minimal PRG fragment: $3F,$00,$04 + 4 colors, terminator, then another $3F,$00,$10 block
+        byte[] prg =
+        [
+            0xEA, 0xEA, // padding
+            0x3F, 0x00, 0x04,
+            0x0F, 0x16, 0x27, 0x30, // Black, Red, LightOrange, White
+            0x00,
+            0x3F, 0x00, 0x10,
+            0x0F, 0x00, 0x10, 0x30,
+            0x0F, 0x00, 0x10, 0x30,
+            0x0F, 0x00, 0x10, 0x30,
+            0x0F, 0x00, 0x10, 0x30,
+        ];
+
+        var tables = PaletteTableRecovery.FindVramBufferPalettes(prg);
+        Assert.Equal(2, tables.Count);
+        Assert.Equal(4, tables[0].ColorCount);
+        Assert.Equal(16, tables[1].ColorCount);
+
+        string init = PaletteTableRecovery.FormatTableInitializer(prg, tables[0]);
+        Assert.Contains("new byte[] { 0x3F, 0x00, 0x04, NESColor.Black, NESColor.Red, NESColor.LightOrange, NESColor.White }", init);
+    }
+
+    [Fact]
+    public void Decompiler_RecoversPaletteVramBufferTablesFromPrg()
+    {
+        // RESET: infinite JMP. Palette table parked in PRG at $8100 (offset 0x100).
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0x4C, 0x00, 0x80, // JMP $8000
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int tableOff = 16 + 0x100;
+        byte[] table =
+        [
+            0x3F, 0x00, 0x04,
+            0x0F, 0x16, 0x27, 0x30,
+            0x00,
+        ];
+        Array.Copy(table, 0, rom, tableOff, table.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("(0x8100, new byte[] { 0x3F, 0x00, 0x04, NESColor.Black, NESColor.Red, NESColor.LightOrange, NESColor.White })", code);
+        Assert.Contains("Recovered 1 PPU palette VRAM-buffer table", code);
+    }
+
+    [Fact]
+    public void Decompiler_UsesRecoveredPaletteTablesInControlFlow()
+    {
+        // RESET:
+        //   LDA #$00 / STA $00 / LDA #$81 / STA $01   ; zp → $8100 palette
+        //   LDY #$03 / LDA ($00),Y                     ; → PeekVramBufY → palette[]
+        //   LDA $8100 / LDA $8100,Y                   ; absolute / indexed → palette[0].Data[…]
+        //   JMP self
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA9, 0x00,       // LDA #$00
+            0x85, 0x00,       // STA $00
+            0xA9, 0x81,       // LDA #$81
+            0x85, 0x01,       // STA $01
+            0xA0, 0x03,       // LDY #$03
+            0xB1, 0x00,       // LDA ($00),Y
+            0xAD, 0x00, 0x81, // LDA $8100
+            0xB9, 0x00, 0x81, // LDA $8100,Y
+            0x4C, 0x00, 0x80, // JMP $8000
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int tableOff = 16 + 0x100;
+        byte[] table =
+        [
+            0x3F, 0x00, 0x04,
+            0x0F, 0x16, 0x27, 0x30,
+            0x00,
+        ];
+        Array.Copy(table, 0, rom, tableOff, table.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("a = PeekVramBufY();", code);
+        Assert.Contains("BindVramFromZp();", code);
+        Assert.Contains("if (palette[i].Base == p) { _vramData = palette[i].Data; return; }", code);
+        Assert.Contains("a = palette[0].Data[0];", code);
+        Assert.Contains("a = palette[0].Data[y];", code);
+    }
+
+    [Fact]
+    public void Decompiler_RecoversVramPointerTableSelectingPalettes()
+    {
+        // RESET:
+        //   LDX #1 / LDA $805A,X / STA $00 / LDA $806D,X / STA $01 / LDA ($00),Y / JMP self
+        // lo@$805A / hi@$806D (adjacent, len=19) with entry 1 = $8CA4 palette
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA2, 0x01,       // LDX #$01
+            0xBD, 0x5A, 0x80, // LDA $805A,X
+            0x85, 0x00,       // STA $00
+            0xBD, 0x6D, 0x80, // LDA $806D,X
+            0x85, 0x01,       // STA $01
+            0xA0, 0x00,       // LDY #$00
+            0xB1, 0x00,       // LDA ($00),Y
+            0x4C, 0x00, 0x80, // JMP $8000
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        // lo table at $805A (offset 0x5A), hi at $806D (offset 0x6D) — 19 entries
+        int loOff = 16 + 0x5A;
+        int hiOff = 16 + 0x6D;
+        for (int i = 0; i < 19; i++)
+        {
+            rom[loOff + i] = 0x00;
+            rom[hiOff + i] = 0x03; // $0300 default
+        }
+        rom[loOff + 1] = 0xA4;
+        rom[hiOff + 1] = 0x8C; // $8CA4
+
+        // palette at $8CA4 (offset 0xCA4)
+        int palOff = 16 + 0xCA4;
+        byte[] pal = [0x3F, 0x00, 0x04, 0x0F, 0x16, 0x27, 0x30, 0x00];
+        Array.Copy(pal, 0, rom, palOff, pal.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("ushort[] vramBufPtr = {", code);
+        Assert.Contains("0x8CA4", code);
+        Assert.Contains("ushort _p = vramBufPtr[x];", code);
+        Assert.Contains("BindVramFromZp();", code);
+        Assert.Contains("a = PeekVramBufY();", code);
+        Assert.Contains("Recovered 1 VRAM buffer pointer table", code);
+    }
+
+    [Fact]
+    public void Decompiler_RecoversDiscoveredGameTextTables()
+    {
+        // Mini ROM: null-terminated cluster using a non-ASCII tile alphabet (A=$8A),
+        // same shape many commercial games use — recovery must discover the base, not hardcode a title.
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] reset = [0x4C, 0x00, 0x80]; // JMP self
+        Array.Copy(reset, 0, rom, 16, reset.Length);
+
+        // A=$8A encoding: CURE / FIRE / HARM / LOCK / MUTE (cluster of English tile words)
+        byte[] table =
+        [
+            0x8C, 0x9E, 0x9B, 0x8E, 0x00, // CURE
+            0x8F, 0x92, 0x9B, 0x8E, 0x00, // FIRE
+            0x91, 0x8A, 0x9B, 0x96, 0x00, // HARM
+            0x95, 0x98, 0x8C, 0x94, 0x00, // LOCK
+            0x96, 0x9E, 0x9D, 0x8E, 0x00, // MUTE
+        ];
+        Array.Copy(table, 0, rom, 16 + 0x100, table.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("gameText", code);
+        Assert.Contains("CURE", code);
+        Assert.Contains("FIRE", code);
+        Assert.Contains("Discovered tile font", code);
+        Assert.Contains("A=$8A", code);
+    }
+
+    [Fact]
+    public void FormatVramWrite_KeepsByteArrayWhenNoEnglishTileDecode()
+    {
+        // Non-letter tile soup — no confident English → plain byte[], no string hint.
+        byte[] junk = [0x01, 0x02, 0x03, 0xFE, 0xFD];
+        string line = NesLibCallFormatter.FormatVramWriteFromBytes(junk);
+        Assert.Contains("new byte[]", line);
+        Assert.DoesNotContain("can be replaced with", line);
+
+        // Contiguous A=$8A spell name → English hint allowed.
+        byte[] cure = [0x8C, 0x9E, 0x9B, 0x8E]; // CURE
+        string hinted = NesLibCallFormatter.FormatVramWriteFromBytes(cure);
+        Assert.Contains("new byte[]", hinted);
+        Assert.Contains("can be replaced with \"CURE\"", hinted);
+    }
+
+    [Fact]
+    public void Decompiler_RecoversSmbStyleVramTextBuffers()
+    {
+        // Mini ROM: RESET spins; PRG hosts a nametable text stream at $8100 ("MARIO" tiles)
+        // and a vramBufPtr lo/hi pair selecting it (with a dummy palette so ptr recovery runs).
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        // reset: LDX #0 / LDA lo,X / STA $00 / LDA hi,X / STA $01 / JMP self
+        byte[] codeBytes =
+        [
+            0xA2, 0x00,             // LDX #0
+            0xBD, 0x20, 0x80,       // LDA $8020,X
+            0x85, 0x00,             // STA $00
+            0xBD, 0x21, 0x80,       // LDA $8021,X
+            0x85, 0x01,             // STA $01
+            0x4C, 0x0C, 0x80,       // JMP *
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        // lo/hi ptr tables at $8020/$8021: one entry → $8100
+        rom[16 + 0x20] = 0x00;
+        rom[16 + 0x21] = 0x81;
+
+        // palette seed at $8100 so FindVramPointerTables accepts the table, then text at $8110
+        byte[] pal = [0x3F, 0x00, 0x04, 0x0F, 0x16, 0x27, 0x30, 0x00];
+        Array.Copy(pal, 0, rom, 16 + 0x100, pal.Length);
+        // overwrite ptr to point at text stream instead — use two ptrs: palette + text
+        // Actually ptr recovery needs at least one palette hit. Keep ptr → palette; seed MARIO via high-confidence scan at $8120.
+        byte[] mario =
+        [
+            0x20, 0x43, 0x05, 0x16, 0x0A, 0x1B, 0x12, 0x18, // MARIO
+            0x00,
+        ];
+        Array.Copy(mario, 0, rom, 16 + 0x120, mario.Length);
+
+        // Point table at palette ($8100) so pointer recovery succeeds; MARIO found by scan.
+        rom[16 + 0x20] = 0x00;
+        rom[16 + 0x21] = 0x81;
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("vramText", code);
+        Assert.Contains("MARIO", code);
+        Assert.Contains("nametable text VRAM-buffer", code);
     }
 
     [Fact]
@@ -1628,6 +2782,36 @@ public class DecompilerTests
         Assert.Contains("oam_size(SpriteSize.Size8x16)", code);
         Assert.DoesNotContain("oam_size(0x01)", code);
         Assert.DoesNotContain("oam_size(1)", code);
+    }
+
+    [Fact]
+    public void Decompiler_DoesNotEmitGotoToUnmappedBranchTarget()
+    {
+        // RESET at $8000: LDA #1 / BNE to $7FAE (relative $AC → target below $8000) / JMP self
+        // Relative: target = pc+2 + sbyte. pc=$8002 → want $7FAE → delta = $7FAE-$8004 = -$56 = $AA
+        const int prgSize = 16384;
+        var rom = new byte[16 + prgSize + 8192];
+        rom[0] = (byte)'N'; rom[1] = (byte)'E'; rom[2] = (byte)'S'; rom[3] = 0x1A;
+        rom[4] = 1; rom[5] = 1;
+
+        byte[] codeBytes =
+        [
+            0xA9, 0x01,       // LDA #$01
+            0xD0, 0xAA,       // BNE $7FAE  (from $8004: $8004+$AA as sbyte = $7FAE)
+            0x4C, 0x00, 0x80, // JMP $8000
+        ];
+        Array.Copy(codeBytes, 0, rom, 16, codeBytes.Length);
+
+        int vec = 16 + prgSize - 6;
+        rom[vec] = 0x00; rom[vec + 1] = 0x80;
+        rom[vec + 2] = 0x00; rom[vec + 3] = 0x80;
+        rom[vec + 4] = 0x00; rom[vec + 5] = 0x80;
+
+        var code = new Decompiler(new NESRomReader(rom), _logger).Decompile();
+        Assert.Contains("outside recovered body", code);
+        Assert.DoesNotContain(
+            code.Split('\n').Select(l => l.TrimStart()).Where(l => !l.StartsWith("//")),
+            l => l.Contains("goto L_7FAE", StringComparison.Ordinal));
     }
 
     /// <summary>

@@ -373,14 +373,13 @@ Controls how the `.nes` image is produced after the managed build.
 | **Default** | `Transpile` |
 
 - `Transpile` — normal IL→6502 path (default).
-- `RawPrg` — write the iNES header (exact `NESRawHeader` when set, otherwise from
-  MSBuild props), then concatenate the raw PRG image from `NESRawPrg` with CHR
-  gathered from `NESAssembly` CHARS segments. Skips IL→6502. Used by the
-  decompiler for arbitrary ROMs so rebuilds stay byte-identical.
+- `SoftCpu` — lower soft-CPU `Program.cs` onto 6502 at commercial addresses, using
+  `NESRawPrg` as a data/gap bridge and packing with CHR + optional exact header.
+  Used by the decompiler for arbitrary ROMs. Legacy `RawPrg` is accepted as an alias.
 
 ```xml
 <PropertyGroup>
-  <NESPackMode>RawPrg</NESPackMode>
+  <NESPackMode>SoftCpu</NESPackMode>
   <NESRawPrg>prg.bin</NESRawPrg>
   <NESRawHeader>header.bin</NESRawHeader>
   <NESPrgBanks>2</NESPrgBanks>
@@ -388,14 +387,14 @@ Controls how the `.nes` image is produced after the managed build.
 </PropertyGroup>
 ```
 
-`NESPackMode=RawPrg` cannot be combined with `NESMmc3BankedLayout` or
+`NESPackMode=SoftCpu` cannot be combined with `NESMmc3BankedLayout` or
 `NESPrgBank` / `NESChrBank` / `NESManagedCodeBank` items. The PRG file length
 must equal `NESPrgBanks × 16384`. Prefer `NESRawHeader` for commercial ROMs —
 reconstructed headers zero bytes 8–15 and drop trainer / NES 2.0 fields.
 
 ### `NESRawPrg`
 
-Path to a raw PRG ROM image consumed when `NESPackMode=RawPrg`.
+Path to a PRG ROM image used as the SoftCpu data/gap bridge.
 
 | | |
 |---|---|
@@ -404,7 +403,7 @@ Path to a raw PRG ROM image consumed when `NESPackMode=RawPrg`.
 
 ### `NESRawHeader`
 
-Optional path to an exact 16-byte iNES header for `NESPackMode=RawPrg`. When set,
+Optional path to an exact 16-byte iNES header for `NESPackMode=SoftCpu`. When set,
 the header is written verbatim instead of reconstructing Flags6/7 and zeroing
 bytes 8–15.
 

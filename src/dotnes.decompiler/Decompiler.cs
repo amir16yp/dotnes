@@ -6,7 +6,8 @@ namespace dotnes;
 /// <summary>
 /// Decompiles a .nes ROM into a C# project that can be rebuilt with dotnes.
 /// Dotnes-layout ROMs recover NESLib C# (Transpile). Arbitrary ROMs emit soft-CPU
-/// game logic in Program.cs; rebuild uses RawPrg (prg.bin) for byte-identical .nes.
+/// game logic in Program.cs; rebuild uses SoftCpu (Program.cs → 6502) with prg.bin as
+/// the data/gap bridge.
 /// Soft-CPU recovery defaults to <see cref="RecoveryStyle.Optimized"/>; use Exact to opt out.
 /// </summary>
 sealed class Decompiler
@@ -18,7 +19,7 @@ sealed class Decompiler
 
     SemanticRecoverer? _semantic;
     Disassembler? _disassembler;
-    PackMode _resolvedMode = PackMode.RawPrg;
+    PackMode _resolvedMode = PackMode.SoftCpu;
     string? _programCs;
     bool _ran;
 
@@ -70,7 +71,7 @@ sealed class Decompiler
     }
 
     /// <summary>
-    /// Write a complete project directory (Program.cs, csproj, CHR, and prg.bin when RawPrg).
+    /// Write a complete project directory (Program.cs, csproj, CHR, and prg.bin when SoftCpu).
     /// </summary>
     public void WriteProject(string outputDir, string projectName)
     {
@@ -112,16 +113,16 @@ sealed class Decompiler
             var general = new GeneralRecoverer(_rom, _disassembler, _logger, _recoveryStyle);
             _programCs = general.Decompile();
             if (_recoveryStyle == RecoveryStyle.Optimized)
-                _logger.WriteLine($"Emit mode: RawPrg + optimized soft-CPU Program.cs (use --exact to opt out).");
+                _logger.WriteLine($"Emit mode: SoftCpu + optimized soft-CPU Program.cs (use --exact to opt out).");
             else
-                _logger.WriteLine($"Emit mode: RawPrg + exact soft-CPU Program.cs.");
+                _logger.WriteLine($"Emit mode: SoftCpu + exact soft-CPU Program.cs.");
         }
     }
 
     PackMode ResolveMode(bool isDotnesLayout) => _preference switch
     {
         PackModePreference.Transpile => PackMode.Transpile,
-        PackModePreference.RawPrg => PackMode.RawPrg,
-        _ => isDotnesLayout ? PackMode.Transpile : PackMode.RawPrg,
+        PackModePreference.SoftCpu => PackMode.SoftCpu,
+        _ => isDotnesLayout ? PackMode.Transpile : PackMode.SoftCpu,
     };
 }
